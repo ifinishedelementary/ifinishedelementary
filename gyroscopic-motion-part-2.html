@@ -135,8 +135,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;heigh
 <span class="note">One precession rate for the entire body. Requires a single ω. A galaxy does not have one.</span></div>
 
 <div class="eq"><span class="label">F=ma per-ring reality</span>
-Ω(r) = <span class="hl">F</span><sub>⊥</sub> / (m(r) · r · <span class="hl">ω(r)</span>)
-<span class="note">F<sub>⊥</sub> is the perpendicular applied force on each individual mass. Each ring has its own ω(r) = √(GM/r³). No pseudovectors — only force, mass, radius, and spin rate. Each ring precesses at a different rate. The disk twists.</span></div>
+Ω(r) = <span class="hl">τ</span> / (m(r) · r² · <span class="hl">ω(r)</span>)
+<span class="note">The angular momentum of a ring is L = mr²ω. Each ring has its own ω(r) = √(GM/r³). With ω ∝ r<sup>−3/2</sup>, the product r²ω ∝ r<sup>1/2</sup> — so inner rings have less angular momentum and precess faster. The disk twists from the inside out.</span></div>
 
 <div class="ibox"><div class="section-label">The Error</div><div class="commentary" id="l3comment">Euler gives the horizontal line — one rate for all radii. F=ma gives the curve — inner rings precess much faster. The system does not precess. It warps.</div></div>
 
@@ -378,13 +378,13 @@ let l1time=0,l1cR,l1cK;
 function resetL1(){l1time=0}
 window.resetL1=resetL1;
 
-function drawL1(t){
+function drawL1(){
   if(!l1cR)l1cR=IC("c1rigid",400,400);
   if(!l1cK)l1cK=IC("c1kepler",400,400);
   if(!l1cR||!l1cK)return;
   const sp=gv("s1speed");
   document.getElementById("s1speedVal").textContent=sp.toFixed(1)+"x";
-  const nRings=4,perRing=8,R=150,omega0=sp*0.8;
+  const nRings=4,perRing=8,R=150,omega0=0.8;
   [l1cR,l1cK].forEach(function(cv,isK){
     const{x,w,h}=cv;x.clearRect(0,0,w,h);const cx=w/2,cy=h/2;
     // Grid rings
@@ -416,17 +416,18 @@ window.resetL2=resetL2;
 function toggleL2force(){l2forceOn=!l2forceOn;document.getElementById("bL2force").textContent=l2forceOn?"Force ON":"Force OFF";document.getElementById("bL2force").className=l2forceOn?"btn active":"btn"}
 window.toggleL2force=toggleL2force;
 
-function drawL2(t,dt){
+function drawL2(dt){
   if(!l2cR)l2cR=IC("c2rigid",400,400);
   if(!l2cK)l2cK=IC("c2kepler",400,400);
   if(!l2cR||!l2cK)return;
   const F=gv("s2force"),sp=gv("s2spin");
   document.getElementById("s2forceVal").textContent=F.toFixed(2);
   document.getElementById("s2spinVal").textContent=sp.toFixed(1)+"x";
-  const omega0=sp*1.5,nRings=4,perRing=10,R=140,fStr=l2forceOn?F:0;
+  const omega0=1.5,nRings=4,perRing=10,R=140,fStr=l2forceOn?F:0;
+  const omegaPhys=sp*1.5; // actual spin rate for precession physics
   if(dt>0){
-    l2precRigid+=fStr*0.3/(omega0*0.5+0.01)*dt;
-    for(let ri=0;ri<4;ri++){const rN=(ri+1)/4,omK=omega0*Math.pow(rN,-1.5);l2precK[ri]+=fStr*0.3/(omK*rN*rN+0.01)*dt}
+    l2precRigid+=fStr*0.3/(omegaPhys*0.5+0.01)*dt;
+    for(let ri=0;ri<4;ri++){const rN=(ri+1)/4,omK=omegaPhys*Math.pow(rN,-1.5);l2precK[ri]+=fStr*0.3/(omK*rN*rN+0.01)*dt}
   }
   [l2cR,l2cK].forEach(function(cv,isK){
     const{x,w,h}=cv;x.clearRect(0,0,w,h);const cx=w/2,cy=h/2;
@@ -454,7 +455,7 @@ window.setL3run=setL3run;
 function resetL3(){l3time=0}
 window.resetL3=resetL3;
 
-function drawL3(t,dt){
+function drawL3(dt){
   if(!l3cG)l3cG=IC("c3graph",400,220);
   if(!l3cE)l3cE=IC("c3euler",400,400);
   if(!l3cF)l3cF=IC("c3fma",400,400);
@@ -501,10 +502,11 @@ function drawL3(t,dt){
 }
 
 // ═══════════ LAYER 4 ═══════════
+let l4c;
 function drawL4(){
-  if(!window.l4c)window.l4c=IC("c4curve",400,240);
-  if(!window.l4c)return;
-  const{x,w,h}=window.l4c;x.clearRect(0,0,w,h);
+  if(!l4c)l4c=IC("c4curve",400,240);
+  if(!l4c)return;
+  const{x,w,h}=l4c;x.clearRect(0,0,w,h);
   const mF=gv("s4mass"),vO=gv("s4obs");
   document.getElementById("s4massVal").textContent=(mF*100).toFixed(0)+"%";
   document.getElementById("s4obsVal").textContent=vO.toFixed(2);
@@ -513,17 +515,29 @@ function drawL4(){
   x.beginPath();x.moveTo(gL,gB);x.lineTo(gR,gB);x.stroke();
   x.beginPath();x.moveTo(gL,gB);x.lineTo(gL,gT);x.stroke();
   txt(x,gL+gW/2,h-10,"Radius",COL.dim,10);txt(x,22,gT+gH/2,"v(r)",COL.dim,10);
+  // Helper: observed v(r) and predicted v(r)
+  function vObs(rN){return vF*Math.sqrt(rN/(rN+0.05))}
+  function vPred(rN){return vF*Math.sqrt(mF/(rN+0.05))}
   // Observed
-  x.strokeStyle=COL.fall;x.lineWidth=3;x.beginPath();for(let i=1;i<=N;i++){const rN=i/N,v=vF*Math.sqrt(rN/(rN+0.05));x.lineTo(gL+rN*gW,gB-v*gH)}x.stroke();
+  x.strokeStyle=COL.fall;x.lineWidth=3;x.beginPath();for(let i=1;i<=N;i++){const rN=i/N;x.lineTo(gL+rN*gW,gB-vObs(rN)*gH)}x.stroke();
   // Visible
-  x.strokeStyle=COL.rigid;x.lineWidth=2.5;x.setLineDash([6,3]);x.beginPath();for(let i=1;i<=N;i++){const rN=i/N,v=vF*Math.sqrt(mF/(rN+0.05));x.lineTo(gL+rN*gW,gB-clamp(v,0,1)*gH)}x.stroke();x.setLineDash([]);
-  // Gap
-  x.globalAlpha=0.12;x.fillStyle=COL.fz;x.beginPath();for(let i=1;i<=N;i++){const rN=i/N;x.lineTo(gL+rN*gW,gB-vF*Math.sqrt(rN/(rN+0.05))*gH)}for(let i=N;i>=1;i--){const rN=i/N;x.lineTo(gL+rN*gW,gB-clamp(vF*Math.sqrt(mF/(rN+0.05)),0,1)*gH)}x.closePath();x.fill();x.globalAlpha=1;
-  // Observer shifted
-  if(Math.abs(vO)>0.01){x.strokeStyle=COL.warp;x.lineWidth=2.5;x.beginPath();for(let i=1;i<=N;i++){const rN=i/N,v=Math.abs(vF*Math.sqrt(rN/(rN+0.05))+vO*vF);x.lineTo(gL+rN*gW,gB-clamp(v,0,1.2)*gH)}x.stroke()}
+  x.strokeStyle=COL.rigid;x.lineWidth=2.5;x.setLineDash([6,3]);x.beginPath();for(let i=1;i<=N;i++){const rN=i/N;x.lineTo(gL+rN*gW,gB-clamp(vPred(rN),0,1)*gH)}x.stroke();x.setLineDash([]);
+  // Gap fill (rest frame)
+  x.globalAlpha=0.12;x.fillStyle=COL.fz;x.beginPath();for(let i=1;i<=N;i++){const rN=i/N;x.lineTo(gL+rN*gW,gB-vObs(rN)*gH)}for(let i=N;i>=1;i--){const rN=i/N;x.lineTo(gL+rN*gW,gB-clamp(vPred(rN),0,1)*gH)}x.closePath();x.fill();x.globalAlpha=1;
+  // Observer shifted: BOTH curves shift by u
+  if(Math.abs(vO)>0.01){
+    const u=vO*vF;
+    x.strokeStyle=COL.warp;x.lineWidth=2.5;x.beginPath();for(let i=1;i<=N;i++){const rN=i/N,v=Math.abs(vObs(rN)+u);x.lineTo(gL+rN*gW,gB-clamp(v,0,1.2)*gH)}x.stroke();
+    x.strokeStyle=COL.warp;x.lineWidth=2;x.setLineDash([6,3]);x.beginPath();for(let i=1;i<=N;i++){const rN=i/N,v=Math.abs(vPred(rN)+u);x.lineTo(gL+rN*gW,gB-clamp(v,0,1.2)*gH)}x.stroke();x.setLineDash([]);
+    // Shifted gap fill
+    x.globalAlpha=0.08;x.fillStyle=COL.warp;x.beginPath();for(let i=1;i<=N;i++){const rN=i/N;x.lineTo(gL+rN*gW,gB-clamp(Math.abs(vObs(rN)+u),0,1.2)*gH)}for(let i=N;i>=1;i--){const rN=i/N;x.lineTo(gL+rN*gW,gB-clamp(Math.abs(vPred(rN)+u),0,1.2)*gH)}x.closePath();x.fill();x.globalAlpha=1;
+  }
   txt(x,gR-80,gT+12,"Observed (flat)",COL.fall,10);txt(x,gR-80,gT+28,"Visible mass only",COL.rigid,10);txt(x,gL+gW/2,gT+8,"Gap = unaccounted-for mass",COL.fz,10);
-  let c="Move the observer slider. The gap — and therefore the inferred unaccounted-for mass — changes with observer frame.";
-  if(Math.abs(vO)>0.01)c="Purple curve: same galaxy from a frame moving at "+vO.toFixed(2)+". Different velocities → different gap → different inferred missing mass. v² is frame-dependent.";
+  // Compute v² gap to show in commentary
+  let gapRest=0,gapShifted=0;
+  for(let i=1;i<=N;i++){const rN=i/N,vo2=vObs(rN),vp2=vPred(rN),u=vO*vF;gapRest+=vo2*vo2-vp2*vp2;gapShifted+=(vo2+u)*(vo2+u)-(vp2+u)*(vp2+u)}
+  let c="Move the observer slider. Both curves shift together — the velocity gap in v stays the same. But the dynamical equation uses v², and v² is not preserved by a frame shift.";
+  if(Math.abs(vO)>0.01)c="Both curves shift by u="+vO.toFixed(2)+". v-gap unchanged, but Σ(v²) gap: rest frame "+(gapRest/N).toFixed(3)+" → shifted frame "+(gapShifted/N).toFixed(3)+". The inferred missing mass changes because (v+u)² ≠ v² + u².";
   document.getElementById("l4comment").textContent=c;
 }
 
@@ -534,7 +548,7 @@ window.setL5run=setL5run;
 function resetL5(){l5time=0}
 window.resetL5=resetL5;
 
-function drawL5(t,dt){
+function drawL5(dt){
   if(!l5cT)l5cT=IC("c5top",400,400);
   if(!l5cE)l5cE=IC("c5edge",400,250);
   if(!l5cT||!l5cE)return;
@@ -626,16 +640,16 @@ function drawL5(t,dt){
 }
 
 // ═══════════ LAYER 6 ═══════════
-let l6running=true,l6time=0,l6c;
+let l6running=true,l6time=0,l6c,l6cD;
 function setL6run(v){l6running=v;document.getElementById("bL6run").className=v?"btn active":"btn";document.getElementById("bL6stop").className=v?"btn":"btn active"}
 window.setL6run=setL6run;
 function resetL6(){l6time=0}
 window.resetL6=resetL6;
 
-function drawL6(t,dt){
+function drawL6(dt){
   if(!l6c)l6c=IC("c6material",400,400);
-  if(!window.l6cD)window.l6cD=IC("c6density",400,400);
-  if(!l6c||!window.l6cD)return;
+  if(!l6cD)l6cD=IC("c6density",400,400);
+  if(!l6c||!l6cD)return;
   const sp=gv("s6speed");document.getElementById("s6speedVal").textContent=sp.toFixed(1)+"x";
   if(l6running)l6time+=dt*sp*0.3;
   document.getElementById("s6orbitsVal").textContent=l6time.toFixed(1);
@@ -668,7 +682,7 @@ function drawL6(t,dt){
 
   // ── CANVAS 2: Density Wave ──
   {
-    const{x,w,h}=window.l6cD;x.clearRect(0,0,w,h);
+    const{x,w,h}=l6cD;x.clearRect(0,0,w,h);
     const cx=w/2,cy=h/2;
     txt(x,cx,22,"Density Wave",COL.prec,12);
     for(let arm=0;arm<2;arm++){
@@ -713,7 +727,7 @@ window.setL7run=setL7run;
 function resetL7(){l7time=0;initL7()}
 window.resetL7=resetL7;
 
-function drawL7(t,dt){
+function drawL7(dt){
   if(!l7c)l7c=IC("c7acc",400,400);if(!l7c)return;
   const{x,w,h}=l7c;x.clearRect(0,0,w,h);
   const alpha=gv("s7alpha"),mag=gv("s7mag"),spinMult=gv("s7spin");
@@ -754,13 +768,13 @@ function drawL7(t,dt){
       p.trail.push({px,py});
       if(p.trail.length>60)p.trail.shift();
       if(p.trail.length>1){
-        x.beginPath();x.moveTo(p.trail[0].px,p.trail[0].py);
         for(let ti=1;ti<p.trail.length;ti++){
           const al=ti/p.trail.length;
           x.globalAlpha=al*0.5;x.strokeStyle=COL.fz;x.lineWidth=1.5;
-          x.lineTo(p.trail[ti].px,p.trail[ti].py);
+          x.beginPath();x.moveTo(p.trail[ti-1].px,p.trail[ti-1].py);
+          x.lineTo(p.trail[ti].px,p.trail[ti].py);x.stroke();
         }
-        x.stroke();x.globalAlpha=1;
+        x.globalAlpha=1;
       }
       // Gravity arrow (inward toward center)
       const gLen=Math.min(28/(p.r*p.r+0.15),44);
@@ -797,7 +811,7 @@ window.setL8run=setL8run;
 function resetL8(){l8time=0}
 window.resetL8=resetL8;
 
-function drawL8(t,dt){
+function drawL8(dt){
   if(!l8c)l8c=IC("c8bp",400,400);if(!l8c)return;
   const{x,w,h}=l8c;x.clearRect(0,0,w,h);
   const spin=gv("s8spin"),tilt0=gv("s8tilt")*PI/180,aspeed=gv("s8aspeed");
@@ -866,15 +880,16 @@ function drawL8(t,dt){
 }
 
 // ═══════════ LAYER 9 ═══════════
+let l9d,l9f;
 function drawL9(){
-  if(!window.l9d)window.l9d=IC("c9dist",400,300);
-  if(!window.l9f)window.l9f=IC("c9frame",400,300);
-  if(!window.l9d||!window.l9f)return;
+  if(!l9d)l9d=IC("c9dist",400,300);
+  if(!l9f)l9f=IC("c9frame",400,300);
+  if(!l9d||!l9f)return;
   const vObs=gv("s9obs");document.getElementById("s9obsVal").textContent=vObs.toFixed(2);
   const N=40,omega0=2;
 
   // LEFT: energy distribution
-  const{x:xd,w:wd,h:hd}=window.l9d;xd.clearRect(0,0,wd,hd);
+  const{x:xd,w:wd,h:hd}=l9d;xd.clearRect(0,0,wd,hd);
   const gL=55,gR=wd-25,gT=40,gB=hd-35,gW=gR-gL,gH=gB-gT;
   xd.strokeStyle="rgba(100,100,140,0.3)";xd.lineWidth=1;
   xd.beginPath();xd.moveTo(gL,gB);xd.lineTo(gR,gB);xd.stroke();
@@ -893,7 +908,7 @@ function drawL9(){
   txt(xd,gL+60,gT+15,"Σ½mv² (Kepler)",COL.fz,10);
 
   // RIGHT: total KE vs observer frame
-  const{x:xf,w:wf,h:hf}=window.l9f;xf.clearRect(0,0,wf,hf);
+  const{x:xf,w:wf,h:hf}=l9f;xf.clearRect(0,0,wf,hf);
   const fL=55,fR=wf-25,fT=40,fB=hf-35,fW=fR-fL,fH=fB-fT;
   xf.strokeStyle="rgba(100,100,140,0.3)";xf.lineWidth=1;
   xf.beginPath();xf.moveTo(fL,fB);xf.lineTo(fR,fB);xf.stroke();
@@ -931,7 +946,7 @@ window.setL10run=setL10run;
 function resetL10(){l10time=0;initJet()}
 window.resetL10=resetL10;
 
-function drawL10(t,dt){
+function drawL10(dt){
   if(!l10c)l10c=IC("c10jet",400,500);if(!l10c)return;
   const{x,w,h}=l10c;x.clearRect(0,0,w,h);
   const B=gv("s10B"),sp=gv("s10spin");
@@ -1020,16 +1035,16 @@ function tick(ts){
   lastTS=ts;
   l1time+=dt*gv("s1speed");
   l2time+=dt*gv("s2spin");
-  drawL1(l1time);
-  drawL2(l2time,dt);
-  drawL3(l1time,l3running?dt:0);
+  drawL1();
+  drawL2(dt);
+  drawL3(l3running?dt:0);
   drawL4();
-  drawL5(l5time,dt);
-  drawL6(l6time,dt);
-  drawL7(l7time,dt);
-  drawL8(l8time,dt);
+  drawL5(dt);
+  drawL6(dt);
+  drawL7(dt);
+  drawL8(dt);
   drawL9();
-  drawL10(l10time,dt);
+  drawL10(dt);
   requestAnimationFrame(tick);
 }
 requestAnimationFrame(tick);
