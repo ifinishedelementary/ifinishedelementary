@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Kinetic Energy Problem — I Finished Elementary</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#08080c;--panel:#101018;--border:#1c1c2c;--text:#e2ddd0;
+  --dim:#6a6458;--accent:#d4a843;--accent-dim:#7a6228;--curve:#d0ccc0;
+  --objA:#6888a8;--objAF:rgba(104,136,168,0.25);
+  --objB:#c45c5c;--objBF:rgba(196,92,92,0.25);
+  --good:#4a9e6e;--goodF:rgba(74,158,110,0.2);
+  --warn:#e8a030;--warnF:rgba(232,160,48,0.15);
+  --grid:#161620;--pi:#6888a8
+}
+body{background:var(--bg);color:var(--text);font-family:'EB Garamond',Georgia,serif;line-height:1.75;padding:36px 20px 80px;min-height:100vh;-webkit-font-smoothing:antialiased}
+.container{max-width:800px;margin:0 auto}
+h1{font-family:'Cormorant Garamond',Georgia,serif;font-size:2.1em;font-weight:500;color:var(--accent);line-height:1.25;margin-bottom:6px}
+h2{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.35em;font-weight:500;color:var(--accent);line-height:1.3;margin:0 0 14px 0}
+.subtitle{font-size:1.05em;color:var(--dim);font-style:italic;margin-bottom:32px}
+.essay p{font-size:1.05em;margin-bottom:1.2em}
+.essay em{color:var(--accent);font-style:italic}
+.formula{display:block;text-align:center;font-size:1.15em;color:var(--accent);margin:1.4em 0;letter-spacing:0.02em}
+.note{font-size:0.92em;color:var(--dim);border-left:2px solid var(--accent-dim);padding-left:16px;margin:1.6em 0;line-height:1.65}
+hr.sep{border:none;border-top:1px solid var(--border);margin:36px 0}
+.pbox{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:14px 14px 10px;margin-bottom:14px}
+.plabel{font-size:0.7em;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;padding-left:2px;color:var(--dim)}
+.ibox{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:14px 18px;margin-bottom:14px}
+.section-label{font-size:0.7em;color:var(--dim);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px}
+.commentary{font-size:0.95em;line-height:1.7;min-height:4em}
+svg{display:block;width:100%;height:auto}
+.row{display:flex;gap:14px;margin-bottom:14px;align-items:stretch}
+.col-half{flex:1;min-width:0}
+/* Sliders */
+.slider-row{display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.slider-label{font-size:0.85em;color:var(--dim);min-width:130px}
+.slider-val{font-size:1em;color:var(--accent);font-weight:600;min-width:80px;text-align:right}
+input[type=range]{flex:1;min-width:140px;accent-color:var(--accent);background:var(--border);height:6px;border-radius:3px;-webkit-appearance:none;appearance:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--accent);cursor:pointer}
+/* Values */
+.vgrid{display:flex;gap:14px;font-size:0.88em;flex-wrap:wrap}
+.vl{color:var(--dim)}.vn{font-weight:600}
+.vn.a{color:var(--objA)}.vn.b{color:var(--objB)}.vn.gold{color:var(--accent)}.vn.good{color:var(--good)}.vn.warn{color:var(--warn)}.vn.red{color:var(--objB)}
+/* Big number display */
+.big-num{font-size:2em;font-weight:600;line-height:1.2;margin:4px 0}
+.big-label{font-size:0.75em;color:var(--dim);text-transform:uppercase;letter-spacing:0.08em}
+.num-row{display:flex;gap:24px;margin:16px 0;flex-wrap:wrap}
+.num-card{flex:1;min-width:140px;text-align:center;padding:14px;border-radius:8px}
+.num-card.ke{background:var(--warnF);border:1px solid rgba(232,160,48,0.3)}
+.num-card.mom{background:var(--goodF);border:1px solid rgba(74,158,110,0.3)}
+.num-card.ke .big-num{color:var(--warn)}
+.num-card.mom .big-num{color:var(--good)}
+/* Method cards */
+.method-card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:16px 18px;flex:1;min-width:0}
+.method-title{font-size:0.95em;font-weight:600;margin-bottom:10px}
+.method-title.rv{color:var(--good)}
+.method-title.en{color:var(--objA)}
+.eq-line{font-size:0.92em;margin-bottom:6px;padding:4px 0;color:var(--text)}
+.eq-label{color:var(--dim);font-size:0.82em}
+.result-box{margin-top:12px;padding:10px 12px;border-radius:6px;font-size:0.92em}
+.result-box.rv{background:var(--goodF);border:1px solid rgba(74,158,110,0.3)}
+.result-box.en{background:var(--objAF);border:1px solid rgba(104,136,168,0.3)}
+.match-badge{display:inline-block;padding:3px 10px;border-radius:4px;font-size:0.8em;font-weight:600;margin-top:10px}
+.match-badge.yes{background:var(--goodF);color:var(--good);border:1px solid rgba(74,158,110,0.4)}
+.footer-text{font-size:0.95em;color:var(--dim);line-height:1.7;margin-top:20px}
+.footer-text em{color:var(--accent)}
+@media(max-width:680px){h1{font-size:1.5em}.row{flex-direction:column}.num-row{flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>The Kinetic Energy Problem</h1>
+<div class="subtitle">A quantity that changes based on who's watching isn't describing reality — it's describing a perspective</div>
+
+<div class="essay">
+<p>In 1686, Gottfried Wilhelm Leibniz proposed that the true measure of a body's "force of motion" is mv² — mass times velocity squared. He called it <em>vis viva</em>, living force. He derived it from Galileo's falling bodies, where v²&nbsp;=&nbsp;2gh, by multiplying both sides by mass. Modern physics inherited this as kinetic energy: ½mv².</p>
+<p>The quantity has been treated as fundamental for over three centuries. But it has a property that should disqualify it from describing physical reality: it is <em>frame-dependent</em>. The kinetic energy of an object changes depending on who is observing it. Not by a little. Not in a subtle way. It changes completely.</p>
+<p>Two galaxies approach each other at relative velocity v. From galaxy A's frame, galaxy B carries all the kinetic energy. From galaxy B's frame, galaxy A carries all of it. From a frame where both move at v/2, the total is different from either. The "energy in the system" — supposedly a real, conserved, physical quantity — gives a <em>different number</em> depending on where you stand.</p>
+<p>Momentum's value also changes between frames. But momentum has a crucial advantage: its <em>conservation law</em> — that total momentum before equals total momentum after a collision — holds identically in every inertial frame. And there is a quantity that is even more honest: the <em>relative velocity</em> between two objects. Its value doesn't change at all. It is the same number for every observer, everywhere, without qualification.</p>
+</div>
+
+<hr class="sep">
+
+<!-- ═══════════ SECTION I: FRAME DEPENDENCE ═══════════ -->
+<h2>I. Watch "Energy" Change by Changing Your Seat</h2>
+
+<p style="font-size:0.95em;color:var(--dim);margin-bottom:16px">Two objects approach each other. Drag the observer frame slider and watch all three quantities: kinetic energy (fluctuates wildly), momentum (value changes but conservation law holds), and relative velocity (never changes at all).</p>
+
+<div class="pbox">
+<div class="plabel">Setup — Masses and Velocities in the Lab Frame</div>
+<div class="slider-row">
+  <span class="slider-label">Object A mass:</span>
+  <input type="range" id="massA" min="1" max="20" value="5" step="1">
+  <span class="slider-val" id="massAVal">5 kg</span>
+</div>
+<div class="slider-row">
+  <span class="slider-label">Object A velocity:</span>
+  <input type="range" id="velA" min="-20" max="20" value="8" step="1">
+  <span class="slider-val" id="velAVal">+8 m/s →</span>
+</div>
+<div class="slider-row">
+  <span class="slider-label">Object B mass:</span>
+  <input type="range" id="massB" min="1" max="20" value="10" step="1">
+  <span class="slider-val" id="massBVal">10 kg</span>
+</div>
+<div class="slider-row">
+  <span class="slider-label">Object B velocity:</span>
+  <input type="range" id="velB" min="-20" max="20" value="-4" step="1">
+  <span class="slider-val" id="velBVal">−4 m/s ←</span>
+</div>
+</div>
+
+<div class="pbox">
+<div class="plabel" style="color:var(--accent)">Observer Frame — Drag to Change Your Perspective</div>
+<div class="slider-row">
+  <span class="slider-label">Observer velocity:</span>
+  <input type="range" id="obsVel" min="-25" max="25" value="0" step="0.5">
+  <span class="slider-val" id="obsVelVal">0 m/s (lab)</span>
+</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+  <button class="frame-btn" onclick="setObs(0)">Lab frame</button>
+  <button class="frame-btn" onclick="setObsA()">Ride on A</button>
+  <button class="frame-btn" onclick="setObsB()">Ride on B</button>
+  <button class="frame-btn" onclick="setObsCM()">Center of mass</button>
+</div>
+</div>
+
+<style>
+.frame-btn{padding:5px 12px;background:var(--accent-dim);color:var(--text);border:1px solid var(--border);border-radius:5px;cursor:pointer;font-family:'EB Garamond',Georgia,serif;font-size:0.8em;transition:background 0.2s}
+.frame-btn:hover{background:var(--accent);color:var(--bg)}
+</style>
+
+<!-- Scene visualization -->
+<div class="pbox">
+<div id="sceneViz"></div>
+</div>
+
+<!-- Big numbers -->
+<div class="num-row">
+  <div class="num-card ke">
+    <div class="big-label">Total Kinetic Energy</div>
+    <div class="big-num" id="totalKE">—</div>
+    <div class="big-label" style="color:var(--warn)">⚠ Value changes with observer</div>
+  </div>
+  <div class="num-card mom">
+    <div class="big-label">Total Momentum</div>
+    <div class="big-num" id="totalMom">—</div>
+    <div class="big-label" style="color:var(--objA)">Value changes — but conservation law holds in every frame</div>
+  </div>
+  <div class="num-card" style="background:var(--goodF);border:1px solid rgba(74,158,110,0.3)">
+    <div class="big-label">Relative Velocity</div>
+    <div class="big-num" style="color:var(--good)" id="relVel">—</div>
+    <div class="big-label" style="color:var(--good)">✓ Truly frame-independent — same in every frame</div>
+  </div>
+</div>
+
+<!-- Detailed values -->
+<div class="ibox">
+<div class="section-label">Velocities and Energies in Current Frame</div>
+<div class="vgrid" id="frameVals"></div>
+</div>
+
+<!-- KE vs frame chart -->
+<div class="pbox">
+<div class="plabel">Total Kinetic Energy as Observer Velocity Changes</div>
+<div id="keChart"></div>
+</div>
+
+<div class="ibox">
+<div class="section-label">What This Means</div>
+<div class="commentary" id="frameComment"></div>
+</div>
+
+<hr class="sep">
+
+<!-- ═══════════ SECTION II: ELASTIC COLLISION ═══════════ -->
+<h2>II. Solving Elastic Collisions — Energy Is Redundant</h2>
+
+<p style="font-size:0.95em;color:var(--dim);margin-bottom:16px">An elastic collision between two objects. The left panel solves it using momentum + the relative velocity condition. The right panel solves it using momentum + energy conservation. The answers are always identical. Energy adds nothing.</p>
+
+<div class="pbox">
+<div class="plabel">Collision Setup</div>
+<div class="slider-row">
+  <span class="slider-label">Mass A:</span>
+  <input type="range" id="cMassA" min="1" max="20" value="3" step="1">
+  <span class="slider-val" id="cMassAVal">3 kg</span>
+</div>
+<div class="slider-row">
+  <span class="slider-label">Velocity A (before):</span>
+  <input type="range" id="cVelA" min="-15" max="15" value="10" step="1">
+  <span class="slider-val" id="cVelAVal">+10 m/s →</span>
+</div>
+<div class="slider-row">
+  <span class="slider-label">Mass B:</span>
+  <input type="range" id="cMassB" min="1" max="20" value="7" step="1">
+  <span class="slider-val" id="cMassBVal">7 kg</span>
+</div>
+<div class="slider-row">
+  <span class="slider-label">Velocity B (before):</span>
+  <input type="range" id="cVelB" min="-15" max="15" value="-2" step="1">
+  <span class="slider-val" id="cVelBVal">−2 m/s ←</span>
+</div>
+</div>
+
+<!-- Before state -->
+<div class="pbox">
+<div class="plabel">Before Collision</div>
+<div id="beforeViz"></div>
+<div class="vgrid" style="margin-top:8px" id="beforeVals"></div>
+</div>
+
+<!-- Two methods side by side -->
+<div class="row">
+  <div class="method-card" id="methodRV">
+    <div class="method-title rv">Method 1: Momentum + Relative Velocity</div>
+    <div class="section-label" style="color:var(--good)">No energy concept needed</div>
+    <div id="rvSteps"></div>
+    <div class="result-box rv" id="rvResult"></div>
+  </div>
+  <div class="method-card" id="methodEN">
+    <div class="method-title en">Method 2: Momentum + Energy Conservation</div>
+    <div class="section-label" style="color:var(--objA)">Standard textbook approach</div>
+    <div id="enSteps"></div>
+    <div class="result-box en" id="enResult"></div>
+  </div>
+</div>
+
+<!-- Match indicator -->
+<div class="ibox" style="text-align:center">
+  <span class="match-badge yes" id="matchBadge">✓ Both methods produce identical results — energy adds nothing</span>
+</div>
+
+<!-- After state -->
+<div class="pbox">
+<div class="plabel">After Collision</div>
+<div id="afterViz"></div>
+<div class="vgrid" style="margin-top:8px" id="afterVals"></div>
+</div>
+
+<div class="ibox">
+<div class="section-label">The Implication</div>
+<div class="commentary" id="collisionComment"></div>
+</div>
+
+<hr class="sep">
+
+<!-- ═══════════ SECTION III: CLOSING ═══════════ -->
+<h2>III. What the Squaring Hides</h2>
+
+<div class="essay">
+<p>The velocity-squaring operation does two things that should concern anyone who cares about physical reality.</p>
+<p>First, it <em>destroys direction</em>. Velocity is a vector — it points somewhere. The moment you square it, a ball moving left and a ball moving right at the same speed have identical "kinetic energy." The one piece of physical information that distinguishes them — direction — is erased.</p>
+<p>Second, it <em>creates frame-dependence</em>. Because squaring is nonlinear, boosting to a different frame doesn't just shift the energy — it changes its structure. The total kinetic energy of a system is not invariant under change of reference frame. This is not a minor technicality. It means the quantity has no unique physical value. It is not a property of the objects. It is a property of the observer's arbitrary choice of coordinates.</p>
+<p>Momentum's value also changes between frames — as the demo above shows honestly. But momentum has something energy doesn't: its <em>conservation law</em> holds identically in every frame. If momentum is conserved in one frame, it's conserved in all of them. Energy conservation, by contrast, gives different totals in different frames, making it impossible to assign a unique "energy of the system" without first choosing a privileged frame.</p>
+<p>But the cleanest quantity of all is the <em>relative velocity</em> — the speed of approach or separation between two objects. It doesn't just have a frame-independent conservation law. Its <em>value</em> is the same in every frame, for every observer, without exception. And as the collision solver demonstrates, momentum plus the relative velocity condition is <em>sufficient</em> to predict every elastic collision outcome without ever invoking energy.</p>
+<p>The hierarchy is clear. Relative velocity: frame-independent value. Momentum: frame-dependent value, frame-independent conservation law. Kinetic energy: frame-dependent value, frame-dependent total — the weakest of the three, and the one Leibniz placed at the foundation.</p>
+</div>
+
+<div class="footer-text">
+<p>Leibniz needed vis viva — mv² — because his metaphysics required force to be intrinsic to individual substances. A mass-independent quantity wouldn't serve that purpose. The velocity got squared not because nature demanded it, but because theology did. And three centuries later, every physics student inherits that squaring without knowing where it came from or what it costs.</p>
+</div>
+
+</div>
+
+<script>
+(function(){
+"use strict";
+
+const F="'EB Garamond',Georgia,serif";
+
+// ═══════════ SECTION I: FRAME DEPENDENCE ═══════════
+
+function getFrameInputs(){
+  const mA=parseFloat(document.getElementById("massA").value);
+  const vA=parseFloat(document.getElementById("velA").value);
+  const mB=parseFloat(document.getElementById("massB").value);
+  const vB=parseFloat(document.getElementById("velB").value);
+  const vObs=parseFloat(document.getElementById("obsVel").value);
+  return {mA,vA,mB,vB,vObs};
+}
+
+function updateFrameLabels(){
+  const {mA,vA,mB,vB,vObs}=getFrameInputs();
+  document.getElementById("massAVal").textContent=mA+" kg";
+  document.getElementById("velAVal").textContent=(vA>=0?"+":"")+vA+" m/s "+(vA>=0?"→":"←");
+  document.getElementById("massBVal").textContent=mB+" kg";
+  document.getElementById("velBVal").textContent=(vB>=0?"+":"")+vB+" m/s "+(vB>=0?"→":"←");
+  document.getElementById("obsVelVal").textContent=(vObs===0?"0 m/s (lab)":(vObs>=0?"+":"")+vObs+" m/s");
+}
+
+function updateFrameViz(){
+  const {mA,vA,mB,vB,vObs}=getFrameInputs();
+  const vAf=vA-vObs, vBf=vB-vObs;
+  const keA=0.5*mA*vAf*vAf, keB=0.5*mB*vBf*vBf;
+  const totalKE=keA+keB;
+  const momA=mA*vAf, momB=mB*vBf;
+  const totalMom=momA+momB;
+
+  // Big numbers
+  document.getElementById("totalKE").textContent=totalKE.toFixed(1)+" J";
+  document.getElementById("totalMom").textContent=(totalMom>=0?"+":"")+totalMom.toFixed(1)+" kg·m/s";
+  document.getElementById("relVel").textContent=Math.abs(vBf-vAf).toFixed(1)+" m/s";
+
+  // Detail values
+  document.getElementById("frameVals").innerHTML=`
+    <div><span class="vl">A velocity: </span><span class="vn a">${vAf>=0?"+":""}${vAf.toFixed(1)} m/s</span></div>
+    <div><span class="vl">B velocity: </span><span class="vn b">${vBf>=0?"+":""}${vBf.toFixed(1)} m/s</span></div>
+    <div><span class="vl">KE of A: </span><span class="vn warn">${keA.toFixed(1)} J</span></div>
+    <div><span class="vl">KE of B: </span><span class="vn warn">${keB.toFixed(1)} J</span></div>
+    <div><span class="vl">Momentum A: </span><span class="vn a">${momA>=0?"+":""}${momA.toFixed(1)}</span></div>
+    <div><span class="vl">Momentum B: </span><span class="vn b">${momB>=0?"+":""}${momB.toFixed(1)}</span></div>
+  `;
+
+  // Scene visualization
+  drawScene(mA,vAf,mB,vBf,vObs);
+
+  // KE chart
+  drawKEChart(mA,vA,mB,vB,vObs);
+
+  // Commentary
+  const relV=Math.abs(vB-vA);
+  const cmV=(mA*vA+mB*vB)/(mA+mB);
+  const keAtCM=0.5*mA*(vA-cmV)*(vA-cmV)+0.5*mB*(vB-cmV)*(vB-cmV);
+  let comment="";
+  if(Math.abs(vObs)<0.5){
+    comment=`In the lab frame, the total kinetic energy is ${totalKE.toFixed(1)} J and total momentum is ${totalMom.toFixed(1)} kg·m/s. Now drag the observer slider. Both values will change — but only momentum's conservation law (before = after in a collision) holds identically in every frame. The relative velocity between the objects — ${relV.toFixed(1)} m/s — never changes at all. That's the truly frame-independent quantity.`;
+  } else if(Math.abs(vObs-vA)<0.5){
+    comment=`You're riding on object A. From your perspective, A is stationary and B carries all the kinetic energy: ${totalKE.toFixed(1)} J. From B's frame, the reverse. The momentum value changed too (now ${totalMom.toFixed(1)} kg·m/s), but its conservation law still holds — if these objects collide, momentum before will equal momentum after in this frame. Only the relative velocity (${relV.toFixed(1)} m/s) is identical in every frame without qualification.`;
+  } else if(Math.abs(vObs-vB)<0.5){
+    comment=`You're riding on object B. Total KE is now ${totalKE.toFixed(1)} J — compare this to riding on A. Completely different. Total momentum is ${totalMom.toFixed(1)} kg·m/s — also different from A's frame. But in both frames, momentum is conserved through any collision. The relative velocity remains ${relV.toFixed(1)} m/s regardless.`;
+  } else if(Math.abs(vObs-cmV)<0.5){
+    comment=`You're in the center-of-mass frame. Total momentum is zero — both objects approach with equal and opposite momenta. KE is ${totalKE.toFixed(1)} J, the minimum possible for any frame. This is the only frame with zero total momentum, but nature doesn't privilege it. The relative velocity is still ${relV.toFixed(1)} m/s — the same everywhere.`;
+  } else {
+    comment=`At observer velocity ${vObs.toFixed(1)} m/s, total KE is ${totalKE.toFixed(1)} J and total momentum is ${totalMom.toFixed(1)} kg·m/s. Both values depend on the frame. The relative velocity between the objects — ${relV.toFixed(1)} m/s — is the only quantity that doesn't. It's the physical fact. Everything else is bookkeeping.`;
+  }
+  document.getElementById("frameComment").textContent=comment;
+}
+
+// ── Scene drawing ──
+function drawScene(mA,vAf,mB,vBf,vObs){
+  const el=document.getElementById("sceneViz");
+  el.innerHTML="";
+  const W=760,H=160;
+  const ns="http://www.w3.org/2000/svg";
+  const svg=document.createElementNS(ns,"svg");
+  svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
+
+  // Background
+  const bg=document.createElementNS(ns,"rect");
+  bg.setAttribute("width",W);bg.setAttribute("height",H);bg.setAttribute("fill","#08080c");bg.setAttribute("rx","4");
+  svg.appendChild(bg);
+
+  // Ground line
+  addLine(svg,40,H-30,W-40,H-30,"#1c1c2c",1);
+
+  // Center
+  const cy=H-30, midX=W/2;
+
+  // Object A (left side-ish)
+  const posA=midX-120;
+  const sizeA=18+mA*1.5;
+  drawObj(svg,posA,cy,sizeA,vAf,"#6888a8","A",mA);
+
+  // Object B (right side-ish)
+  const posB=midX+120;
+  const sizeB=18+mB*1.5;
+  drawObj(svg,posB,cy,sizeB,vBf,"#c45c5c","B",mB);
+
+  // Observer indicator
+  addText(svg,midX,24,"#d4a843",11,"center","Observer: "+(vObs===0?"stationary (lab)":((vObs>0?"+":"")+vObs.toFixed(1)+" m/s")));
+
+  // Relative velocity arrow between objects
+  const arrY=cy-sizeA-30;
+  addLine(svg,posA+sizeA+5,arrY,posB-sizeB-5,arrY,"#d4a843",1.5,"6,3");
+  addText(svg,midX,arrY-8,"#d4a843",10,"center","relative: "+Math.abs(vBf-vAf).toFixed(1)+" m/s (invariant)");
+
+  el.appendChild(svg);
+
+  function drawObj(svg,x,y,r,v,color,label,mass){
+    // Circle
+    const c=document.createElementNS(ns,"circle");
+    c.setAttribute("cx",x);c.setAttribute("cy",y-r);c.setAttribute("r",r);
+    c.setAttribute("fill",color);c.setAttribute("opacity","0.8");
+    svg.appendChild(c);
+
+    // Label
+    addText(svg,x,y-r+5,"#08080c",13,"center",label);
+
+    // Mass label
+    addText(svg,x,y-r-r-8,color,10,"center",mass+" kg");
+
+    // Velocity arrow
+    if(Math.abs(v)>0.3){
+      const arrLen=Math.min(Math.abs(v)*4,100);
+      const dir=v>0?1:-1;
+      const ax=x+dir*(r+4), ay=y-r;
+      addLine(svg,ax,ay,ax+dir*arrLen,ay,color,2.5);
+      // Arrowhead
+      addLine(svg,ax+dir*arrLen,ay,ax+dir*(arrLen-8),ay-5,color,2);
+      addLine(svg,ax+dir*arrLen,ay,ax+dir*(arrLen-8),ay+5,color,2);
+      addText(svg,ax+dir*(arrLen/2),ay-12,color,10,"center",(v>=0?"+":"")+v.toFixed(1)+" m/s");
+    } else {
+      addText(svg,x,y-r+r+20,color,10,"center","stationary");
+    }
+  }
+
+  function addLine(svg,x1,y1,x2,y2,stroke,sw,dash){
+    const l=document.createElementNS(ns,"line");
+    l.setAttribute("x1",x1);l.setAttribute("y1",y1);l.setAttribute("x2",x2);l.setAttribute("y2",y2);
+    l.setAttribute("stroke",stroke);l.setAttribute("stroke-width",sw);
+    if(dash)l.setAttribute("stroke-dasharray",dash);
+    svg.appendChild(l);
+  }
+  function addText(svg,x,y,fill,size,anchor,text){
+    const t=document.createElementNS(ns,"text");
+    t.setAttribute("x",x);t.setAttribute("y",y);t.setAttribute("fill",fill);
+    t.setAttribute("font-size",size);t.setAttribute("text-anchor",anchor);
+    t.setAttribute("font-family",F);t.textContent=text;
+    svg.appendChild(t);
+  }
+}
+
+// ── KE vs Observer Frame chart ──
+function drawKEChart(mA,vA,mB,vB,currentObs){
+  const el=document.getElementById("keChart");
+  el.innerHTML="";
+  const W=760,H=260,pad={l:60,r:20,t:20,b:40};
+  const pW=W-pad.l-pad.r,pH=H-pad.t-pad.b;
+
+  const ns="http://www.w3.org/2000/svg";
+  const svg=document.createElementNS(ns,"svg");
+  svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
+
+  const bg=document.createElementNS(ns,"rect");
+  bg.setAttribute("width",W);bg.setAttribute("height",H);bg.setAttribute("fill","#08080c");bg.setAttribute("rx","4");
+  svg.appendChild(bg);
+
+  // Compute KE across observer velocities
+  const vMin=-25,vMax=25;
+  let keMax=0;
+  const pts=[];
+  for(let v=vMin;v<=vMax;v+=0.5){
+    const vAf=vA-v,vBf=vB-v;
+    const ke=0.5*mA*vAf*vAf+0.5*mB*vBf*vBf;
+    if(ke>keMax)keMax=ke;
+    pts.push({v,ke});
+  }
+  keMax*=1.15;
+  if(keMax<10)keMax=10;
+
+  function mx(v){return pad.l+((v-vMin)/(vMax-vMin))*pW}
+  function my(ke){return pad.t+pH-(ke/keMax)*pH}
+
+  // Grid
+  const keStep=Math.pow(10,Math.floor(Math.log10(keMax/4)));
+  for(let ke=0;ke<=keMax;ke+=keStep){
+    const y=my(ke);
+    const l=document.createElementNS(ns,"line");
+    l.setAttribute("x1",pad.l);l.setAttribute("y1",y);l.setAttribute("x2",W-pad.r);l.setAttribute("y2",y);
+    l.setAttribute("stroke","#161620");l.setAttribute("stroke-width","0.5");
+    svg.appendChild(l);
+    const t=document.createElementNS(ns,"text");
+    t.setAttribute("x",pad.l-6);t.setAttribute("y",y+4);t.setAttribute("fill","#6a6458");
+    t.setAttribute("font-size","9");t.setAttribute("text-anchor","end");t.setAttribute("font-family",F);
+    t.textContent=ke>=1000?(ke/1000).toFixed(0)+"k":ke.toFixed(0);
+    svg.appendChild(t);
+  }
+  [vMin,vMin+10,0,vMax-10,vMax].forEach(v=>{
+    const t=document.createElementNS(ns,"text");
+    t.setAttribute("x",mx(v));t.setAttribute("y",H-8);t.setAttribute("fill","#6a6458");
+    t.setAttribute("font-size","9");t.setAttribute("text-anchor","middle");t.setAttribute("font-family",F);
+    t.textContent=(v>=0?"+":"")+v;
+    svg.appendChild(t);
+  });
+
+  // Axis label
+  const xl=document.createElementNS(ns,"text");
+  xl.setAttribute("x",pad.l+pW/2);xl.setAttribute("y",H-0);xl.setAttribute("fill","#6a6458");
+  xl.setAttribute("font-size","10");xl.setAttribute("text-anchor","middle");xl.setAttribute("font-family",F);
+  xl.textContent="Observer velocity (m/s)";
+  svg.appendChild(xl);
+
+  // KE curve
+  let d="";
+  pts.forEach((p,i)=>{d+=(i===0?"M ":" L ")+`${mx(p.v)} ${my(p.ke)}`});
+  const path=document.createElementNS(ns,"path");
+  path.setAttribute("d",d);path.setAttribute("fill","none");
+  path.setAttribute("stroke","#e8a030");path.setAttribute("stroke-width","2.5");
+  svg.appendChild(path);
+
+  // Fill under
+  const fillD=d+` L ${mx(vMax)} ${my(0)} L ${mx(vMin)} ${my(0)} Z`;
+  const fp=document.createElementNS(ns,"path");
+  fp.setAttribute("d",fillD);fp.setAttribute("fill","rgba(232,160,48,0.08)");
+  svg.appendChild(fp);
+
+  // Momentum line (total momentum is constant = mA*vA + mB*vB regardless of frame)
+  // But momentum's magnitude changes per frame; its CONSERVATION LAW is frame-independent
+  // Show the zero-KE point doesn't exist (parabola minimum at CM frame)
+
+  // CM frame marker
+  const cmV=(mA*vA+mB*vB)/(mA+mB);
+  const cmKE=0.5*mA*(vA-cmV)*(vA-cmV)+0.5*mB*(vB-cmV)*(vB-cmV);
+  const cmLine=document.createElementNS(ns,"line");
+  cmLine.setAttribute("x1",mx(cmV));cmLine.setAttribute("y1",pad.t);
+  cmLine.setAttribute("x2",mx(cmV));cmLine.setAttribute("y2",pad.t+pH);
+  cmLine.setAttribute("stroke","#4a9e6e");cmLine.setAttribute("stroke-width","1");
+  cmLine.setAttribute("stroke-dasharray","4,3");cmLine.setAttribute("opacity","0.5");
+  svg.appendChild(cmLine);
+  const cmt=document.createElementNS(ns,"text");
+  cmt.setAttribute("x",mx(cmV)+4);cmt.setAttribute("y",pad.t+12);cmt.setAttribute("fill","#4a9e6e");
+  cmt.setAttribute("font-size","9");cmt.setAttribute("font-family",F);
+  cmt.textContent="CM frame (min KE)";
+  svg.appendChild(cmt);
+
+  // Current observer marker
+  const curKE=0.5*mA*(vA-currentObs)*(vA-currentObs)+0.5*mB*(vB-currentObs)*(vB-currentObs);
+  const dot=document.createElementNS(ns,"circle");
+  dot.setAttribute("cx",mx(currentObs));dot.setAttribute("cy",my(curKE));
+  dot.setAttribute("r","6");dot.setAttribute("fill","#d4a843");
+  dot.setAttribute("stroke","#08080c");dot.setAttribute("stroke-width","2");
+  svg.appendChild(dot);
+
+  const dl=document.createElementNS(ns,"line");
+  dl.setAttribute("x1",mx(currentObs));dl.setAttribute("y1",pad.t);
+  dl.setAttribute("x2",mx(currentObs));dl.setAttribute("y2",pad.t+pH);
+  dl.setAttribute("stroke","#d4a843");dl.setAttribute("stroke-width","1");
+  dl.setAttribute("stroke-dasharray","3,3");dl.setAttribute("opacity","0.4");
+  svg.appendChild(dl);
+
+  const dt=document.createElementNS(ns,"text");
+  dt.setAttribute("x",mx(currentObs));dt.setAttribute("y",my(curKE)-12);dt.setAttribute("fill","#d4a843");
+  dt.setAttribute("font-size","11");dt.setAttribute("text-anchor","middle");dt.setAttribute("font-family",F);
+  dt.textContent=curKE.toFixed(1)+" J";
+  svg.appendChild(dt);
+
+  el.appendChild(svg);
+}
+
+// Observer frame shortcuts
+window.setObs=function(v){document.getElementById("obsVel").value=v;updateFrameLabels();updateFrameViz()};
+window.setObsA=function(){document.getElementById("obsVel").value=document.getElementById("velA").value;updateFrameLabels();updateFrameViz()};
+window.setObsB=function(){document.getElementById("obsVel").value=document.getElementById("velB").value;updateFrameLabels();updateFrameViz()};
+window.setObsCM=function(){
+  const {mA,vA,mB,vB}=getFrameInputs();
+  const cm=(mA*vA+mB*vB)/(mA+mB);
+  document.getElementById("obsVel").value=cm;
+  updateFrameLabels();updateFrameViz();
+};
+
+// ═══════════ SECTION II: ELASTIC COLLISION ═══════════
+
+function getCollisionInputs(){
+  const m1=parseFloat(document.getElementById("cMassA").value);
+  const v1=parseFloat(document.getElementById("cVelA").value);
+  const m2=parseFloat(document.getElementById("cMassB").value);
+  const v2=parseFloat(document.getElementById("cVelB").value);
+  return {m1,v1,m2,v2};
+}
+
+function updateCollisionLabels(){
+  const {m1,v1,m2,v2}=getCollisionInputs();
+  document.getElementById("cMassAVal").textContent=m1+" kg";
+  document.getElementById("cVelAVal").textContent=(v1>=0?"+":"")+v1+" m/s "+(v1>=0?"→":"←");
+  document.getElementById("cMassBVal").textContent=m2+" kg";
+  document.getElementById("cVelBVal").textContent=(v2>=0?"+":"")+v2+" m/s "+(v2>=0?"→":"←");
+}
+
+function solveElastic(m1,v1,m2,v2){
+  // Method 1: momentum + relative velocity
+  // m1*v1 + m2*v2 = m1*v1f + m2*v2f
+  // v2f - v1f = -(v2 - v1)
+  // Solve:
+  const v1f=((m1-m2)*v1+2*m2*v2)/(m1+m2);
+  const v2f=((m2-m1)*v2+2*m1*v1)/(m1+m2);
+  return {v1f,v2f};
+}
+
+function updateCollision(){
+  const {m1,v1,m2,v2}=getCollisionInputs();
+  const {v1f,v2f}=solveElastic(m1,v1,m2,v2);
+
+  // Before values
+  const pBefore=m1*v1+m2*v2;
+  const keBefore=0.5*m1*v1*v1+0.5*m2*v2*v2;
+  const relBefore=v2-v1;
+
+  document.getElementById("beforeVals").innerHTML=`
+    <div><span class="vl">Momentum A: </span><span class="vn a">${(m1*v1).toFixed(1)}</span></div>
+    <div><span class="vl">Momentum B: </span><span class="vn b">${(m2*v2).toFixed(1)}</span></div>
+    <div><span class="vl">Total momentum: </span><span class="vn good">${pBefore.toFixed(1)} kg·m/s</span></div>
+    <div><span class="vl">Relative velocity: </span><span class="vn gold">${relBefore.toFixed(1)} m/s</span></div>
+  `;
+
+  // Before viz
+  drawCollisionScene("beforeViz",m1,v1,m2,v2);
+
+  // Method 1: Relative velocity
+  document.getElementById("rvSteps").innerHTML=`
+    <div class="eq-line"><span class="eq-label">Equation 1 (momentum):</span><br>
+      ${m1}·v₁' + ${m2}·v₂' = ${pBefore.toFixed(1)}</div>
+    <div class="eq-line"><span class="eq-label">Equation 2 (relative velocity reverses):</span><br>
+      v₂' − v₁' = −(${relBefore.toFixed(1)}) = ${(-relBefore).toFixed(1)}</div>
+    <div class="eq-line" style="margin-top:6px"><span class="eq-label">Two equations, two unknowns. Solve:</span></div>
+  `;
+  document.getElementById("rvResult").innerHTML=`
+    <div><span class="vl">v₁' = </span><span class="vn good">${v1f>=0?"+":""}${v1f.toFixed(4)} m/s</span></div>
+    <div><span class="vl">v₂' = </span><span class="vn good">${v2f>=0?"+":""}${v2f.toFixed(4)} m/s</span></div>
+  `;
+
+  // Method 2: Energy conservation
+  const keStr=keBefore.toFixed(1);
+  document.getElementById("enSteps").innerHTML=`
+    <div class="eq-line"><span class="eq-label">Equation 1 (momentum):</span><br>
+      ${m1}·v₁' + ${m2}·v₂' = ${pBefore.toFixed(1)}</div>
+    <div class="eq-line"><span class="eq-label">Equation 2 (energy conservation):</span><br>
+      ½·${m1}·v₁'² + ½·${m2}·v₂'² = ${keStr}</div>
+    <div class="eq-line" style="margin-top:6px"><span class="eq-label">One linear + one quadratic → two solutions.<br>Discard the trivial (pre-collision) solution:</span></div>
+  `;
+  document.getElementById("enResult").innerHTML=`
+    <div><span class="vl">v₁' = </span><span class="vn a">${v1f>=0?"+":""}${v1f.toFixed(4)} m/s</span></div>
+    <div><span class="vl">v₂' = </span><span class="vn a">${v2f>=0?"+":""}${v2f.toFixed(4)} m/s</span></div>
+  `;
+
+  // After values
+  const pAfter=m1*v1f+m2*v2f;
+  const keAfter=0.5*m1*v1f*v1f+0.5*m2*v2f*v2f;
+  const relAfter=v2f-v1f;
+
+  document.getElementById("afterVals").innerHTML=`
+    <div><span class="vl">Momentum A: </span><span class="vn a">${(m1*v1f).toFixed(1)}</span></div>
+    <div><span class="vl">Momentum B: </span><span class="vn b">${(m2*v2f).toFixed(1)}</span></div>
+    <div><span class="vl">Total momentum: </span><span class="vn good">${pAfter.toFixed(1)} kg·m/s</span></div>
+    <div><span class="vl">Relative velocity: </span><span class="vn gold">${relAfter.toFixed(1)} m/s</span></div>
+    <div><span class="vl">|Rel vel| before: </span><span class="vn gold">${Math.abs(relBefore).toFixed(1)}</span></div>
+    <div><span class="vl">|Rel vel| after: </span><span class="vn gold">${Math.abs(relAfter).toFixed(1)} ← same</span></div>
+  `;
+
+  drawCollisionScene("afterViz",m1,v1f,m2,v2f);
+
+  // Commentary
+  document.getElementById("collisionComment").textContent=
+    `Both methods give identical final velocities: v₁' = ${v1f.toFixed(4)} m/s, v₂' = ${v2f.toFixed(4)} m/s. `+
+    `The relative velocity condition (|${Math.abs(relBefore).toFixed(1)}| = |${Math.abs(relAfter).toFixed(1)}|) is the physical fact — directly observable, frame-independent, no squaring. `+
+    `The energy equation is algebraically derivable from momentum + relative velocity. It's a consequence, not a cause. `+
+    `Every elastic collision can be fully solved without the concept of energy ever appearing.`;
+}
+
+function drawCollisionScene(elId,m1,v1,m2,v2){
+  const el=document.getElementById(elId);
+  el.innerHTML="";
+  const W=720,H=80;
+  const ns="http://www.w3.org/2000/svg";
+  const svg=document.createElementNS(ns,"svg");
+  svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
+
+  const bg=document.createElementNS(ns,"rect");
+  bg.setAttribute("width",W);bg.setAttribute("height",H);bg.setAttribute("fill","#08080c");bg.setAttribute("rx","4");
+  svg.appendChild(bg);
+
+  const cy=H/2,r1=12+m1*1.2,r2=12+m2*1.2;
+  const p1=W*0.3,p2=W*0.7;
+
+  // Object A
+  const c1=document.createElementNS(ns,"circle");
+  c1.setAttribute("cx",p1);c1.setAttribute("cy",cy);c1.setAttribute("r",r1);
+  c1.setAttribute("fill","#6888a8");c1.setAttribute("opacity","0.8");
+  svg.appendChild(c1);
+  addT(p1,cy+4,"A");
+
+  // Velocity arrow A
+  if(Math.abs(v1)>0.3){
+    const dir=v1>0?1:-1;
+    const len=Math.min(Math.abs(v1)*3,80);
+    const ax=p1+dir*(r1+4);
+    addL(ax,cy,ax+dir*len,cy,"#6888a8",2);
+    addT(ax+dir*len/2,cy-10,(v1>=0?"+":"")+v1.toFixed(1));
+  }
+
+  // Object B
+  const c2=document.createElementNS(ns,"circle");
+  c2.setAttribute("cx",p2);c2.setAttribute("cy",cy);c2.setAttribute("r",r2);
+  c2.setAttribute("fill","#c45c5c");c2.setAttribute("opacity","0.8");
+  svg.appendChild(c2);
+  addT(p2,cy+4,"B");
+
+  if(Math.abs(v2)>0.3){
+    const dir=v2>0?1:-1;
+    const len=Math.min(Math.abs(v2)*3,80);
+    const ax=p2+dir*(r2+4);
+    addL(ax,cy,ax+dir*len,cy,"#c45c5c",2);
+    addT(ax+dir*len/2,cy-10,(v2>=0?"+":"")+v2.toFixed(1));
+  }
+
+  el.appendChild(svg);
+
+  function addL(x1,y1,x2,y2,s,w){
+    const l=document.createElementNS(ns,"line");
+    l.setAttribute("x1",x1);l.setAttribute("y1",y1);l.setAttribute("x2",x2);l.setAttribute("y2",y2);
+    l.setAttribute("stroke",s);l.setAttribute("stroke-width",w);svg.appendChild(l);
+  }
+  function addT(x,y,text){
+    const t=document.createElementNS(ns,"text");
+    t.setAttribute("x",x);t.setAttribute("y",y);t.setAttribute("fill","#e2ddd0");
+    t.setAttribute("font-size","11");t.setAttribute("text-anchor","middle");t.setAttribute("font-family",F);
+    t.textContent=text;svg.appendChild(t);
+  }
+}
+
+// ═══════════ EVENT LISTENERS ═══════════
+["massA","velA","massB","velB","obsVel"].forEach(id=>{
+  document.getElementById(id).addEventListener("input",()=>{updateFrameLabels();updateFrameViz()});
+});
+["cMassA","cVelA","cMassB","cVelB"].forEach(id=>{
+  document.getElementById(id).addEventListener("input",()=>{updateCollisionLabels();updateCollision()});
+});
+
+// ═══════════ INIT ═══════════
+updateFrameLabels();
+updateFrameViz();
+updateCollisionLabels();
+updateCollision();
+
+})();
+</script>
+</body>
+</html>

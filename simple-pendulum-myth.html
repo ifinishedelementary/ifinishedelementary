@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Simple Pendulum Doesn't Exist — I Finished Elementary</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#08080c;--panel:#101018;--border:#1c1c2c;--text:#e2ddd0;
+  --dim:#6a6458;--accent:#d4a843;--accent-dim:#7a6228;--curve:#d0ccc0;
+  --simple:#6888a8;--real:#c45c5c;--realF:rgba(196,92,92,0.3);
+  --add:#4a9e6e;--grid:#161620;--warn:#e8a030
+}
+body{background:var(--bg);color:var(--text);font-family:'EB Garamond',Georgia,serif;line-height:1.75;padding:36px 20px 80px;min-height:100vh;-webkit-font-smoothing:antialiased}
+.container{max-width:780px;margin:0 auto}
+h1{font-family:'Cormorant Garamond',Georgia,serif;font-size:2.1em;font-weight:500;color:var(--accent);line-height:1.25;margin-bottom:6px}
+h2{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.35em;font-weight:500;color:var(--accent);line-height:1.3;margin:0 0 14px 0}
+.subtitle{font-size:1.05em;color:var(--dim);font-style:italic;margin-bottom:32px}
+.essay p{font-size:1.05em;margin-bottom:1.2em}
+.essay em{color:var(--accent);font-style:italic}
+.formula{display:block;text-align:center;font-size:1.15em;color:var(--accent);margin:1.4em 0;letter-spacing:0.02em}
+.note{font-size:0.92em;color:var(--dim);border-left:2px solid var(--accent-dim);padding-left:16px;margin:1.6em 0;line-height:1.65}
+hr.sep{border:none;border-top:1px solid var(--border);margin:36px 0}
+.row{display:flex;gap:14px;margin-bottom:14px;align-items:flex-start}
+.col-half{flex:1;min-width:0}
+.pbox{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 12px 8px}
+.plabel{font-size:0.7em;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;padding-left:4px;color:var(--dim)}
+svg{display:block;width:100%;height:auto}
+.ibox{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:14px 18px;margin-bottom:14px}
+.section-label{font-size:0.7em;color:var(--dim);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px}
+.commentary{font-size:0.95em;line-height:1.7;min-height:3.5em}
+.vgrid{display:flex;gap:16px;font-size:0.85em;flex-wrap:wrap}
+.vl{color:var(--dim)}.vn{font-weight:600}
+.vn.gold{color:var(--accent)}.vn.blue{color:var(--simple)}.vn.red{color:var(--real)}.vn.green{color:var(--add)}.vn.warn{color:var(--warn)}
+.footer-text{font-size:0.95em;color:var(--dim);line-height:1.7;margin-top:20px}
+.footer-text em{color:var(--accent)}
+/* Slider */
+.slider-row{display:flex;align-items:center;gap:14px;margin-bottom:16px;flex-wrap:wrap}
+.slider-label{font-size:0.85em;color:var(--dim);min-width:90px}
+.slider-val{font-size:1.1em;color:var(--accent);font-weight:600;min-width:50px;text-align:right}
+input[type=range]{flex:1;min-width:180px;accent-color:var(--accent);background:var(--border);height:6px;border-radius:3px;-webkit-appearance:none;appearance:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--accent);cursor:pointer}
+/* Buttons */
+.btn-row{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.btn{padding:7px 18px;background:var(--accent-dim);color:var(--text);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-family:'EB Garamond',Georgia,serif;font-size:0.85em;transition:background 0.2s}
+.btn:hover{background:var(--accent);color:var(--bg)}
+.btn.active{background:var(--accent);color:var(--bg)}
+.btn:disabled{background:var(--panel);color:var(--dim);cursor:default}
+/* Scale bars */
+.scale-item{display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:0.88em}
+.scale-bar-bg{flex:1;height:20px;background:var(--border);border-radius:4px;position:relative;overflow:hidden}
+.scale-bar-fill{height:100%;border-radius:4px;transition:width 0.4s ease;min-width:2px}
+.scale-label{min-width:160px;color:var(--dim)}
+.scale-val{min-width:90px;text-align:right;font-weight:600;font-size:0.85em}
+.legend-row{display:flex;gap:16px;font-size:0.75em;margin-bottom:10px}
+.leg-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;vertical-align:middle}
+@media(max-width:680px){h1{font-size:1.5em}.row{flex-direction:column}.slider-row{flex-direction:column;align-items:flex-start}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>The Simple Pendulum Doesn't Exist</h1>
+<div class="subtitle">And the error it hides is larger than modern manufacturing can tolerate</div>
+
+<div class="essay">
+<p>Every physics student learns the period of a pendulum:</p>
+<span class="formula">T = 2π√(L/g)</span>
+<p>Clean, elegant, and wrong. This formula assumes sin(θ)&nbsp;≈&nbsp;θ — an approximation valid only when the pendulum barely moves. The real period depends on how far the pendulum swings:</p>
+<span class="formula">T<sub>real</sub> = 2π√(L/g) × [1 + ¼sin²(θ₀/2) + 9/64·sin⁴(θ₀/2) + ...]</span>
+<p>The real period is <em>always longer</em> than the simple formula predicts. The error never cancels, never averages out. It accumulates in one direction — every swing, the real pendulum falls a little further behind. Over enough cycles, that one-way drift becomes enormous.</p>
+<p>At 1° displacement, the error is 19 parts per million — seemingly negligible. But modern semiconductor lithography positions wafers to within a quarter of a nanometer. At those scales, even 19 ppm is a disaster. The approximation that "doesn't matter" produces errors <em>95 times larger</em> than the features being manufactured.</p>
+</div>
+
+<hr class="sep">
+
+<!-- ═══════════ SECTION I: ANIMATED PENDULUMS ═══════════ -->
+<h2>I. Watch Them Drift Apart</h2>
+
+<div class="slider-row">
+  <span class="slider-label">Amplitude:</span>
+  <input type="range" id="ampSlider" min="1" max="170" value="30">
+  <span class="slider-val" id="ampVal">30°</span>
+</div>
+
+<div class="btn-row">
+  <button class="btn" id="btnStart">▶ Start</button>
+  <button class="btn" id="btnReset">↺ Reset</button>
+  <button class="btn" id="btnSpeed1">1×</button>
+  <button class="btn" id="btnSpeed5">5×</button>
+  <button class="btn" id="btnSpeed20">20×</button>
+</div>
+
+<div class="pbox" style="margin-bottom:14px">
+  <div style="display:flex;justify-content:space-between;padding:0 4px">
+    <div class="plabel" style="color:var(--simple)">● Simple (textbook)</div>
+    <div class="plabel" style="color:var(--real)">● Real (nonlinear)</div>
+  </div>
+  <canvas id="pendCanvas" width="760" height="500" style="width:100%;height:auto;border-radius:4px"></canvas>
+</div>
+
+<div class="ibox">
+  <div class="section-label">Live Drift</div>
+  <div class="vgrid" id="liveStats">
+    <div><span class="vl">Swings: </span><span class="vn gold" id="swingCount">0</span></div>
+    <div><span class="vl">Simple period: </span><span class="vn blue" id="simpleT">—</span></div>
+    <div><span class="vl">Real period: </span><span class="vn red" id="realT">—</span></div>
+    <div><span class="vl">Error/swing: </span><span class="vn red" id="errPerSwing">—</span></div>
+    <div><span class="vl">Total drift: </span><span class="vn warn" id="totalDrift">0 µs</span></div>
+    <div><span class="vl">Error (ppm): </span><span class="vn warn" id="ppmVal">—</span></div>
+  </div>
+</div>
+
+<hr class="sep">
+
+<!-- ═══════════ SECTION II: ERROR CHART ═══════════ -->
+<h2>II. The Error That Never Cancels</h2>
+
+<div class="pbox" style="margin-bottom:14px">
+  <div class="plabel">Period Error vs Amplitude — Always Positive, Always Growing</div>
+  <div id="errorChart"></div>
+</div>
+
+<div class="ibox">
+  <div class="section-label">Error at Current Amplitude</div>
+  <div class="commentary" id="errorComment"></div>
+</div>
+
+<hr class="sep">
+
+<!-- ═══════════ SECTION III: MANUFACTURING SCALE ═══════════ -->
+<h2>III. What This Means for Manufacturing</h2>
+
+<div class="ibox">
+  <div class="section-label">Accumulated Timing Error Mapped to Precision Scales</div>
+  <p style="font-size:0.85em;color:var(--dim);margin-bottom:12px">
+    If a 1-meter pendulum controls timing in a system moving at 1 m/s,
+    the positional drift after 10,000 swings at <span id="mfgAmp">30</span>° is:
+  </p>
+  <div class="vgrid" style="margin-bottom:16px">
+    <div><span class="vl">Positional drift: </span><span class="vn warn" id="posDrift">—</span></div>
+    <div><span class="vl">Relative error: </span><span class="vn warn" id="relErr">—</span></div>
+  </div>
+
+  <div class="section-label" style="margin-top:12px">How That Drift Compares to Manufacturing Tolerances</div>
+  <div id="scaleViz"></div>
+</div>
+
+<div class="ibox">
+  <div class="section-label">The Real-World Impact</div>
+  <div class="commentary" id="mfgComment"></div>
+</div>
+
+<hr class="sep">
+
+<!-- ═══════════ SECTION IV: EXPLANATION ═══════════ -->
+<h2>IV. Why This Matters</h2>
+
+<div class="essay">
+<p>No chipmaker uses a literal pendulum to time lithography. But oscillatory systems are everywhere in precision manufacturing — crystal oscillators, resonant sensors, vibration isolators, laser pulse timing. And the <em>conceptual template</em> that trained every engineer who designs these systems is the simple pendulum: period independent of amplitude. sin(θ)&nbsp;≈&nbsp;θ. Linearize and move on.</p>
+<p>That linearization doesn't just simplify the math. It <em>replaces the circle with a straight line</em>. The real pendulum traces an arc. The approximated pendulum moves on a line. All nonlinear character — amplitude dependence, asymmetry, the connection to elliptic geometry — is erased by one "harmless" approximation made on page one and never revisited.</p>
+<p>Then for decades, hundreds of millions of students "verify" the simple formula in lab, using small amplitudes where the error is below their measurement precision, and walk away believing period is independent of amplitude. The approximation becomes the fact. The myth becomes the curriculum. And the curriculum trains the engineers who build the machines.</p>
+<p>The error at 1° is 19 parts per million. It accumulates. It never cancels. And at the nanometer scale, <em>it is larger than the thing you're trying to build</em>.</p>
+</div>
+
+<div class="footer-text">
+<p>The simple pendulum is one of the most successful myths in physics education. Not because it's approximately correct — it is — but because its <em>incorrectness is systematic and one-directional</em>. The real period is always longer. The error always accumulates. And the approximation sin(θ)&nbsp;≈&nbsp;θ doesn't just simplify a pendulum — it removes the circle from a fundamentally circular system, then lets π sneak back in through the formula 2π√(L/g), as if the circle insists on being acknowledged even after you've linearized it away.</p>
+</div>
+
+</div>
+
+<script>
+(function(){
+"use strict";
+
+const PI=Math.PI, g=9.80665, L=1.0;
+const T_simple=2*PI*Math.sqrt(L/g);
+
+// ─── Pendulum period with correction series (10 terms for accuracy) ───
+function realPeriodFactor(theta0){
+  const s=Math.sin(theta0/2);
+  const s2=s*s;
+  // Coefficients of the complete elliptic integral expansion
+  let factor=1, term=1;
+  for(let n=1;n<=12;n++){
+    term*=((2*n-1)/(2*n))*((2*n-1)/(2*n))*s2;
+    factor+=term;
+  }
+  return factor;
+}
+
+function realPeriod(theta0){return T_simple*realPeriodFactor(theta0)}
+function errorPPM(theta0){return(realPeriodFactor(theta0)-1)*1e6}
+
+// ─── State ───
+let amplitude=30*PI/180; // radians
+let running=false, speed=1, animId=null;
+let simTime=0, swings=0;
+let simPhase=0, realPhase=0;
+
+const canvas=document.getElementById("pendCanvas");
+const ctx=canvas.getContext("2d");
+const dpr=window.devicePixelRatio||1;
+canvas.width=760*dpr;canvas.height=500*dpr;
+canvas.style.width="100%";canvas.style.height="auto";
+ctx.scale(dpr,dpr);
+const CW=760,CH=500;
+
+// ─── Slider ───
+const ampSlider=document.getElementById("ampSlider");
+const ampValEl=document.getElementById("ampVal");
+ampSlider.addEventListener("input",()=>{
+  const deg=parseInt(ampSlider.value);
+  ampValEl.textContent=deg+"°";
+  amplitude=deg*PI/180;
+  resetSim();
+  drawErrorChart();
+  updateManufacturing();
+});
+
+// ─── Buttons ───
+document.getElementById("btnStart").addEventListener("click",()=>{
+  running=!running;
+  document.getElementById("btnStart").textContent=running?"❚❚ Pause":"▶ Start";
+  if(running){lastTime=null;animate();}
+  else if(animId){cancelAnimationFrame(animId);animId=null}
+});
+document.getElementById("btnReset").addEventListener("click",resetSim);
+document.getElementById("btnSpeed1").addEventListener("click",()=>setSpeed(1));
+document.getElementById("btnSpeed5").addEventListener("click",()=>setSpeed(5));
+document.getElementById("btnSpeed20").addEventListener("click",()=>setSpeed(20));
+
+function setSpeed(s){
+  speed=s;
+  document.querySelectorAll(".btn").forEach(b=>{
+    if(b.id.startsWith("btnSpeed"))b.classList.toggle("active",b.id==="btnSpeed"+s);
+  });
+}
+setSpeed(1);
+
+function resetSim(){
+  running=false;
+  document.getElementById("btnStart").textContent="▶ Start";
+  if(animId){cancelAnimationFrame(animId);animId=null}
+  simTime=0;swings=0;simPhase=0;realPhase=0;lastTime=null;
+  updateStats();
+  drawPendulums(amplitude,amplitude);
+}
+
+// ─── Animation ───
+let lastTime=null;
+function animate(ts){
+  if(!running)return;
+  if(!ts){animId=requestAnimationFrame(animate);return;}
+  if(!lastTime){lastTime=ts;animId=requestAnimationFrame(animate);return;}
+  const dt=Math.min((ts-lastTime)/1000,0.05)*speed;
+  lastTime=ts;
+
+  const Ts=T_simple;
+  const Tr=realPeriod(amplitude);
+
+  simTime+=dt;
+
+  const omegaS=2*PI/Ts;
+  const omegaR=2*PI/Tr;
+
+  simPhase+=omegaS*dt;
+  realPhase+=omegaR*dt;
+
+  // Count swings based on simple pendulum (complete cycles)
+  swings=Math.floor(simPhase/(2*PI));
+
+  const thetaS=amplitude*Math.cos(simPhase);
+  const thetaR=amplitude*Math.cos(realPhase);
+
+  drawPendulums(thetaS,thetaR);
+  updateStats();
+
+  animId=requestAnimationFrame(animate);
+}
+
+// ─── Draw pendulums ───
+function drawPendulums(thetaS,thetaR){
+  const w=CW,h=CH;
+
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.fillStyle="#08080c";
+  ctx.fillRect(0,0,w,h);
+
+  const pivotY=200;
+  const len=170;
+
+  // Simple pendulum (left)
+  const cx1=w*0.25;
+  drawOnePendulum(cx1,pivotY,len,thetaS,"#6888a8","rgba(104,136,168,0.15)","Simple (textbook)");
+
+  // Real pendulum (right)
+  const cx2=w*0.75;
+  drawOnePendulum(cx2,pivotY,len,thetaR,"#c45c5c","rgba(196,92,92,0.15)","Real (nonlinear)");
+
+  // Center divider
+  ctx.strokeStyle="#1c1c2c";
+  ctx.setLineDash([4,4]);
+  ctx.beginPath();ctx.moveTo(w/2,10);ctx.lineTo(w/2,h-10);ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Phase indicator at bottom
+  const barY=h-30, barW=140, barH=8;
+
+  // Simple phase bar
+  const sp=(simPhase%(2*PI))/(2*PI);
+  ctx.fillStyle="#1c1c2c";
+  ctx.fillRect(cx1-barW/2,barY,barW,barH);
+  ctx.fillStyle="#6888a8";
+  ctx.fillRect(cx1-barW/2,barY,barW*sp,barH);
+
+  // Real phase bar
+  const rp=(realPhase%(2*PI))/(2*PI);
+  ctx.fillStyle="#1c1c2c";
+  ctx.fillRect(cx2-barW/2,barY,barW,barH);
+  ctx.fillStyle="#c45c5c";
+  ctx.fillRect(cx2-barW/2,barY,barW*rp,barH);
+
+  // Phase labels
+  ctx.font="11px 'EB Garamond', Georgia, serif";
+  ctx.textAlign="center";
+  ctx.fillStyle="#6888a8";
+  ctx.fillText("phase",cx1,barY+barH+14);
+  ctx.fillStyle="#c45c5c";
+  ctx.fillText("phase",cx2,barY+barH+14);
+}
+
+function drawOnePendulum(cx,py,len,theta,color,trailColor,label){
+  const bx=cx+len*Math.sin(theta);
+  const by=py+len*Math.cos(theta);
+  const bobR=16;
+
+  // Trail arc
+  ctx.strokeStyle=trailColor;
+  ctx.lineWidth=1;
+  ctx.beginPath();
+  ctx.arc(cx,py,len,-PI/2-amplitude,-PI/2+amplitude);
+  ctx.stroke();
+
+  // Rod
+  ctx.strokeStyle=color;
+  ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(cx,py);ctx.lineTo(bx,by);ctx.stroke();
+
+  // Pivot
+  ctx.fillStyle="#e2ddd0";
+  ctx.beginPath();ctx.arc(cx,py,4,0,2*PI);ctx.fill();
+
+  // Bob
+  ctx.fillStyle=color;
+  ctx.beginPath();ctx.arc(bx,by,bobR,0,2*PI);ctx.fill();
+  ctx.strokeStyle="#08080c";
+  ctx.lineWidth=2;
+  ctx.stroke();
+
+  // Label
+  ctx.fillStyle=color;
+  ctx.font="13px 'EB Garamond', Georgia, serif";
+  ctx.textAlign="center";
+  ctx.fillText(label,cx,py-14);
+}
+
+// ─── Update stats ───
+function updateStats(){
+  const Ts=T_simple;
+  const Tr=realPeriod(amplitude);
+  const errPerSwing=(Tr-Ts)*1e6; // microseconds
+  const totalDriftUs=swings*errPerSwing;
+  const ppm=errorPPM(amplitude);
+
+  document.getElementById("swingCount").textContent=swings;
+  document.getElementById("simpleT").textContent=Ts.toFixed(6)+" s";
+  document.getElementById("realT").textContent=Tr.toFixed(6)+" s";
+  document.getElementById("errPerSwing").textContent="+"+errPerSwing.toFixed(2)+" µs";
+
+  if(totalDriftUs<1000){
+    document.getElementById("totalDrift").textContent=totalDriftUs.toFixed(1)+" µs";
+  } else if(totalDriftUs<1e6){
+    document.getElementById("totalDrift").textContent=(totalDriftUs/1000).toFixed(2)+" ms";
+  } else {
+    document.getElementById("totalDrift").textContent=(totalDriftUs/1e6).toFixed(3)+" s";
+  }
+  document.getElementById("ppmVal").textContent=ppm.toFixed(1)+" ppm";
+
+  document.getElementById("mfgAmp").textContent=Math.round(amplitude*180/PI);
+  updateManufacturing();
+}
+
+// ─── Error chart (period error vs amplitude) ───
+function drawErrorChart(){
+  const el=document.getElementById("errorChart");
+  el.innerHTML="";
+  const W=720,H=380,pad={l:60,r:20,t:20,b:45};
+  const pW=W-pad.l-pad.r,pH=H-pad.t-pad.b;
+
+  const ns="http://www.w3.org/2000/svg";
+  const svg=document.createElementNS(ns,"svg");
+  svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
+
+  // Background
+  const bg=document.createElementNS(ns,"rect");
+  bg.setAttribute("width",W);bg.setAttribute("height",H);
+  bg.setAttribute("fill","#08080c");bg.setAttribute("rx","4");
+  svg.appendChild(bg);
+
+  function mx(deg){return pad.l+(deg/180)*pW}
+  function my(ppm){
+    const maxPPM=2000000;
+    // Log scale
+    const logMax=Math.log10(maxPPM);
+    const logMin=0; // 1 ppm
+    if(ppm<1)ppm=1;
+    const logV=Math.log10(ppm);
+    return pad.t+pH-(logV-logMin)/(logMax-logMin)*pH;
+  }
+
+  // Grid
+  [1,10,100,1000,10000,100000,1000000].forEach(ppm=>{
+    const y=my(ppm);
+    const line=document.createElementNS(ns,"line");
+    line.setAttribute("x1",pad.l);line.setAttribute("y1",y);
+    line.setAttribute("x2",W-pad.r);line.setAttribute("y2",y);
+    line.setAttribute("stroke","#161620");line.setAttribute("stroke-width","0.5");
+    svg.appendChild(line);
+
+    const txt=document.createElementNS(ns,"text");
+    txt.setAttribute("x",pad.l-6);txt.setAttribute("y",y+4);
+    txt.setAttribute("fill","#6a6458");txt.setAttribute("font-size","9");
+    txt.setAttribute("text-anchor","end");
+    txt.setAttribute("font-family","'EB Garamond',Georgia,serif");
+    txt.textContent=ppm>=1000000?(ppm/1000000)+"M":ppm>=1000?(ppm/1000)+"k":ppm;
+    svg.appendChild(txt);
+  });
+
+  // X axis labels
+  [0,30,60,90,120,150,180].forEach(deg=>{
+    const x=mx(deg);
+    const txt=document.createElementNS(ns,"text");
+    txt.setAttribute("x",x);txt.setAttribute("y",H-8);
+    txt.setAttribute("fill","#6a6458");txt.setAttribute("font-size","9");
+    txt.setAttribute("text-anchor","middle");
+    txt.setAttribute("font-family","'EB Garamond',Georgia,serif");
+    txt.textContent=deg+"°";
+    svg.appendChild(txt);
+  });
+
+  // Axis labels
+  const ylbl=document.createElementNS(ns,"text");
+  ylbl.setAttribute("x",12);ylbl.setAttribute("y",pad.t+pH/2);
+  ylbl.setAttribute("fill","#6a6458");ylbl.setAttribute("font-size","10");
+  ylbl.setAttribute("text-anchor","middle");
+  ylbl.setAttribute("font-family","'EB Garamond',Georgia,serif");
+  ylbl.setAttribute("transform",`rotate(-90,12,${pad.t+pH/2})`);
+  ylbl.textContent="Error (ppm) — log scale";
+  svg.appendChild(ylbl);
+
+  const xlbl=document.createElementNS(ns,"text");
+  xlbl.setAttribute("x",pad.l+pW/2);xlbl.setAttribute("y",H-0);
+  xlbl.setAttribute("fill","#6a6458");xlbl.setAttribute("font-size","10");
+  xlbl.setAttribute("text-anchor","middle");
+  xlbl.setAttribute("font-family","'EB Garamond',Georgia,serif");
+  xlbl.textContent="Amplitude (degrees)";
+  svg.appendChild(xlbl);
+
+  // Curve
+  let d="";
+  for(let deg=0.5;deg<=175;deg+=0.5){
+    const ppm=errorPPM(deg*PI/180);
+    if(ppm<0.5)continue;
+    const x=mx(deg),y=my(ppm);
+    d+=(d===""?"M ":" L ")+`${x} ${y}`;
+  }
+  const path=document.createElementNS(ns,"path");
+  path.setAttribute("d",d);
+  path.setAttribute("fill","none");
+  path.setAttribute("stroke","#c45c5c");
+  path.setAttribute("stroke-width","2.5");
+  svg.appendChild(path);
+
+  // Fill under curve
+  let fillD=d+` L ${mx(175)} ${my(1)} L ${mx(0.5)} ${my(1)} Z`;
+  const fillPath=document.createElementNS(ns,"path");
+  fillPath.setAttribute("d",fillD);
+  fillPath.setAttribute("fill","rgba(196,92,92,0.1)");
+  fillPath.setAttribute("stroke","none");
+  svg.appendChild(fillPath);
+
+  // Current amplitude marker
+  const curDeg=amplitude*180/PI;
+  const curPPM=errorPPM(amplitude);
+  if(curPPM>=1){
+    const cx=mx(curDeg),cy=my(curPPM);
+    const vline=document.createElementNS(ns,"line");
+    vline.setAttribute("x1",cx);vline.setAttribute("y1",pad.t);
+    vline.setAttribute("x2",cx);vline.setAttribute("y2",pad.t+pH);
+    vline.setAttribute("stroke","#d4a843");vline.setAttribute("stroke-width","1");
+    vline.setAttribute("stroke-dasharray","4,3");vline.setAttribute("opacity","0.5");
+    svg.appendChild(vline);
+
+    const dot=document.createElementNS(ns,"circle");
+    dot.setAttribute("cx",cx);dot.setAttribute("cy",cy);
+    dot.setAttribute("r","5");dot.setAttribute("fill","#d4a843");
+    dot.setAttribute("stroke","#08080c");dot.setAttribute("stroke-width","2");
+    svg.appendChild(dot);
+
+    const lbl=document.createElementNS(ns,"text");
+    lbl.setAttribute("x",cx+10);lbl.setAttribute("y",cy-8);
+    lbl.setAttribute("fill","#d4a843");lbl.setAttribute("font-size","11");
+    lbl.setAttribute("font-family","'EB Garamond',Georgia,serif");
+    lbl.textContent=curPPM.toFixed(1)+" ppm";
+    svg.appendChild(lbl);
+  }
+
+  // Reference lines for manufacturing
+  const refs=[
+    {ppm:0.07,label:"EUV overlay (0.07 ppm)",color:"#4a9e6e"},
+    {ppm:19,label:"1° pendulum error",color:"#e8a030"},
+  ];
+  refs.forEach(r=>{
+    if(r.ppm<1)return;
+    const y=my(r.ppm);
+    const rl=document.createElementNS(ns,"line");
+    rl.setAttribute("x1",pad.l);rl.setAttribute("y1",y);
+    rl.setAttribute("x2",W-pad.r);rl.setAttribute("y2",y);
+    rl.setAttribute("stroke",r.color);rl.setAttribute("stroke-width","1");
+    rl.setAttribute("stroke-dasharray","6,4");rl.setAttribute("opacity","0.6");
+    svg.appendChild(rl);
+    const rt=document.createElementNS(ns,"text");
+    rt.setAttribute("x",W-pad.r-4);rt.setAttribute("y",y-5);
+    rt.setAttribute("fill",r.color);rt.setAttribute("font-size","9");
+    rt.setAttribute("text-anchor","end");
+    rt.setAttribute("font-family","'EB Garamond',Georgia,serif");
+    rt.textContent=r.label;
+    svg.appendChild(rt);
+  });
+
+  el.appendChild(svg);
+
+  // Update comment
+  const deg=Math.round(amplitude*180/PI);
+  const ppm=errorPPM(amplitude);
+  const errUs=(realPeriod(amplitude)-T_simple)*1e6;
+  let comment="";
+  if(deg<=5){
+    comment=`At ${deg}°, the error is ${ppm.toFixed(1)} ppm — ${errUs.toFixed(2)} microseconds per swing. Seems negligible. But it never cancels. After 10,000 swings (~5.6 hours), the drift is ${(errUs*10000/1000).toFixed(1)} milliseconds. After a million swings (~23 days), it's ${(errUs*1e6/1e6).toFixed(2)} seconds. The error is small, patient, and relentless.`;
+  } else if(deg<=30){
+    comment=`At ${deg}°, the error is ${ppm.toFixed(0)} ppm — ${errUs.toFixed(1)} µs per swing. A precision oscillator drifting at this rate would accumulate ${(errUs*10000/1000).toFixed(1)} ms after 10,000 cycles. In semiconductor lithography, where wafer stages reposition 20,000 times per second, this drift rate would produce positional errors orders of magnitude larger than the features being printed.`;
+  } else if(deg<=90){
+    comment=`At ${deg}°, the error is ${(ppm/1000).toFixed(1)}‰ (${ppm.toFixed(0)} ppm). The simple formula is now measurably wrong — ${errUs.toFixed(0)} µs per swing. This isn't a rounding error. This is a different number. Any system calibrated with the simple formula at this amplitude would systematically drift from reality from the first cycle.`;
+  } else {
+    comment=`At ${deg}°, the error is ${(ppm/10000).toFixed(1)}% (${ppm.toFixed(0)} ppm). The simple pendulum formula is now catastrophically wrong — off by ${errUs.toFixed(0)} µs per swing. As the amplitude approaches 180°, the real period goes to infinity while the simple formula still returns ${T_simple.toFixed(3)} seconds. The approximation doesn't just fail — it fails to even notice that the physics has fundamentally changed.`;
+  }
+  document.getElementById("errorComment").textContent=comment;
+}
+
+// ─── Manufacturing scale visualization ───
+function updateManufacturing(){
+  const ppm=errorPPM(amplitude);
+  const Tr=realPeriod(amplitude);
+  const errPerSwing=Tr-T_simple; // seconds
+  const N=10000;
+  const totalDriftS=errPerSwing*N;
+  const v=1.0; // m/s
+  const posDriftM=totalDriftS*v;
+  const posDriftNm=posDriftM*1e9;
+
+  document.getElementById("posDrift").textContent=
+    posDriftNm>1e6?(posDriftNm/1e6).toFixed(1)+" mm":
+    posDriftNm>1e3?(posDriftNm/1e3).toFixed(1)+" µm":
+    posDriftNm.toFixed(1)+" nm";
+  document.getElementById("relErr").textContent=ppm.toFixed(1)+" ppm";
+
+  // Scale bars
+  const scales=[
+    {name:"EUV overlay tolerance",size:0.25,unit:"nm",color:"#4a9e6e"},
+    {name:"Transistor gate (3nm node)",size:3,unit:"nm",color:"#4a9e6e"},
+    {name:"EUV wavelength",size:13.5,unit:"nm",color:"#6888a8"},
+    {name:"Finest EUV feature",size:8,unit:"nm",color:"#6888a8"},
+    {name:"Virus (COVID-19)",size:120,unit:"nm",color:"#6a6458"},
+    {name:"Red blood cell",size:7000,unit:"nm",color:"#6a6458"},
+    {name:"Human hair",size:75000,unit:"nm",color:"#6a6458"},
+  ];
+
+  const el=document.getElementById("scaleViz");
+  el.innerHTML="";
+
+  // Find max for bar scaling (use log scale)
+  const maxNm=Math.max(posDriftNm,...scales.map(s=>s.size))*1.5;
+  const logMax=Math.log10(maxNm>1?maxNm:10);
+  const logMin=Math.log10(0.1);
+
+  function barPct(nm){
+    if(nm<0.1)nm=0.1;
+    return Math.max(1,((Math.log10(nm)-logMin)/(logMax-logMin))*100);
+  }
+
+  // Drift bar first
+  const driftItem=document.createElement("div");
+  driftItem.className="scale-item";
+  driftItem.innerHTML=`
+    <span class="scale-label" style="color:var(--warn);font-weight:600">⚠ Accumulated drift</span>
+    <div class="scale-bar-bg">
+      <div class="scale-bar-fill" style="width:${barPct(posDriftNm)}%;background:var(--warn)"></div>
+    </div>
+    <span class="scale-val" style="color:var(--warn)">${posDriftNm>1e6?(posDriftNm/1e6).toFixed(1)+" mm":posDriftNm>1e3?(posDriftNm/1e3).toFixed(1)+" µm":posDriftNm.toFixed(1)+" nm"}</span>
+  `;
+  el.appendChild(driftItem);
+
+  scales.forEach(s=>{
+    const item=document.createElement("div");
+    item.className="scale-item";
+    const exceeds=posDriftNm>s.size;
+    const ratio=(posDriftNm/s.size);
+    const ratioStr=ratio>=1?`${ratio.toFixed(ratio>=100?0:1)}× larger`:`${(1/ratio).toFixed(1)}× smaller`;
+    item.innerHTML=`
+      <span class="scale-label">${s.name}</span>
+      <div class="scale-bar-bg">
+        <div class="scale-bar-fill" style="width:${barPct(s.size)}%;background:${s.color}"></div>
+      </div>
+      <span class="scale-val" style="color:${exceeds?'var(--real)':'var(--add)'}">${s.size>=1000?(s.size/1000).toFixed(s.size>=10000?0:1)+" µm":s.size+" nm"} <span style="font-size:0.8em;opacity:0.7">(${ratioStr})</span></span>
+    `;
+    el.appendChild(item);
+  });
+
+  // Manufacturing comment
+  const deg=Math.round(amplitude*180/PI);
+  let mfg="";
+  if(posDriftNm<1){
+    mfg=`At ${deg}°, the drift after 10,000 swings is sub-nanometer. The simple pendulum approximation is adequate at this amplitude for even the most demanding applications — but it's still wrong. The error is there. It's just too small to see yet.`;
+  } else if(posDriftNm<3){
+    mfg=`At ${deg}°, the drift approaches transistor-scale dimensions. A manufacturing system relying on this oscillation timing would be drifting by roughly the width of a single modern transistor gate every 10,000 cycles. Acceptable for most applications — marginal for cutting-edge semiconductor lithography.`;
+  } else if(posDriftNm<100){
+    mfg=`At ${deg}°, the accumulated drift is ${posDriftNm.toFixed(1)} nm — ${(posDriftNm/3).toFixed(0)}× the size of a modern transistor gate. This would cause catastrophic overlay errors in EUV lithography, where layers must align to within a fraction of a nanometer. Every chip would be defective.`;
+  } else if(posDriftNm<10000){
+    mfg=`At ${deg}°, the drift is ${(posDriftNm/1000).toFixed(1)} µm — visible under an optical microscope. This exceeds the tolerance of most precision machining operations, not just semiconductor fabrication. Optical components, MEMS devices, medical implants — all would fail quality control.`;
+  } else {
+    mfg=`At ${deg}°, the drift is ${(posDriftNm/1e6).toFixed(2)} mm — visible to the naked eye. The simple pendulum formula has diverged so far from reality at this amplitude that using it for any precision application would be engineering malpractice. Yet students are never told this.`;
+  }
+  document.getElementById("mfgComment").textContent=mfg;
+}
+
+// ─── Init ───
+resetSim();
+drawErrorChart();
+updateManufacturing();
+drawPendulums(amplitude,amplitude);
+
+})();
+</script>
+</body>
+</html>

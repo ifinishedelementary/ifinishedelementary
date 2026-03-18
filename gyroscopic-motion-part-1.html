@@ -1,0 +1,1571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gyroscopic Motion from First Principles — I Finished Elementary</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#08080c;--panel:#101018;--border:#1c1c2c;--text:#e2ddd0;
+  --dim:#6a6458;--accent:#d4a843;--accent-dim:#7a6228;
+  --fz:#e8a030;--vz:#44bbee;--grid:#161620;--prec:#4a9e6e;--fall:#c45c5c
+}
+body{background:var(--bg);color:var(--text);font-family:'EB Garamond',Georgia,serif;line-height:1.75;padding:36px 20px 80px;min-height:100vh;-webkit-font-smoothing:antialiased}
+.container{max-width:820px;margin:0 auto}
+h1{font-family:'Cormorant Garamond',Georgia,serif;font-size:2em;font-weight:500;color:var(--accent);line-height:1.25;margin-bottom:6px}
+h2{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.3em;font-weight:500;color:var(--accent);margin:0 0 12px 0}
+.subtitle{font-size:1.05em;color:var(--dim);font-style:italic;margin-bottom:32px}
+.essay p{font-size:1.02em;margin-bottom:1.1em}
+.essay em{color:var(--accent);font-style:italic}
+hr.sep{border:none;border-top:1px solid var(--border);margin:32px 0}
+.pbox{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:14px}
+.plabel{font-size:0.7em;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;padding-left:2px;color:var(--dim)}
+canvas{display:block;width:100%;border-radius:4px}
+.ibox{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:14px 18px;margin-bottom:14px}
+.section-label{font-size:0.7em;color:var(--dim);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px}
+.commentary{font-size:0.95em;line-height:1.7;min-height:4em}
+.slider-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.slider-label{font-size:0.85em;color:var(--dim);min-width:110px}
+.slider-val{font-size:0.95em;color:var(--accent);font-weight:600;min-width:60px;text-align:right}
+input[type=range]{flex:1;min-width:140px;accent-color:var(--accent);background:var(--border);height:6px;border-radius:3px;-webkit-appearance:none;appearance:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--accent);cursor:pointer}
+.btn-row{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.btn{padding:6px 14px;background:var(--accent-dim);color:var(--text);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-family:'EB Garamond',Georgia,serif;font-size:0.82em;transition:background 0.2s}
+.btn:hover{background:var(--accent);color:var(--bg)}
+.btn.active{background:var(--accent);color:var(--bg)}
+.legend-row{display:flex;gap:14px;font-size:0.72em;margin-bottom:8px;flex-wrap:wrap}
+.leg-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;vertical-align:middle}
+.footer-text{font-size:0.95em;color:var(--dim);line-height:1.7;margin-top:20px}
+.footer-text em{color:var(--accent)}
+.row{display:flex;gap:14px;margin-bottom:14px;align-items:flex-start}
+.col-half{flex:1;min-width:0}
+.eq{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:16px 20px;margin:14px 0;font-family:'Cormorant Garamond',Georgia,serif;font-size:1.15em;text-align:center;line-height:1.9;color:var(--text);overflow-x:auto}
+.eq .label{font-size:0.72em;color:var(--dim);text-transform:uppercase;letter-spacing:0.08em;display:block;margin-bottom:4px}
+.eq .hl{color:var(--accent);font-weight:600}
+.eq .note{font-size:0.82em;color:var(--dim);font-style:italic;margin-top:6px;display:block}
+.step-box{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:14px 18px;margin-bottom:12px}
+.step-box .step-num{font-size:0.7em;color:var(--accent);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px}
+.step-box p{font-size:0.95em;line-height:1.7;margin:0}
+@media(max-width:680px){h1{font-size:1.5em}.row{flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>Gyroscopic Motion from First Principles</h1>
+<div class="subtitle">No torque. No angular momentum. No right-hand rule. Only F=ma, the geometry of a spinning mass, and one real constraint: rigidity.</div>
+
+<div class="essay">
+<p>Every explanation of gyroscopic motion you have ever seen uses fictional constructs: torque pseudovectors, angular momentum, the right-hand rule. These are shortcuts invented so humans can <em>predict</em> gyroscopic behavior without <em>understanding</em> it.</p>
+<p>Here we strip away all of it. A spinning wheel is nothing but masses moving in circles. Each mass obeys F=ma. Forces create accelerations. Accelerations create velocities. Velocities persist unless removed. Everything that follows — including the "mysterious" precession — is a consequence of these facts, the geometry of circular motion, and one physical reality: the wheel is rigid.</p>
+</div>
+
+<hr class="sep">
+
+<h2>Layer 1: What Each Mass Actually Feels</h2>
+<div class="essay">
+<p>A wheel spins in a vertical plane. Something tries to tilt the axle. We decompose that tilt into what each mass on the rim actually experiences: a push along the axle — <em>perpendicular to the wheel plane</em>. This push follows a sine wave — zero at the sides, maximum at the top, reversed at the bottom. The 3D view shows the arrows pointing along the axle, visibly sticking out of the wheel plane.</p>
+</div>
+
+<div class="row">
+<div class="col-half">
+<div class="pbox"><div class="plabel">3D View — Force Arrows Along Axle</div><canvas id="c1wheel" width="760" height="540"></canvas></div>
+</div>
+<div class="col-half">
+<div class="pbox"><div class="plabel">Force vs Position — The Sine Profile</div><canvas id="c1graph" width="760" height="540"></canvas></div>
+</div>
+</div>
+
+<div class="slider-row"><span class="slider-label">Spin speed:</span><input type="range" id="s1speed" min="0.2" max="3" value="1" step="0.1"><span class="slider-val" id="s1speedVal">1.0x</span></div>
+<div class="legend-row">
+<span><span class="leg-dot" style="background:#6888a8"></span>0°</span>
+<span><span class="leg-dot" style="background:#4a9e6e"></span>90°</span>
+<span><span class="leg-dot" style="background:#c45c5c"></span>180°</span>
+<span><span class="leg-dot" style="background:#b07cc8"></span>270°</span>
+<span><span class="leg-dot" style="background:#e8a030"></span>+Z force (forward)</span>
+<span><span class="leg-dot" style="background:#b05898"></span>-Z force (backward)</span>
+</div>
+<div class="ibox"><div class="section-label">What You Are Seeing</div><div class="commentary">The wheel is shown at an oblique angle so you can see the axle direction (z) going into depth. The orange arrows stick out of the wheel plane along the axle. At the top (90°): maximum push forward. At the bottom (270°): maximum push backward. At the sides: zero. This is the real force each atom of a gyroscope rim feels when gravity tries to tilt the axle.</div></div>
+
+<hr class="sep">
+
+<h2>Layer 2: The 90° Delay — Why Precession Happens</h2>
+<div class="essay">
+<p>Eight masses orbit at 45° intervals. Each one obeys F=ma independently. The left view shows the force each mass feels — orange/purple arrows along the axle, maximum at the top, reversed at the bottom, zero at the sides. The right view shows the z-velocity each mass has accumulated. But by the time a mass has maximum z-velocity, it has <em>moved 90° further along its orbit</em>. The force was at the top. The velocity shows up at the side.</p>
+<p>Press <em>Start</em> and watch both views together. At any instant, every mass has a different combination of force and velocity — a unique <em>fingerprint</em>. No two masses share the same state. This is the actual physical reality of a spinning gyroscope: not a bulk object with a single angular momentum vector, but a collection of individual masses, each experiencing its own specific force and carrying its own specific velocity, with the force-to-velocity relationship shifted 90° by the geometry of orbital motion.</p>
+</div>
+
+<div class="row">
+<div class="col-half"><div class="pbox"><div class="plabel">Force on Each Mass (orange/purple = along axle)</div><canvas id="c2force" width="760" height="700"></canvas></div></div>
+<div class="col-half"><div class="pbox"><div class="plabel">Z-Velocity of Each Mass (teal/blue = forward/backward)</div><canvas id="c2vel" width="760" height="700"></canvas></div></div>
+</div>
+
+<div class="row">
+<div class="col-half"><div class="pbox"><div class="plabel">Force vs Z-Velocity — The 90° Lag</div><canvas id="c2graph" width="760" height="320"></canvas></div></div>
+<div class="col-half"><div class="pbox"><div class="plabel">Z-Displacement Over Time (single mass)</div><canvas id="c2disp" width="760" height="320"></canvas></div></div>
+</div>
+
+<div class="slider-row"><span class="slider-label">Spin speed:</span><input type="range" id="s2speed" min="0.1" max="3" value="0.5" step="0.1"><span class="slider-val" id="s2speedVal">0.5x</span></div>
+<div class="btn-row">
+<button class="btn active" id="bL2start" onclick="setL2run(true)">Start</button>
+<button class="btn" id="bL2stop" onclick="setL2run(false)">Stop</button>
+</div>
+<div class="legend-row">
+<span><span class="leg-dot" style="background:#e8a030"></span>+Z force (forward)</span>
+<span><span class="leg-dot" style="background:#b05898"></span>-Z force (backward)</span>
+<span><span class="leg-dot" style="background:#44ddaa"></span>+Z velocity (forward)</span>
+<span><span class="leg-dot" style="background:#5888dd"></span>-Z velocity (backward)</span>
+</div>
+<div class="ibox"><div class="section-label">The Fingerprint</div><div class="commentary">Stop the animation and compare the two views side by side. The left view shows force — where the axle push is happening right now. The right view shows velocity — where the accumulated push has built up. Each mass has a unique pair: a force magnitude and a velocity magnitude that no other mass shares at that instant. This fingerprint is the real physical state of the gyroscope. The 90° lag is a <em>per-mass trajectory</em> property: each mass's velocity peaks 90° of orbital travel after its force peaked — the time integral of a sine wave always peaks one quarter-cycle later. Masses near the top have just entered the force zone (large force, small accumulated velocity); masses approaching the side have exited it (small force, large accumulated velocity). For free masses this per-trajectory lag produces a ring pattern that shifts with time — after a full revolution, all velocities reset to zero and rebuild. In the rigid wheel (Layer 3), rigidity locks the pattern at a fixed 90° offset. The angular momentum abstraction collapses all of this into a single vector and discards the individual states. The F=ma analysis preserves them.</div></div>
+
+<hr class="sep">
+
+<h2>Layer 3: From One Mass to a Rigid Wheel</h2>
+<div class="essay"><p>A single mass just drifts along the axle — no precession possible. But a real wheel is <em>rigid</em>. Masses cannot move independently; they are locked together. The rigidity constraint forces the 90°-lagged z-displacements into a coherent plane tilt — and that tilt axis <em>sweeps around the vertical</em>. That sweep is precession. Ghost snapshots show where the wheel was. Watch the axle trace a cone.</p></div>
+
+<div class="pbox"><div class="plabel">3D View — Wheel Precessing Around Vertical Axis</div><canvas id="c3main" width="760" height="760"></canvas></div>
+
+<div class="btn-row">
+<button class="btn" id="bn1" onclick="setN(1)">1 mass</button>
+<button class="btn" id="bn2" onclick="setN(2)">2 masses</button>
+<button class="btn active" id="bn4" onclick="setN(4)">4 masses</button>
+<button class="btn" id="bn8" onclick="setN(8)">8 masses</button>
+<button class="btn" id="bn24" onclick="setN(24)">24 masses</button>
+</div>
+
+<div class="row">
+<div class="col-half"><div class="ibox"><div class="section-label">Precession vs Falling</div><div id="ratioViz"></div></div></div>
+<div class="col-half"><div class="ibox"><div class="section-label">Analysis</div><div class="commentary" id="l3comment" style="min-height:5.5em"></div></div></div>
+</div>
+
+<hr class="sep">
+
+<h2>Layer 4: The Full Picture</h2>
+<div class="essay"><p>Gravity pulls the axle down. Each mass absorbs z-velocity at top and bottom. 90° later, that velocity shows up at the sides — left goes forward, right goes backward. The rigid wheel converts this into a coherent horizontal sweep: precession. The gold trail traces where the axle tip has been. Toggle gravity off: no force, no precession. Increase speed: faster spin, slower precession (gyroscopic stiffness).</p></div>
+
+<div class="pbox"><div class="plabel">Full Gyroscope — Precession (green trail) vs Falling (red)</div><canvas id="c4main" width="760" height="760"></canvas></div>
+
+<div class="slider-row"><span class="slider-label">Spin speed:</span><input type="range" id="s4speed" min="0.3" max="4" value="1.5" step="0.1"><span class="slider-val" id="s4speedVal">1.5x</span></div>
+<div class="btn-row">
+<button class="btn active" id="bgrav1" onclick="setGrav(true)">Gravity ON</button>
+<button class="btn" id="bgrav0" onclick="setGrav(false)">Gravity OFF</button>
+</div>
+
+<div class="row">
+<div class="col-half"><div class="ibox" style="text-align:center"><div class="section-label">Precession</div><div style="font-size:1.6em;font-weight:600;color:var(--prec)" id="precVal">-</div><div style="font-size:0.75em;color:var(--dim)">Axle sweeps sideways</div></div></div>
+<div class="col-half"><div class="ibox" style="text-align:center"><div class="section-label">Falling</div><div style="font-size:1.6em;font-weight:600;color:var(--fall)" id="fallVal">-</div><div style="font-size:0.75em;color:var(--dim)">Axle drops</div></div></div>
+</div>
+<div class="ibox"><div class="section-label">Precession vs Falling Ratio</div><div id="l4ratio"></div></div>
+<div class="ibox"><div class="section-label">Summary</div><div class="commentary" id="l4comment"></div></div>
+
+<hr class="sep">
+
+<h2>Layer 5: The Pendulum Hidden Inside Every Gyroscope</h2>
+<div class="essay">
+<p>The falling arrow in the animations above does not droop at a constant rate. It <em>oscillates</em> — the axle drops, overshoots, bounces back, drops again. This is nutation, and it is not a minor detail. It is a pendulum. The same differential equation, the same nonlinear dynamics, the same elliptic integrals. Here is the derivation, from the same F=ma foundation used throughout this presentation.</p>
+</div>
+
+<div class="step-box"><div class="step-num">Step 1 — The z-velocity budget</div>
+<p>Each mass on the rim receives a z-force (along the axle) as it passes through the top and bottom of its orbit. F=ma: force creates acceleration, acceleration creates velocity. The total z-velocity accumulated by the entire wheel per revolution is proportional to the applied force F and inversely proportional to the spin speed ω. Faster spin means each mass spends less time in the force zone, accumulating less velocity per pass.</p></div>
+
+<div class="eq"><span class="label">Z-velocity accumulated per revolution</span>
+Δv<sub>z</sub> = <span class="hl">F</span> · (2π / <span class="hl">ω</span>) / M
+<span class="note">More force → more velocity. Faster spin → less time under force → less velocity per revolution. No abstractions — just F=ma integrated over one orbit.</span></div>
+
+<div class="step-box"><div class="step-num">Step 2 — The 90° lag converts velocity direction</div>
+<p>The 90° phase lag — established in Layers 1 and 2 — means the z-velocity each mass accumulates while near the top <em>shows up as displacement</em> when that mass reaches the side. The force was applied at the top and bottom of the orbit, but the resulting motion appears at the sides — rotated 90° by the geometry of orbital travel. In a rigid wheel, this 90°-rotated pattern of displacements produces a coherent tilt whose axis is perpendicular to the applied force: that is precession. But the redirection is not total at any instant. The fraction that escapes produces tilt <em>in the direction of the applied force</em>. Call this tilt angle θ — measured from horizontal.</p></div>
+
+<div class="step-box"><div class="step-num">Step 3 — The restoring mechanism</div>
+<p>Here is the critical insight. When the axle tilts down by angle θ, two things change. First, the gravitational component trying to tilt it further is proportional to sin(θ) — just like a pendulum. Second, the 90° lag now has a tilted geometry to work with. The precession rate adjusts. The system does not simply fall — it <em>resists</em> falling, because the lag is continuously redirecting the new tilt into sideways motion. This redirection acts as a restoring force, pulling the tilt angle back toward its equilibrium.</p></div>
+
+<div class="eq"><span class="label">Equation of motion for tilt angle θ</span>
+<span class="hl">θ̈</span> + (ω<sub>n</sub>²) · <span class="hl">sin(θ)</span> = 0
+<span class="note">This is the exact equation of a pendulum. ω<sub>n</sub> = nutation frequency. No small-angle approximation.</span></div>
+
+<div class="step-box"><div class="step-num">Step 4 — The pendulum equivalence</div>
+<p>The equation above is structurally identical to the equation governing a physical pendulum swinging under gravity. The nutation frequency ω<sub>n</sub> plays the role of √(g/L). For a gyroscope, it emerges from the ratio of gravitational force to the spin-dependent restoring effect of the 90° lag:</p></div>
+
+<div class="eq"><span class="label">Nutation frequency (from F=ma, no angular momentum)</span>
+ω<sub>n</sub> = <span class="hl">F</span> / (<span class="hl">ω</span> · R · M)
+<span class="note">F = gravitational tilt force, ω = spin speed, R = radius, M = total rim mass. Faster spin → stronger restoring effect → smaller nutation amplitude.</span></div>
+
+<div class="step-box"><div class="step-num">Step 5 — Why this is not a "simple" pendulum</div>
+<p>Textbooks linearize the pendulum: replace sin(θ) with θ, get a nice cosine solution, declare the period independent of amplitude. This is the <em>simple pendulum myth</em>. The real pendulum has a period that depends on how far it swings — described by elliptic integrals, not elementary functions. The gyroscope's nutation has the same nonlinearity. Low spin speed produces large nutation amplitude and a longer oscillation period. High spin speed produces small nutation amplitude and a period close to the linearized prediction. The "constant period" is a lie in both cases.</p></div>
+
+<div class="eq"><span class="label">Real pendulum period (exact)</span>
+T = (2π / ω<sub>n</sub>) · (2/π) · <span class="hl">K(sin(θ₀/2))</span>
+<span class="note">K is the complete elliptic integral of the first kind. θ₀ = maximum tilt amplitude. When θ₀ is small, K ≈ π/2 and you recover the linearized approximation T ≈ 2π/ω<sub>n</sub>. At large θ₀, the period stretches toward infinity.</span></div>
+
+<div class="step-box"><div class="step-num">Step 6 — Computational proof</div>
+<p>The animation below proves the equivalence computationally, not by assertion. The left side is a nonlinear pendulum integrated with RK4. The right side runs the <em>full coupled gyroscope ODE</em> — the same equations driving Layers 3 and 4 — and extracts θ(t) as the nutation angle. A matched standalone pendulum (dashed gold) with ωₙ = kω is overlaid. Watch the green and gold traces: they track each other because the coupled equations <em>produce</em> pendulum motion in the θ degree of freedom. This is not assumed — it is computed.</p></div>
+
+<div class="pbox"><div class="plabel">Pendulum vs Nutation — Side by Side</div><canvas id="c5pend" width="760" height="300"></canvas></div>
+
+<div class="slider-row"><span class="slider-label">Animation speed:</span><input type="range" id="s5speed" min="0.2" max="3" value="1" step="0.1"><span class="slider-val" id="s5speedVal">1.0x</span></div>
+
+<div class="row">
+<div class="col-half"><div class="ibox"><div class="section-label">Motion 1: Spin</div><div class="commentary" style="min-height:3em">The wheel rotates around its own axle at angular speed ω. This is the motion you put in. It creates the orbiting masses that make the 90° lag possible.</div></div></div>
+<div class="col-half"><div class="ibox"><div class="section-label">Motion 2: Precession</div><div class="commentary" style="min-height:3em">The axle sweeps horizontally around the vertical axis. Rate: Ωp = F/(ωRM). This is the 90° lag expressed as bulk motion. Slower for faster spin.</div></div></div>
+</div>
+<div class="ibox"><div class="section-label">Motion 3: Nutation (the pendulum)</div><div class="commentary">The tilt angle oscillates — the axle bobs up and down while precessing, tracing cycloid-like loops. The oscillation follows the exact pendulum equation with sin(θ), not the linearized θ. The period depends on amplitude. Without friction, this oscillation continues indefinitely — a perfect pendulum that never stops. With friction (Layer 6), bearing drag damps the nutation and spin decay weakens the 90° lag, causing the axle to spiral slowly to vertical. Every real gyroscope is a damped pendulum that has not yet reached its rest position.</div></div>
+
+<hr class="sep">
+
+<div class="essay">
+<h2>The Drop That Textbooks Hide</h2>
+<p>Standard textbook treatments derive steady-state precession using τ = dL/dt and present it as the complete picture. The transient — the initial drop and the oscillation around it (nutation) — is either relegated to an advanced footnote or attributed entirely to friction on the axle. This framing creates the false impression that a spinning gyroscope somehow <em>defies</em> gravity, converting all downward force into sideways motion with nothing left over.</p>
+<p>The F=ma analysis makes the impossibility of this claim visible: each mass receives a real downward force that creates real downward velocity, and while the 90° phase lag redirects most of that velocity sideways, the redirection is never total at any instant. The fraction that escapes shows up as tilt in the direction of the applied force. But that fraction does not accumulate — it oscillates. The axle drops, the lag catches up and redirects, the axle overshoots upward, drops again. This is nutation: a pendulum, swinging indefinitely in a frictionless system.</p>
+<p>The spiral to equilibrium requires two dissipative effects: friction damps the nutation oscillation, making the precession look smooth, and friction decays the spin, progressively weakening the 90° lag until it can no longer redirect the gravitational velocity at all. The smoother the precession looks, the more the nutation has been hidden. The cleaner the demonstration, the deeper the concealment.</p>
+</div>
+
+<hr class="sep">
+
+<h2>Layer 6: Where Every Gyroscope Ends</h2>
+<div class="essay">
+<p>No gyroscope precesses forever. The spin decays — bearing friction, air resistance — and as the spin slows, the 90° lag loses its grip. Less spin means less velocity redirected sideways, more falling through. The axle spirals down. The wheel that started vertical ends horizontal — hanging straight down from the pivot.</p>
+<p>This is what the standard presentation of torque vectors, angular momentum, and the right-hand rule never shows. Those constructs derive a steady-state precession rate <em>Ω = τ/L</em> and stop. They produce a number — degrees per second — that holds forever in a frictionless ideal. The full Euler equations <em>can</em> handle friction and spin decay, but the pedagogy never goes there. It never walks through the spiral. It never shows the transition from gyroscope to pendulum. It never reaches the end state. The F=ma analysis walks here step by step, because it never left reality.</p>
+<p>The simulation below runs the same F=ma equations from Layers 3–5, with two additions: bearing friction (a damping force proportional to velocity on every degree of freedom) and spin decay (the wheel gradually loses rotational speed). Time is accelerated so you can watch hours of physics in seconds. The trail shows every position the axle tip has occupied. Watch the cone narrow, the precession slow, the nutation vanish, and the axle settle into its only possible equilibrium: hanging straight down, wheel horizontal, all energy dissipated.</p>
+</div>
+
+<div class="pbox"><div class="plabel">Long-Time Evolution — Axle Spirals to Equilibrium (time-accelerated)</div><canvas id="cLT" width="760" height="560"></canvas></div>
+
+<div class="slider-row"><span class="slider-label">Time acceleration:</span><input type="range" id="sLTaccel" min="1" max="5" value="3" step="0.1"><span class="slider-val" id="sLTaccelVal">3.0x</span></div>
+<div class="slider-row"><span class="slider-label">Bearing friction:</span><input type="range" id="sLTfric" min="0.005" max="0.06" value="0.02" step="0.001"><span class="slider-val" id="sLTfricVal">0.020</span></div>
+<div class="btn-row">
+<button class="btn" id="bLTreset" onclick="resetLT()">Reset</button>
+<button class="btn active" id="bLTrun" onclick="setLTrun(true)">Run</button>
+<button class="btn" id="bLTpause" onclick="setLTrun(false)">Pause</button>
+</div>
+
+<div class="row">
+<div class="col-half"><div class="ibox" style="text-align:center"><div class="section-label">Elapsed Time</div><div style="font-size:1.4em;font-weight:600;color:var(--accent)" id="ltTimeVal">0h 0m 0s</div></div></div>
+<div class="col-half"><div class="ibox" style="text-align:center"><div class="section-label">Spin Speed</div><div style="font-size:1.4em;font-weight:600;color:var(--vz)" id="ltOmegaVal">—</div><div style="font-size:0.75em;color:var(--dim)">of initial</div></div></div>
+</div>
+<div class="row">
+<div class="col-half"><div class="ibox" style="text-align:center"><div class="section-label">Axle Tilt</div><div style="font-size:1.4em;font-weight:600;color:var(--fall)" id="ltTiltVal">0°</div><div style="font-size:0.75em;color:var(--dim)">below horizontal</div></div></div>
+<div class="col-half"><div class="ibox" style="text-align:center"><div class="section-label">Precession Rate</div><div style="font-size:1.4em;font-weight:600;color:var(--prec)" id="ltPrecVal">—</div><div style="font-size:0.75em;color:var(--dim)">°/s</div></div></div>
+</div>
+<div class="ibox"><div class="section-label">Phase</div><div class="commentary" id="ltComment">Press Run to begin the simulation.</div></div>
+
+<hr class="sep">
+
+<div class="essay">
+<h2>What Just Happened</h2>
+<p>We explained gyroscopic precession using nothing but F=ma applied to individual masses, plus one physical constraint: the wheel is rigid. No torque pseudovectors. No angular momentum. No right-hand rule. No moment of inertia.</p>
+<p>The mechanism: a force perpendicular to the wheel plane creates z-velocity in each mass. That velocity peaks 90° after the force peaks, because the mass <em>carries the velocity with it</em> as it continues orbiting. The rigid wheel forces all these individual displacements into a coherent plane tilt whose axis rotates — and that rotation is precession.</p>
+<p>Rigidity is not a fictional construct. It is the real internal forces — tension, compression — between atoms in the wheel. These forces do not add energy; they redirect motion. Without rigidity, each mass drifts independently and the ring breathes rather than tilts. With rigidity, the 90° phase lag becomes a steady horizontal sweep. That is the complete mechanism.</p>
+</div>
+<div class="footer-text"><p>Every arrow in this presentation is a real force or a real velocity experienced by a real mass at a real position. Nothing fictitious. Nothing pseudo. The universe does not use the right-hand rule. It uses F=ma, geometry, and the constraint that solid objects hold together. <em>Everything else is commentary.</em></p></div>
+
+</div>
+<script>
+(function(){
+"use strict";
+const PI=Math.PI,PI2=PI*2;
+const Fn="'EB Garamond',Georgia,serif";
+const MC=["#6888a8","#4a9e6e","#c45c5c","#b07cc8","#d4a843","#44bbee","#e87050","#88cc55"];
+const COL={bg:"#08080c",dim:"#6a6458",accent:"#d4a843",fz:"#e8a030",vz:"#44bbee",grid:"#161620",prec:"#4a9e6e",fall:"#c45c5c",wheel:"rgba(224,220,210,0.12)",axle:"rgba(224,220,210,0.35)"};
+
+// ─── 3D PIPELINE ───
+// Base oblique projection (used by L1/L2 which don't precess)
+function P(u,v,w,cx,cy){return{px:cx+u*0.82+w*0.75,py:cy-v*0.82-w*0.45}}
+
+// Full 3D transform: tilt around X, then precess around Y, then project
+// tiltX = small tilt angle (gravity drop)
+// precY = precession angle around vertical (Y)
+function P3(localX,localY,localZ, tiltX,precY, cx,cy){
+  // 1. Tilt around X-axis (gravity tips the axle down)
+  let x0=localX;
+  let y0=localY*Math.cos(tiltX)-localZ*Math.sin(tiltX);
+  let z0=localY*Math.sin(tiltX)+localZ*Math.cos(tiltX);
+  // 2. Precess around Y-axis (axle sweeps horizontally)
+  let x1=x0*Math.cos(precY)+z0*Math.sin(precY);
+  let y1=y0;
+  let z1=-x0*Math.sin(precY)+z0*Math.cos(precY);
+  // 3. Oblique projection to screen
+  return{px:cx+x1*0.82+z1*0.75, py:cy-y1*0.82-z1*0.45};
+}
+
+function dr(){return window.devicePixelRatio||1}
+function IC(id,lw,lh){const c=document.getElementById(id),r=dr();c.width=lw*r;c.height=lh*r;c.style.width="100%";const x=c.getContext("2d");x.scale(r,r);return{x,w:lw,h:lh}}
+
+function arr(x,x1,y1,x2,y2,c,lw,hs){
+  hs=hs||7;lw=lw||2;
+  const dx=x2-x1,dy=y2-y1,l=Math.sqrt(dx*dx+dy*dy);
+  if(l<4)return;
+  const hActual=Math.min(hs,l*0.45);
+  const ux=dx/l,uy=dy/l;
+  // Line stops at base of arrowhead, not at the tip
+  const lx=x2-ux*hActual,ly=y2-uy*hActual;
+  x.strokeStyle=c;x.lineWidth=lw;x.beginPath();x.moveTo(x1,y1);x.lineTo(lx,ly);x.stroke();
+  // Filled arrowhead triangle
+  x.fillStyle=c;x.beginPath();x.moveTo(x2,y2);x.lineTo(x2-ux*hActual+uy*hActual*.4,y2-uy*hActual-ux*hActual*.4);x.lineTo(x2-ux*hActual-uy*hActual*.4,y2-uy*hActual+ux*hActual*.4);x.closePath();x.fill();
+}
+function dot(x,cx,cy,r,f,s,sw){x.beginPath();x.arc(cx,cy,r,0,PI2);if(f){x.fillStyle=f;x.fill()}if(s){x.strokeStyle=s;x.lineWidth=sw||1;x.stroke()}}
+function txt(x,cx,cy,s,c,sz,al){x.fillStyle=c||"#e2ddd0";x.font=(sz||11)+"px "+Fn;x.textAlign=al||"center";x.textBaseline="middle";x.fillText(s,cx,cy)}
+
+function ring(x,cx,cy,R,c,lw){
+  x.strokeStyle=c||COL.wheel;x.lineWidth=lw||1.5;x.beginPath();
+  for(let i=0;i<=120;i++){const a=(i/120)*PI2;const p=P(R*Math.cos(a),R*Math.sin(a),0,cx,cy);i===0?x.moveTo(p.px,p.py):x.lineTo(p.px,p.py)}
+  x.stroke();
+}
+
+// Draw a 3D ring with tilt and precession
+function ring3D(x,cx,cy,R,tiltX,precY,c,lw){
+  x.strokeStyle=c||COL.wheel;x.lineWidth=lw||1.5;x.beginPath();
+  for(let i=0;i<=120;i++){
+    const a=(i/120)*PI2;
+    const p=P3(R*Math.cos(a),R*Math.sin(a),0,tiltX,precY,cx,cy);
+    i===0?x.moveTo(p.px,p.py):x.lineTo(p.px,p.py);
+  }
+  x.stroke();
+}
+
+// Draw axle through 3D transform
+function axle3D(x,cx,cy,len,tiltX,precY){
+  const aLen=len*0.9;
+  // Axle: along local Z
+  const zO=P3(0,0,0,tiltX,precY,cx,cy);
+  const z2=P3(0,0,aLen,tiltX,precY,cx,cy);
+  const z1=P3(0,0,-aLen*0.6,tiltX,precY,cx,cy);
+  arr(x,zO.px,zO.py,z2.px,z2.py,"#e8a030",2.5,9);
+  arr(x,zO.px,zO.py,z1.px,z1.py,"#b05898",2,8);
+}
+
+function axle(x,cx,cy,len){
+  const aLen=len*0.9;
+  const zO=P(0,0,0,cx,cy);
+  const z2=P(0,0,aLen,cx,cy);
+  const z1=P(0,0,-aLen*0.6,cx,cy);
+  arr(x,zO.px,zO.py,z2.px,z2.py,"#e8a030",2.5,9);
+  txt(x,z2.px+14,z2.py-10,"+Z (axle)","#e8a030",11,"left");
+  arr(x,zO.px,zO.py,z1.px,z1.py,"#b05898",2,8);
+  txt(x,z1.px-14,z1.py+12,"-Z","#b05898",10,"right");
+  const x1=P(-aLen*0.8,0,0,cx,cy),x2=P(aLen*0.8,0,0,cx,cy);
+  x.strokeStyle="rgba(200,210,230,0.35)";x.lineWidth=1.5;
+  x.beginPath();x.moveTo(x1.px,x1.py);x.lineTo(x2.px,x2.py);x.stroke();
+  arr(x,x1.px,x1.py,x2.px,x2.py,"rgba(200,210,230,0.5)",1.5,7);
+  txt(x,x2.px+14,x2.py+2,"X","rgba(200,210,230,0.75)",10,"left");
+  const y1=P(0,-aLen*0.8,0,cx,cy),y2=P(0,aLen*0.8,0,cx,cy);
+  x.strokeStyle="rgba(200,210,230,0.35)";x.lineWidth=1.5;
+  x.beginPath();x.moveTo(y1.px,y1.py);x.lineTo(y2.px,y2.py);x.stroke();
+  arr(x,y1.px,y1.py,y2.px,y2.py,"rgba(200,210,230,0.5)",1.5,7);
+  txt(x,y2.px-4,y2.py-14,"Y (up)","rgba(200,210,230,0.75)",10);
+  const op=P(0,0,0,cx,cy);
+  dot(x,op.px,op.py,4,COL.accent,"#08080c",1.5);
+}
+
+let time=0,lastTS=null,nMasses=4,gravOn=true;
+function gv(id){return parseFloat(document.getElementById(id).value)}
+
+function tick(ts){
+  if(!lastTS)lastTS=ts;
+  const dt=Math.min((ts-lastTS)/1000,0.05);
+  lastTS=ts;time+=dt;
+  drawL1(time);drawL2(time);drawL3(time,dt);drawL4(time,dt);drawL5(time);drawLT(time,dt);
+  requestAnimationFrame(tick);
+}
+
+// ═══════════ LAYER 1 ═══════════
+let c1w,c1g;
+function drawL1(t){
+  if(!c1w)c1w=IC("c1wheel",380,270);
+  if(!c1g)c1g=IC("c1graph",380,270);
+  const sp=gv("s1speed");
+  document.getElementById("s1speedVal").textContent=sp.toFixed(1)+"x";
+
+  const{x,w,h}=c1w;x.clearRect(0,0,w,h);
+  const cx=w/2-20,cy=h/2+15,R=80;
+  const omega=sp*PI2*0.25;
+  const angle=t*omega;
+
+  axle(x,cx,cy,R*1.4);
+  ring(x,cx,cy,R,"rgba(90,160,220,0.25)",2);
+  const cp=P(0,0,0,cx,cy);dot(x,cp.px,cp.py,3,COL.accent);
+
+  const angles=[0,PI/2,PI,3*PI/2];
+  const labels=["0°","90°","180°","270°"];
+  const colPos="#e8a030",colNeg="#b05898";
+
+  for(let i=0;i<4;i++){
+    const a=angles[i]+angle;
+    const u=R*Math.cos(a),v=R*Math.sin(a);
+    const force=Math.sin(a);
+    const mp=P(u,v,0,cx,cy);
+    if(Math.abs(force)>0.05){
+      const fLen=force*60;
+      const fp=P(u,v,fLen,cx,cy);
+      arr(x,mp.px,mp.py,fp.px,fp.py,force>0?colPos:colNeg,2.5,7);
+    }
+    dot(x,mp.px,mp.py,9,MC[i],"#08080c",2);
+    const lp=P((R+22)*Math.cos(a),(R+22)*Math.sin(a),0,cx,cy);
+    txt(x,lp.px,lp.py,labels[i],MC[i],10);
+  }
+
+  txt(x,cx,16,"3D oblique — arrows point along axle (perpendicular to wheel)",COL.dim,10);
+  txt(x,w/2,h-8,"Orange = +Z (forward)    Purple = -Z (backward)",COL.dim,9);
+
+  // Graph
+  const{x:gx,w:gw,h:gh}=c1g;gx.clearRect(0,0,gw,gh);
+  const pd={l:40,r:10,t:28,b:30},pw=gw-pd.l-pd.r,ph=gh-pd.t-pd.b;
+  gx.strokeStyle="#1c1c2c";gx.lineWidth=1;gx.beginPath();gx.moveTo(pd.l,pd.t);gx.lineTo(pd.l,pd.t+ph);gx.lineTo(pd.l+pw,pd.t+ph);gx.stroke();
+  const zy=pd.t+ph/2;
+  gx.strokeStyle=COL.grid;gx.lineWidth=0.5;gx.beginPath();gx.moveTo(pd.l,zy);gx.lineTo(pd.l+pw,zy);gx.stroke();
+  txt(gx,pd.l-8,pd.t+10,"+F","#e8a030",9,"right");txt(gx,pd.l-8,pd.t+ph-10,"-F","#b05898",9,"right");
+  ["0","90","180","270","360"].forEach((l,i)=>{txt(gx,pd.l+(i/4)*pw,pd.t+ph+14,l+"°",COL.dim,9)});
+
+  const sinSteps=400;
+  for(let i=0;i<sinSteps;i++){
+    const a0=(i/sinSteps)*PI2,a1=((i+1)/sinSteps)*PI2;
+    const s0=Math.sin(a0),s1=Math.sin(a1);
+    const x0=pd.l+(i/sinSteps)*pw,x1=pd.l+((i+1)/sinSteps)*pw;
+    const y0=zy-s0*(ph/2-10),y1=zy-s1*(ph/2-10);
+    gx.strokeStyle=(s0+s1)/2>=0?"#e8a030":"#b05898";
+    gx.lineWidth=2.5;
+    gx.beginPath();gx.moveTo(x0,y0);gx.lineTo(x1,y1);gx.stroke();
+  }
+  for(let i=0;i<4;i++){
+    const a=((angles[i]+angle)%PI2+PI2)%PI2;
+    const xp=pd.l+(a/PI2)*pw,yp=zy-Math.sin(angles[i]+angle)*(ph/2-10);
+    dot(gx,xp,yp,5,MC[i],"#08080c",1.5);
+  }
+  txt(gx,pd.l+pw*0.25,14,"+Z (forward)","#e8a030",10);
+  txt(gx,pd.l+pw*0.75,14,"-Z (backward)","#b05898",10);
+}
+
+// ═══════════ LAYER 2 ═══════════
+let c2f,c2v,c2g,c2d;
+let l2Running=true, l2Time=0;
+window.setL2run=function(on){l2Running=on;document.getElementById("bL2start").classList.toggle("active",on);document.getElementById("bL2stop").classList.toggle("active",!on)};
+const L2N=8; // 8 masses at 45° intervals
+const L2cols=["#6888a8","#5a9e8e","#4a9e6e","#8aba55","#d4a843","#e87050","#c45c5c","#b07cc8"];
+
+function drawL2wheel(ctx,w,h,angle,omega,F0,mode){
+  // mode: 'force' or 'velocity'
+  const cx=w/2-15,cy=h/2+10,R=110;
+
+  axle(ctx,cx,cy,R*1.3);
+  ring(ctx,cx,cy,R,"rgba(90,160,220,0.18)",1.5);
+
+  // Position labels (fixed positions on ring)
+  [{a:0,l:"0°"},{a:PI/2,l:"90°"},{a:PI,l:"180°"},{a:3*PI/2,l:"270°"}].forEach(q=>{
+    const lp=P((R+20)*Math.cos(q.a),(R+20)*Math.sin(q.a),0,cx,cy);
+    txt(ctx,lp.px,lp.py,q.l,COL.dim,9);
+  });
+
+  // Draw arrows first (behind point masses)
+  for(let i=0;i<L2N;i++){
+    const startAngle=(PI2/L2N)*i;
+    const a=startAngle+angle;
+    const u=R*Math.cos(a), v=R*Math.sin(a);
+    const mp=P(u,v,0,cx,cy);
+
+    if(mode==='force'){
+      const force=F0*Math.sin(a);
+      if(Math.abs(force)>0.2){
+        const fCol=force>0?"#e8a030":"#b05898";
+        const fLen=force*45;
+        const fp=P(u,v,fLen,cx,cy);
+        arr(ctx,mp.px,mp.py,fp.px,fp.py,fCol,2,6);
+      }
+    } else {
+      const vzVal=(F0/Math.max(omega,0.1))*(Math.cos(startAngle)-Math.cos(a));
+      if(Math.abs(vzVal)>0.12){
+        const vCol=vzVal>0?"#44ddaa":"#5888dd";
+        const vTip=P(u,v,vzVal*28,cx,cy);
+        arr(ctx,mp.px,mp.py,vTip.px,vTip.py,vCol,2,6);
+      }
+    }
+  }
+
+  // Draw point masses on top of arrows — pinpoint dots
+  for(let i=0;i<L2N;i++){
+    const startAngle=(PI2/L2N)*i;
+    const a=startAngle+angle;
+    const u=R*Math.cos(a), v=R*Math.sin(a);
+    const mp=P(u,v,0,cx,cy);
+
+    // Pinpoint mass: tiny filled dot
+    dot(ctx,mp.px,mp.py,2.5,L2cols[i],null,0);
+
+    // Label
+    const degLabel=Math.round((startAngle*180/PI)%360)+"°";
+    const lp=P((R+24)*Math.cos(a),(R+24)*Math.sin(a),0,cx,cy);
+    txt(ctx,lp.px,lp.py,degLabel,L2cols[i],8);
+  }
+}
+
+function drawL2(t){
+  if(!c2f)c2f=IC("c2force",380,350);
+  if(!c2v)c2v=IC("c2vel",380,350);
+  if(!c2g)c2g=IC("c2graph",380,160);
+  if(!c2d)c2d=IC("c2disp",380,160);
+
+  const sp=gv("s2speed");
+  document.getElementById("s2speedVal").textContent=sp.toFixed(1)+"x";
+  const omega=sp*PI2*0.25;
+  if(l2Running) l2Time=t;
+  const angle=l2Time*omega;
+  const F0=2.0;
+
+  // ── Force canvas ──
+  const{x:fx,w:fw,h:fh}=c2f;fx.clearRect(0,0,fw,fh);
+  drawL2wheel(fx,fw,fh,angle,omega,F0,'force');
+  txt(fx,fw/2-20,16,"Force — maximum at top/bottom, zero at sides",COL.dim,10);
+  const a0f=angle;
+  const f0v=F0*Math.sin(a0f);
+  const deg0f=((a0f%PI2+PI2)%PI2)*180/PI;
+  txt(fx,fw/2-20,fh-8,"Mass 0°: pos="+Math.round(deg0f)+"° | F="+f0v.toFixed(2)+(l2Running?"":" [PAUSED]"),COL.accent,10);
+
+  // ── Velocity canvas ──
+  const{x:vx,w:vw,h:vh}=c2v;vx.clearRect(0,0,vw,vh);
+  drawL2wheel(vx,vw,vh,angle,omega,F0,'velocity');
+  txt(vx,vw/2-20,16,"Velocity — peaks 90° after force peaked",COL.dim,10);
+  const v0=(F0/Math.max(omega,0.1))*(1-Math.cos(a0f));
+  const v0col=v0>=0?"#44ddaa":"#5888dd";
+  txt(vx,vw/2-20,vh-8,"Mass 0°: pos="+Math.round(deg0f)+"° | Vz="+v0.toFixed(2)+(l2Running?"":" [PAUSED]"),v0col,10);
+
+  // ── Force vs Velocity graph (shows all 8 masses) ──
+  const{x:gx,w:gw,h:gh}=c2g;gx.clearRect(0,0,gw,gh);
+  const pd={l:40,r:10,t:18,b:24},pw=gw-pd.l-pd.r,ph=gh-pd.t-pd.b;
+  gx.strokeStyle="#1c1c2c";gx.lineWidth=1;gx.beginPath();gx.moveTo(pd.l,pd.t);gx.lineTo(pd.l,pd.t+ph);gx.lineTo(pd.l+pw,pd.t+ph);gx.stroke();
+  const zy=pd.t+ph/2;
+  gx.strokeStyle=COL.grid;gx.lineWidth=0.5;gx.beginPath();gx.moveTo(pd.l,zy);gx.lineTo(pd.l+pw,zy);gx.stroke();
+  ["0","90","180","270","360"].forEach((l,i)=>{txt(gx,pd.l+(i/4)*pw,pd.t+ph+12,l+"°",COL.dim,8)});
+
+  // Two-color force curve
+  for(let i=0;i<200;i++){
+    const a0=(i/200)*PI2,a1=((i+1)/200)*PI2;
+    const s0=Math.sin(a0),s1=Math.sin(a1);
+    const x0=pd.l+(i/200)*pw,x1=pd.l+((i+1)/200)*pw;
+    const y0=zy-s0*(ph/2-6),y1=zy-s1*(ph/2-6);
+    gx.strokeStyle=(s0+s1)/2>=0?"#e8a030":"#b05898";
+    gx.lineWidth=2;gx.beginPath();gx.moveTo(x0,y0);gx.lineTo(x1,y1);gx.stroke();
+  }
+  // Velocity curve: INSTANTANEOUS profile around the ring — two-color
+  // v(a,t) = (cos(a - ωt) - cos(a))/2 = sin(ωt/2)·sin(a - ωt/2)
+  // This is the actual velocity each mass at orbital angle a has RIGHT NOW
+  // Phase lag = ωt/2, amplitude pulses with |sin(ωt/2)|
+  for(let i=0;i<200;i++){
+    const a0=(i/200)*PI2,a1=((i+1)/200)*PI2;
+    const vn0=(Math.cos(a0-angle)-Math.cos(a0))/2;
+    const vn1=(Math.cos(a1-angle)-Math.cos(a1))/2;
+    const x0=pd.l+(i/200)*pw,x1=pd.l+((i+1)/200)*pw;
+    const y0=zy-vn0*(ph/2-6),y1=zy-vn1*(ph/2-6);
+    gx.strokeStyle=(vn0+vn1)/2>=0?"#44ddaa":"#5888dd";
+    gx.lineWidth=2;gx.beginPath();gx.moveTo(x0,y0);gx.lineTo(x1,y1);gx.stroke();
+  }
+
+  // Plot all 8 mass dots on force curve AND velocity curve
+  for(let i=0;i<L2N;i++){
+    const sA=(PI2/L2N)*i;
+    const curA=((sA+angle)%PI2+PI2)%PI2;
+    const xp=pd.l+(curA/PI2)*pw;
+    // Force dot (sits on sin(a) curve)
+    const yp_f=zy-Math.sin(sA+angle)*(ph/2-6);
+    dot(gx,xp,yp_f,4,L2cols[i],"#08080c",1);
+    // Velocity dot (sits on instantaneous profile curve)
+    const vn_i=(Math.cos(sA)-Math.cos(sA+angle))/2;
+    const yp_v=zy-vn_i*(ph/2-6);
+    dot(gx,xp,yp_v,4,L2cols[i],"#08080c",1);
+    // Thin connecting line showing force→velocity gap for this mass
+    gx.strokeStyle=L2cols[i];gx.lineWidth=0.5;gx.globalAlpha=0.3;
+    gx.beginPath();gx.moveTo(xp,yp_f);gx.lineTo(xp,yp_v);gx.stroke();
+    gx.globalAlpha=1;
+  }
+  // Show current phase lag
+  const lagDeg=((angle%(PI2))/2*180/PI)%180;
+  txt(gx,pd.l+pw*0.25,pd.t+6,"Force","#e8a030",8);
+  txt(gx,pd.l+pw*0.55,pd.t+6,"Velocity","#44ddaa",8);
+  txt(gx,pd.l+pw*0.4,pd.t+ph-4,"current lag: "+lagDeg.toFixed(0)+"° (90° at half-rev)",COL.accent,9);
+
+  // ── Z-displacement (single mass 0) ──
+  const{x:dx,w:dw,h:dh}=c2d;dx.clearRect(0,0,dw,dh);
+  const dp={l:40,r:10,t:18,b:24},dpw=dw-dp.l-dp.r,dph=dh-dp.t-dp.b;
+  dx.strokeStyle="#1c1c2c";dx.lineWidth=1;dx.beginPath();dx.moveTo(dp.l,dp.t);dx.lineTo(dp.l,dp.t+dph);dx.lineTo(dp.l+dpw,dp.t+dph);dx.stroke();
+  const revs=3;let maxZ=0;
+  for(let i=0;i<=300;i++){const a=(i/300)*PI2*revs,z=a-Math.sin(a);if(z>maxZ)maxZ=z}
+  dx.strokeStyle=COL.vz;dx.lineWidth=2;dx.beginPath();
+  for(let i=0;i<=300;i++){const a=(i/300)*PI2*revs,z=a-Math.sin(a),xp=dp.l+(i/300)*dpw,yp=dp.t+dph-(z/maxZ)*(dph-10);i===0?dx.moveTo(xp,yp):dx.lineTo(xp,yp)}
+  dx.stroke();
+  txt(dx,dp.l+dpw/2,8,"Single free mass: z-displacement always increases — drifts, no precession",COL.vz,9);
+}
+
+// ═══════════ GYROSCOPE ODE SIMULATION ═══════════
+// 
+// Real rigid-body dynamics from F=ma applied to individual masses.
+// Each mass on the rim feels gravity. Rigidity constrains them to move
+// as a single body. The constraint is enforced by D'Alembert's principle:
+// F=ma projected onto the rigid body's degrees of freedom.
+//
+// State: [theta, phi, thetaDot, phiDot]
+//   theta = angle from vertical up (pi/2 = horizontal axle)
+//   phi   = precession angle around vertical axis
+//   thetaDot, phiDot = angular velocities
+//   omega = spin speed (constant, set externally)
+//
+// The equations of motion are:
+//   theta_dd = phiDot^2 * sin(theta)*cos(theta)
+//            - k * omega * phiDot * sin(theta)
+//            + g_eff * sin(theta)
+//
+//   phi_dd = (-2*cos(theta)*thetaDot*phiDot + k*omega*thetaDot) / sin(theta)
+//
+// where k = I_spin / I_transverse, g_eff = g*L / I_transverse_per_mass
+//
+// These are NOT the Euler equations in disguise. They are the direct result
+// of applying F=ma to each mass, summing the constraint-projected forces,
+// and solving for the two free rotational accelerations. No torque, no
+// angular momentum vector, no right-hand rule. Just forces on masses.
+
+const SIM_R=1.0, SIM_L=1.2, SIM_G=3.0;
+const SIM_It=SIM_R*SIM_R/2+SIM_L*SIM_L; // I_transverse/M about pivot
+const SIM_K=SIM_R*SIM_R/SIM_It;          // I_spin/I_transverse
+const SIM_GEFF=SIM_G*SIM_L/SIM_It;       // effective gravitational parameter
+const SIM_DT=0.0008;                      // physics timestep (RK4)
+
+function gyroDerivs(s,omega){
+  const th=s[0],ph=s[1],td=s[2],pd=s[3];
+  const sinT=Math.sin(th),cosT=Math.cos(th);
+  const sinSafe=Math.abs(sinT)<1e-10?(sinT>=0?1e-10:-1e-10):sinT;
+  const tdd=pd*pd*sinT*cosT - SIM_K*omega*pd*sinT + SIM_GEFF*sinT;
+  const pdd=(-2*cosT*td*pd + SIM_K*omega*td)/sinSafe;
+  return[td,pd,tdd,pdd];
+}
+
+function gyroStep(s,omega,dt){
+  const k1=gyroDerivs(s,omega);
+  const s2=s.map((v,i)=>v+0.5*dt*k1[i]);
+  const k2=gyroDerivs(s2,omega);
+  const s3=s.map((v,i)=>v+0.5*dt*k2[i]);
+  const k3=gyroDerivs(s3,omega);
+  const s4=s.map((v,i)=>v+dt*k3[i]);
+  const k4=gyroDerivs(s4,omega);
+  const ns=s.map((v,i)=>v+dt*(k1[i]+2*k2[i]+2*k3[i]+k4[i])/6);
+  // Clamp theta away from poles
+  ns[0]=Math.max(0.04,Math.min(PI-0.04,ns[0]));
+  return ns;
+}
+
+function gyroReset(){return[PI/2,0,0,0];} // released from horizontal, at rest
+
+// ═══════════ LAYER 3 — RIGID WHEEL, ODE-DRIVEN ═══════════
+let c3;
+const G3_OMEGA=8; // fixed spin speed for L3
+let gyro3={state:gyroReset(),ghosts:[],trail:[],lastGhostPhi:0,lastN:-1,
+           smoothP:0.5,smoothF:0.5,thetaMin:PI/2,thetaMax:PI/2};
+
+window.setN=function(n){
+  nMasses=n;
+  [1,2,4,8,24].forEach(v=>{document.getElementById("bn"+v).classList.toggle("active",v===n)});
+  // Reset simulation when N changes
+  gyro3.state=gyroReset();
+  gyro3.ghosts=[];gyro3.trail=[];gyro3.lastGhostPhi=0;
+  gyro3.thetaMin=PI/2;gyro3.thetaMax=PI/2;
+  gyro3.smoothP=0.5;gyro3.smoothF=0.5;
+};
+
+function drawL3(t,dt){
+  if(!c3)c3=IC("c3main",760,560);
+  const{x,w,h}=c3;x.clearRect(0,0,w,h);
+  const cx=w/2,cy=h/2+15,R=120;
+  const N=nMasses;
+  const omega=G3_OMEGA;
+  const spinAngle=t*omega;
+
+  // ── N=1: free mass, no rigidity ──
+  if(N===1){
+    // Full 3D reference frame matching N>=2 views
+    axle(x,cx,cy,R*1.4);
+    ring(x,cx,cy,R,"rgba(90,160,220,0.14)",1.5);
+    // Dashed vertical (Y) reference
+    x.strokeStyle="rgba(200,210,230,0.3)";x.lineWidth=1;x.setLineDash([4,4]);
+    const yB=P3(0,-R*1.8,0,0,0,cx,cy),yT=P3(0,R*1.8,0,0,0,cx,cy);
+    x.beginPath();x.moveTo(yB.px,yB.py);x.lineTo(yT.px,yT.py);x.stroke();
+    x.setLineDash([]);
+    txt(x,yT.px-10,yT.py-8,"Y","rgba(200,210,230,0.7)",10);
+
+    const delta=3.0/(omega*omega);
+    // Use modular time to periodically reset — shows the escape repeating
+    const resetPeriod=PI2*4/omega; // reset every 4 revolutions
+    const localT=t%resetPeriod;
+    const localSpin=localT*omega;
+    const a=spinAngle;
+    const u=R*Math.cos(a),v2=R*Math.sin(a);
+    const z_free=delta*(localSpin-Math.sin(localSpin));
+    // Soft asymptotic mapping: tanh never hard-clips
+    const zScale=R*1.2;
+    const zC=zScale*Math.tanh(z_free*0.08);
+    const op=P(u,v2,0,cx,cy);
+    x.globalAlpha=0.15;dot(x,op.px,op.py,6,MC[0]);x.globalAlpha=1;
+    const dp=P(u,v2,zC,cx,cy);
+    dot(x,dp.px,dp.py,9,MC[0],"#08080c",2);
+    if(Math.abs(zC)>1){
+      x.strokeStyle=zC>0?COL.prec:COL.fall;x.lineWidth=1;x.globalAlpha=0.6;
+      x.beginPath();x.moveTo(op.px,op.py);x.lineTo(dp.px,dp.py);x.stroke();x.globalAlpha=1;
+    }
+    // Ghost trail: show past positions every quarter revolution
+    const nGhosts=Math.min(12,Math.floor(localSpin/(PI/2)));
+    for(let g=1;g<=nGhosts;g++){
+      const gSpin=g*(PI/2);
+      const gA=gSpin; // orbital angle at that time
+      const gU=R*Math.cos(spinAngle-localSpin+gSpin),gV=R*Math.sin(spinAngle-localSpin+gSpin);
+      const gZ=delta*(gSpin-Math.sin(gSpin));
+      const gZC=zScale*Math.tanh(gZ*0.08);
+      const gp=P(gU,gV,gZC,cx,cy);
+      const alpha3=0.15+0.25*(g/nGhosts);
+      x.globalAlpha=alpha3;dot(x,gp.px,gp.py,4,MC[0]);x.globalAlpha=1;
+    }
+    // Escape indicator when mass has drifted far
+    if(z_free>zScale*0.5){
+      const eTip=P(u*0.2,v2*0.2,zScale*1.3,cx,cy);
+      const eBase=P(u*0.2,v2*0.2,zScale*0.9,cx,cy);
+      x.strokeStyle=COL.prec;x.lineWidth=1.5;x.setLineDash([4,3]);
+      x.beginPath();x.moveTo(dp.px,dp.py);x.lineTo(eTip.px,eTip.py);x.stroke();
+      x.setLineDash([]);
+      txt(x,eTip.px+12,eTip.py-6,"→ ∞",COL.prec,11,"left");
+    }
+    // Show actual displacement value
+    txt(x,cx,h-28,"z = "+(z_free/delta).toFixed(1)+"δ  (δ = F/mω² — grows without bound)",COL.accent,9);
+    const cp2=P3(0,0,0,0,0,cx,cy);dot(x,cp2.px,cp2.py,3,COL.accent);
+    txt(x,cx,16,"1 mass — free, no rigidity, drifts along axle (resets every 4 revolutions)",COL.dim,10);
+    document.getElementById("ratioViz").innerHTML='<div style="display:flex;height:24px;border-radius:4px;overflow:hidden;margin:8px 0"><div style="width:0%;background:var(--prec)"></div><div style="width:100%;background:var(--fall)"></div></div><div style="display:flex;justify-content:space-between;font-size:0.8em"><span style="color:var(--prec)">Precession: 0%</span><span style="color:var(--fall)">Drift: 100%</span></div>';
+    document.getElementById("l3comment").textContent="Single mass drifts along axle. No partner to constrain it. No rigidity. No precession — just a spiral away from the wheel plane. This is what F=ma gives you without the rigid-body constraint.";
+    return;
+  }
+
+  // ── N≥2: full ODE simulation ──
+  // Sub-step the physics
+  if(dt>0){
+    const nSteps=Math.max(1,Math.floor(dt/SIM_DT));
+    for(let s=0;s<nSteps;s++){
+      gyro3.state=gyroStep(gyro3.state,omega,SIM_DT);
+    }
+  }
+
+  const theta=gyro3.state[0]; // angle from vertical
+  const phi=gyro3.state[1];   // precession angle
+  const thetaDot=gyro3.state[2];
+  const phiDot=gyro3.state[3];
+  const tiltX=theta-PI/2;     // deviation from horizontal for P3
+  const precY=phi;
+
+  // Track min/max theta for nutation range display
+  if(theta<gyro3.thetaMin)gyro3.thetaMin=theta;
+  if(theta>gyro3.thetaMax)gyro3.thetaMax=theta;
+
+  // Ghost snapshots: store every ~15° of precession
+  const ghostStep=PI/12;
+  if(Math.abs(phi-gyro3.lastGhostPhi)>ghostStep){
+    gyro3.ghosts.push({theta:theta,phi:phi});
+    gyro3.lastGhostPhi=phi;
+    if(gyro3.ghosts.length>12)gyro3.ghosts.shift();
+  }
+
+  // Trail: store axle tip theta/phi every frame for smooth curve
+  if(nMasses>=2){
+    gyro3.trail.push({theta:theta,phi:phi});
+    if(gyro3.trail.length>250)gyro3.trail.shift();
+  }
+
+  // ── Draw vertical Y axis (fixed) ──
+  x.strokeStyle="rgba(200,210,230,0.3)";x.lineWidth=1;x.setLineDash([4,4]);
+  const yB=P3(0,-R*1.8,0,0,0,cx,cy),yT=P3(0,R*1.8,0,0,0,cx,cy);
+  x.beginPath();x.moveTo(yB.px,yB.py);x.lineTo(yT.px,yT.py);x.stroke();
+  x.setLineDash([]);
+  txt(x,yT.px-10,yT.py-8,"Y","rgba(200,210,230,0.7)",10);
+
+  // ── Ghost ring snapshots (no tip dots) ──
+  for(let g=0;g<gyro3.ghosts.length;g++){
+    const gh=gyro3.ghosts[g];
+    const alpha=0.12+0.18*(g/gyro3.ghosts.length);
+    const ghTilt=gh.theta-PI/2;
+    x.strokeStyle="rgba(140,150,185,"+alpha+")";x.lineWidth=1;x.beginPath();
+    for(let i=0;i<=60;i++){
+      const a2=(i/60)*PI2;
+      const p=P3(R*Math.cos(a2),R*Math.sin(a2),0,ghTilt,gh.phi,cx,cy);
+      i===0?x.moveTo(p.px,p.py):x.lineTo(p.px,p.py);
+    }
+    x.stroke();
+  }
+
+  // ── Fading trail of +Z axle tip ──
+  if(gyro3.trail.length>1){
+    for(let i=1;i<gyro3.trail.length;i++){
+      const frac=i/gyro3.trail.length;
+      const segAlpha=frac*frac*0.6; // quadratic fade-in: old=faint, new=bright
+      const tr0=gyro3.trail[i-1], tr1=gyro3.trail[i];
+      const p0=P3(0,0,R*1.1,tr0.theta-PI/2,tr0.phi,cx,cy);
+      const p1=P3(0,0,R*1.1,tr1.theta-PI/2,tr1.phi,cx,cy);
+      x.strokeStyle="rgba(232,180,80,"+segAlpha+")";
+      x.lineWidth=1.2+frac*0.8;
+      x.beginPath();x.moveTo(p0.px,p0.py);x.lineTo(p1.px,p1.py);x.stroke();
+    }
+  }
+
+  // ── Cone trace (current theta) ──
+  x.strokeStyle="rgba(74,158,110,0.2)";x.lineWidth=1.5;x.beginPath();
+  for(let i=0;i<=80;i++){
+    const pa=(i/80)*PI2;
+    const p=P3(0,0,R*1.1,tiltX,pa,cx,cy);
+    i===0?x.moveTo(p.px,p.py):x.lineTo(p.px,p.py);
+  }
+  x.stroke();
+
+  // ── Axle ──
+  axle3D(x,cx,cy,R*1.3,tiltX,precY);
+  const axTip=P3(0,0,R*1.35,tiltX,precY,cx,cy);
+  txt(x,axTip.px+16,axTip.py-8,"Z (axle)","#e8a030",10,"left");
+
+  // ── Dashed X axis (rotates with wheel) ──
+  x.strokeStyle="rgba(200,210,230,0.35)";x.lineWidth=1;x.setLineDash([4,4]);
+  const rx1=P3(-R*1.4,0,0,tiltX,precY,cx,cy);
+  const rx2=P3(R*1.4,0,0,tiltX,precY,cx,cy);
+  x.beginPath();x.moveTo(rx1.px,rx1.py);x.lineTo(rx2.px,rx2.py);x.stroke();
+  x.setLineDash([]);
+  txt(x,rx2.px+12,rx2.py+2,"X","rgba(200,210,230,0.7)",9,"left");
+
+  // ── Wheel's local Y axis (tilts with nutation) ──
+  x.strokeStyle="rgba(160,160,180,0.22)";x.lineWidth=1;x.setLineDash([3,4]);
+  const wy1=P3(0,-R*1.5,0,tiltX,precY,cx,cy);
+  const wy2=P3(0,R*1.5,0,tiltX,precY,cx,cy);
+  x.beginPath();x.moveTo(wy1.px,wy1.py);x.lineTo(wy2.px,wy2.py);x.stroke();
+  x.setLineDash([]);
+  txt(x,wy2.px+12,wy2.py-4,"Y'","rgba(160,160,180,0.45)",9,"left");
+
+  // ── Ring ──
+  ring3D(x,cx,cy,R,tiltX,precY,"rgba(90,160,220,0.35)",2);
+
+  // ── Masses with force arrows ──
+  for(let i=0;i<N;i++){
+    const a2=(PI2/N)*i+spinAngle;
+    const lx=R*Math.cos(a2),ly=R*Math.sin(a2);
+    const p=P3(lx,ly,0,tiltX,precY,cx,cy);
+    dot(x,p.px,p.py,6,MC[i%MC.length],"#08080c",1.5);
+    if(N<=8||i%(Math.floor(N/6))===0){
+      const force=3.0*Math.sin(a2);
+      if(Math.abs(force)>0.5){
+        const fLen=force*6;
+        const fp=P3(lx,ly,fLen,tiltX,precY,cx,cy);
+        arr(x,p.px,p.py,fp.px,fp.py,force>0?COL.fz:"#c47840",1.5,5);
+      }
+    }
+  }
+
+  // ── Precession arrow ──
+  if(Math.abs(tiltX)>0.01){
+    const pA1=P3(0,0,R*1.1,tiltX,precY,cx,cy);
+    const pA2=P3(0,0,R*1.1,tiltX,precY+0.15,cx,cy);
+    const pdx2=pA2.px-pA1.px,pdy2=pA2.py-pA1.py;
+    const pLen=Math.sqrt(pdx2*pdx2+pdy2*pdy2);
+    if(pLen>1){
+      const sc=Math.min(50,Math.abs(phiDot)*25)/pLen;
+      arr(x,pA1.px,pA1.py,pA1.px+pdx2*sc,pA1.py+pdy2*sc,COL.prec,3,9);
+      txt(x,pA1.px+pdx2*sc*1.2+20,pA1.py+pdy2*sc*1.2,"PRECESSION",COL.prec,10);
+    }
+  }
+
+  // ── Falling arrow (proportional to droop below horizontal) ──
+  const droop=theta-PI/2;
+  if(droop>0.01){
+    const fc=P3(0,0,0,tiltX,precY,cx,cy);
+    const fVis=Math.min(droop*50,40);
+    arr(x,fc.px,fc.py,fc.px,fc.py+fVis,COL.fall,2.5,8);
+    txt(x,fc.px+35,fc.py+fVis*0.5,"FALLING",COL.fall,10);
+  }
+
+  // Center dot
+  const cp2=P3(0,0,0,0,0,cx,cy);dot(x,cp2.px,cp2.py,3,COL.accent);
+
+  // ── Stats ──
+  // Smooth precession vs falling rates
+  const precRate=Math.abs(phiDot)*Math.abs(Math.sin(theta));
+  const fallRate=Math.max(0,thetaDot);
+  const alpha2=0.03; // smoothing
+  gyro3.smoothP+=(precRate-gyro3.smoothP)*alpha2;
+  gyro3.smoothF+=(fallRate-gyro3.smoothF)*alpha2;
+  const total=gyro3.smoothP+gyro3.smoothF;
+  const pP3=total>0.001?gyro3.smoothP/total*100:50;
+  const fP3=100-pP3;
+
+  document.getElementById("ratioViz").innerHTML='<div style="display:flex;height:24px;border-radius:4px;overflow:hidden;margin:8px 0"><div style="width:'+pP3+'%;background:var(--prec);transition:width 0.3s"></div><div style="width:'+fP3+'%;background:var(--fall);transition:width 0.3s"></div></div><div style="display:flex;justify-content:space-between;font-size:0.8em"><span style="color:var(--prec)">Precession: '+pP3.toFixed(0)+'%</span><span style="color:var(--fall)">Falling: '+fP3.toFixed(0)+'%</span></div>';
+
+  const nutRange=(gyro3.thetaMax-gyro3.thetaMin)*180/PI;
+  txt(x,cx,16,N+" masses — ODE simulation (RK4) — nutation: "+nutRange.toFixed(1)+"° range",COL.dim,10);
+
+  var cm={
+    2:"Two masses, rigid. The simulation solves θ̈ + ωₙ²sin(θ)=0 in real time. Watch the axle bob (nutation) while sweeping (precession). The bobbing is large — two masses make a weak gyroscope. The falling arrow pulses with each nutation cycle.",
+    4:"Four masses, rigid. Same ODE, same physics. The bobbing is visible, precession is clear. The ratio bar responds to the actual computed θ̇ and φ̇ — not a formula, the real integrated motion.",
+    8:"Eight masses. The ODE produces the same trajectory regardless of N (rigidity makes the mass count irrelevant to the dynamics). The visual difference is cosmetic. The physics is identical to N=2 — only the rendering changes.",
+    24:"Twenty-four masses — effectively a continuous ring. Same equations, same solution, same nutation amplitude and precession rate as N=2. This proves the point: precession is a rigid-body property, not an emergent property of many masses. Rigidity IS the mechanism."
+  };
+  document.getElementById("l3comment").textContent=cm[N]||cm[4];
+}
+
+// ═══════════ LAYER 4 — FULL GYROSCOPE, ODE-DRIVEN ═══════════
+let c4;
+let gyro4={state:gyroReset(),ghosts:[],trail:[],lastGhostPhi:0,
+           smoothP:0.5,smoothF:0.5,thetaMin:PI/2,thetaMax:PI/2,
+           prevGrav:true,prevOmega:-1};
+
+window.setGrav=function(on){
+  gravOn=on;
+  document.getElementById("bgrav1").classList.toggle("active",on);
+  document.getElementById("bgrav0").classList.toggle("active",!on);
+  // Reset simulation
+  gyro4.state=gyroReset();
+  gyro4.ghosts=[];gyro4.trail=[];gyro4.lastGhostPhi=0;
+  gyro4.thetaMin=PI/2;gyro4.thetaMax=PI/2;
+  gyro4.smoothP=0.5;gyro4.smoothF=0.5;
+};
+
+function drawL4(t,dt){
+  if(!c4)c4=IC("c4main",760,560);
+  const{x,w,h}=c4;x.clearRect(0,0,w,h);
+
+  const sp=gv("s4speed");
+  document.getElementById("s4speedVal").textContent=sp.toFixed(1)+"x";
+  const omega=sp*5; // map slider 0.3-4 to omega 1.5-20
+  const spinAngle=t*omega;
+  const cx=w/2,cy=h/2+15,R=120;
+  const N=20;
+
+  // Reset if omega changed significantly (slider moved)
+  if(Math.abs(omega-gyro4.prevOmega)>0.5&&gyro4.prevOmega>0){
+    gyro4.state=gyroReset();
+    gyro4.ghosts=[];gyro4.trail=[];gyro4.lastGhostPhi=0;
+    gyro4.thetaMin=PI/2;gyro4.thetaMax=PI/2;
+    gyro4.smoothP=0.5;gyro4.smoothF=0.5;
+  }
+  gyro4.prevOmega=omega;
+
+  // Sub-step ODE (only if gravity is on)
+  if(gravOn&&dt>0){
+    const nSteps=Math.max(1,Math.floor(dt/SIM_DT));
+    for(let s=0;s<nSteps;s++){
+      gyro4.state=gyroStep(gyro4.state,omega,SIM_DT);
+    }
+  }
+
+  const theta=gravOn?gyro4.state[0]:PI/2;
+  const phi=gravOn?gyro4.state[1]:0;
+  const thetaDot=gravOn?gyro4.state[2]:0;
+  const phiDot=gravOn?gyro4.state[3]:0;
+  const tiltX=theta-PI/2;
+  const precY=phi;
+
+  if(gravOn){
+    if(theta<gyro4.thetaMin)gyro4.thetaMin=theta;
+    if(theta>gyro4.thetaMax)gyro4.thetaMax=theta;
+  }
+
+  // Trail: store axle tip theta/phi every frame
+  if(gravOn){
+    gyro4.trail.push({theta:theta,phi:phi});
+    if(gyro4.trail.length>250)gyro4.trail.shift();
+  }
+
+  // ── Vertical Y axis ──
+  x.strokeStyle="rgba(200,210,230,0.3)";x.lineWidth=1;x.setLineDash([4,4]);
+  const yB=P3(0,-R*2,0,0,0,cx,cy),yT=P3(0,R*2,0,0,0,cx,cy);
+  x.beginPath();x.moveTo(yB.px,yB.py);x.lineTo(yT.px,yT.py);x.stroke();
+  x.setLineDash([]);
+  txt(x,yT.px-12,yT.py-8,"Y (gravity)","rgba(200,210,230,0.6)",9);
+
+  // ── Gravity arrow ──
+  if(gravOn){
+    const gS=P3(0,R*1.6,0,0,0,cx,cy),gE=P3(0,R*1.1,0,0,0,cx,cy);
+    arr(x,gS.px,gS.py,gE.px,gE.py,COL.fall,2.5,9);
+    txt(x,gS.px+30,gS.py+5,"gravity",COL.fall,10,"left");
+  }
+
+  // ── Fading trail of +Z axle tip ──
+  if(gyro4.trail.length>1){
+    for(let i=1;i<gyro4.trail.length;i++){
+      const frac=i/gyro4.trail.length;
+      const segAlpha=frac*frac*0.6;
+      const tr0=gyro4.trail[i-1], tr1=gyro4.trail[i];
+      const p0=P3(0,0,R*1.1,tr0.theta-PI/2,tr0.phi,cx,cy);
+      const p1=P3(0,0,R*1.1,tr1.theta-PI/2,tr1.phi,cx,cy);
+      x.strokeStyle="rgba(232,180,80,"+segAlpha+")";
+      x.lineWidth=1.2+frac*0.8;
+      x.beginPath();x.moveTo(p0.px,p0.py);x.lineTo(p1.px,p1.py);x.stroke();
+    }
+  }
+
+  // ── Cone trace ──
+  if(gravOn&&Math.abs(tiltX)>0.005){
+    x.strokeStyle="rgba(74,158,110,0.25)";x.lineWidth=1.5;x.beginPath();
+    for(let i=0;i<=100;i++){
+      const pa=(i/100)*PI2;
+      const p=P3(0,0,R*1.1,tiltX,pa,cx,cy);
+      i===0?x.moveTo(p.px,p.py):x.lineTo(p.px,p.py);
+    }
+    x.stroke();
+  }
+
+  // ── Axle and axes ──
+  if(gravOn){
+    axle3D(x,cx,cy,R*1.3,tiltX,precY);
+    const axTL4=P3(0,0,R*1.35,tiltX,precY,cx,cy);
+    txt(x,axTL4.px+14,axTL4.py-8,"Z","#e8a030",10,"left");
+    // Dashed X axis
+    x.strokeStyle="rgba(200,210,230,0.35)";x.lineWidth=1;x.setLineDash([4,4]);
+    const l4x1=P3(-R*1.4,0,0,tiltX,precY,cx,cy);
+    const l4x2=P3(R*1.4,0,0,tiltX,precY,cx,cy);
+    x.beginPath();x.moveTo(l4x1.px,l4x1.py);x.lineTo(l4x2.px,l4x2.py);x.stroke();
+    x.setLineDash([]);
+    txt(x,l4x2.px+12,l4x2.py+2,"X","rgba(200,210,230,0.7)",9,"left");
+    // Wheel's local Y axis (tilts with nutation)
+    x.strokeStyle="rgba(160,160,180,0.22)";x.lineWidth=1;x.setLineDash([3,4]);
+    const l4wy1=P3(0,-R*1.5,0,tiltX,precY,cx,cy);
+    const l4wy2=P3(0,R*1.5,0,tiltX,precY,cx,cy);
+    x.beginPath();x.moveTo(l4wy1.px,l4wy1.py);x.lineTo(l4wy2.px,l4wy2.py);x.stroke();
+    x.setLineDash([]);
+    txt(x,l4wy2.px+12,l4wy2.py-4,"Y'","rgba(160,160,180,0.45)",9,"left");
+  } else {
+    const az1=P(0,0,-R*0.8,cx,cy),az2=P(0,0,R*1.2,cx,cy);
+    arr(x,az1.px,az1.py,az2.px,az2.py,"#e8a030",2.5,9);
+    x.strokeStyle="rgba(200,210,230,0.3)";x.lineWidth=1;x.setLineDash([4,4]);
+    const sx1=P(-R*1.4,0,0,cx,cy),sx2=P(R*1.4,0,0,cx,cy);
+    x.beginPath();x.moveTo(sx1.px,sx1.py);x.lineTo(sx2.px,sx2.py);x.stroke();
+    x.setLineDash([]);
+  }
+
+  // ── Ring ──
+  const drawTilt=gravOn?tiltX:0, drawPrec=gravOn?precY:0;
+  ring3D(x,cx,cy,R,drawTilt,drawPrec,"rgba(90,160,220,0.35)",2);
+
+  // ── Masses ──
+  for(let i=0;i<N;i++){
+    const a2=(PI2/N)*i+spinAngle;
+    const lx=R*Math.cos(a2),ly=R*Math.sin(a2);
+    const p=P3(lx,ly,0,drawTilt,drawPrec,cx,cy);
+    const col=gravOn?(ly>0?COL.prec:COL.fall):"#6888a8";
+    x.globalAlpha=gravOn?0.8:0.5;
+    dot(x,p.px,p.py,4,col,"#08080c",1);
+    x.globalAlpha=1;
+    if(gravOn&&i%5===0){
+      const force=3.0*Math.sin(a2);
+      if(Math.abs(force)>0.5){
+        const fLen=force*5;
+        const fp=P3(lx,ly,fLen,drawTilt,drawPrec,cx,cy);
+        arr(x,p.px,p.py,fp.px,fp.py,force>0?COL.fz:"#c47840",1.5,5);
+      }
+    }
+  }
+
+  // ── Precession arrow ──
+  if(gravOn&&Math.abs(tiltX)>0.01){
+    const pA1=P3(0,0,R*1.1,tiltX,precY,cx,cy);
+    const pA2=P3(0,0,R*1.1,tiltX,precY+0.15,cx,cy);
+    const pdx2=pA2.px-pA1.px,pdy2=pA2.py-pA1.py;
+    const pLen=Math.sqrt(pdx2*pdx2+pdy2*pdy2);
+    if(pLen>1){
+      const sc=Math.min(50,Math.abs(phiDot)*20)/pLen;
+      arr(x,pA1.px,pA1.py,pA1.px+pdx2*sc,pA1.py+pdy2*sc,COL.prec,3,9);
+      txt(x,pA1.px+pdx2*sc*1.3+15,pA1.py+pdy2*sc*1.3,"PRECESSION",COL.prec,11);
+    }
+  }
+
+  // ── Falling arrow ──
+  const droop4=theta-PI/2;
+  if(gravOn&&droop4>0.01){
+    const fc=P3(0,0,0,tiltX,precY,cx,cy);
+    const fVis=Math.min(droop4*50,40);
+    arr(x,fc.px,fc.py,fc.px,fc.py+fVis,COL.fall,2.5,8);
+    txt(x,fc.px+35,fc.py+fVis*0.5,"FALLING",COL.fall,10);
+  }
+
+  // Center dot
+  const ctr=P3(0,0,0,0,0,cx,cy);
+  dot(x,ctr.px,ctr.py,3,COL.accent);
+
+  // ── Labels ──
+  if(!gravOn){
+    txt(x,cx,h-10,"Gravity OFF — no force, no tilt, no precession.",COL.dim,10);
+  } else {
+    const nutR=(gyro4.thetaMax-gyro4.thetaMin)*180/PI;
+    txt(x,cx,h-10,"ODE simulation — ω="+omega.toFixed(1)+" rad/s — nutation: "+nutR.toFixed(1)+"° — droop: "+(droop4*180/PI).toFixed(1)+"°",COL.accent,9);
+  }
+  txt(x,cx,16,"Full gyroscope — "+N+" masses — real physics from F=ma",COL.dim,10);
+
+  // ── Ratio bar ──
+  const precRate4=Math.abs(phiDot)*Math.abs(Math.sin(theta));
+  const fallRate4=Math.max(0,thetaDot);
+  const sm=0.03;
+  gyro4.smoothP+=(precRate4-gyro4.smoothP)*sm;
+  gyro4.smoothF+=(fallRate4-gyro4.smoothF)*sm;
+  const tot4=gyro4.smoothP+gyro4.smoothF;
+  const pFrac=gravOn?(tot4>0.001?Math.round(gyro4.smoothP/tot4*100):50):0;
+  const fFrac=gravOn?100-pFrac:0;
+
+  document.getElementById("precVal").textContent=gravOn?(pFrac+"%"):"OFF";
+  document.getElementById("fallVal").textContent=gravOn?(fFrac+"%"):"OFF";
+
+  const precDPS=gravOn?(Math.abs(phiDot)*180/PI).toFixed(1):"0";
+
+  document.getElementById("l4ratio").innerHTML=gravOn?('<div style="display:flex;height:28px;border-radius:4px;overflow:hidden;margin:8px 0"><div style="width:'+pFrac+'%;background:var(--prec);transition:width 0.5s"></div><div style="width:'+fFrac+'%;background:var(--fall);transition:width 0.5s"></div></div><div style="display:flex;justify-content:space-between;font-size:0.82em"><span style="color:var(--prec)">Precession: '+pFrac+'%</span><span style="color:var(--fall)">Falling: '+fFrac+'%</span><span style="color:var(--accent)">Sweep: '+precDPS+'°/s (computed)</span></div>'):'<div style="font-size:0.9em;color:var(--dim)">No gravity — no force — no precession or falling</div>';
+
+  var cmt;
+  if(!gravOn) cmt="No gravity, no force, no precession. The wheel just spins in place.";
+  else if(sp<0.6) cmt="At ω="+omega.toFixed(1)+" rad/s, the spin is too slow to sustain precession. The 90° lag cannot redirect enough of the gravitational velocity sideways. The axle tumbles chaotically — this is what a 'gyroscope' does when it is not spinning fast enough. It is just a falling object.";
+  else if(sp<1.2) cmt="At ω="+omega.toFixed(1)+", precession is emerging but nutation is large. The axle bobs visibly while sweeping. The falling arrow pulses with each nutation cycle. This is the transition zone between tumbling and gyroscopic behavior.";
+  else cmt="At ω="+omega.toFixed(1)+", the gyroscope is stiff. Nutation is fast and small. Precession sweeps at "+precDPS+"°/s — computed from the ODE, not prescribed. Move the slider and watch the behavior change because the physics changes. Every motion you see emerged from F=ma and rigidity.";
+  document.getElementById("l4comment").textContent=cmt;
+}
+
+
+// ═══════════ LAYER 5 — PENDULUM / NUTATION COMPARISON ═══════════
+// Real nonlinear pendulum via RK4 integration, side by side with nutation
+let c5;
+// RK4 state for the nonlinear pendulum (persistent across frames)
+let pendState={theta:0.8, omega_p:0, t:0, init:false};
+// RK4 state for nutation — now driven by the FULL coupled gyro ODE
+let nutState={theta:0.05, omega_n:0, t:0, init:false};
+// Full gyro state for Layer 5 nutation (separate from L3/L4 instances)
+const L5_OMEGA=4.0; // spin speed for L5 gyro
+let gyro5={state:null, init:false};
+// Matched standalone pendulum for overlay comparison
+let nutMatchState={theta:0, omega_m:0, init:false};
+let nutMatchHist=[];
+// History buffers for trail
+let pendHist=[], nutHist=[];
+const HIST_MAX=400;
+
+function pendRHS(th,om,wnSq){ return -wnSq*Math.sin(th); }
+
+function rk4Step(th,om,wnSq,dt){
+  const k1v=pendRHS(th,om,wnSq);
+  const k1x=om;
+  const k2v=pendRHS(th+0.5*dt*k1x,om+0.5*dt*k1v,wnSq);
+  const k2x=om+0.5*dt*k1v;
+  const k3v=pendRHS(th+0.5*dt*k2x,om+0.5*dt*k2v,wnSq);
+  const k3x=om+0.5*dt*k2v;
+  const k4v=pendRHS(th+dt*k3x,om+dt*k3v,wnSq);
+  const k4x=om+dt*k3v;
+  return{
+    theta:th+dt*(k1x+2*k2x+2*k3x+k4x)/6,
+    omega:om+dt*(k1v+2*k2v+2*k3v+k4v)/6
+  };
+}
+
+function drawL5(t){
+  if(!c5)c5=IC("c5pend",760,300);
+  const{x,w,h}=c5;x.clearRect(0,0,w,h);
+
+  const l5speed=gv("s5speed");
+  document.getElementById("s5speedVal").textContent=l5speed.toFixed(1)+"x";
+  const dt=0.025*l5speed; // physics timestep scaled by speed
+  const midX=w/2;
+
+  // ── Left side: real pendulum ──
+  const pCx=w*0.25, pCy=50, pL=90;
+  const pendWnSq=4.0; // ω² for the pendulum
+
+  if(!pendState.init){pendState.init=true;pendState.theta=0.8;pendState.omega_p=0;pendState.t=0;pendHist=[];}
+  // Integrate
+  const ps=rk4Step(pendState.theta,pendState.omega_p,pendWnSq,dt);
+  pendState.theta=ps.theta;pendState.omega_p=ps.omega;pendState.t+=dt;
+  pendHist.push(pendState.theta);
+  if(pendHist.length>HIST_MAX)pendHist.shift();
+
+  // Draw pivot
+  dot(x,pCx,pCy,4,"#6a6458","#08080c",1);
+  // Draw rod
+  const pBx=pCx+pL*Math.sin(pendState.theta);
+  const pBy=pCy+pL*Math.cos(pendState.theta);
+  x.strokeStyle="rgba(224,220,210,0.5)";x.lineWidth=2;
+  x.beginPath();x.moveTo(pCx,pCy);x.lineTo(pBx,pBy);x.stroke();
+  // Draw bob
+  dot(x,pBx,pBy,10,COL.fall,"#08080c",2);
+  // Vertical reference
+  x.strokeStyle="rgba(180,210,240,0.1)";x.lineWidth=1;x.setLineDash([3,3]);
+  x.beginPath();x.moveTo(pCx,pCy);x.lineTo(pCx,pCy+pL+15);x.stroke();
+  x.setLineDash([]);
+  // Arc showing angle
+  if(Math.abs(pendState.theta)>0.03){
+    x.strokeStyle=COL.accent;x.lineWidth=1;x.beginPath();
+    const arcR=30;
+    const startA=PI/2-Math.max(pendState.theta,0);
+    const endA=PI/2-Math.min(pendState.theta,0);
+    x.arc(pCx,pCy,arcR,startA,endA);x.stroke();
+    txt(x,pCx+(pendState.theta>0?18:-18),pCy+35,"θ",COL.accent,11);
+  }
+  // History graph below pendulum
+  const gY=pCy+pL+40, gH=60, gW=w*0.4;
+  const gX=pCx-gW/2;
+  x.strokeStyle="#1c1c2c";x.lineWidth=1;
+  x.beginPath();x.moveTo(gX,gY);x.lineTo(gX+gW,gY);x.lineTo(gX+gW,gY+gH);x.lineTo(gX,gY+gH);x.closePath();x.stroke();
+  // Zero line
+  x.strokeStyle="rgba(180,210,240,0.1)";x.lineWidth=0.5;
+  x.beginPath();x.moveTo(gX,gY+gH/2);x.lineTo(gX+gW,gY+gH/2);x.stroke();
+  // Plot pendulum history
+  if(pendHist.length>1){
+    x.strokeStyle=COL.fall;x.lineWidth=1.5;x.beginPath();
+    for(let i=0;i<pendHist.length;i++){
+      const px=gX+(i/HIST_MAX)*gW;
+      const py=gY+gH/2-pendHist[i]/(1.2)*(gH/2);
+      i===0?x.moveTo(px,py):x.lineTo(px,py);
+    }
+    x.stroke();
+  }
+  txt(x,pCx,16,"PENDULUM","rgba(196,92,92,0.8)",11);
+  txt(x,pCx,pCy+pL+28,"θ(t) — nonlinear, period depends on amplitude",COL.dim,9);
+  txt(x,gX-2,gY+gH/2,"+θ",COL.dim,8,"right");
+
+  // ── Divider ──
+  x.strokeStyle="rgba(180,210,240,0.08)";x.lineWidth=1;
+  x.beginPath();x.moveTo(midX,10);x.lineTo(midX,h-10);x.stroke();
+  txt(x,midX,h/2-5,"SAME",COL.accent,10);
+  txt(x,midX,h/2+9,"MOTION",COL.accent,10);
+
+  // ── Right side: gyroscope nutation from FULL COUPLED ODE ──
+  const nCx=w*0.75, nCy=50, nL=90;
+
+  // Initialize the full gyro ODE for Layer 5
+  // Start at θ=π/2+0.3 (slightly below horizontal) with steady-state precession
+  // This gives clean nutation oscillation around the equilibrium
+  if(!gyro5.init){
+    const phiDotSteady=SIM_GEFF/(SIM_K*L5_OMEGA); // steady precession rate
+    gyro5.state=[PI/2+0.3, 0, 0, phiDotSteady]; // [theta, phi, thetaDot, phiDot]
+    gyro5.init=true;
+    nutHist=[];
+    // Initialize matched standalone pendulum with same amplitude
+    // ωₙ² ≈ (k·ω)² from linearized nutation analysis
+    const nutWnSq=(SIM_K*L5_OMEGA)*(SIM_K*L5_OMEGA);
+    nutMatchState.theta=0.3; // same amplitude as gyro perturbation
+    nutMatchState.omega_m=0;
+    nutMatchState.wnSq=nutWnSq;
+    nutMatchState.init=true;
+    nutMatchHist=[];
+  }
+
+  // Step the full coupled gyro ODE (same integrator as Layer 4)
+  const nSubSteps=Math.max(1,Math.floor(dt/0.001));
+  for(let s=0;s<nSubSteps;s++){
+    gyro5.state=gyroStep(gyro5.state,L5_OMEGA,0.001);
+  }
+  const nutAngle=gyro5.state[0]-PI/2; // nutation = deviation from horizontal
+  nutHist.push(nutAngle);
+  if(nutHist.length>HIST_MAX)nutHist.shift();
+
+  // Step the matched standalone pendulum (for overlay comparison)
+  const ms=rk4Step(nutMatchState.theta,nutMatchState.omega_m,nutMatchState.wnSq,dt);
+  nutMatchState.theta=ms.theta;nutMatchState.omega_m=ms.omega;
+  nutMatchHist.push(nutMatchState.theta);
+  if(nutMatchHist.length>HIST_MAX)nutMatchHist.shift();
+
+  // Draw nutation schematic: pivot on left, axle tilting by nutation angle, mass at tip
+  // Mirrors the pendulum on the left — same structure rotated: pivot, rod, mass, gravity
+  const pivotX=nCx-nL*0.6, pivotY=nCy+nL*0.5;
+  dot(x,pivotX,pivotY,4,"#6a6458","#08080c",1);
+  txt(x,pivotX-6,pivotY-12,"pivot","#6a6458",8,"right");
+  // Axle tilted by nutAngle from horizontal
+  const axLen=nL*1.2;
+  const axEndX=pivotX+axLen*Math.cos(nutAngle);
+  const axEndY=pivotY+axLen*Math.sin(nutAngle);
+  x.strokeStyle="rgba(232,160,48,0.7)";x.lineWidth=2.5;
+  x.beginPath();x.moveTo(pivotX,pivotY);x.lineTo(axEndX,axEndY);x.stroke();
+  // Mass at tip of axle (represents the wheel's concentrated mass)
+  dot(x,axEndX,axEndY,7,COL.accent,"#08080c",1.5);
+  // Horizontal reference
+  x.strokeStyle="rgba(200,210,230,0.2)";x.lineWidth=1;x.setLineDash([3,3]);
+  x.beginPath();x.moveTo(pivotX,pivotY);x.lineTo(pivotX+axLen+15,pivotY);x.stroke();
+  x.setLineDash([]);
+  txt(x,pivotX+axLen+20,pivotY,"horizontal","rgba(200,210,230,0.4)",8,"left");
+  // Angle arc
+  if(Math.abs(nutAngle)>0.03){
+    x.strokeStyle=COL.accent;x.lineWidth=1;x.beginPath();
+    const aR=35;
+    x.arc(pivotX,pivotY,aR,0,nutAngle,nutAngle<0);x.stroke();
+    txt(x,pivotX+40,pivotY+(nutAngle>0?14:-10),"θ",COL.accent,11);
+  }
+  // Gravity arrow pulling down from near the mass
+  arr(x,axEndX,axEndY+12,axEndX,axEndY+38,COL.fall,2,7);
+  txt(x,axEndX+16,axEndY+30,"g",COL.fall,10,"left");
+
+  // History graph below — two traces: full ODE (green) and matched pendulum (gold dashed)
+  const nGX=nCx-gW/2;
+  x.strokeStyle="#1c1c2c";x.lineWidth=1;
+  x.beginPath();x.moveTo(nGX,gY);x.lineTo(nGX+gW,gY);x.lineTo(nGX+gW,gY+gH);x.lineTo(nGX,gY+gH);x.closePath();x.stroke();
+  x.strokeStyle="rgba(180,210,240,0.1)";x.lineWidth=0.5;
+  x.beginPath();x.moveTo(nGX,gY+gH/2);x.lineTo(nGX+gW,gY+gH/2);x.stroke();
+  // Scale factor for graph (accommodate nutation amplitude)
+  const nutScale=0.6;
+  // Full ODE nutation trace (solid green)
+  if(nutHist.length>1){
+    x.strokeStyle=COL.prec;x.lineWidth=1.5;x.beginPath();
+    for(let i=0;i<nutHist.length;i++){
+      const px=nGX+(i/HIST_MAX)*gW;
+      const py=gY+gH/2-nutHist[i]/nutScale*(gH/2);
+      i===0?x.moveTo(px,py):x.lineTo(px,py);
+    }
+    x.stroke();
+  }
+  // Matched standalone pendulum trace (dashed gold)
+  if(nutMatchHist.length>1){
+    x.strokeStyle=COL.accent;x.lineWidth=1.2;x.setLineDash([5,4]);x.beginPath();
+    for(let i=0;i<nutMatchHist.length;i++){
+      const px=nGX+(i/HIST_MAX)*gW;
+      const py=gY+gH/2-nutMatchHist[i]/nutScale*(gH/2);
+      i===0?x.moveTo(px,py):x.lineTo(px,py);
+    }
+    x.stroke();x.setLineDash([]);
+  }
+  txt(x,nCx,16,"NUTATION (from full coupled ODE)","rgba(74,158,110,0.8)",11);
+  txt(x,nCx,pCy+pL+28,"green = full F=ma   dashed gold = matched pendulum",COL.dim,9);
+  txt(x,nGX-2,gY+gH/2,"+θ",COL.dim,8,"right");
+
+  // Bottom label
+  txt(x,w/2,h-6,"Left: pendulum θ̈+ω²sin(θ)=0.  Right: nutation extracted from FULL coupled gyro ODE — pendulum match overlaid.",COL.accent,9);
+}
+
+// ═══════════ LAYER 6 — LONG-TIME EVOLUTION TO EQUILIBRIUM ═══════════
+// Same F=ma ODE as L3/L4, with two additions:
+//   1. Bearing friction: damping proportional to θ̇ and φ̇
+//   2. Spin decay: ω decreases exponentially (bearing friction on the spin axis)
+// This produces the full journey: precession → spiral → pendulum → rest
+
+let cLT;
+const LT_OMEGA0=15;          // initial spin speed
+const LT_SPIN_DECAY=0.0025;  // spin half-life ~277s (~4.6 min)
+const LT_DT=0.0005;          // physics timestep
+let ltState=null;
+let ltRunning=true;
+let ltPhysTime=0;             // accumulated physics time (seconds)
+let ltOmega=LT_OMEGA0;
+let ltTrail=[];               // [{px,py,theta,phi,t}]
+let ltGhosts=[];              // snapshot rings
+let ltLastGhostTime=0;
+let ltPrevFric=-1;
+
+function ltDerivs(s,omega,gamma){
+  const th=s[0],ph=s[1],td=s[2],pd=s[3];
+  const sinT=Math.sin(th),cosT=Math.cos(th);
+  const sinSafe=Math.abs(sinT)<1e-10?(sinT>=0?1e-10:-1e-10):sinT;
+  const tdd=pd*pd*sinT*cosT - SIM_K*omega*pd*sinT + SIM_GEFF*sinT - gamma*td;
+  const pdd=(-2*cosT*td*pd + SIM_K*omega*td)/sinSafe - gamma*pd;
+  return[td,pd,tdd,pdd];
+}
+
+function ltStep(s,omega,gamma,dt){
+  const k1=ltDerivs(s,omega,gamma);
+  const s2=s.map((v,i)=>v+0.5*dt*k1[i]);
+  const k2=ltDerivs(s2,omega,gamma);
+  const s3=s.map((v,i)=>v+0.5*dt*k2[i]);
+  const k3=ltDerivs(s3,omega,gamma);
+  const s4=s.map((v,i)=>v+dt*k3[i]);
+  const k4=ltDerivs(s4,omega,gamma);
+  const ns=s.map((v,i)=>v+dt*(k1[i]+2*k2[i]+2*k3[i]+k4[i])/6);
+  ns[0]=Math.max(0.08,Math.min(PI-0.08,ns[0]));
+  return ns;
+}
+
+window.resetLT=function(){
+  ltState=[PI/2,0,0,0]; // horizontal axle, at rest
+  ltPhysTime=0;
+  ltOmega=LT_OMEGA0;
+  ltTrail=[];
+  ltGhosts=[];
+  ltLastGhostTime=0;
+  ltRunning=true;
+  document.getElementById("bLTrun").classList.add("active");
+  document.getElementById("bLTpause").classList.remove("active");
+};
+window.setLTrun=function(on){
+  ltRunning=on;
+  document.getElementById("bLTrun").classList.toggle("active",on);
+  document.getElementById("bLTpause").classList.toggle("active",!on);
+};
+
+function drawLT(t,dt){
+  if(!cLT)cLT=IC("cLT",760,420);
+  if(!ltState) resetLT();
+  const{x,w,h}=cLT;x.clearRect(0,0,w,h);
+  const cx=w/2,cy=h/2+20,R=80;
+
+  // Read controls
+  const accelPow=gv("sLTaccel");
+  const accel=Math.pow(10,accelPow); // 10^1 to 10^5
+  document.getElementById("sLTaccelVal").textContent=accel>=1000?(accel/1000).toFixed(0)+"k":accel.toFixed(0)+"x";
+  const gamma=gv("sLTfric");
+  document.getElementById("sLTfricVal").textContent=gamma.toFixed(3);
+
+  // Reset if friction changed significantly
+  if(ltPrevFric>0&&Math.abs(gamma-ltPrevFric)>0.008){
+    resetLT();
+  }
+  ltPrevFric=gamma;
+
+  // Physics sub-stepping (time-accelerated)
+  if(ltRunning&&dt>0){
+    const physDt=dt*accel; // physics time this frame
+    const maxSteps=Math.min(3000,Math.floor(physDt/LT_DT));
+    for(let s=0;s<maxSteps;s++){
+      // Spin decay
+      ltOmega=LT_OMEGA0*Math.exp(-LT_SPIN_DECAY*ltPhysTime);
+      ltState=ltStep(ltState,ltOmega,gamma,LT_DT);
+      ltPhysTime+=LT_DT;
+    }
+
+    // Store trail point (axle tip in screen coords)
+    const tiltX=ltState[0]-PI/2;
+    const precY=ltState[1];
+    const tip=P3(0,0,R*1.1,tiltX,precY,cx,cy);
+    // Only store if moved enough on screen
+    const lastT=ltTrail.length>0?ltTrail[ltTrail.length-1]:null;
+    if(!lastT||Math.abs(tip.px-lastT.px)>0.8||Math.abs(tip.py-lastT.py)>0.8){
+      ltTrail.push({px:tip.px,py:tip.py,t:ltPhysTime,theta:ltState[0]});
+      if(ltTrail.length>6000)ltTrail.shift();
+    }
+
+    // Ghost snapshots: every ~ghostInterval seconds of physics time
+    const ghostInterval=Math.max(5,ltPhysTime*0.03);
+    if(ltPhysTime-ltLastGhostTime>ghostInterval){
+      ltGhosts.push({theta:ltState[0],phi:ltState[1],t:ltPhysTime,omega:ltOmega});
+      ltLastGhostTime=ltPhysTime;
+      if(ltGhosts.length>30)ltGhosts.shift();
+    }
+  }
+
+  const theta=ltState[0];
+  const phi=ltState[1];
+  const tiltX=theta-PI/2;
+  const precY=phi;
+  const thetaDot=ltState[2];
+  const phiDot=ltState[3];
+
+  // ── Vertical Y axis (fixed) ──
+  x.strokeStyle="rgba(200,210,230,0.3)";x.lineWidth=1;x.setLineDash([4,4]);
+  const yB2=P3(0,-R*2.2,0,0,0,cx,cy),yT2=P3(0,R*2.2,0,0,0,cx,cy);
+  x.beginPath();x.moveTo(yB2.px,yB2.py);x.lineTo(yT2.px,yT2.py);x.stroke();
+  x.setLineDash([]);
+  txt(x,yT2.px-12,yT2.py-8,"vertical","rgba(200,210,230,0.6)",9);
+
+  // ── Horizontal reference plane (dashed ellipse at θ=π/2) ──
+  x.strokeStyle="rgba(180,210,240,0.06)";x.lineWidth=1;x.setLineDash([3,5]);x.beginPath();
+  for(let i=0;i<=80;i++){
+    const pa=(i/80)*PI2;
+    const p=P3(0,0,R*1.1,0,pa,cx,cy);
+    i===0?x.moveTo(p.px,p.py):x.lineTo(p.px,p.py);
+  }
+  x.stroke();x.setLineDash([]);
+
+  // ── Ghost snapshots ──
+  for(let g=0;g<ltGhosts.length;g++){
+    const gh=ltGhosts[g];
+    const alpha2=0.10+0.20*(g/ltGhosts.length);
+    const ghTilt=gh.theta-PI/2;
+    // Ghost ring
+    x.strokeStyle="rgba(140,150,185,"+alpha2+")";x.lineWidth=1;x.beginPath();
+    for(let i=0;i<=40;i++){
+      const a2=(i/40)*PI2;
+      const p=P3(R*Math.cos(a2),R*Math.sin(a2),0,ghTilt,gh.phi,cx,cy);
+      i===0?x.moveTo(p.px,p.py):x.lineTo(p.px,p.py);
+    }
+    x.stroke();
+    // Ghost axle
+    const gA1=P3(0,0,-R*0.3,ghTilt,gh.phi,cx,cy);
+    const gA2=P3(0,0,R*1.05,ghTilt,gh.phi,cx,cy);
+    x.strokeStyle="rgba(140,150,185,"+alpha2*0.6+")";x.lineWidth=0.8;
+    x.beginPath();x.moveTo(gA1.px,gA1.py);x.lineTo(gA2.px,gA2.py);x.stroke();
+  }
+
+  // ── Trail — color-coded by theta ──
+  if(ltTrail.length>1){
+    for(let i=1;i<ltTrail.length;i++){
+      const frac=(ltTrail[i].theta-PI/2)/(PI/2); // 0=horizontal, 1=hanging
+      const r=Math.round(74+(196-74)*frac);
+      const g2=Math.round(158+(92-158)*frac);
+      const b=Math.round(110+(92-110)*frac);
+      const alpha2=0.15+0.6*(i/ltTrail.length);
+      x.strokeStyle="rgba("+r+","+g2+","+b+","+alpha2+")";
+      x.lineWidth=1.2;x.beginPath();
+      x.moveTo(ltTrail[i-1].px,ltTrail[i-1].py);
+      x.lineTo(ltTrail[i].px,ltTrail[i].py);
+      x.stroke();
+    }
+  }
+
+  // ── Current cone trace ──
+  if(Math.abs(tiltX)>0.02){
+    x.strokeStyle="rgba(74,158,110,0.2)";x.lineWidth=1.5;x.beginPath();
+    for(let i=0;i<=80;i++){
+      const pa=(i/80)*PI2;
+      const p=P3(0,0,R*1.1,tiltX,pa,cx,cy);
+      i===0?x.moveTo(p.px,p.py):x.lineTo(p.px,p.py);
+    }
+    x.stroke();
+  }
+
+  // ── Axle ──
+  axle3D(x,cx,cy,R*1.3,tiltX,precY);
+
+  // ── Ring ──
+  ring3D(x,cx,cy,R,tiltX,precY,"rgba(90,160,220,0.35)",2);
+
+  // ── Masses (8 dots) ──
+  const spinAngle=t*ltOmega*0.5; // visual only — spin is much faster than rendered
+  for(let i=0;i<12;i++){
+    const a2=(PI2/12)*i+spinAngle;
+    const lx=R*Math.cos(a2),ly=R*Math.sin(a2);
+    const p=P3(lx,ly,0,tiltX,precY,cx,cy);
+    const col=ly>0?COL.prec:COL.fall;
+    x.globalAlpha=0.6;dot(x,p.px,p.py,3,col,"#08080c",0.5);x.globalAlpha=1;
+  }
+
+  // ── Pivot dot ──
+  const ctr=P3(0,0,0,0,0,cx,cy);
+  dot(x,ctr.px,ctr.py,5,COL.accent,"#08080c",2);
+  txt(x,ctr.px+18,ctr.py-6,"pivot",COL.dim,9,"left");
+
+  // ── Gravity arrow ──
+  const gS=P3(0,R*1.8,0,0,0,cx,cy),gE=P3(0,R*1.2,0,0,0,cx,cy);
+  arr(x,gS.px,gS.py,gE.px,gE.py,COL.fall,2.5,9);
+  txt(x,gS.px+25,gS.py+2,"g",COL.fall,10,"left");
+
+  // ── Equilibrium indicator (vertical dashed line from pivot downward) ──
+  const eqEnd=P3(0,-R*1.5,0,0,0,cx,cy);
+  x.strokeStyle="rgba(196,92,92,0.15)";x.lineWidth=1;x.setLineDash([3,5]);
+  x.beginPath();x.moveTo(ctr.px,ctr.py);x.lineTo(eqEnd.px,eqEnd.py);x.stroke();
+  x.setLineDash([]);
+  txt(x,eqEnd.px+12,eqEnd.py+4,"equilibrium","rgba(196,92,92,0.4)",9,"left");
+
+  // ── Top label ──
+  const omegaPct=(ltOmega/LT_OMEGA0*100);
+  const droopDeg=Math.max(0,(theta-PI/2)*180/PI);
+  txt(x,cx,16,"F=ma + bearing friction + spin decay — same ODE, real dissipation",COL.dim,10);
+
+  // ── Update readouts ──
+  const hrs=Math.floor(ltPhysTime/3600);
+  const mins=Math.floor((ltPhysTime%3600)/60);
+  const secs=Math.floor(ltPhysTime%60);
+  document.getElementById("ltTimeVal").textContent=hrs+"h "+mins+"m "+secs+"s";
+  document.getElementById("ltOmegaVal").textContent=omegaPct.toFixed(1)+"%";
+  document.getElementById("ltTiltVal").textContent=droopDeg.toFixed(1)+"°";
+  document.getElementById("ltPrecVal").textContent=(Math.abs(phiDot)*180/PI).toFixed(1);
+
+  // ── Phase commentary ──
+  var cmt;
+  if(omegaPct>80){
+    cmt="Phase 1 — Gyroscopic regime. The spin is strong. The 90° lag redirects nearly all gravitational velocity sideways. Precession is steady, nutation is fast and small. The textbook description is approximately valid here — but only here, and only approximately. The axle is already dropping, imperceptibly.";
+  } else if(omegaPct>40){
+    cmt="Phase 2 — Weakening. The spin has decayed to "+omegaPct.toFixed(0)+"% of initial. The 90° lag can no longer fully redirect the gravitational velocity. The precession slows (Ω ∝ 1/ω — but the falling component grows faster). The axle has drooped "+droopDeg.toFixed(1)+"° below horizontal. The angular momentum description says precession should speed up as L decreases. The F=ma analysis says the axle falls.";
+  } else if(omegaPct>10){
+    cmt="Phase 3 — Collapse. At "+omegaPct.toFixed(0)+"% spin, the gyroscope is losing its identity. The 90° lag is too weak to sustain the redirect. The axle drops rapidly — "+droopDeg.toFixed(1)+"° below horizontal. Nutation has damped away. What remains is closer to a pendulum than a gyroscope. The transition is continuous — there is no sharp boundary. F=ma smoothly interpolates between 'gyroscope' and 'falling object.' Angular momentum cannot.";
+  } else if(omegaPct>1){
+    cmt="Phase 4 — Pendulum. At "+omegaPct.toFixed(0)+"% spin, the 90° lag is negligible. The system is a damped pendulum: axle swinging under gravity, dissipating energy through friction. The precession that textbooks present as the defining feature of the gyroscope was always a temporary state — a transient artifact of spinning fast enough to redirect falling. Now the redirect is gone.";
+  } else {
+    cmt="Equilibrium. The spin has effectively stopped. The axle hangs straight down — the only state with zero net force on every mass. The wheel is horizontal. This is where every gyroscope in the universe ends. No textbook that derives Ω = τ/L can reach this page. The F=ma analysis walked here step by step, because it never left reality.";
+  }
+  document.getElementById("ltComment").textContent=cmt;
+}
+
+requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>When Rigidity Breaks — Euler's Equations Applied to Galaxies</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#08080c;--panel:#101018;--border:#1c1c2c;--text:#e2ddd0;
+  --dim:#6a6458;--accent:#d4a843;--accent-dim:#7a6228;
+  --fz:#e8a030;--vz:#44bbee;--grid:#161620;--prec:#4a9e6e;--fall:#c45c5c;
+  --warp:#b07cc8;--rigid:#5a9adc;--jet:#dd5577;--alpha:#55ddaa
+}
+body{background:var(--bg);color:var(--text);font-family:'EB Garamond',Georgia,serif;line-height:1.75;padding:36px 20px 80px;min-height:100vh;-webkit-font-smoothing:antialiased}
+.container{max-width:860px;margin:0 auto}
+h1{font-family:'Cormorant Garamond',Georgia,serif;font-size:2em;font-weight:500;color:var(--accent);line-height:1.25;margin-bottom:6px}
+h2{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.3em;font-weight:500;color:var(--accent);margin:0 0 12px 0}
+.subtitle{font-size:1.05em;color:var(--dim);font-style:italic;margin-bottom:32px}
+.essay p{font-size:1.02em;margin-bottom:1.1em}
+.essay em{color:var(--accent);font-style:italic}
+hr.sep{border:none;border-top:1px solid var(--border);margin:32px 0}
+.pbox{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:14px}
+.plabel{font-size:0.7em;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;padding-left:2px;color:var(--dim)}
+canvas{display:block;width:100%;border-radius:4px}
+.ibox{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:14px 18px;margin-bottom:14px}
+.section-label{font-size:0.7em;color:var(--dim);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px}
+.commentary{font-size:0.95em;line-height:1.7;min-height:4em}
+.slider-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.slider-label{font-size:0.85em;color:var(--dim);min-width:110px}
+.slider-val{font-size:0.95em;color:var(--accent);font-weight:600;min-width:60px;text-align:right}
+input[type=range]{flex:1;min-width:140px;accent-color:var(--accent);background:var(--border);height:6px;border-radius:3px;-webkit-appearance:none;appearance:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--accent);cursor:pointer}
+.btn-row{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.btn{padding:6px 14px;background:var(--accent-dim);color:var(--text);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-family:'EB Garamond',Georgia,serif;font-size:0.82em;transition:background 0.2s}
+.btn:hover{background:var(--accent);color:var(--bg)}
+.btn.active{background:var(--accent);color:var(--bg)}
+.legend-row{display:flex;gap:14px;font-size:0.72em;margin-bottom:8px;flex-wrap:wrap}
+.leg-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;vertical-align:middle}
+.footer-text{font-size:0.95em;color:var(--dim);line-height:1.7;margin-top:20px}
+.footer-text em{color:var(--accent)}
+.row{display:flex;gap:14px;margin-bottom:14px;align-items:flex-start}
+.col-half{flex:1;min-width:0}
+.eq{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:16px 20px;margin:14px 0;font-family:'Cormorant Garamond',Georgia,serif;font-size:1.15em;text-align:center;line-height:1.9;color:var(--text);overflow-x:auto}
+.eq .label{font-size:0.72em;color:var(--dim);text-transform:uppercase;letter-spacing:0.08em;display:block;margin-bottom:4px}
+.eq .hl{color:var(--accent);font-weight:600}
+.eq .note{font-size:0.82em;color:var(--dim);font-style:italic;margin-top:6px;display:block}
+.step-box{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:14px 18px;margin-bottom:12px}
+.step-box .step-num{font-size:0.7em;color:var(--accent);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px}
+.step-box p{font-size:0.95em;line-height:1.7;margin:0}
+.readout{font-size:0.95em;color:var(--accent);font-weight:600;display:inline}
+@media(max-width:680px){h1{font-size:1.5em}.row{flex-direction:column}}
+/* Constrain full-width square canvases — prevent 860×860 overflow */
+#c5top,#c7acc,#c8bp,#c6material,#c6density{max-width:520px;margin:0 auto;display:block}
+#c10jet{max-width:460px;margin:0 auto;display:block}
+#c3graph,#c4curve{max-width:700px;margin:0 auto;display:block}
+#c5edge{max-width:520px;margin:0 auto;display:block}
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>When Rigidity Breaks</h1>
+<div class="subtitle">Euler's rotational equations applied to systems that aren't rigid — galaxies, accretion disks, quasars — using the same F=ma analysis that exposed the gyroscope. No angular momentum. No moment of inertia tensor. Only individual masses, gravity, and the absence of the one constraint that made precession work.</div>
+
+<div class="essay">
+<p>The <em>Gyroscopic Motion from First Principles</em> presentation established one result above all others: precession requires rigidity. Without the internal forces that lock masses together, the 90° phase lag between force application and velocity expression cannot produce a coherent tilt. Individual masses just drift. The wheel breathes instead of precessing.</p>
+<p>Standard astrophysics applies Euler's rotational equations — the same equations derived for rigid bodies — to galaxies. To accretion disks. To systems where every component orbits at its own angular velocity, bound only by gravity, with no rigidity whatsoever. The moment of inertia tensor <em>I</em>, the angular momentum vector <em>L = Iω</em>, the torque equation <em>τ = dL/dt</em> — all of these assume that every particle shares a single rotation rate. In a galaxy, they do not. Not approximately. Not on average. Fundamentally, structurally, they do not.</p>
+<p>What follows is not a claim that Euler was wrong. It is a demonstration that Euler's equations, applied to non-rigid systems, produce predictions that diverge from what F=ma applied to individual masses actually shows. The divergence is not small. It is structural. And it has been hiding in plain sight behind the formalism.</p>
+</div>
+
+<hr class="sep">
+
+<h2>Layer 1: Rigid Rotation vs Keplerian Rotation</h2>
+<div class="essay">
+<p>A rigid wheel rotates as a unit — every point has the same angular velocity ω. A gravitationally bound disk does not. Each orbit follows Kepler's law: ω(r) = √(GM/r³). Inner orbits are fast. Outer orbits are slow. Over time, any initial alignment winds up — inner masses lap outer masses. The two disks start identical. Watch them diverge.</p>
+</div>
+
+<div class="row">
+<div class="col-half"><div class="pbox"><div class="plabel">Rigid Rotation — Same ω Everywhere</div><canvas id="c1rigid" width="800" height="800"></canvas></div></div>
+<div class="col-half"><div class="pbox"><div class="plabel">Keplerian Rotation — ω ∝ r<sup>−3/2</sup></div><canvas id="c1kepler" width="800" height="800"></canvas></div></div>
+</div>
+<div class="slider-row"><span class="slider-label">Time speed:</span><input type="range" id="s1speed" min="0.2" max="4" value="1" step="0.1"><span class="slider-val" id="s1speedVal">1.0x</span></div>
+<div class="btn-row"><button class="btn" onclick="resetL1()">Reset Alignment</button></div>
+<div class="legend-row">
+<span><span class="leg-dot" style="background:#c45c5c"></span>Inner (r=0.25)</span>
+<span><span class="leg-dot" style="background:#e8a030"></span>Mid-inner (r=0.50)</span>
+<span><span class="leg-dot" style="background:#4a9e6e"></span>Mid-outer (r=0.75)</span>
+<span><span class="leg-dot" style="background:#5a9adc"></span>Outer (r=1.0)</span>
+</div>
+<div class="ibox"><div class="section-label">What You Are Seeing</div><div class="commentary">Both disks start with 32 masses in four rings. In the rigid disk, every mass orbits at the same angular velocity — the pattern never changes. In the Keplerian disk, inner masses orbit faster than outer masses. Within seconds, the initial alignment dissolves. The spokes wind into spirals — each spoke colored distinctly so you can track its deformation. This is differential rotation: the fundamental reality of every galaxy. No galaxy is a rigid body. No galaxy has a single ω. Euler's equations require one.</div></div>
+
+<hr class="sep">
+
+<h2>Layer 2: The Precession Test</h2>
+<div class="essay">
+<p>The gyroscope presentation proved that precession emerges from the 90° phase lag <em>only when rigidity forces coherence</em>. Here we apply the identical test: a constant perpendicular force applied to both a rigid disk and a Keplerian disk. The rigid disk precesses. The Keplerian disk <em>warps</em>.</p>
+</div>
+
+<div class="row">
+<div class="col-half"><div class="pbox"><div class="plabel">Rigid Disk — Coherent Precession</div><canvas id="c2rigid" width="800" height="800"></canvas></div></div>
+<div class="col-half"><div class="pbox"><div class="plabel">Keplerian Disk — Differential Warping</div><canvas id="c2kepler" width="800" height="800"></canvas></div></div>
+</div>
+<div class="slider-row"><span class="slider-label">Force strength:</span><input type="range" id="s2force" min="0.1" max="2" value="0.8" step="0.05"><span class="slider-val" id="s2forceVal">0.8</span></div>
+<div class="slider-row"><span class="slider-label">Spin speed:</span><input type="range" id="s2spin" min="0.3" max="3" value="1.2" step="0.1"><span class="slider-val" id="s2spinVal">1.2x</span></div>
+<div class="btn-row">
+<button class="btn" onclick="resetL2()">Reset</button>
+<button class="btn active" id="bL2force" onclick="toggleL2force()">Force ON</button>
+</div>
+<div class="ibox"><div class="section-label">The Divergence</div><div class="commentary" id="l2comment">The rigid disk tilts as a unit — textbook precession. The Keplerian disk cannot do this. Each ring has its own ω, its own 90° lag timescale. The disk warps — visible as the rings separating in the oblique view.</div></div>
+
+<hr class="sep">
+
+<h2>Layer 3: What Euler Predicts vs What F=ma Shows</h2>
+<div class="essay">
+<p>Euler's equation gives a single precession rate: Ω = τ / (Iω). One number for the whole body. The per-mass F=ma analysis gives a <em>precession curve</em> — a different rate at every radius.</p>
+</div>
+
+<div class="pbox"><div class="plabel">Precession Rate vs Radius — Euler (single value) vs F=ma (per-ring)</div><canvas id="c3graph" width="800" height="440"></canvas></div>
+<div class="row">
+<div class="col-half"><div class="pbox"><div class="plabel">Euler — Uniform Precession</div><canvas id="c3euler" width="800" height="800"></canvas></div></div>
+<div class="col-half"><div class="pbox"><div class="plabel">F=ma — Differential Warp</div><canvas id="c3fma" width="800" height="800"></canvas></div></div>
+</div>
+<div class="slider-row"><span class="slider-label">Animation speed:</span><input type="range" id="s3speed" min="0.5" max="5" value="2" step="0.1"><span class="slider-val" id="s3speedVal">2.0x</span></div>
+<div class="btn-row">
+<button class="btn active" id="bL3run" onclick="setL3run(true)">Run</button>
+<button class="btn" id="bL3stop" onclick="setL3run(false)">Stop</button>
+<button class="btn" onclick="resetL3()">Reset</button>
+</div>
+<div style="font-size:0.85em;color:var(--dim);margin-bottom:14px">Time elapsed: <span class="readout" id="s3timeVal">0.0</span></div>
+
+<div class="eq"><span class="label">Euler's prediction (rigid body)</span>
+Ω<sub>precession</sub> = <span class="hl">τ</span> / (<span class="hl">I</span> · <span class="hl">ω</span>)
+<span class="note">One precession rate for the entire body. Requires a single ω. A galaxy does not have one.</span></div>
+
+<div class="eq"><span class="label">F=ma per-ring reality</span>
+Ω(r) = <span class="hl">F</span><sub>⊥</sub> / (m(r) · r · <span class="hl">ω(r)</span>)
+<span class="note">F<sub>⊥</sub> is the perpendicular applied force on each individual mass. Each ring has its own ω(r) = √(GM/r³). No pseudovectors — only force, mass, radius, and spin rate. Each ring precesses at a different rate. The disk twists.</span></div>
+
+<div class="ibox"><div class="section-label">The Error</div><div class="commentary" id="l3comment">Euler gives the horizontal line — one rate for all radii. F=ma gives the curve — inner rings precess much faster. The system does not precess. It warps.</div></div>
+
+<hr class="sep">
+
+<h2>Layer 4: Rotation Curves and the v² Accounting</h2>
+<div class="essay">
+<p>The standard derivation balances v²/r against GM(r)/r². Observed velocities stay roughly flat; the prediction from visible matter falls off. The gap is attributed to unseen mass. But v² is frame-dependent. The "velocity" is measured from a chosen center. Move the observer, and the entire curve shifts — including the gap. The amount of unaccounted-for mass depends on which frame you choose to measure from, and nobody checks which frame gives the minimum discrepancy.</p>
+</div>
+
+<div class="pbox"><div class="plabel">Rotation Curves — Visible Mass vs Observed vs Observer-Shifted</div><canvas id="c4curve" width="800" height="480"></canvas></div>
+<div class="slider-row"><span class="slider-label">Visible mass fraction:</span><input type="range" id="s4mass" min="0.1" max="1" value="0.4" step="0.05"><span class="slider-val" id="s4massVal">40%</span></div>
+<div class="slider-row"><span class="slider-label">Observer velocity:</span><input type="range" id="s4obs" min="-1" max="1" value="0" step="0.05"><span class="slider-val" id="s4obsVal">0</span></div>
+<div class="legend-row">
+<span><span class="leg-dot" style="background:#5a9adc"></span>Visible mass prediction</span>
+<span><span class="leg-dot" style="background:#c45c5c"></span>Observed (flat)</span>
+<span><span class="leg-dot" style="background:#e8a030"></span>Gap = unaccounted-for mass</span>
+<span><span class="leg-dot" style="background:#b07cc8"></span>Observer-shifted</span>
+</div>
+<div class="ibox"><div class="section-label">The Frame Problem</div><div class="commentary" id="l4comment">Move the observer slider. The gap changes. The inferred quantity of unaccounted-for mass changes. v² is not frame-invariant.</div></div>
+
+<hr class="sep">
+
+<h2>Layer 5: Galactic Warps from Differential Precession</h2>
+<div class="essay">
+<p>Many galaxies have warped disks. Standard models invoke torques from misaligned mass distributions. The F=ma per-mass analysis produces warps <em>automatically</em>. Any asymmetric force on a non-rigid disk produces differential precession. Differential precession <em>is</em> warping.</p>
+</div>
+
+<div class="pbox"><div class="plabel">Galactic Disk Under Tidal Force — Top View</div><canvas id="c5top" width="800" height="800"></canvas></div>
+<div class="pbox"><div class="plabel">Galactic Disk Under Tidal Force — Edge View</div><canvas id="c5edge" width="800" height="500"></canvas></div>
+<div class="slider-row"><span class="slider-label">Tidal strength:</span><input type="range" id="s5tidal" min="0" max="2" value="0.6" step="0.05"><span class="slider-val" id="s5tidalVal">0.6</span></div>
+<div class="slider-row"><span class="slider-label">Animation speed:</span><input type="range" id="s5speed2" min="0.2" max="3" value="1" step="0.1"><span class="slider-val" id="s5speedVal2">1.0x</span></div>
+<div class="btn-row">
+<button class="btn active" id="bL5run" onclick="setL5run(true)">Run</button>
+<button class="btn" id="bL5stop" onclick="setL5run(false)">Stop</button>
+<button class="btn" onclick="resetL5()">Reset</button>
+</div>
+<div style="font-size:0.85em;color:var(--dim);margin-bottom:14px">Time elapsed: <span class="readout" id="s5timeVal">0.0</span></div>
+<div class="ibox"><div class="section-label">The Warp Mechanism</div><div class="commentary" id="l5comment">Inner rings precess fast; outer rings precess slowly. The disk twists. Standard astrophysics calls this a puzzle and searches for mechanisms. F=ma says: you cannot prevent it.</div></div>
+
+<hr class="sep">
+
+<h2>Layer 6: The Spiral Arm Winding Problem</h2>
+<div class="essay">
+<p>Layer 1 showed that Keplerian spokes wind into spirals within a few orbits. This is the <em>winding problem</em>. If spiral arms were material structures, they would dissolve in a few hundred million years. The Milky Way has been rotating for over ten billion years.</p>
+<p>The standard fix is <em>density wave theory</em> (Lin &amp; Shu, 1964): spiral arms are wave patterns, not co-moving material. Stars pass through the compression zone, pile up, then exit. The arm persists because it is not a structure.</p>
+<p>But notice the hidden concession: the arms are not rigid structures. Density wave theory <em>concedes</em> that treating a galaxy as a rigid body fails for spiral structure. Yet the same field continues to apply rigid-body angular momentum to every other aspect of galactic dynamics. If the arms cannot be rigid, <em>nothing in the galaxy is rigid</em>. The admission was made in 1964. Nobody followed it to its logical conclusion.</p>
+</div>
+
+<div class="pbox"><div class="plabel">Material Arms — Winding</div><canvas id="c6material" width="800" height="800"></canvas></div>
+<div class="pbox"><div class="plabel">Density Wave Pattern — Persists</div><canvas id="c6density" width="800" height="800"></canvas></div>
+<div class="slider-row"><span class="slider-label">Time speed:</span><input type="range" id="s6speed" min="0.2" max="5" value="1.5" step="0.1"><span class="slider-val" id="s6speedVal">1.5x</span></div>
+<div class="btn-row">
+<button class="btn active" id="bL6run" onclick="setL6run(true)">Run</button>
+<button class="btn" id="bL6stop" onclick="setL6run(false)">Stop</button>
+<button class="btn" onclick="resetL6()">Reset</button>
+</div>
+<div style="font-size:0.85em;color:var(--dim);margin-bottom:14px">Orbits elapsed: <span class="readout" id="s6orbitsVal">0.0</span></div>
+<div class="legend-row">
+<span><span class="leg-dot" style="background:#e8a030"></span>Material arms (winding)</span>
+<span><span class="leg-dot" style="background:#4a9e6e"></span>Density wave pattern (fixed)</span>
+<span><span class="leg-dot" style="background:rgba(90,154,220,0.6)"></span>Stars (Keplerian orbits)</span>
+</div>
+<div class="ibox"><div class="section-label">What You Are Seeing</div><div class="commentary" id="l6comment">Left: material arms wind up and dissolve. Right: density wave pattern persists indefinitely.</div></div>
+
+<hr class="sep">
+
+<h2>Layer 7: Accretion Disks and the Angular Momentum "Problem"</h2>
+<div class="essay">
+<p>Matter falling toward a massive gravitational object has angular momentum. Euler's framework says: L = Iω is conserved. For matter to fall inward (r decreases), either ω must increase or L must decrease. But conservation says L doesn't decrease. So the matter should orbit forever — never falling in. This is the <em>angular momentum transport problem</em>.</p>
+<p>Standard theory resolves this by inventing viscosity. Molecular viscosity is too small by ~10⁹. So Shakura and Sunyaev (1973) introduced the α parameter: ν = α·c_s·H. The entire accretion rate depends on a free parameter whose physical origin remains under debate after fifty years.</p>
+<p>The F=ma picture says: each fluid element has three real forces (gravitational, pressure, magnetic). It accelerates according to their sum. If the net inward force exceeds the centripetal requirement, the mass spirals inward. No global conservation law is needed. The "problem" only exists because Euler's rigid-body formalism creates it.</p>
+</div>
+
+<div class="pbox"><div class="plabel">Accretion Disk — Per-Mass Force View</div><canvas id="c7acc" width="800" height="800"></canvas></div>
+<div class="slider-row"><span class="slider-label">Orbit speed:</span><input type="range" id="s7spin" min="0.1" max="2" value="0.5" step="0.05"><span class="slider-val" id="s7spinVal">0.5x</span></div>
+<div class="slider-row"><span class="slider-label">Infall strength:</span><input type="range" id="s7alpha" min="0.001" max="0.3" value="0.05" step="0.001"><span class="slider-val" id="s7alphaVal">0.050</span></div>
+<div class="slider-row"><span class="slider-label">Magnetic coupling:</span><input type="range" id="s7mag" min="0" max="1" value="0.3" step="0.02"><span class="slider-val" id="s7magVal">0.30</span></div>
+<div class="btn-row">
+<button class="btn active" id="bL7run" onclick="setL7run(true)">Run</button>
+<button class="btn" id="bL7stop" onclick="setL7run(false)">Stop</button>
+<button class="btn" onclick="resetL7()">Reset</button>
+</div>
+<div class="legend-row">
+<span><span class="leg-dot" style="background:#c45c5c"></span>Gravity (inward)</span>
+<span><span class="leg-dot" style="background:#55ddaa"></span>Magnetic coupling</span>
+<span><span class="leg-dot" style="background:#5a9adc"></span>Orbital velocity</span>
+<span><span class="leg-dot" style="background:#e8a030"></span>Highlighted mass</span>
+</div>
+
+<div class="eq"><span class="label">The α-disk prescription (Shakura-Sunyaev, 1973)</span>
+ν = <span class="hl">α</span> · c<sub>s</sub> · H
+<span class="note">α is a free parameter (0.001–0.3). The entire accretion rate depends on a number nobody can derive from first principles.</span></div>
+
+<div class="eq"><span class="label">F=ma per-mass reality</span>
+m · <span class="hl">a</span> = <span class="hl">F</span><sub>grav</sub> + <span class="hl">F</span><sub>pressure</sub> + <span class="hl">F</span><sub>magnetic</sub>
+<span class="note">Each fluid element has three real forces. It accelerates. It moves. No angular momentum transport needed.</span></div>
+
+<div class="ibox"><div class="section-label">What You Are Seeing</div><div class="commentary" id="l7comment">Orange highlighted masses show all three forces acting on them. Red arrows: gravity pulling inward. Blue arrows: orbital velocity (tangential). Green arrows: magnetic coupling. The fading trail behind each orange mass shows its actual path — spiralling inward as the net force exceeds the centripetal requirement. Raise the Infall or Magnetic sliders to make the drift more visible. No angular momentum budget is consulted — each mass just accelerates under its local forces.</div></div>
+
+<hr class="sep">
+
+<h2>Layer 8: Bardeen-Petterson — Differential Precession Rediscovered</h2>
+<div class="essay">
+<p>In 1975, Bardeen and Petterson showed that a tilted accretion disk around a spinning massive gravitational object will not precess as a unit. The inner disk aligns with the spin axis (Lense-Thirring precession, falling off as r<sup>−3</sup>), while the outer disk maintains its original orientation. A warp transition connects the two.</p>
+<p>This is exactly differential precession — the same mechanism demonstrated in Layers 2–5. The only new ingredient from general relativity is the specific r<sup>−3</sup> precession-rate profile. The qualitative result — a non-rigid disk warps under a radius-dependent force — was available from F=ma since 1687. It was "discovered" in 1975 because the rigid-body assumption was never questioned.</p>
+</div>
+
+<div class="pbox"><div class="plabel">Bardeen-Petterson — Lense-Thirring Differential Precession</div><canvas id="c8bp" width="800" height="800"></canvas></div>
+<div class="slider-row"><span class="slider-label">Spin parameter:</span><input type="range" id="s8spin" min="0" max="1" value="0.7" step="0.02"><span class="slider-val" id="s8spinVal">0.70</span></div>
+<div class="slider-row"><span class="slider-label">Initial disk tilt:</span><input type="range" id="s8tilt" min="5" max="60" value="30" step="1"><span class="slider-val" id="s8tiltVal">30°</span></div>
+<div class="slider-row"><span class="slider-label">Animation speed:</span><input type="range" id="s8aspeed" min="0.3" max="5" value="1.5" step="0.1"><span class="slider-val" id="s8aspeedVal">1.5x</span></div>
+<div class="btn-row">
+<button class="btn active" id="bL8run" onclick="setL8run(true)">Run</button>
+<button class="btn" id="bL8stop" onclick="setL8run(false)">Stop</button>
+<button class="btn" onclick="resetL8()">Reset</button>
+</div>
+<div style="font-size:0.85em;color:var(--dim);margin-bottom:14px">Time elapsed: <span class="readout" id="s8timeVal">0.0</span> — Inner tilt: <span class="readout" id="s8innerVal">—</span> — Outer tilt: <span class="readout" id="s8outerVal">—</span></div>
+<div class="legend-row">
+<span><span class="leg-dot" style="background:#dd5577"></span>Spin axis</span>
+<span><span class="leg-dot" style="background:#c45c5c"></span>Inner disk (aligned)</span>
+<span><span class="leg-dot" style="background:#e8a030"></span>Transition region</span>
+<span><span class="leg-dot" style="background:#5a9adc"></span>Outer disk (original tilt)</span>
+</div>
+
+<div class="eq"><span class="label">Lense-Thirring precession rate</span>
+Ω<sub>LT</sub>(r) = 2G<span class="hl">J</span> / (c² · <span class="hl">r³</span>)
+<span class="note">The r⁻³ falloff means inner rings precess enormously faster than outer rings. The disk cannot precess as a unit. It warps.</span></div>
+
+<div class="ibox"><div class="section-label">A Discovery That Wasn't</div><div class="commentary" id="l8comment">Inner rings align with spin axis; outer rings barely move. This is differential precession — the same mechanism from Layers 2–5.</div></div>
+
+<hr class="sep">
+
+<h2>Layer 9: Energy Accounting — ½Iω² Is Meaningless for Non-Rigid Systems</h2>
+<div class="essay">
+<p>The rotational kinetic energy of a rigid body is ½Iω². This requires a single ω. For a non-rigid system, the total must be computed as Σ½mv² — the sum over every individual mass. These two quantities are not equal, and the difference is structural.</p>
+<p>For a rigid body: ½Iω² concentrates energy at the <em>outer edge</em> (because I grows as r²). For a Keplerian disk: Σ½mv² concentrates energy at the <em>inner edge</em> (because v grows as r decreases). The distributions are <em>inverted</em>. The total "energies" are different numbers. And both are frame-dependent — from any other frame, each v changes, and the total KE changes with it. There is no frame-invariant "total rotational energy" for a non-rigid system.</p>
+</div>
+
+<div class="row">
+<div class="col-half"><div class="pbox"><div class="plabel">Energy per Ring — Rigid (blue) vs Keplerian (orange)</div><canvas id="c9dist" width="800" height="600"></canvas></div></div>
+<div class="col-half"><div class="pbox"><div class="plabel">Total KE vs Observer Frame</div><canvas id="c9frame" width="800" height="600"></canvas></div></div>
+</div>
+<div class="slider-row"><span class="slider-label">Observer velocity:</span><input type="range" id="s9obs" min="-1.5" max="1.5" value="0" step="0.05"><span class="slider-val" id="s9obsVal">0</span></div>
+
+<div class="eq"><span class="label">Rigid body (Euler)</span>
+T = ½ · <span class="hl">I</span> · <span class="hl">ω²</span>
+<span class="note">Requires single ω. Dominated by outer masses (large r² in I). One frame-dependent number presented as intrinsic.</span></div>
+
+<div class="eq"><span class="label">Non-rigid reality</span>
+T = Σ ½m<sub>i</sub> · <span class="hl">v<sub>i</sub>²</span>
+<span class="note">Each mass has its own v. Dominated by inner masses (large Keplerian velocity). Frame-dependent — no intrinsic "rotational energy" exists.</span></div>
+
+<div class="ibox"><div class="section-label">The Inversion</div><div class="commentary" id="l9comment">Left: energy distribution is inverted between the two formulas. Right: total KE is a parabola — it changes with observer velocity. There is no "true" rotational energy of a non-rigid system.</div></div>
+
+<hr class="sep">
+
+<h2>Layer 10: Quasar Jets and the Angular Momentum Extraction Narrative</h2>
+<div class="essay">
+<p>Quasar jets — relativistic plasma beams along the rotation axis of an accretion disk — are explained as the result of <em>angular momentum extraction</em>. Magnetic fields threading the central object "extract rotational energy." The Blandford-Payne process launches material from the disk along field lines with angular momentum "carried away" by the outflow.</p>
+<p>The F=ma analysis asks: what forces act on each plasma element? A charged particle in a magnetic field experiences the Lorentz force: F = qv×B. Near a spinning massive gravitational object, the poloidal magnetic field threads the disk vertically. A plasma element orbiting in the disk has a toroidal velocity. v×B produces a force along the rotation axis. The plasma accelerates upward. That is the jet.</p>
+<p>No angular momentum extraction is needed. Each plasma element has forces on it. The magnetic force has an axial component. Plasma accelerates in that direction. The jet is trajectories. Nothing is "extracted."</p>
+</div>
+
+<div class="pbox"><div class="plabel">Quasar Jet — Per-Particle Lorentz Force</div><canvas id="c10jet" width="800" height="1000"></canvas></div>
+<div class="slider-row"><span class="slider-label">B-field strength:</span><input type="range" id="s10B" min="0.1" max="2" value="1" step="0.05"><span class="slider-val" id="s10Bval">1.00</span></div>
+<div class="slider-row"><span class="slider-label">Disk spin:</span><input type="range" id="s10spin" min="0.3" max="3" value="1.5" step="0.1"><span class="slider-val" id="s10spinVal">1.5x</span></div>
+<div class="btn-row">
+<button class="btn active" id="bL10run" onclick="setL10run(true)">Run</button>
+<button class="btn" id="bL10stop" onclick="setL10run(false)">Stop</button>
+<button class="btn" onclick="resetL10()">Reset</button>
+</div>
+<div class="legend-row">
+<span><span class="leg-dot" style="background:#dd5577"></span>Jet plasma (v×B accelerated)</span>
+<span><span class="leg-dot" style="background:#55ddaa"></span>Magnetic field lines</span>
+<span><span class="leg-dot" style="background:#5a9adc"></span>Disk material</span>
+<span><span class="leg-dot" style="background:#e8a030"></span>Lorentz force (axial)</span>
+</div>
+
+<div class="eq"><span class="label">F=ma per-particle reality</span>
+<span class="hl">F</span> = q(<span class="hl">v</span> × <span class="hl">B</span>) → F<sub>axial</sub> = q · v<sub>φ</sub> · B<sub>r</sub>
+<span class="note">Toroidal velocity × radial B-field = axial force. Each plasma element is individually accelerated along the rotation axis.</span></div>
+
+<div class="ibox"><div class="section-label">What You Are Seeing</div><div class="commentary" id="l10comment">Disk material (blue) orbits with Keplerian velocity. The Lorentz force (orange arrows) accelerates inner plasma along the magnetic field lines (green). Jet particles (red) spiral upward and downward along the axis. Nothing is "extracted."</div></div>
+
+<hr class="sep">
+
+<div class="essay">
+<h2>The Cascade of Errors</h2>
+<p><em>Error 1: Coherent precession.</em> Euler predicts the entire system precesses at one rate. Reality: each radius precesses at its own rate. The system warps. (Layers 2, 3, 5, 8.)</p>
+<p><em>Error 2: The angular momentum transport "problem."</em> Euler says L = Iω must be conserved, so matter cannot fall inward. Reality: each mass follows F=ma under local forces. (Layer 7.)</p>
+<p><em>Error 3: The winding "problem."</em> Material arms wind up. They do. This is correct behavior. The solution (density waves) concedes non-rigidity for arm structure but continues applying rigidity to everything else. (Layer 6.)</p>
+<p><em>Error 4: Frame-dependent energy.</em> ½Iω² assigns a single number to a system with no single ω. Both formulas give different numbers with inverted distributions, and both are frame-dependent. (Layer 9.)</p>
+<p><em>Error 5: Angular momentum extraction.</em> Jet formation is described as extracting L. Reality: Lorentz forces accelerate plasma along field lines. Nothing is extracted. (Layer 10.)</p>
+<p><em>Error 6: Unaccounted-for mass.</em> The rotation curve gap is attributed entirely to missing mass. But v² is frame-dependent, the circular-orbit assumption is a rigidity ghost, and the inferred quantity changes with observer frame. (Layer 4.)</p>
+<p>Every one of these errors originates in the same place: applying a rigid-body formalism to a non-rigid system.</p>
+</div>
+
+<div class="footer-text"><p>The gyroscope presentation concluded: <em>everything is commentary — F=ma is the text.</em> Here, the commentary has been applied to systems that explicitly violate its foundational assumption. The results — unaccounted-for mass, angular momentum transport, winding problems, Bardeen-Petterson warps — are treated as discoveries about the universe. Some may be. But until the rigid-body assumption is removed from the foundation and the analysis is rebuilt from F=ma on individual masses, we cannot know which "discoveries" are properties of the universe and which are properties of the formalism.</p></div>
+
+</div>
+<script>
+(function(){
+"use strict";
+const PI=Math.PI,PI2=PI*2;
+const Fn="'EB Garamond',Georgia,serif";
+const COL={bg:"#08080c",dim:"#6a6458",accent:"#d4a843",fz:"#e8a030",vz:"#44bbee",
+  grid:"#161620",prec:"#4a9e6e",fall:"#c45c5c",warp:"#b07cc8",rigid:"#5a9adc",
+  jet:"#dd5577",alpha:"#55ddaa",wheel:"rgba(224,220,210,0.12)"};
+const RCOL=["#c45c5c","#e8a030","#4a9e6e","#5a9adc"];
+const SPOKE_COL=["#c45c5c","#e87050","#e8a030","#d4a843","#88cc55","#4a9e6e","#44bbee","#5a9adc"];
+
+function dr(){return window.devicePixelRatio||1}
+function IC(id,lw,lh){const c=document.getElementById(id);if(!c)return null;const r=dr();c.width=lw*r;c.height=lh*r;c.style.width="100%";const x=c.getContext("2d");x.scale(r,r);return{x,w:lw,h:lh}}
+function dot(x,cx,cy,r,f,s,sw){x.beginPath();x.arc(cx,cy,r,0,PI2);if(f){x.fillStyle=f;x.fill()}if(s){x.strokeStyle=s;x.lineWidth=sw||1;x.stroke()}}
+function txt(x,cx,cy,s,c,sz,al){x.fillStyle=c||"#e2ddd0";x.font=(sz||11)+"px "+Fn;x.textAlign=al||"center";x.textBaseline="middle";x.fillText(s,cx,cy)}
+function arr(x,x1,y1,x2,y2,c,lw,hs){hs=hs||7;lw=lw||2;const dx=x2-x1,dy=y2-y1,l=Math.sqrt(dx*dx+dy*dy);if(l<3)return;const hA=Math.min(hs,l*0.45),ux=dx/l,uy=dy/l;x.strokeStyle=c;x.lineWidth=lw;x.beginPath();x.moveTo(x1,y1);x.lineTo(x2-ux*hA,y2-uy*hA);x.stroke();x.fillStyle=c;x.beginPath();x.moveTo(x2,y2);x.lineTo(x2-ux*hA+uy*hA*.4,y2-uy*hA-ux*hA*.4);x.lineTo(x2-ux*hA-uy*hA*.4,y2-uy*hA+ux*hA*.4);x.closePath();x.fill()}
+function gv(id){const e=document.getElementById(id);return e?parseFloat(e.value):0}
+function clamp(v,lo,hi){return Math.max(lo,Math.min(hi,v))}
+
+// Dashed axes helper for 3D views
+function drawAxes(x,cx,cy,len,col){
+  col=col||"rgba(200,200,220,0.2)";
+  x.strokeStyle=col;x.lineWidth=1;x.setLineDash([4,4]);
+  // X axis (horizontal)
+  x.beginPath();x.moveTo(cx-len,cy);x.lineTo(cx+len,cy);x.stroke();
+  // Y axis (vertical)
+  x.beginPath();x.moveTo(cx,cy-len);x.lineTo(cx,cy+len);x.stroke();
+  // Z axis (depth — oblique)
+  x.beginPath();x.moveTo(cx-len*0.5,cy+len*0.3);x.lineTo(cx+len*0.5,cy-len*0.3);x.stroke();
+  x.setLineDash([]);
+  txt(x,cx+len+8,cy,"x",col,9,"left");
+  txt(x,cx,cy-len-8,"y",col,9);
+  txt(x,cx+len*0.5+8,cy-len*0.3-4,"z",col,9,"left");
+}
+
+// ═══════════ LAYER 1 ═══════════
+let l1time=0,l1cR,l1cK;
+function resetL1(){l1time=0}
+window.resetL1=resetL1;
+
+function drawL1(t){
+  if(!l1cR)l1cR=IC("c1rigid",400,400);
+  if(!l1cK)l1cK=IC("c1kepler",400,400);
+  if(!l1cR||!l1cK)return;
+  const sp=gv("s1speed");
+  document.getElementById("s1speedVal").textContent=sp.toFixed(1)+"x";
+  const nRings=4,perRing=8,R=150,omega0=sp*0.8;
+  [l1cR,l1cK].forEach(function(cv,isK){
+    const{x,w,h}=cv;x.clearRect(0,0,w,h);const cx=w/2,cy=h/2;
+    // Grid rings
+    for(let ri=0;ri<nRings;ri++){const rr=R*(ri+1)/nRings;x.strokeStyle="rgba(100,100,140,0.1)";x.lineWidth=1;x.beginPath();x.arc(cx,cy,rr,0,PI2);x.stroke()}
+    dot(x,cx,cy,4,COL.accent);
+    txt(x,cx,22,isK?"Keplerian — ω ∝ r⁻³ᐟ²":"Rigid — ω constant",COL.dim,11);
+    // Particles
+    for(let ri=0;ri<nRings;ri++){const rN=(ri+1)/nRings,rr=R*rN,omega=isK?omega0*Math.pow(rN,-1.5):omega0;
+      for(let pi=0;pi<perRing;pi++){const a=(PI2/perRing)*pi+l1time*omega;dot(x,cx+rr*Math.cos(a),cy-rr*Math.sin(a),4.5,RCOL[ri],"#08080c",0.8)}}
+    // Spokes — each spoke gets its own color
+    for(let pi=0;pi<perRing;pi++){
+      x.beginPath();
+      for(let ri=0;ri<nRings;ri++){
+        const rN=(ri+1)/nRings,rr=R*rN,omega=isK?omega0*Math.pow(rN,-1.5):omega0;
+        const a=(PI2/perRing)*pi+l1time*omega;
+        const px=cx+rr*Math.cos(a),py=cy-rr*Math.sin(a);
+        ri===0?x.moveTo(px,py):x.lineTo(px,py);
+      }
+      x.strokeStyle=SPOKE_COL[pi%SPOKE_COL.length];x.lineWidth=1.5;x.globalAlpha=0.5;x.stroke();x.globalAlpha=1;
+    }
+  });
+}
+
+// ═══════════ LAYER 2 ═══════════
+let l2forceOn=true,l2time=0,l2cR,l2cK;
+let l2precRigid=0,l2precK=[0,0,0,0];
+function resetL2(){l2time=0;l2precRigid=0;l2precK=[0,0,0,0]}
+window.resetL2=resetL2;
+function toggleL2force(){l2forceOn=!l2forceOn;document.getElementById("bL2force").textContent=l2forceOn?"Force ON":"Force OFF";document.getElementById("bL2force").className=l2forceOn?"btn active":"btn"}
+window.toggleL2force=toggleL2force;
+
+function drawL2(t,dt){
+  if(!l2cR)l2cR=IC("c2rigid",400,400);
+  if(!l2cK)l2cK=IC("c2kepler",400,400);
+  if(!l2cR||!l2cK)return;
+  const F=gv("s2force"),sp=gv("s2spin");
+  document.getElementById("s2forceVal").textContent=F.toFixed(2);
+  document.getElementById("s2spinVal").textContent=sp.toFixed(1)+"x";
+  const omega0=sp*1.5,nRings=4,perRing=10,R=140,fStr=l2forceOn?F:0;
+  if(dt>0){
+    l2precRigid+=fStr*0.3/(omega0*0.5+0.01)*dt;
+    for(let ri=0;ri<4;ri++){const rN=(ri+1)/4,omK=omega0*Math.pow(rN,-1.5);l2precK[ri]+=fStr*0.3/(omK*rN*rN+0.01)*dt}
+  }
+  [l2cR,l2cK].forEach(function(cv,isK){
+    const{x,w,h}=cv;x.clearRect(0,0,w,h);const cx=w/2,cy=h/2;
+    // Axes
+    drawAxes(x,cx,cy,R*1.1);
+    txt(x,cx,22,isK?"Keplerian — differential precession":"Rigid — coherent precession",COL.dim,11);
+    for(let ri=0;ri<nRings;ri++){
+      const rN=(ri+1)/nRings,rr=R*rN,prec=isK?l2precK[ri]:l2precRigid;
+      x.strokeStyle=RCOL[ri];x.lineWidth=2;x.globalAlpha=0.5;x.beginPath();
+      for(let i=0;i<=80;i++){const a=(i/80)*PI2,lx=rr*Math.cos(a),ly=rr*Math.sin(a),rx=lx*Math.cos(prec)-ly*Math.sin(prec),rz=lx*Math.sin(prec)+ly*Math.cos(prec);const px=cx+rx*0.85,py=cy-rz*0.4-ly*0.1;i===0?x.moveTo(px,py):x.lineTo(px,py)}
+      x.stroke();x.globalAlpha=1;
+      const omega=isK?omega0*Math.pow(rN,-1.5):omega0;
+      for(let pi=0;pi<perRing;pi++){const a=(PI2/perRing)*pi+l2time*omega,lx=rr*Math.cos(a),ly=rr*Math.sin(a),rx=lx*Math.cos(prec)-ly*Math.sin(prec),rz=lx*Math.sin(prec)+ly*Math.cos(prec);dot(x,cx+rx*0.85,cy-rz*0.4-ly*0.1,3,RCOL[ri],"#08080c",0.6)}
+    }
+    if(l2forceOn){arr(x,cx+R*1.15,cy-R*0.7,cx+R*1.15,cy-R*0.7+45,COL.fz,3,9);txt(x,cx+R*1.15+18,cy-R*0.7+15,"F",COL.fz,12,"left")}
+    if(isK){const w2=((l2precK[0]-l2precK[3])*180/PI)%360;txt(x,cx,h-22,"Warp: "+w2.toFixed(1)+"° inner vs outer",COL.warp,11)}
+    else{txt(x,cx,h-22,"Precession: "+((l2precRigid*180/PI)%360).toFixed(1)+"°",COL.prec,11)}
+  });
+}
+
+// ═══════════ LAYER 3 ═══════════
+let l3running=true,l3time=0,l3cG,l3cE,l3cF;
+function setL3run(v){l3running=v;document.getElementById("bL3run").className=v?"btn active":"btn";document.getElementById("bL3stop").className=v?"btn":"btn active"}
+window.setL3run=setL3run;
+function resetL3(){l3time=0}
+window.resetL3=resetL3;
+
+function drawL3(t,dt){
+  if(!l3cG)l3cG=IC("c3graph",400,220);
+  if(!l3cE)l3cE=IC("c3euler",400,400);
+  if(!l3cF)l3cF=IC("c3fma",400,400);
+  if(!l3cG||!l3cE||!l3cF)return;
+  const spd=gv("s3speed");
+  document.getElementById("s3speedVal").textContent=spd.toFixed(1)+"x";
+  if(l3running)l3time+=dt*spd*1.5;
+  document.getElementById("s3timeVal").textContent=l3time.toFixed(1);
+  const nR=20,omega0=2;
+
+  // Graph
+  const{x:xg,w:wg,h:hg}=l3cG;xg.clearRect(0,0,wg,hg);
+  const gL=55,gR=wg-25,gT=35,gB=hg-35,gW=gR-gL,gH=gB-gT;
+  xg.strokeStyle="rgba(100,100,140,0.3)";xg.lineWidth=1;
+  xg.beginPath();xg.moveTo(gL,gB);xg.lineTo(gR,gB);xg.stroke();
+  xg.beginPath();xg.moveTo(gL,gB);xg.lineTo(gL,gT);xg.stroke();
+  txt(xg,gL+gW/2,hg-10,"Radius (r/R)",COL.dim,10);
+  txt(xg,20,gT+gH/2,"Ω(r)",COL.dim,10);
+  txt(xg,gL+gW/2,16,"Precession Rate vs Radius",COL.dim,11);
+  let Isum=0,Lsum=0;for(let ri=0;ri<nR;ri++){const rN=(ri+1)/nR,om=omega0*Math.pow(rN,-1.5);Isum+=rN*rN;Lsum+=rN*rN*om}
+  const omEff=Lsum/Isum,eulerP=1.0/(omEff*0.5);
+  const pR=[];let maxP=0;for(let ri=0;ri<nR;ri++){const rN=(ri+1)/nR,om=omega0*Math.pow(rN,-1.5),p=1.0/(om*rN*rN+0.001);pR.push(p);if(p>maxP)maxP=p}
+  const sY=gH/(maxP*1.2);
+  xg.strokeStyle=COL.rigid;xg.lineWidth=2;xg.setLineDash([6,4]);xg.beginPath();xg.moveTo(gL,gB-eulerP*sY);xg.lineTo(gR,gB-eulerP*sY);xg.stroke();xg.setLineDash([]);
+  txt(xg,gR-50,gB-eulerP*sY-14,"Euler (single value)",COL.rigid,10);
+  xg.strokeStyle=COL.fz;xg.lineWidth=3;xg.beginPath();for(let ri=0;ri<nR;ri++){const px=gL+(ri+1)/nR*gW,py=gB-pR[ri]*sY;ri===0?xg.moveTo(px,py):xg.lineTo(px,py)}xg.stroke();
+  txt(xg,gL+80,gT+18,"F=ma per-ring",COL.fz,10);
+
+  // Euler 3D
+  const{x:xe,w:we,h:he}=l3cE;xe.clearRect(0,0,we,he);const ecx=we/2,ecy=he/2,eR=140,euA=l3time*eulerP*0.4;
+  drawAxes(xe,ecx,ecy,eR*0.9);
+  txt(xe,ecx,22,"Euler: disk precesses as one",COL.rigid,11);
+  const RING10=["#c45c5c","#d06040","#e8a030","#c8b830","#88cc55","#4a9e6e","#35bba8","#44bbee","#5a9adc","#9070cc"];
+  for(let ri=0;ri<10;ri++){const rN=(ri+1)/10,rr=eR*rN;xe.strokeStyle=RING10[ri];xe.lineWidth=1.5;xe.globalAlpha=0.55;xe.beginPath();for(let i=0;i<=80;i++){const a=(i/80)*PI2,lx=rr*Math.cos(a),ly=rr*Math.sin(a),rx=lx*Math.cos(euA)-ly*Math.sin(euA),rz=lx*Math.sin(euA)+ly*Math.cos(euA);xe.lineTo(ecx+rx*0.85,ecy-rz*0.4)}xe.stroke();xe.globalAlpha=1}
+  txt(xe,ecx,he-22,"Uniform: "+((euA*180/PI)%360).toFixed(1)+"°",COL.rigid,11);
+
+  // F=ma 3D
+  const{x:xf,w:wf,h:hf}=l3cF;xf.clearRect(0,0,wf,hf);const fcx=wf/2,fcy=hf/2,fR=140;
+  drawAxes(xf,fcx,fcy,fR*0.9);
+  txt(xf,fcx,22,"F=ma: each ring independent",COL.fz,11);
+  for(let ri=0;ri<10;ri++){const rN=(ri+1)/10,rr=fR*rN,om=omega0*Math.pow(rN,-1.5),prR2=1.0/(om*rN*rN+0.001),fA=l3time*prR2*0.4;xf.strokeStyle=RING10[ri];xf.lineWidth=1.5;xf.globalAlpha=0.55;xf.beginPath();for(let i=0;i<=80;i++){const a=(i/80)*PI2,lx=rr*Math.cos(a),ly=rr*Math.sin(a),rx=lx*Math.cos(fA)-ly*Math.sin(fA),rz=lx*Math.sin(fA)+ly*Math.cos(fA),tZ=Math.sin(a+fA)*rN*l3time*0.055;xf.lineTo(fcx+rx*0.85,fcy-rz*0.4-tZ*35)}xf.stroke();xf.globalAlpha=1}
+  const iP2=pR[0]*0.15*l3time,oP2=pR[nR-1]*0.15*l3time;
+  txt(xf,fcx,hf-22,"Warp: "+Math.abs(((iP2-oP2)*180/PI)%360).toFixed(1)+"°",COL.warp,11);
+}
+
+// ═══════════ LAYER 4 ═══════════
+function drawL4(){
+  if(!window.l4c)window.l4c=IC("c4curve",400,240);
+  if(!window.l4c)return;
+  const{x,w,h}=window.l4c;x.clearRect(0,0,w,h);
+  const mF=gv("s4mass"),vO=gv("s4obs");
+  document.getElementById("s4massVal").textContent=(mF*100).toFixed(0)+"%";
+  document.getElementById("s4obsVal").textContent=vO.toFixed(2);
+  const gL=55,gR=w-25,gT=35,gB=h-35,gW=gR-gL,gH=gB-gT,N=60,vF=0.7;
+  x.strokeStyle="rgba(100,100,140,0.3)";x.lineWidth=1;
+  x.beginPath();x.moveTo(gL,gB);x.lineTo(gR,gB);x.stroke();
+  x.beginPath();x.moveTo(gL,gB);x.lineTo(gL,gT);x.stroke();
+  txt(x,gL+gW/2,h-10,"Radius",COL.dim,10);txt(x,22,gT+gH/2,"v(r)",COL.dim,10);
+  // Observed
+  x.strokeStyle=COL.fall;x.lineWidth=3;x.beginPath();for(let i=1;i<=N;i++){const rN=i/N,v=vF*Math.sqrt(rN/(rN+0.05));x.lineTo(gL+rN*gW,gB-v*gH)}x.stroke();
+  // Visible
+  x.strokeStyle=COL.rigid;x.lineWidth=2.5;x.setLineDash([6,3]);x.beginPath();for(let i=1;i<=N;i++){const rN=i/N,v=vF*Math.sqrt(mF/(rN+0.05));x.lineTo(gL+rN*gW,gB-clamp(v,0,1)*gH)}x.stroke();x.setLineDash([]);
+  // Gap
+  x.globalAlpha=0.12;x.fillStyle=COL.fz;x.beginPath();for(let i=1;i<=N;i++){const rN=i/N;x.lineTo(gL+rN*gW,gB-vF*Math.sqrt(rN/(rN+0.05))*gH)}for(let i=N;i>=1;i--){const rN=i/N;x.lineTo(gL+rN*gW,gB-clamp(vF*Math.sqrt(mF/(rN+0.05)),0,1)*gH)}x.closePath();x.fill();x.globalAlpha=1;
+  // Observer shifted
+  if(Math.abs(vO)>0.01){x.strokeStyle=COL.warp;x.lineWidth=2.5;x.beginPath();for(let i=1;i<=N;i++){const rN=i/N,v=Math.abs(vF*Math.sqrt(rN/(rN+0.05))+vO*vF);x.lineTo(gL+rN*gW,gB-clamp(v,0,1.2)*gH)}x.stroke()}
+  txt(x,gR-80,gT+12,"Observed (flat)",COL.fall,10);txt(x,gR-80,gT+28,"Visible mass only",COL.rigid,10);txt(x,gL+gW/2,gT+8,"Gap = unaccounted-for mass",COL.fz,10);
+  let c="Move the observer slider. The gap — and therefore the inferred unaccounted-for mass — changes with observer frame.";
+  if(Math.abs(vO)>0.01)c="Purple curve: same galaxy from a frame moving at "+vO.toFixed(2)+". Different velocities → different gap → different inferred missing mass. v² is frame-dependent.";
+  document.getElementById("l4comment").textContent=c;
+}
+
+// ═══════════ LAYER 5 ═══════════
+let l5running=true,l5time=0,l5cT,l5cE;
+function setL5run(v){l5running=v;document.getElementById("bL5run").className=v?"btn active":"btn";document.getElementById("bL5stop").className=v?"btn":"btn active"}
+window.setL5run=setL5run;
+function resetL5(){l5time=0}
+window.resetL5=resetL5;
+
+function drawL5(t,dt){
+  if(!l5cT)l5cT=IC("c5top",400,400);
+  if(!l5cE)l5cE=IC("c5edge",400,250);
+  if(!l5cT||!l5cE)return;
+  const sp5=gv("s5speed2");
+  document.getElementById("s5speedVal2").textContent=sp5.toFixed(1)+"x";
+  if(l5running)l5time+=dt*sp5*0.3;
+  document.getElementById("s5timeVal").textContent=l5time.toFixed(1);
+  const tidal=gv("s5tidal");document.getElementById("s5tidalVal").textContent=tidal.toFixed(2);
+  const nR=14,omega0=2;
+
+  // TOP VIEW — oblique projection so z-warp is visible as differential ellipse tilt
+  const{x:xt,w:wt,h:ht}=l5cT;xt.clearRect(0,0,wt,ht);
+  const Rt=155,tcx=wt/2,tcy=ht/2+10;
+  txt(xt,tcx,20,"Top View (oblique — rings tilt as they precess)",COL.dim,11);
+
+  // Reference plane grid
+  xt.strokeStyle="rgba(100,100,140,0.06)";xt.lineWidth=1;
+  for(let ri=1;ri<=nR;ri++){
+    const rr=Rt*ri/nR;
+    xt.beginPath();
+    for(let i=0;i<=80;i++){const a=(i/80)*PI2;xt.lineTo(tcx+rr*Math.cos(a),tcy-rr*Math.sin(a)*0.45)}
+    xt.stroke();
+  }
+
+  for(let ri=0;ri<nR;ri++){
+    const rN=(ri+1)/nR,rr=Rt*rN,om=omega0*Math.pow(rN,-1.5);
+    const pR3=tidal*0.3/(om*rN*rN+0.001),pA=l5time*pR3;
+    const col=RCOL[clamp(Math.floor(ri*4/nR),0,3)],al=0.3+0.55*(ri/nR);
+    xt.strokeStyle=col;xt.lineWidth=1.5;xt.globalAlpha=al;
+    xt.beginPath();
+    for(let i=0;i<=80;i++){
+      const a=(i/80)*PI2;
+      const lx=rr*Math.cos(a);
+      const ly=rr*Math.sin(a);
+      // tanh caps growth — warp saturates rather than growing out of bounds
+      const zW=tidal*rN*Math.tanh(l5time*0.25)*40*Math.sin(a+pA);
+      const sx=tcx+lx;
+      const sy=tcy-ly*0.45-zW;
+      i===0?xt.moveTo(sx,sy):xt.lineTo(sx,sy);
+    }
+    xt.stroke();xt.globalAlpha=1;
+
+    // Orbiting particles on each ring
+    const nP=6;
+    for(let pi=0;pi<nP;pi++){
+      const a=(PI2/nP)*pi+l5time*om;
+      const lx=rr*Math.cos(a),ly=rr*Math.sin(a);
+      const zW=tidal*rN*Math.tanh(l5time*0.25)*40*Math.sin(a+pA);
+      const sx=tcx+lx,sy=tcy-ly*0.45-zW;
+      dot(xt,sx,sy,2.5,col);
+    }
+  }
+  dot(xt,tcx,tcy,4,COL.accent);
+  if(tidal>0){
+    arr(xt,tcx+Rt*1.05,tcy-Rt*0.55,tcx+Rt*0.82,tcy-Rt*0.38,COL.fz,3,9);
+    txt(xt,tcx+Rt*1.1,tcy-Rt*0.62,"Tidal F",COL.fz,10,"left");
+  }
+
+  // EDGE VIEW — separate canvas, full width
+  const{x:xe,w:we,h:he}=l5cE;xe.clearRect(0,0,we,he);
+  const Re=155,ecx=we/2,ecy=he/2;
+  txt(xe,ecx,16,"Edge View",COL.dim,11);
+  // Horizontal reference line
+  xe.strokeStyle="rgba(100,100,140,0.15)";xe.lineWidth=1;xe.setLineDash([4,4]);
+  xe.beginPath();xe.moveTo(ecx-Re*1.1,ecy);xe.lineTo(ecx+Re*1.1,ecy);xe.stroke();xe.setLineDash([]);
+
+  for(let ri=0;ri<nR;ri++){
+    const rN=(ri+1)/nR,rr=Re*rN,om=omega0*Math.pow(rN,-1.5),pR3=tidal*0.3/(om*rN*rN+0.001),pA=l5time*pR3;
+    const col=RCOL[clamp(Math.floor(ri*4/nR),0,3)],al=0.3+0.5*(ri/nR);
+    xe.strokeStyle=col;xe.lineWidth=1.5;xe.globalAlpha=al;
+    xe.beginPath();
+    for(let i=0;i<=80;i++){
+      const a=(i/80)*PI2,lx=rr*Math.cos(a);
+      const zW=tidal*rN*Math.tanh(l5time*0.25)*40*Math.sin(a+pA);
+      xe.lineTo(ecx+lx,ecy-zW);
+    }
+    xe.stroke();xe.globalAlpha=1;
+
+    // Orbiting particles — same positions as top view
+    const nP=6;
+    for(let pi=0;pi<nP;pi++){
+      const a=(PI2/nP)*pi+l5time*om;
+      const lx=rr*Math.cos(a);
+      const zW=tidal*rN*Math.tanh(l5time*0.25)*40*Math.sin(a+pA);
+      dot(xe,ecx+lx,ecy-zW,2.5,col);
+    }
+  }
+  dot(xe,ecx,ecy,3,COL.accent);
+}
+
+// ═══════════ LAYER 6 ═══════════
+let l6running=true,l6time=0,l6c;
+function setL6run(v){l6running=v;document.getElementById("bL6run").className=v?"btn active":"btn";document.getElementById("bL6stop").className=v?"btn":"btn active"}
+window.setL6run=setL6run;
+function resetL6(){l6time=0}
+window.resetL6=resetL6;
+
+function drawL6(t,dt){
+  if(!l6c)l6c=IC("c6material",400,400);
+  if(!window.l6cD)window.l6cD=IC("c6density",400,400);
+  if(!l6c||!window.l6cD)return;
+  const sp=gv("s6speed");document.getElementById("s6speedVal").textContent=sp.toFixed(1)+"x";
+  if(l6running)l6time+=dt*sp*0.3;
+  document.getElementById("s6orbitsVal").textContent=l6time.toFixed(1);
+  const R=165,omega0=1.5;
+  const armCols=["#c45c5c","#e8a030","#4a9e6e","#5a9adc","#b07cc8","#dd5577"];
+  const nArms=4,nStars=80;
+
+  // ── CANVAS 1: Material Arms ──
+  {
+    const{x,w,h}=l6c;x.clearRect(0,0,w,h);
+    const cx=w/2,cy=h/2;
+    txt(x,cx,22,"Material Arms",COL.fz,12);
+    for(let arm=0;arm<nArms;arm++){
+      const baseAngle=arm*PI2/nArms;
+      x.strokeStyle=armCols[arm%armCols.length];x.lineWidth=2.5;x.globalAlpha=0.7;x.beginPath();
+      for(let ri=3;ri<=50;ri++){
+        const rN=ri/50,rr=R*rN;
+        const omega=omega0*Math.pow(Math.max(rN,0.06),-1.5);
+        const a=baseAngle+l6time*omega;
+        ri===3?x.moveTo(cx+rr*Math.cos(a),cy-rr*Math.sin(a)):x.lineTo(cx+rr*Math.cos(a),cy-rr*Math.sin(a));
+      }
+      x.stroke();x.globalAlpha=1;
+    }
+    for(let i=0;i<nStars;i++){
+      const rN=0.08+0.88*((i*7+3)%nStars)/nStars,rr=R*rN,omega=omega0*Math.pow(Math.max(rN,0.06),-1.5),a0=(i*2.39996)+l6time*omega;
+      dot(x,cx+rr*Math.cos(a0),cy-rr*Math.sin(a0),2,"rgba(90,154,220,0.5)");
+    }
+    dot(x,cx,cy,4,COL.accent);
+  }
+
+  // ── CANVAS 2: Density Wave ──
+  {
+    const{x,w,h}=window.l6cD;x.clearRect(0,0,w,h);
+    const cx=w/2,cy=h/2;
+    txt(x,cx,22,"Density Wave",COL.prec,12);
+    for(let arm=0;arm<2;arm++){
+      const baseAngle=arm*PI;
+      x.strokeStyle=COL.prec;x.lineWidth=3;x.globalAlpha=0.4;x.beginPath();
+      for(let ri=5;ri<=80;ri++){
+        const rN=ri/80,rr=R*rN,spiralAngle=baseAngle+Math.log(rN+0.01)*2.5;
+        ri===5?x.moveTo(cx+rr*Math.cos(spiralAngle),cy-rr*Math.sin(spiralAngle)):x.lineTo(cx+rr*Math.cos(spiralAngle),cy-rr*Math.sin(spiralAngle));
+      }
+      x.stroke();x.globalAlpha=1;
+    }
+    for(let i=0;i<nStars;i++){
+      const rN=0.08+0.88*((i*7+3)%nStars)/nStars,rr=R*rN,omega=omega0*Math.pow(Math.max(rN,0.06),-1.5),a0=(i*2.39996)+l6time*omega;
+      const sA1=Math.log(rN+0.01)*2.5,sA2=sA1+PI,d1=Math.abs(((a0-sA1)%(PI2)+PI2)%(PI2)-PI),d2=Math.abs(((a0-sA2)%(PI2)+PI2)%(PI2)-PI),near=Math.min(d1,d2)<0.4;
+      dot(x,cx+rr*Math.cos(a0),cy-rr*Math.sin(a0),near?3.5:2,near?"rgba(150,200,255,0.9)":"rgba(90,154,220,0.35)");
+    }
+    dot(x,cx,cy,4,COL.accent);
+  }
+
+  const orbits=l6time;
+  let cmt;
+  if(orbits<3)cmt="Material arms (top, colored by arm) are just beginning to wind. Density wave pattern (bottom) stays fixed — stars move through it.";
+  else if(orbits<12)cmt="After "+orbits.toFixed(0)+" orbits, material arms have wound tightly — track each color. Density waves remain fixed while individual stars drift through the compression zone.";
+  else cmt="At "+orbits.toFixed(0)+" orbits, material arms are destroyed. The Milky Way has done ~50 orbits. Density wave theory concedes non-rigidity for arms — then continues using rigid-body L=Iω for everything else in the same galaxy.";
+  document.getElementById("l6comment").textContent=cmt;
+}
+
+// ═══════════ LAYER 7 ═══════════
+let l7running=true,l7time=0,l7c;
+let l7particles=[];
+function initL7(){
+  l7particles=[];
+  for(let i=0;i<80;i++){
+    const r=0.15+0.8*Math.random();
+    const a=PI2*Math.random();
+    l7particles.push({r,a,vr:0,highlight:i<12});
+  }
+}
+initL7();
+function setL7run(v){l7running=v;document.getElementById("bL7run").className=v?"btn active":"btn";document.getElementById("bL7stop").className=v?"btn":"btn active"}
+window.setL7run=setL7run;
+function resetL7(){l7time=0;initL7()}
+window.resetL7=resetL7;
+
+function drawL7(t,dt){
+  if(!l7c)l7c=IC("c7acc",400,400);if(!l7c)return;
+  const{x,w,h}=l7c;x.clearRect(0,0,w,h);
+  const alpha=gv("s7alpha"),mag=gv("s7mag"),spinMult=gv("s7spin");
+  document.getElementById("s7alphaVal").textContent=alpha.toFixed(3);
+  document.getElementById("s7magVal").textContent=mag.toFixed(2);
+  document.getElementById("s7spinVal").textContent=spinMult.toFixed(2)+"x";
+  const R=160,cx=w/2,cy=h/2;
+  if(l7running)l7time+=dt;
+  txt(x,cx,20,"Accretion Disk — Per-Mass Forces",COL.dim,11);
+  // Background rings
+  for(let ri=1;ri<=10;ri++){const rr=R*ri/10;x.strokeStyle="rgba(100,100,140,0.06)";x.lineWidth=1;x.beginPath();x.arc(cx,cy,rr,0,PI2);x.stroke()}
+  // Central object
+  const ergS=spinMult*4+1;
+  for(let e=0;e<4;e++){const ea=l7time*ergS+e*PI2/4;x.strokeStyle=COL.jet;x.lineWidth=1.5;x.globalAlpha=0.4;x.beginPath();x.arc(cx,cy,11,ea,ea+PI*0.55);x.stroke()}
+  x.globalAlpha=1;
+  dot(x,cx,cy,8,"#0a0812",COL.jet,2);
+  txt(x,cx,cy-18,"M",COL.jet,10);
+
+  const effDt=l7running?dt:0;
+  // Drift rate: strong enough to be visible over ~10 seconds
+  const driftRate=mag*0.35*alpha;
+
+  for(let i=0;i<l7particles.length;i++){
+    const p=l7particles[i];
+    // Cap omega so inner particles don't blur — Keplerian shape preserved, sane speed
+    const omegaRaw=Math.pow(Math.max(p.r,0.05),-1.5);
+    const omega=spinMult*Math.min(omegaRaw,6);
+    p.a+=omega*effDt;
+    // Inward drift: proportional to 1/r (stronger near center, matching the essay)
+    const drift=-driftRate/(p.r+0.05);
+    p.r+=drift*effDt;
+    if(p.r<0.06||p.r>1.1){p.r=0.2+0.75*Math.random();p.a=PI2*Math.random();if(!p.trail)p.trail=[];p.trail=[];}
+    const rr=R*p.r,px=cx+rr*Math.cos(p.a),py=cy-rr*Math.sin(p.a);
+
+    if(p.highlight){
+      // Draw infall trail
+      if(!p.trail)p.trail=[];
+      p.trail.push({px,py});
+      if(p.trail.length>60)p.trail.shift();
+      if(p.trail.length>1){
+        x.beginPath();x.moveTo(p.trail[0].px,p.trail[0].py);
+        for(let ti=1;ti<p.trail.length;ti++){
+          const al=ti/p.trail.length;
+          x.globalAlpha=al*0.5;x.strokeStyle=COL.fz;x.lineWidth=1.5;
+          x.lineTo(p.trail[ti].px,p.trail[ti].py);
+        }
+        x.stroke();x.globalAlpha=1;
+      }
+      // Gravity arrow (inward toward center)
+      const gLen=Math.min(28/(p.r*p.r+0.15),44);
+      const gx=cx+(rr-gLen)*Math.cos(p.a),gy=cy-(rr-gLen)*Math.sin(p.a);
+      arr(x,px,py,gx,gy,COL.fall,2.5,7);
+      // Magnetic coupling (azimuthal)
+      if(mag>0.03){
+        const mLen=mag*22;
+        const ma=p.a+PI/2+0.3;
+        arr(x,px,py,px+mLen*Math.cos(ma),py-mLen*Math.sin(ma),COL.alpha,2.5,7);
+      }
+      // Orbital velocity (tangential)
+      const vLen=Math.min(omega*10,48);
+      const va=p.a+PI/2;
+      arr(x,px,py,px+vLen*Math.cos(va),py-vLen*Math.sin(va),COL.rigid,2,6);
+      dot(x,px,py,5,COL.fz,"#08080c",1.5);
+    } else {
+      dot(x,px,py,2.5,COL.rigid,"#08080c",0.5);
+    }
+  }
+
+  // Commentary
+  const driftDesc=driftRate>0.01?"drifting inward":"barely drifting — raise Infall or Magnetic sliders";
+  let cmt="Orange masses show all forces: red = gravity inward, blue = orbital velocity, green = magnetic coupling. Trails show each mass "+driftDesc+". When gravity exceeds the centripetal requirement, the mass spirals in. No angular momentum conservation law is consulted.";
+  if(alpha<0.01&&mag<0.1)cmt="With low infall and magnetic coupling, the forces nearly balance — masses orbit without drifting. Raise either slider to watch infall begin.";
+  document.getElementById("l7comment").textContent=cmt;
+  txt(x,cx,h-18,"infall strength="+alpha.toFixed(3)+"  |  B-coupling="+mag.toFixed(2)+"  |  speed="+spinMult.toFixed(2)+"x",COL.dim,10);
+}
+
+// ═══════════ LAYER 8 ═══════════
+let l8running=true,l8time=0,l8c;
+function setL8run(v){l8running=v;document.getElementById("bL8run").className=v?"btn active":"btn";document.getElementById("bL8stop").className=v?"btn":"btn active"}
+window.setL8run=setL8run;
+function resetL8(){l8time=0}
+window.resetL8=resetL8;
+
+function drawL8(t,dt){
+  if(!l8c)l8c=IC("c8bp",400,400);if(!l8c)return;
+  const{x,w,h}=l8c;x.clearRect(0,0,w,h);
+  const spin=gv("s8spin"),tilt0=gv("s8tilt")*PI/180,aspeed=gv("s8aspeed");
+  document.getElementById("s8spinVal").textContent=spin.toFixed(2);
+  document.getElementById("s8tiltVal").textContent=gv("s8tilt")+"°";
+  document.getElementById("s8aspeedVal").textContent=aspeed.toFixed(1)+"x";
+  if(l8running)l8time+=dt*aspeed*0.75;
+  document.getElementById("s8timeVal").textContent=l8time.toFixed(1);
+  const R=160,cx=w/2,cy=h/2+10,nR=18;
+
+  txt(x,cx,20,"Bardeen-Petterson: Tilted Disk",COL.dim,11);
+
+  // Spin axis
+  arr(x,cx,cy+55,cx,cy-R*0.9,COL.jet,3,10);
+  txt(x,cx+18,cy-R*0.95,"Spin axis",COL.jet,10,"left");
+
+  // Rings with differential alignment
+  for(let ri=0;ri<nR;ri++){
+    const rN=(ri+1)/nR,rr=R*0.85*rN;
+    const ltRate=spin*3.0/(Math.pow(rN,3)+0.001);
+    const alignFrac=clamp(1-Math.exp(-ltRate*l8time*0.1),0,1);
+    const currentTilt=tilt0*(1-alignFrac);
+    const precAngle=ltRate*l8time*0.14*(1-alignFrac*0.5);
+
+    let col;
+    if(alignFrac>0.8)col=COL.fall;
+    else if(alignFrac>0.3)col=COL.fz;
+    else col=COL.rigid;
+
+    x.strokeStyle=col;x.lineWidth=rN>0.5?2:1.5;x.globalAlpha=0.3+0.5*rN;
+    x.beginPath();
+    for(let i=0;i<=100;i++){
+      const a=(i/100)*PI2+precAngle;
+      const lx=rr*Math.cos(a),ly=rr*Math.sin(a);
+      const ry=ly*Math.cos(currentTilt),rz=ly*Math.sin(currentTilt);
+      x.lineTo(cx+lx*0.9,cy-ry*0.4-rz*0.6);
+    }
+    x.stroke();x.globalAlpha=1;
+  }
+  // Spinning BH — rotating ergosphere arcs (Lense-Thirring frame dragging visible)
+  const ergSpd=spin*5+1;
+  for(let e=0;e<4;e++){
+    const ea=l8time*ergSpd+e*PI2/4;
+    x.strokeStyle=COL.jet;x.lineWidth=2;x.globalAlpha=0.45+0.25*Math.sin(l8time*ergSpd*2+e);
+    x.beginPath();x.arc(cx,cy,15,ea,ea+PI*0.55);x.stroke();
+  }
+  x.globalAlpha=1;
+  // Inner photon sphere glow
+  const grd=x.createRadialGradient(cx,cy,2,cx,cy,13);
+  grd.addColorStop(0,"rgba(220,85,120,0.35)");grd.addColorStop(1,"rgba(220,85,120,0)");
+  x.fillStyle=grd;x.beginPath();x.arc(cx,cy,13,0,PI2);x.fill();
+  dot(x,cx,cy,8,"#0a0812",COL.jet,2);
+
+  const innerAlign=clamp(1-Math.exp(-spin*3/(Math.pow(1/nR,3)+0.001)*l8time*0.1),0,1);
+  const outerAlign=clamp(1-Math.exp(-spin*3/(1+0.001)*l8time*0.1),0,1);
+  const innerTiltDeg=(tilt0*(1-innerAlign)*180/PI);
+  const outerTiltDeg=(tilt0*(1-outerAlign)*180/PI);
+  document.getElementById("s8innerVal").textContent=innerTiltDeg.toFixed(1)+"°";
+  document.getElementById("s8outerVal").textContent=outerTiltDeg.toFixed(1)+"°";
+
+  let cmt;
+  if(l8time<1)cmt="The disk starts tilted at "+gv("s8tilt")+"° to the spin axis. Watch the inner rings align while outer rings hold their tilt.";
+  else if(innerTiltDeg>outerTiltDeg*0.7)cmt="Inner rings (r⁻³ Lense-Thirring) precess fast and begin aligning. Outer rings lag behind. This is differential precession — the same mechanism from Layers 2–5.";
+  else cmt="Inner disk (red): aligned at "+innerTiltDeg.toFixed(1)+"°. Outer disk (blue): still at "+outerTiltDeg.toFixed(1)+"°. Published in 1975 as a new discovery. But it is differential precession of a non-rigid disk — available from F=ma since Newton.";
+  document.getElementById("l8comment").textContent=cmt;
+}
+
+// ═══════════ LAYER 9 ═══════════
+function drawL9(){
+  if(!window.l9d)window.l9d=IC("c9dist",400,300);
+  if(!window.l9f)window.l9f=IC("c9frame",400,300);
+  if(!window.l9d||!window.l9f)return;
+  const vObs=gv("s9obs");document.getElementById("s9obsVal").textContent=vObs.toFixed(2);
+  const N=40,omega0=2;
+
+  // LEFT: energy distribution
+  const{x:xd,w:wd,h:hd}=window.l9d;xd.clearRect(0,0,wd,hd);
+  const gL=55,gR=wd-25,gT=40,gB=hd-35,gW=gR-gL,gH=gB-gT;
+  xd.strokeStyle="rgba(100,100,140,0.3)";xd.lineWidth=1;
+  xd.beginPath();xd.moveTo(gL,gB);xd.lineTo(gR,gB);xd.stroke();
+  xd.beginPath();xd.moveTo(gL,gB);xd.lineTo(gL,gT);xd.stroke();
+  txt(xd,gL+gW/2,hd-10,"Radius",COL.dim,10);
+  txt(xd,gL+gW/2,16,"Energy per Ring",COL.dim,11);
+  txt(xd,20,gT+gH/2,"½mv²",COL.dim,9);
+
+  const omR=omega0;
+  let maxE=0;const rigE=[],kepE=[];
+  for(let i=0;i<N;i++){const rN=(i+1)/N,eR=0.5*rN*rN*omR*omR,eK=0.5*omega0*omega0/(rN+0.01);rigE.push(eR);kepE.push(eK);if(eR>maxE)maxE=eR;if(eK>maxE)maxE=eK}
+  const sY=gH/(maxE*1.1);
+  xd.strokeStyle=COL.rigid;xd.lineWidth=3;xd.beginPath();for(let i=0;i<N;i++){xd.lineTo(gL+(i+1)/N*gW,gB-rigE[i]*sY)}xd.stroke();
+  xd.strokeStyle=COL.fz;xd.lineWidth=3;xd.beginPath();for(let i=0;i<N;i++){xd.lineTo(gL+(i+1)/N*gW,gB-clamp(kepE[i]*sY,0,gH))}xd.stroke();
+  txt(xd,gR-80,gT+15,"½Iω² (rigid)",COL.rigid,10);
+  txt(xd,gL+60,gT+15,"Σ½mv² (Kepler)",COL.fz,10);
+
+  // RIGHT: total KE vs observer frame
+  const{x:xf,w:wf,h:hf}=window.l9f;xf.clearRect(0,0,wf,hf);
+  const fL=55,fR=wf-25,fT=40,fB=hf-35,fW=fR-fL,fH=fB-fT;
+  xf.strokeStyle="rgba(100,100,140,0.3)";xf.lineWidth=1;
+  xf.beginPath();xf.moveTo(fL,fB);xf.lineTo(fR,fB);xf.stroke();
+  xf.beginPath();xf.moveTo(fL,fB);xf.lineTo(fL,fT);xf.stroke();
+  txt(xf,fL+fW/2,hf-10,"Observer velocity",COL.dim,10);
+  txt(xf,fL+fW/2,16,"Total KE vs Observer Frame",COL.dim,11);
+
+  const nObs=60;let minKE=1e9,maxKE=0;const keV=[];
+  for(let oi=0;oi<=nObs;oi++){const u=-1.5+3*(oi/nObs);let ke=0;for(let i=0;i<20;i++){const rN=(i+1)/20,v=omega0*Math.pow(Math.max(rN,0.05),-0.5);ke+=0.5*(v+u)*(v+u)+0.5*(-v+u)*(-v+u)}keV.push({u,ke});if(ke<minKE)minKE=ke;if(ke>maxKE)maxKE=ke}
+  const kS=fH/(maxKE*1.05);
+  xf.strokeStyle=COL.fz;xf.lineWidth=3;xf.beginPath();for(let oi=0;oi<=nObs;oi++){xf.lineTo(fL+(oi/nObs)*fW,fB-keV[oi].ke*kS)}xf.stroke();
+  // Observer marker
+  const oN=(vObs+1.5)/3;let oKE=0;for(let i=0;i<20;i++){const rN=(i+1)/20,v=omega0*Math.pow(Math.max(rN,0.05),-0.5);oKE+=0.5*(v+vObs)*(v+vObs)+0.5*(-v+vObs)*(-v+vObs)}
+  dot(xf,fL+oN*fW,fB-oKE*kS,6,COL.accent,"#08080c",2);
+  txt(xf,fL+oN*fW+12,fB-oKE*kS-14,"KE="+oKE.toFixed(1),COL.accent,10,"left");
+  // Zero line
+  const zP=fL+(1.5/3)*fW;xf.strokeStyle="rgba(100,100,140,0.25)";xf.setLineDash([3,4]);xf.lineWidth=1;xf.beginPath();xf.moveTo(zP,fT);xf.lineTo(zP,fB);xf.stroke();xf.setLineDash([]);
+  txt(xf,zP,fB+12,"u=0",COL.dim,8);
+}
+
+// ═══════════ LAYER 10 ═══════════
+let l10running=true,l10time=0,l10c;
+let jetParticles=[];
+function initJet(){
+  jetParticles=[];
+  for(let i=0;i<80;i++){
+    const r=0.12+0.75*Math.random();
+    const a=PI2*Math.random();
+    jetParticles.push({r,a,z:0,vz:0,active:true,isDisk:true});
+  }
+}
+initJet();
+function setL10run(v){l10running=v;document.getElementById("bL10run").className=v?"btn active":"btn";document.getElementById("bL10stop").className=v?"btn":"btn active"}
+window.setL10run=setL10run;
+function resetL10(){l10time=0;initJet()}
+window.resetL10=resetL10;
+
+function drawL10(t,dt){
+  if(!l10c)l10c=IC("c10jet",400,500);if(!l10c)return;
+  const{x,w,h}=l10c;x.clearRect(0,0,w,h);
+  const B=gv("s10B"),sp=gv("s10spin");
+  document.getElementById("s10Bval").textContent=B.toFixed(2);
+  document.getElementById("s10spinVal").textContent=sp.toFixed(1)+"x";
+  const R=100,cx=w/2,cy=h*0.5;
+  if(l10running)l10time+=dt;
+
+  txt(x,cx,18,"Quasar Jet — Per-Particle Lorentz Force",COL.dim,11);
+
+  // BH
+  dot(x,cx,cy,12,"#181825",COL.jet,2.5);
+
+  // Magnetic field lines — wider spread, more visible
+  x.globalAlpha=0.3;
+  for(let fi=-4;fi<=4;fi++){
+    if(fi===0)continue;
+    const bx=cx+fi*16;
+    x.strokeStyle=COL.alpha;x.lineWidth=1.8;x.beginPath();
+    for(let yi=-18;yi<=18;yi++){
+      const yy=yi*13;
+      const curve=fi*4*Math.tanh(yy*0.006);
+      x.lineTo(bx+curve,cy-yy);
+    }
+    x.stroke();
+  }
+  x.globalAlpha=1;
+
+  // Disk ellipse
+  x.strokeStyle="rgba(90,154,220,0.35)";x.lineWidth=2;x.beginPath();
+  for(let i=0;i<=80;i++){const a=(i/80)*PI2;x.lineTo(cx+R*Math.cos(a),cy-R*0.15*Math.sin(a))}x.stroke();
+
+  const effDt=l10running?dt:0;
+  let jetCount=0;
+  for(let i=0;i<jetParticles.length;i++){
+    const p=jetParticles[i];
+    if(!p.active)continue;
+    if(p.isDisk){
+      const omega=sp*2*Math.pow(Math.max(p.r,0.05),-1.5);
+      p.a+=omega*effDt;
+      // Higher launch probability — more jet particles
+      const launchProb=B*0.06/(p.r+0.05);
+      if(Math.random()<launchProb*effDt && p.r<0.55){
+        p.isDisk=false;
+        p.vz=(Math.random()>0.5?1:-1)*B*sp*3;
+        p.z=0;
+      }
+      const rr=R*p.r,px=cx+rr*Math.cos(p.a),py=cy-rr*0.15*Math.sin(p.a);
+      dot(x,px,py,2.5,COL.rigid);
+      // Lorentz arrows — bigger, on more particles
+      if(p.r<0.45){
+        const fMag=B*sp*12*Math.pow(p.r,-0.5);
+        const fLen=Math.min(fMag,40);
+        arr(x,px,py,px,py-fLen,COL.fz,2.5,7);
+        arr(x,px,py,px,py+fLen,COL.fz,1.5,5);
+      }
+    } else {
+      jetCount++;
+      p.z+=p.vz*effDt;
+      p.vz+=Math.sign(p.vz)*B*0.8*effDt;
+      const jetR=p.r*R*0.25;
+      const jetX=cx+jetR*Math.cos(p.a+l10time*2.5);
+      const jetY=cy-p.z*30;
+      if(Math.abs(jetY-cy)>h*0.46){p.isDisk=true;p.r=0.12+0.75*Math.random();p.a=PI2*Math.random();p.z=0;p.vz=0;continue}
+      dot(x,jetX+6*Math.cos(p.a+l10time*3),jetY,3.5,COL.jet);
+    }
+  }
+
+  // Jet glow
+  if(jetCount>1){
+    const grad=x.createLinearGradient(cx,cy-h*0.44,cx,cy-10);
+    grad.addColorStop(0,"rgba(220,85,120,0)");grad.addColorStop(1,"rgba(220,85,120,0.06)");
+    x.fillStyle=grad;x.fillRect(cx-12,cy-h*0.44,24,h*0.44-10);
+    const grad2=x.createLinearGradient(cx,cy+10,cx,cy+h*0.44);
+    grad2.addColorStop(0,"rgba(220,85,120,0.06)");grad2.addColorStop(1,"rgba(220,85,120,0)");
+    x.fillStyle=grad2;x.fillRect(cx-12,cy+10,24,h*0.44-10);
+  }
+  txt(x,cx,h-18,"B="+B.toFixed(2)+"  |  spin="+sp.toFixed(1)+"x  |  jet particles: "+jetCount,COL.dim,10);
+}
+
+// ═══════════ MAIN LOOP ═══════════
+let lastTS=null;
+function tick(ts){
+  if(!lastTS)lastTS=ts;
+  const dt=Math.min((ts-lastTS)/1000,0.05);
+  lastTS=ts;
+  l1time+=dt*gv("s1speed");
+  l2time+=dt*gv("s2spin");
+  drawL1(l1time);
+  drawL2(l2time,dt);
+  drawL3(l1time,l3running?dt:0);
+  drawL4();
+  drawL5(l5time,dt);
+  drawL6(l6time,dt);
+  drawL7(l7time,dt);
+  drawL8(l8time,dt);
+  drawL9();
+  drawL10(l10time,dt);
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>
