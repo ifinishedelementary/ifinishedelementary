@@ -12,9 +12,9 @@ They form **Chain 7** of the [Logical Dependency Chain of I Finished Elementary]
 
 ## The Presentations
 
-### 1. The Kinetic Energy Problem
-**File:** `kinetic-energy-myth.html`
-**Live:** [ifinishedelementary.com/kinetic-energy-myth](https://www.ifinishedelementary.com/kinetic-energy-myth)
+### 1. [The Kinetic Energy Problem](kinetic-energy-myth.html)
+
+Also on Wix: [ifinishedelementary.com/kinetic-energy-myth](https://www.ifinishedelementary.com/kinetic-energy-myth)
 
 In 1686, Leibniz proposed that the true measure of a body's "force of motion" is mv² — vis viva, living force. He derived it from Galileo's v² = 2gh by multiplying both sides by mass. Modern physics inherited this as kinetic energy: ½mv². The quantity has been treated as fundamental for over three centuries. But it has a property that should disqualify it: it is frame-dependent. The kinetic energy of an object changes completely depending on who is observing it.
 
@@ -26,13 +26,13 @@ This presentation has three sections:
 
 **III. What the Squaring Hides** — The velocity-squaring operation erases direction (a ball moving left and right at the same speed have identical KE) and introduces nonlinearity that makes the total frame-dependent. The hierarchy is clear. Relative velocity: frame-independent value. Momentum: frame-dependent value, frame-independent conservation law. Kinetic energy: frame-dependent value, frame-dependent total — the weakest of the three, and the one Leibniz placed at the foundation. Leibniz needed vis viva because his metaphysics required force to be intrinsic to individual substances. The velocity got squared not because nature demanded it, but because theology did.
 
-**Related post:** [The Kinetic Energy Problem](https://www.ifinishedelementary.com/post/the-kinetic-energy-problem)
+Related post: [The Kinetic Energy Problem](https://www.ifinishedelementary.com/post/the-kinetic-energy-problem)
 
 ---
 
-### 2. Gyroscopic Motion from First Principles
-**File:** `gyroscopic-motion-part-1.html`
-**Live:** [ifinishedelementary.com/gyroscopic-motion-part-1](https://www.ifinishedelementary.com/gyroscopic-motion-part-1)
+### 2. [Gyroscopic Motion from First Principles](gyroscopic-motion-part-1.html)
+
+Also on Wix: [ifinishedelementary.com/gyroscopic-motion-part-1](https://www.ifinishedelementary.com/gyroscopic-motion-part-1)
 
 No torque. No angular momentum. No right-hand rule. Only F = ma, the geometry of a spinning mass, and one real constraint: rigidity. Every explanation of gyroscopic motion ever published uses fictional constructs: torque pseudovectors, angular momentum, the right-hand rule. These are shortcuts invented so humans can skip the geometry. This presentation strips away all of it.
 
@@ -55,13 +55,13 @@ No torque. No angular momentum. No right-hand rule. Only F = ma, the geometry of
 
 **Layer 6: Where Every Gyroscope Ends** — Bearing friction and spin decay added. Time accelerated. The trail shows every position the axle tip has occupied. The cone narrows, precession slows, nutation vanishes, and the axle settles into its only possible equilibrium: hanging straight down, wheel horizontal, all energy dissipated. The standard presentation of torque vectors and angular momentum derives a steady-state precession rate and stops. It never walks through the spiral. It never shows the transition from gyroscope to pendulum. It never reaches the end state.
 
-**Related post:** [Gyroscopic Motion Is Akin To An Illusion](https://www.ifinishedelementary.com/post/gyroscopic-motion-is-akin-to-an-illusion)
+Related post: [Gyroscopic Motion Is Akin To An Illusion](https://www.ifinishedelementary.com/post/gyroscopic-motion-is-akin-to-an-illusion)
 
 ---
 
-### 3. When Rigidity Breaks — Euler's Equations Applied to Galaxies
-**File:** `gyroscopic-motion-part-2.html`
-**Live:** [ifinishedelementary.com/gyroscopic-motion-part-2](https://www.ifinishedelementary.com/gyroscopic-motion-part-2)
+### 3. [When Rigidity Breaks — Euler's Equations Applied to Galaxies](gyroscopic-motion-part-2.html)
+
+Also on Wix: [ifinishedelementary.com/gyroscopic-motion-part-2](https://www.ifinishedelementary.com/gyroscopic-motion-part-2)
 
 The first presentation established one result above all others: precession requires rigidity. Standard astrophysics applies Euler's rotational equations — derived for rigid bodies — to galaxies, accretion disks, and quasars: systems where every component orbits at its own angular velocity, bound only by gravity, with no rigidity whatsoever. The moment of inertia tensor assumes every particle shares a single rotation rate. In a galaxy, they do not. Not approximately. Not on average. Fundamentally, structurally, they do not.
 
@@ -87,13 +87,13 @@ The first presentation established one result above all others: precession requi
 
 **Summary of Six Errors** — (1) Single precession rate for non-rigid systems. (2) Angular momentum transport "problem." (3) Winding "problem." (4) Frame-dependent energy presented as intrinsic. (5) Angular momentum "extraction." (6) Unaccounted-for mass inferred from frame-dependent v². Every error originates in applying a rigid-body formalism to a non-rigid system.
 
-**Related post:** [Gyroscopic Motion Is Akin To An Illusion](https://www.ifinishedelementary.com/post/gyroscopic-motion-is-akin-to-an-illusion)
+Related post: [Gyroscopic Motion Is Akin To An Illusion](https://www.ifinishedelementary.com/post/gyroscopic-motion-is-akin-to-an-illusion)
 
 ---
 
-### 4. The Geometry Hidden Inside the Taylor Series
-**File:** `pi-geometric-taylor-series.html`
-**Live:** [ifinishedelementary.com/pi-geometric-taylor-series](https://www.ifinishedelementary.com/pi-geometric-taylor-series)
+### 4. [The Geometry Hidden Inside the Taylor Series](pi-geometric-taylor-series.html)
+
+Also on Wix: [ifinishedelementary.com/pi-geometric-taylor-series](https://www.ifinishedelementary.com/pi-geometric-taylor-series)
 
 π is geometry. It is the ratio of a circle's circumference to its diameter — a statement about shape. Everything else flows from this. If an infinite series produces π, that series must be doing geometry. And it is — in two distinct ways.
 
@@ -107,13 +107,13 @@ To the best of our knowledge, this is the first interactive visualisation that p
 
 **Archimedes — Polygon Perimeter** — Running alongside both methods. Inscribed polygons with increasing sides, watching the perimeter converge on the circumference. The Taylor series does the same thing — once via perimeter, once via area — in the language of algebra. The algebra was never anything other than geometry in disguise.
 
-**Related post:** [The Geometry Hidden Inside the Taylor Series](https://www.ifinishedelementary.com/post/the-geometry-hidden-inside-the-taylor-series)
+Related post: [The Geometry Hidden Inside the Taylor Series](https://www.ifinishedelementary.com/post/the-geometry-hidden-inside-the-taylor-series)
 
 ---
 
-### 5. The Simple Pendulum Doesn't Exist
-**File:** `simple-pendulum-myth.html`
-**Live:** [ifinishedelementary.com/simple-pendulum-myth](https://www.ifinishedelementary.com/simple-pendulum-myth)
+### 5. [The Simple Pendulum Doesn't Exist](simple-pendulum-myth.html)
+
+Also on Wix: [ifinishedelementary.com/simple-pendulum-myth](https://www.ifinishedelementary.com/simple-pendulum-myth)
 
 Every physics student learns T = 2π√(L/g). Clean, elegant, and wrong. This formula assumes sin(θ) ≈ θ — an approximation valid only when the pendulum barely moves. The real period is always longer than the simple formula predicts. The error never cancels, never averages out. It accumulates in one direction — every swing, the real pendulum falls a little further behind.
 
