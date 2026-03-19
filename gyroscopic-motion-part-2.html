@@ -53,9 +53,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;heigh
 @media(max-width:680px){h1{font-size:1.5em}.row{flex-direction:column}}
 /* Constrain full-width square canvases — prevent 860×860 overflow */
 #c5top,#c7acc,#c8bp,#c6material,#c6density{max-width:520px;margin:0 auto;display:block}
+#c8edge,#c5edge{max-width:520px;margin:0 auto;display:block}
 #c10jet{max-width:460px;margin:0 auto;display:block}
 #c3graph,#c4curve{max-width:700px;margin:0 auto;display:block}
-#c5edge{max-width:520px;margin:0 auto;display:block}
 </style>
 </head>
 <body>
@@ -144,7 +144,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;heigh
 
 <h2>Layer 4: Rotation Curves and the v² Accounting</h2>
 <div class="essay">
-<p>The standard derivation balances v²/r against GM(r)/r². Observed velocities stay roughly flat; the prediction from visible matter falls off. The gap is attributed to unseen mass. But v² is frame-dependent. The "velocity" is measured from a chosen center. Move the observer, and the entire curve shifts — including the gap. The amount of unaccounted-for mass depends on which frame you choose to measure from, and nobody checks which frame gives the minimum discrepancy.</p>
+<p>The standard derivation balances v²/r against GM(r)/r². Observed velocities stay roughly flat; the prediction from visible matter falls off. The gap is attributed to unseen mass. But the dynamical equation uses v², and v² is frame-dependent. In a frame moving at velocity u relative to the galactic center, every velocity becomes v+u. Both curves shift together — the velocity gap is preserved. But the quantity that enters the mass inference is v², and (v+u)² ≠ v² + u². The cross-term 2vu means the inferred missing mass changes with observer frame. Nobody checks which frame gives the minimum discrepancy.</p>
 </div>
 
 <div class="pbox"><div class="plabel">Rotation Curves — Visible Mass vs Observed vs Observer-Shifted</div><canvas id="c4curve" width="800" height="480"></canvas></div>
@@ -156,7 +156,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;heigh
 <span><span class="leg-dot" style="background:#e8a030"></span>Gap = unaccounted-for mass</span>
 <span><span class="leg-dot" style="background:#b07cc8"></span>Observer-shifted</span>
 </div>
-<div class="ibox"><div class="section-label">The Frame Problem</div><div class="commentary" id="l4comment">Move the observer slider. The gap changes. The inferred quantity of unaccounted-for mass changes. v² is not frame-invariant.</div></div>
+<div class="ibox"><div class="section-label">The Frame Problem</div><div class="commentary" id="l4comment">Move the observer slider. Both curves shift together — the velocity gap is preserved. But the dynamical equation uses v², and (v+u)² ≠ v² + u². The inferred missing mass changes with observer frame.</div></div>
 
 <hr class="sep">
 
@@ -183,11 +183,13 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;heigh
 <div class="essay">
 <p>Layer 1 showed that Keplerian spokes wind into spirals within a few orbits. This is the <em>winding problem</em>. If spiral arms were material structures, they would dissolve in a few hundred million years. The Milky Way has been rotating for over ten billion years.</p>
 <p>The standard fix is <em>density wave theory</em> (Lin &amp; Shu, 1964): spiral arms are wave patterns, not co-moving material. Stars pass through the compression zone, pile up, then exit. The arm persists because it is not a structure.</p>
-<p>But notice the hidden concession: the arms are not rigid structures. Density wave theory <em>concedes</em> that treating a galaxy as a rigid body fails for spiral structure. Yet the same field continues to apply rigid-body angular momentum to every other aspect of galactic dynamics. If the arms cannot be rigid, <em>nothing in the galaxy is rigid</em>. The admission was made in 1964. Nobody followed it to its logical conclusion.</p>
+<p>But density wave theory is a 1964 patch — and it has been partially superseded by the very framework this presentation advocates. Modern N-body simulations, which compute F=ma on individual masses under gravity, produce spiral structure <em>naturally</em>. Not permanent arms. <em>Recurrent transient spirals.</em> A gravitational clump forms in the disk, gets sheared by differential rotation into an arc, the arc winds into a spiral segment, it dissolves — and new clumps form behind it. The galaxy always <em>has</em> arms but never has the <em>same</em> arms for long. Toomre demonstrated this as swing amplification in the 1980s. Companion perturbations (M51's arms trace directly to NGC 5195) and central bar instabilities drive the same process: asymmetric forces, wound by differential rotation, continuously regenerated.</p>
+<p>The winding problem is only a problem if you insist the arms must be permanent. Drop that assumption and the problem dissolves — along with the need for density waves as the primary explanation. F=ma on individual masses does not merely fail to produce permanent arms. It produces something better: a galaxy that always looks spiral because transient arms are continuously regenerated, without requiring any structure to survive differential rotation.</p>
+<p>Notice the deeper point. The field conceded in 1964 that the arms cannot be rigid structures. Modern simulations concede further — the arms are not even wave patterns but transient gravitational instabilities. Yet the same field continues to apply rigid-body angular momentum to rotation curves, accretion, and precession in the same galaxy where <em>nothing is rigid and nothing persists</em>. The admission keeps expanding. The conclusion keeps being avoided.</p>
 </div>
 
-<div class="pbox"><div class="plabel">Material Arms — Winding</div><canvas id="c6material" width="800" height="800"></canvas></div>
-<div class="pbox"><div class="plabel">Density Wave Pattern — Persists</div><canvas id="c6density" width="800" height="800"></canvas></div>
+<div class="pbox"><div class="plabel">F=ma Reality: Material Arms Wind and Dissolve</div><canvas id="c6material" width="800" height="800"></canvas></div>
+<div class="pbox"><div class="plabel">1964 Fix: Density Wave (Partially Superseded by N-Body F=ma)</div><canvas id="c6density" width="800" height="800"></canvas></div>
 <div class="slider-row"><span class="slider-label">Time speed:</span><input type="range" id="s6speed" min="0.2" max="5" value="1.5" step="0.1"><span class="slider-val" id="s6speedVal">1.5x</span></div>
 <div class="btn-row">
 <button class="btn active" id="bL6run" onclick="setL6run(true)">Run</button>
@@ -196,11 +198,11 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;heigh
 </div>
 <div style="font-size:0.85em;color:var(--dim);margin-bottom:14px">Orbits elapsed: <span class="readout" id="s6orbitsVal">0.0</span></div>
 <div class="legend-row">
-<span><span class="leg-dot" style="background:#e8a030"></span>Material arms (winding)</span>
-<span><span class="leg-dot" style="background:#4a9e6e"></span>Density wave pattern (fixed)</span>
-<span><span class="leg-dot" style="background:rgba(90,154,220,0.6)"></span>Stars (Keplerian orbits)</span>
+<span><span class="leg-dot" style="background:#e8a030"></span>Material arms — each color is one arm (track its dissolution)</span>
+<span><span class="leg-dot" style="background:#4a9e6e"></span>Density wave — 1964 fix, partially superseded</span>
+<span><span class="leg-dot" style="background:rgba(90,154,220,0.6)"></span>Individual stars (Keplerian orbits in both panels)</span>
 </div>
-<div class="ibox"><div class="section-label">What You Are Seeing</div><div class="commentary" id="l6comment">Left: material arms wind up and dissolve. Right: density wave pattern persists indefinitely.</div></div>
+<div class="ibox"><div class="section-label">The Concession Nobody Followed</div><div class="commentary" id="l6comment">Both panels show correct physics. Top: F=ma on individual masses — arms wind and dissolve, exactly as Keplerian orbits require. Bottom: the 1964 density wave fix. But modern N-body simulations — which compute F=ma per mass — produce recurrent transient spirals without density waves: gravitational clumps form, get sheared into spiral segments, dissolve, and regenerate. The winding problem is only a problem if the arms must be permanent. The field conceded non-rigidity for arms in 1964. Simulations have since conceded it further. Yet rigid-body L=Iω is still applied to everything else in the same galaxy.</div></div>
 
 <hr class="sep">
 
@@ -241,14 +243,17 @@ m · <span class="hl">a</span> = <span class="hl">F</span><sub>grav</sub> + <spa
 
 <h2>Layer 8: Bardeen-Petterson — Differential Precession Rediscovered</h2>
 <div class="essay">
-<p>In 1975, Bardeen and Petterson showed that a tilted accretion disk around a spinning massive gravitational object will not precess as a unit. The inner disk aligns with the spin axis (Lense-Thirring precession, falling off as r<sup>−3</sup>), while the outer disk maintains its original orientation. A warp transition connects the two.</p>
-<p>This is exactly differential precession — the same mechanism demonstrated in Layers 2–5. The only new ingredient from general relativity is the specific r<sup>−3</sup> precession-rate profile. The qualitative result — a non-rigid disk warps under a radius-dependent force — was available from F=ma since 1687. It was "discovered" in 1975 because the rigid-body assumption was never questioned.</p>
+<p>Layers 2–5 already produced warps. A tidal force on a Keplerian disk gives a precession rate that varies as r<sup>−1/2</sup> — inner rings precess faster, the disk twists. No general relativity. No new physics. Just F=ma on individual masses under Newtonian gravity.</p>
+<p>In 1975, Bardeen and Petterson published a result about accretion disks around spinning compact objects. General relativity predicts a frame-dragging force near a spinning mass — the Lense-Thirring effect — whose precession rate falls off as r<sup>−3</sup>. That is a steeper profile than the Newtonian r<sup>−1/2</sup>, so the inner rings precess <em>enormously</em> faster. Fast enough to align with the spin axis before outer rings have barely moved. A sharp warp transition forms at a critical radius — the Bardeen-Petterson radius.</p>
+<p>The r<sup>−3</sup> profile is a genuine contribution from general relativity. It tells you <em>what force</em> is present near a spinning mass. F=ma always needs two things: the law of motion and a force law. Newton needed gravity. Electromagnetism needed the Lorentz force. The r<sup>−3</sup> is the force input. It is not a free parameter, not a patch, not an assumption — it is a prediction of GR about what forces exist in curved spacetime.</p>
+<p>But the <em>mechanism</em> — differential precession producing a warp — is not GR. It is F=ma on a non-rigid disk under any radius-dependent force. Layers 2–5 demonstrate it with purely Newtonian forces. The r<sup>−3</sup> makes the warp sharper and the alignment faster. It does not create the warp. The warp was always available. It was "discovered" in 1975 because the rigid-body assumption prevented anyone from seeing that non-rigid disks must warp under non-uniform forces — a result available from F=ma since 1687.</p>
 </div>
 
-<div class="pbox"><div class="plabel">Bardeen-Petterson — Lense-Thirring Differential Precession</div><canvas id="c8bp" width="800" height="800"></canvas></div>
+<div class="pbox"><div class="plabel">Bardeen-Petterson — Oblique View</div><canvas id="c8bp" width="800" height="800"></canvas></div>
+<div class="pbox"><div class="plabel">Edge View — Tilt Profile (aligned = horizontal, tilted = angled)</div><canvas id="c8edge" width="800" height="500"></canvas></div>
 <div class="slider-row"><span class="slider-label">Spin parameter:</span><input type="range" id="s8spin" min="0" max="1" value="0.7" step="0.02"><span class="slider-val" id="s8spinVal">0.70</span></div>
 <div class="slider-row"><span class="slider-label">Initial disk tilt:</span><input type="range" id="s8tilt" min="5" max="60" value="30" step="1"><span class="slider-val" id="s8tiltVal">30°</span></div>
-<div class="slider-row"><span class="slider-label">Animation speed:</span><input type="range" id="s8aspeed" min="0.3" max="5" value="1.5" step="0.1"><span class="slider-val" id="s8aspeedVal">1.5x</span></div>
+<div class="slider-row"><span class="slider-label">Animation speed:</span><input type="range" id="s8aspeed" min="0.1" max="2" value="0.5" step="0.05"><span class="slider-val" id="s8aspeedVal">0.5x</span></div>
 <div class="btn-row">
 <button class="btn active" id="bL8run" onclick="setL8run(true)">Run</button>
 <button class="btn" id="bL8stop" onclick="setL8run(false)">Stop</button>
@@ -256,17 +261,17 @@ m · <span class="hl">a</span> = <span class="hl">F</span><sub>grav</sub> + <spa
 </div>
 <div style="font-size:0.85em;color:var(--dim);margin-bottom:14px">Time elapsed: <span class="readout" id="s8timeVal">0.0</span> — Inner tilt: <span class="readout" id="s8innerVal">—</span> — Outer tilt: <span class="readout" id="s8outerVal">—</span></div>
 <div class="legend-row">
-<span><span class="leg-dot" style="background:#dd5577"></span>Spin axis</span>
-<span><span class="leg-dot" style="background:#c45c5c"></span>Inner disk (aligned)</span>
+<span><span class="leg-dot" style="background:rgba(200,200,220,0.6)"></span>Spin axis</span>
+<span><span class="leg-dot" style="background:#c45c5c"></span>Inner disk (aligns — inside BP radius)</span>
 <span><span class="leg-dot" style="background:#e8a030"></span>Transition region</span>
-<span><span class="leg-dot" style="background:#5a9adc"></span>Outer disk (original tilt)</span>
+<span><span class="leg-dot" style="background:#5a9adc"></span>Outer disk (holds original tilt)</span>
 </div>
 
-<div class="eq"><span class="label">Lense-Thirring precession rate</span>
+<div class="eq"><span class="label">Lense-Thirring precession rate (the GR force input)</span>
 Ω<sub>LT</sub>(r) = 2G<span class="hl">J</span> / (c² · <span class="hl">r³</span>)
-<span class="note">The r⁻³ falloff means inner rings precess enormously faster than outer rings. The disk cannot precess as a unit. It warps.</span></div>
+<span class="note">GR tells you the force exists and gives the r⁻³ profile. F=ma tells you what happens when you apply it to a non-rigid disk: each ring precesses at its own rate. The disk warps. Layers 2–5 showed the same result with Newtonian forces (r⁻¹ᐟ² profile). The r⁻³ makes it steeper — inner rings align before outer rings move — but the mechanism is identical.</span></div>
 
-<div class="ibox"><div class="section-label">A Discovery That Wasn't</div><div class="commentary" id="l8comment">Inner rings align with spin axis; outer rings barely move. This is differential precession — the same mechanism from Layers 2–5.</div></div>
+<div class="ibox"><div class="section-label">A Discovery That Wasn't</div><div class="commentary" id="l8comment">Inner rings align with the spin axis; outer rings hold their original tilt. This is differential precession — the same mechanism from Layers 2–5, with a steeper force profile. GR provides the r⁻³ force. F=ma provides the result.</div></div>
 
 <hr class="sep">
 
@@ -328,10 +333,10 @@ T = Σ ½m<sub>i</sub> · <span class="hl">v<sub>i</sub>²</span>
 <h2>The Cascade of Errors</h2>
 <p><em>Error 1: Coherent precession.</em> Euler predicts the entire system precesses at one rate. Reality: each radius precesses at its own rate. The system warps. (Layers 2, 3, 5, 8.)</p>
 <p><em>Error 2: The angular momentum transport "problem."</em> Euler says L = Iω must be conserved, so matter cannot fall inward. Reality: each mass follows F=ma under local forces. (Layer 7.)</p>
-<p><em>Error 3: The winding "problem."</em> Material arms wind up. They do. This is correct behavior. The solution (density waves) concedes non-rigidity for arm structure but continues applying rigidity to everything else. (Layer 6.)</p>
+<p><em>Error 3: The winding "problem."</em> Material arms wind up. They do. This is correct behavior. The 1964 fix (density waves) conceded non-rigidity for arms. Modern N-body simulations concede further — arms are transient gravitational instabilities, continuously regenerated by F=ma on individual masses. The winding problem only exists if you demand permanent arms. Yet the field that has twice conceded non-rigidity for arm structure continues applying rigidity to everything else. (Layer 6.)</p>
 <p><em>Error 4: Frame-dependent energy.</em> ½Iω² assigns a single number to a system with no single ω. Both formulas give different numbers with inverted distributions, and both are frame-dependent. (Layer 9.)</p>
 <p><em>Error 5: Angular momentum extraction.</em> Jet formation is described as extracting L. Reality: Lorentz forces accelerate plasma along field lines. Nothing is extracted. (Layer 10.)</p>
-<p><em>Error 6: Unaccounted-for mass.</em> The rotation curve gap is attributed entirely to missing mass. But v² is frame-dependent, the circular-orbit assumption is a rigidity ghost, and the inferred quantity changes with observer frame. (Layer 4.)</p>
+<p><em>Error 6: Unaccounted-for mass.</em> The rotation curve gap is attributed to missing mass via the dynamical equation v²/r = GM/r². Both velocity curves shift together in a frame change — the v-gap is preserved. But the dynamical equation uses v², and (v+u)² ≠ v² + u². The inferred missing mass changes with observer frame because v² is not frame-invariant. The circular-orbit assumption is itself a rigidity ghost. (Layer 4.)</p>
 <p>Every one of these errors originates in the same place: applying a rigid-body formalism to a non-rigid system.</p>
 </div>
 
@@ -456,7 +461,7 @@ function resetL3(){l3time=0}
 window.resetL3=resetL3;
 
 function drawL3(dt){
-  if(!l3cG)l3cG=IC("c3graph",400,220);
+  if(!l3cG)l3cG=IC("c3graph",700,385);
   if(!l3cE)l3cE=IC("c3euler",400,400);
   if(!l3cF)l3cF=IC("c3fma",400,400);
   if(!l3cG||!l3cE||!l3cF)return;
@@ -484,58 +489,126 @@ function drawL3(dt){
   xg.strokeStyle=COL.fz;xg.lineWidth=3;xg.beginPath();for(let ri=0;ri<nR;ri++){const px=gL+(ri+1)/nR*gW,py=gB-pR[ri]*sY;ri===0?xg.moveTo(px,py):xg.lineTo(px,py)}xg.stroke();
   txt(xg,gL+80,gT+18,"F=ma per-ring",COL.fz,10);
 
-  // Euler 3D
-  const{x:xe,w:we,h:he}=l3cE;xe.clearRect(0,0,we,he);const ecx=we/2,ecy=he/2,eR=140,euA=l3time*eulerP*0.4;
+  // Euler 3D — coherent precession: all rings tilt together, same direction
+  const{x:xe,w:we,h:he}=l3cE;xe.clearRect(0,0,we,he);const ecx=we/2,ecy=he/2,eR=140;
+  const euPrecA=l3time*eulerP*0.4; // uniform precession direction for all rings
+  const euTiltMag=Math.tanh(l3time*0.12)*0.55; // same tilt growth as F=ma
   drawAxes(xe,ecx,ecy,eR*0.9);
   txt(xe,ecx,22,"Euler: disk precesses as one",COL.rigid,11);
   const RING10=["#c45c5c","#d06040","#e8a030","#c8b830","#88cc55","#4a9e6e","#35bba8","#44bbee","#5a9adc","#9070cc"];
-  for(let ri=0;ri<10;ri++){const rN=(ri+1)/10,rr=eR*rN;xe.strokeStyle=RING10[ri];xe.lineWidth=1.5;xe.globalAlpha=0.55;xe.beginPath();for(let i=0;i<=80;i++){const a=(i/80)*PI2,lx=rr*Math.cos(a),ly=rr*Math.sin(a),rx=lx*Math.cos(euA)-ly*Math.sin(euA),rz=lx*Math.sin(euA)+ly*Math.cos(euA);xe.lineTo(ecx+rx*0.85,ecy-rz*0.4)}xe.stroke();xe.globalAlpha=1}
-  txt(xe,ecx,he-22,"Uniform: "+((euA*180/PI)%360).toFixed(1)+"°",COL.rigid,11);
+  for(let ri=0;ri<10;ri++){
+    const rN=(ri+1)/10,rr=eR*rN;
+    const tiltMag=euTiltMag*rN; // same formula but same precA for all
+    xe.strokeStyle=RING10[ri];xe.lineWidth=1.5;xe.globalAlpha=0.55;
+    xe.beginPath();
+    for(let i=0;i<=80;i++){
+      const a=(i/80)*PI2;
+      const lx=rr*Math.cos(a),ly=rr*Math.sin(a);
+      const zW=rr*tiltMag*Math.sin(a-euPrecA); // same direction for ALL rings
+      xe.lineTo(ecx+lx*0.85,ecy-ly*0.4-zW*0.45);
+    }
+    xe.stroke();xe.globalAlpha=1;
+  }
+  txt(xe,ecx,he-22,"Uniform precession: "+((euPrecA*180/PI)%360).toFixed(1)+"°",COL.rigid,11);
 
-  // F=ma 3D
+  // F=ma 3D — proper warp: each ring tilts, tilt direction precesses at Ω(r)
   const{x:xf,w:wf,h:hf}=l3cF;xf.clearRect(0,0,wf,hf);const fcx=wf/2,fcy=hf/2,fR=140;
   drawAxes(xf,fcx,fcy,fR*0.9);
   txt(xf,fcx,22,"F=ma: each ring independent",COL.fz,11);
-  for(let ri=0;ri<10;ri++){const rN=(ri+1)/10,rr=fR*rN,om=omega0*Math.pow(rN,-1.5),prR2=1.0/(om*rN*rN+0.001),fA=l3time*prR2*0.4;xf.strokeStyle=RING10[ri];xf.lineWidth=1.5;xf.globalAlpha=0.55;xf.beginPath();for(let i=0;i<=80;i++){const a=(i/80)*PI2,lx=rr*Math.cos(a),ly=rr*Math.sin(a),rx=lx*Math.cos(fA)-ly*Math.sin(fA),rz=lx*Math.sin(fA)+ly*Math.cos(fA),tZ=Math.sin(a+fA)*rN*l3time*0.055;xf.lineTo(fcx+rx*0.85,fcy-rz*0.4-tZ*35)}xf.stroke();xf.globalAlpha=1}
-  const iP2=pR[0]*0.15*l3time,oP2=pR[nR-1]*0.15*l3time;
-  txt(xf,fcx,hf-22,"Warp: "+Math.abs(((iP2-oP2)*180/PI)%360).toFixed(1)+"°",COL.warp,11);
+  // Each ring: tilt magnitude grows (capped by tanh), tilt direction = precession angle
+  const tiltGrowth=Math.tanh(l3time*0.12)*0.55; // tilt magnitude saturates
+  for(let ri=0;ri<10;ri++){
+    const rN=(ri+1)/10,rr=fR*rN;
+    const om=omega0*Math.pow(rN,-1.5);
+    const prR2=1.0/(om*rN*rN+0.001);
+    const precA=l3time*prR2*0.4; // tilt direction (precession angle) — different per ring
+    const tiltMag=tiltGrowth*rN; // outer rings tilt more (longer lever arm)
+    xf.strokeStyle=RING10[ri];xf.lineWidth=1.5;xf.globalAlpha=0.55;
+    xf.beginPath();
+    for(let i=0;i<=80;i++){
+      const a=(i/80)*PI2;
+      const lx=rr*Math.cos(a),ly=rr*Math.sin(a);
+      // z-displacement from tilt: magnitude * sin(azimuth - tilt_direction)
+      const zW=rr*tiltMag*Math.sin(a-precA);
+      // Oblique projection: x → screen-x, y → screen-y (compressed), z → screen-y (offset)
+      xf.lineTo(fcx+lx*0.85,fcy-ly*0.4-zW*0.45);
+    }
+    xf.stroke();xf.globalAlpha=1;
+  }
+  // Warp readout: angular difference in tilt direction between inner and outer ring
+  const innerPrec=l3time*(1.0/(omega0*Math.pow(0.1,-1.5)*0.1*0.1+0.001))*0.4;
+  const outerPrec=l3time*(1.0/(omega0*Math.pow(1.0,-1.5)*1.0*1.0+0.001))*0.4;
+  txt(xf,fcx,hf-22,"Warp: "+Math.abs(((innerPrec-outerPrec)*180/PI)%360).toFixed(1)+"° tilt-direction difference",COL.warp,11);
 }
 
 // ═══════════ LAYER 4 ═══════════
 let l4c;
 function drawL4(){
-  if(!l4c)l4c=IC("c4curve",400,240);
+  if(!l4c)l4c=IC("c4curve",700,420);
   if(!l4c)return;
   const{x,w,h}=l4c;x.clearRect(0,0,w,h);
   const mF=gv("s4mass"),vO=gv("s4obs");
   document.getElementById("s4massVal").textContent=(mF*100).toFixed(0)+"%";
   document.getElementById("s4obsVal").textContent=vO.toFixed(2);
-  const gL=55,gR=w-25,gT=35,gB=h-35,gW=gR-gL,gH=gB-gT,N=60,vF=0.7;
+  const gL=55,gR=w-25,gT=45,gB=h-35,gW=gR-gL,gH=gB-gT,N=60,vF=0.7;
+  // Helper: observed v(r) and predicted v(r)
+  function vObs(rN){return vF*Math.sqrt(rN/(rN+0.05))}
+  function vPred(rN){return vF*Math.sqrt(mF/(rN+0.05))}
+  const u=vO*vF;
+  // Find max value across all curves for auto-scale
+  let vMax=0;
+  for(let i=1;i<=N;i++){
+    const rN=i/N;
+    const vo=vObs(rN),vp=vPred(rN);
+    vMax=Math.max(vMax,vo,vp);
+    if(Math.abs(vO)>0.01){
+      vMax=Math.max(vMax,Math.abs(vo+u),Math.abs(vp+u));
+    }
+  }
+  vMax=Math.max(vMax,0.5)*1.12; // 12% headroom, floor at 0.5
+  const sY=gH/vMax; // pixels per unit velocity
+
+  // Axes
   x.strokeStyle="rgba(100,100,140,0.3)";x.lineWidth=1;
   x.beginPath();x.moveTo(gL,gB);x.lineTo(gR,gB);x.stroke();
   x.beginPath();x.moveTo(gL,gB);x.lineTo(gL,gT);x.stroke();
   txt(x,gL+gW/2,h-10,"Radius",COL.dim,10);txt(x,22,gT+gH/2,"v(r)",COL.dim,10);
-  // Helper: observed v(r) and predicted v(r)
-  function vObs(rN){return vF*Math.sqrt(rN/(rN+0.05))}
-  function vPred(rN){return vF*Math.sqrt(mF/(rN+0.05))}
-  // Observed
-  x.strokeStyle=COL.fall;x.lineWidth=3;x.beginPath();for(let i=1;i<=N;i++){const rN=i/N;x.lineTo(gL+rN*gW,gB-vObs(rN)*gH)}x.stroke();
-  // Visible
-  x.strokeStyle=COL.rigid;x.lineWidth=2.5;x.setLineDash([6,3]);x.beginPath();for(let i=1;i<=N;i++){const rN=i/N;x.lineTo(gL+rN*gW,gB-clamp(vPred(rN),0,1)*gH)}x.stroke();x.setLineDash([]);
+  // Y-axis ticks
+  const tickStep=vMax>2?0.5:vMax>1?0.25:0.1;
+  for(let tv=tickStep;tv<vMax;tv+=tickStep){
+    const ty=gB-tv*sY;
+    x.strokeStyle="rgba(100,100,140,0.12)";x.lineWidth=1;
+    x.beginPath();x.moveTo(gL,ty);x.lineTo(gR,ty);x.stroke();
+    txt(x,gL-8,ty,tv.toFixed(tv>=1?1:2),"rgba(100,100,140,0.4)",8,"right");
+  }
+
+  // Observed (flat curve)
+  x.strokeStyle=COL.fall;x.lineWidth=3;x.beginPath();
+  for(let i=1;i<=N;i++){const rN=i/N;x.lineTo(gL+rN*gW,gB-vObs(rN)*sY)}x.stroke();
+  // Visible mass prediction
+  x.strokeStyle=COL.rigid;x.lineWidth=2.5;x.setLineDash([6,3]);x.beginPath();
+  for(let i=1;i<=N;i++){const rN=i/N;x.lineTo(gL+rN*gW,gB-vPred(rN)*sY)}x.stroke();x.setLineDash([]);
   // Gap fill (rest frame)
-  x.globalAlpha=0.12;x.fillStyle=COL.fz;x.beginPath();for(let i=1;i<=N;i++){const rN=i/N;x.lineTo(gL+rN*gW,gB-vObs(rN)*gH)}for(let i=N;i>=1;i--){const rN=i/N;x.lineTo(gL+rN*gW,gB-clamp(vPred(rN),0,1)*gH)}x.closePath();x.fill();x.globalAlpha=1;
+  x.globalAlpha=0.12;x.fillStyle=COL.fz;x.beginPath();
+  for(let i=1;i<=N;i++){const rN=i/N;x.lineTo(gL+rN*gW,gB-vObs(rN)*sY)}
+  for(let i=N;i>=1;i--){const rN=i/N;x.lineTo(gL+rN*gW,gB-vPred(rN)*sY)}
+  x.closePath();x.fill();x.globalAlpha=1;
   // Observer shifted: BOTH curves shift by u
   if(Math.abs(vO)>0.01){
-    const u=vO*vF;
-    x.strokeStyle=COL.warp;x.lineWidth=2.5;x.beginPath();for(let i=1;i<=N;i++){const rN=i/N,v=Math.abs(vObs(rN)+u);x.lineTo(gL+rN*gW,gB-clamp(v,0,1.2)*gH)}x.stroke();
-    x.strokeStyle=COL.warp;x.lineWidth=2;x.setLineDash([6,3]);x.beginPath();for(let i=1;i<=N;i++){const rN=i/N,v=Math.abs(vPred(rN)+u);x.lineTo(gL+rN*gW,gB-clamp(v,0,1.2)*gH)}x.stroke();x.setLineDash([]);
+    x.strokeStyle=COL.warp;x.lineWidth=2.5;x.beginPath();
+    for(let i=1;i<=N;i++){const rN=i/N;x.lineTo(gL+rN*gW,gB-Math.abs(vObs(rN)+u)*sY)}x.stroke();
+    x.strokeStyle=COL.warp;x.lineWidth=2;x.setLineDash([6,3]);x.beginPath();
+    for(let i=1;i<=N;i++){const rN=i/N;x.lineTo(gL+rN*gW,gB-Math.abs(vPred(rN)+u)*sY)}x.stroke();x.setLineDash([]);
     // Shifted gap fill
-    x.globalAlpha=0.08;x.fillStyle=COL.warp;x.beginPath();for(let i=1;i<=N;i++){const rN=i/N;x.lineTo(gL+rN*gW,gB-clamp(Math.abs(vObs(rN)+u),0,1.2)*gH)}for(let i=N;i>=1;i--){const rN=i/N;x.lineTo(gL+rN*gW,gB-clamp(Math.abs(vPred(rN)+u),0,1.2)*gH)}x.closePath();x.fill();x.globalAlpha=1;
+    x.globalAlpha=0.08;x.fillStyle=COL.warp;x.beginPath();
+    for(let i=1;i<=N;i++){const rN=i/N;x.lineTo(gL+rN*gW,gB-Math.abs(vObs(rN)+u)*sY)}
+    for(let i=N;i>=1;i--){const rN=i/N;x.lineTo(gL+rN*gW,gB-Math.abs(vPred(rN)+u)*sY)}
+    x.closePath();x.fill();x.globalAlpha=1;
   }
   txt(x,gR-80,gT+12,"Observed (flat)",COL.fall,10);txt(x,gR-80,gT+28,"Visible mass only",COL.rigid,10);txt(x,gL+gW/2,gT+8,"Gap = unaccounted-for mass",COL.fz,10);
   // Compute v² gap to show in commentary
   let gapRest=0,gapShifted=0;
-  for(let i=1;i<=N;i++){const rN=i/N,vo2=vObs(rN),vp2=vPred(rN),u=vO*vF;gapRest+=vo2*vo2-vp2*vp2;gapShifted+=(vo2+u)*(vo2+u)-(vp2+u)*(vp2+u)}
+  for(let i=1;i<=N;i++){const rN=i/N,vo2=vObs(rN),vp2=vPred(rN);gapRest+=vo2*vo2-vp2*vp2;gapShifted+=(vo2+u)*(vo2+u)-(vp2+u)*(vp2+u)}
   let c="Move the observer slider. Both curves shift together — the velocity gap in v stays the same. But the dynamical equation uses v², and v² is not preserved by a frame shift.";
   if(Math.abs(vO)>0.01)c="Both curves shift by u="+vO.toFixed(2)+". v-gap unchanged, but Σ(v²) gap: rest frame "+(gapRest/N).toFixed(3)+" → shifted frame "+(gapShifted/N).toFixed(3)+". The inferred missing mass changes because (v+u)² ≠ v² + u².";
   document.getElementById("l4comment").textContent=c;
@@ -665,11 +738,12 @@ function drawL6(dt){
     for(let arm=0;arm<nArms;arm++){
       const baseAngle=arm*PI2/nArms;
       x.strokeStyle=armCols[arm%armCols.length];x.lineWidth=2.5;x.globalAlpha=0.7;x.beginPath();
-      for(let ri=3;ri<=50;ri++){
-        const rN=ri/50,rr=R*rN;
-        const omega=omega0*Math.pow(Math.max(rN,0.06),-1.5);
+      const nSamp=200;
+      for(let ri=0;ri<=nSamp;ri++){
+        const rN=0.18+0.82*(ri/nSamp),rr=R*rN;
+        const omega=omega0*Math.pow(rN,-1.5);
         const a=baseAngle+l6time*omega;
-        ri===3?x.moveTo(cx+rr*Math.cos(a),cy-rr*Math.sin(a)):x.lineTo(cx+rr*Math.cos(a),cy-rr*Math.sin(a));
+        ri===0?x.moveTo(cx+rr*Math.cos(a),cy-rr*Math.sin(a)):x.lineTo(cx+rr*Math.cos(a),cy-rr*Math.sin(a));
       }
       x.stroke();x.globalAlpha=1;
     }
@@ -704,9 +778,9 @@ function drawL6(dt){
 
   const orbits=l6time;
   let cmt;
-  if(orbits<3)cmt="Material arms (top, colored by arm) are just beginning to wind. Density wave pattern (bottom) stays fixed — stars move through it.";
-  else if(orbits<12)cmt="After "+orbits.toFixed(0)+" orbits, material arms have wound tightly — track each color. Density waves remain fixed while individual stars drift through the compression zone.";
-  else cmt="At "+orbits.toFixed(0)+" orbits, material arms are destroyed. The Milky Way has done ~50 orbits. Density wave theory concedes non-rigidity for arms — then continues using rigid-body L=Iω for everything else in the same galaxy.";
+  if(orbits<3)cmt="Both panels show real physics. Top: material arms beginning to wind — each color is one arm, track its deformation. Bottom: the 1964 density wave fix, where a fixed pattern persists because stars pass through it. But modern N-body simulations (F=ma per mass) show that this fix may not even be needed — transient spiral structure regenerates naturally from gravitational clumping under shear.";
+  else if(orbits<8)cmt="After "+orbits.toFixed(0)+" orbits the arms have wound tightly — follow each color. The winding is correct: F=ma says material arms must dissolve. But in a real self-gravitating disk, new clumps form as old arms dissolve, get sheared into new spirals, and the galaxy always looks spiral without any single arm surviving. The 'problem' only exists if you demand permanent arms.";
+  else cmt="At "+orbits.toFixed(0)+" orbits, the original arms are destroyed. The Milky Way has completed ~50. The 1964 fix (density waves) conceded non-rigidity for arms. Modern N-body simulations go further — the arms are transient gravitational instabilities, continuously regenerated by F=ma on individual masses. Yet the field that has twice conceded non-rigidity for arm structure still applies rigid-body L=Iω to rotation curves, accretion, and precession in the same galaxy. The admission keeps expanding. The conclusion keeps being avoided.";
   document.getElementById("l6comment").textContent=cmt;
 }
 
@@ -782,7 +856,7 @@ function drawL7(dt){
       arr(x,px,py,gx,gy,COL.fall,2.5,7);
       // Magnetic coupling (azimuthal)
       if(mag>0.03){
-        const mLen=mag*22;
+        const mLen=Math.max(mag*55,12);
         const ma=p.a+PI/2+0.3;
         arr(x,px,py,px+mLen*Math.cos(ma),py-mLen*Math.sin(ma),COL.alpha,2.5,7);
       }
@@ -805,40 +879,68 @@ function drawL7(dt){
 }
 
 // ═══════════ LAYER 8 ═══════════
-let l8running=true,l8time=0,l8c;
+let l8running=true,l8time=0,l8c,l8cE;
 function setL8run(v){l8running=v;document.getElementById("bL8run").className=v?"btn active":"btn";document.getElementById("bL8stop").className=v?"btn":"btn active"}
 window.setL8run=setL8run;
 function resetL8(){l8time=0}
 window.resetL8=resetL8;
 
 function drawL8(dt){
-  if(!l8c)l8c=IC("c8bp",400,400);if(!l8c)return;
+  if(!l8c)l8c=IC("c8bp",400,400);
+  if(!l8cE)l8cE=IC("c8edge",400,250);
+  if(!l8c||!l8cE)return;
   const{x,w,h}=l8c;x.clearRect(0,0,w,h);
   const spin=gv("s8spin"),tilt0=gv("s8tilt")*PI/180,aspeed=gv("s8aspeed");
   document.getElementById("s8spinVal").textContent=spin.toFixed(2);
   document.getElementById("s8tiltVal").textContent=gv("s8tilt")+"°";
   document.getElementById("s8aspeedVal").textContent=aspeed.toFixed(1)+"x";
-  if(l8running)l8time+=dt*aspeed*0.75;
+  if(l8running)l8time+=dt*aspeed*0.3;
   document.getElementById("s8timeVal").textContent=l8time.toFixed(1);
   const R=160,cx=w/2,cy=h/2+10,nR=18;
 
-  txt(x,cx,20,"Bardeen-Petterson: Tilted Disk",COL.dim,11);
+  // BP transition radius: inside this, viscosity communicates alignment.
+  // Outside, rings precess but never align. Scales with spin.
+  const bpRadius=0.25+spin*0.3; // ~0.25 to 0.55 of disk
 
-  // Spin axis
-  arr(x,cx,cy+55,cx,cy-R*0.9,COL.jet,3,10);
-  txt(x,cx+18,cy-R*0.95,"Spin axis",COL.jet,10,"left");
-
-  // Rings with differential alignment
+  // Compute tilt for each ring
+  // r⁻³ rate with floor to prevent innermost rings from aligning in one frame
+  const ringTilts=[];
   for(let ri=0;ri<nR;ri++){
-    const rN=(ri+1)/nR,rr=R*0.85*rN;
-    const ltRate=spin*3.0/(Math.pow(rN,3)+0.001);
-    const alignFrac=clamp(1-Math.exp(-ltRate*l8time*0.1),0,1);
-    const currentTilt=tilt0*(1-alignFrac);
-    const precAngle=ltRate*l8time*0.14*(1-alignFrac*0.5);
+    const rN=(ri+1)/nR;
+    const ltRate=spin*0.5/(Math.pow(rN,3)+0.01);
+    let currentTilt;
+    if(rN<bpRadius){
+      const alignFrac=clamp(1-Math.exp(-ltRate*l8time*0.02),0,1);
+      currentTilt=tilt0*(1-alignFrac);
+    } else if(rN<bpRadius+0.15){
+      const blend=(rN-bpRadius)/0.15;
+      const alignFrac=clamp(1-Math.exp(-ltRate*l8time*0.02),0,1);
+      currentTilt=tilt0*(1-alignFrac*(1-blend));
+    } else {
+      currentTilt=tilt0;
+    }
+    const precAngle=ltRate*l8time*0.003;
+    ringTilts.push({rN,currentTilt,precAngle,ltRate});
+  }
+
+  txt(x,cx,20,"Bardeen-Petterson: Oblique View",COL.dim,11);
+
+  // BP radius indicator (dashed circle)
+  const bpR=R*bpRadius;
+  x.strokeStyle="rgba(212,168,67,0.3)";x.lineWidth=1.5;x.setLineDash([4,4]);
+  x.beginPath();
+  for(let i=0;i<=80;i++){const a=(i/80)*PI2;x.lineTo(cx+bpR*Math.cos(a)*0.9,cy-bpR*Math.sin(a)*0.4)}
+  x.stroke();x.setLineDash([]);
+  txt(x,cx+bpR*0.9+8,cy,"BP radius",COL.accent,9,"left");
+
+  // Draw rings
+  for(let ri=0;ri<nR;ri++){
+    const{rN,currentTilt,precAngle}=ringTilts[ri];
+    const rr=R*rN;
 
     let col;
-    if(alignFrac>0.8)col=COL.fall;
-    else if(alignFrac>0.3)col=COL.fz;
+    if(rN<bpRadius)col=COL.fall;
+    else if(rN<bpRadius+0.15)col=COL.fz;
     else col=COL.rigid;
 
     x.strokeStyle=col;x.lineWidth=rN>0.5?2:1.5;x.globalAlpha=0.3+0.5*rN;
@@ -851,31 +953,72 @@ function drawL8(dt){
     }
     x.stroke();x.globalAlpha=1;
   }
-  // Spinning BH — rotating ergosphere arcs (Lense-Thirring frame dragging visible)
-  const ergSpd=spin*5+1;
-  for(let e=0;e<4;e++){
-    const ea=l8time*ergSpd+e*PI2/4;
-    x.strokeStyle=COL.jet;x.lineWidth=2;x.globalAlpha=0.45+0.25*Math.sin(l8time*ergSpd*2+e);
-    x.beginPath();x.arc(cx,cy,15,ea,ea+PI*0.55);x.stroke();
-  }
-  x.globalAlpha=1;
-  // Inner photon sphere glow
-  const grd=x.createRadialGradient(cx,cy,2,cx,cy,13);
-  grd.addColorStop(0,"rgba(220,85,120,0.35)");grd.addColorStop(1,"rgba(220,85,120,0)");
-  x.fillStyle=grd;x.beginPath();x.arc(cx,cy,13,0,PI2);x.fill();
-  dot(x,cx,cy,8,"#0a0812",COL.jet,2);
 
-  const innerAlign=clamp(1-Math.exp(-spin*3/(Math.pow(1/nR,3)+0.001)*l8time*0.1),0,1);
-  const outerAlign=clamp(1-Math.exp(-spin*3/(1+0.001)*l8time*0.1),0,1);
-  const innerTiltDeg=(tilt0*(1-innerAlign)*180/PI);
-  const outerTiltDeg=(tilt0*(1-outerAlign)*180/PI);
+  // Spin axis — drawn on top of rings
+  const axCol="rgba(200,200,220,0.6)";
+  arr(x,cx,cy+55,cx,cy-R*0.9,axCol,2.5,9);
+  txt(x,cx+16,cy-R*0.95,"Spin axis",axCol,10,"left");
+
+  // Central object — clean dot
+  dot(x,cx,cy,6,"#181825",COL.jet,2);
+
+  // ── EDGE VIEW ──
+  const{x:xe,w:we,h:he}=l8cE;xe.clearRect(0,0,we,he);
+  const Re=R*0.9,ecx=we/2,ecy=he/2; // match oblique horizontal projection
+  txt(xe,ecx,16,"Edge View — tilt exaggerated for clarity",COL.dim,11);
+
+  // Horizontal reference = equatorial plane (aligned = here)
+  xe.strokeStyle="rgba(100,100,140,0.2)";xe.lineWidth=1;xe.setLineDash([4,4]);
+  xe.beginPath();xe.moveTo(ecx-Re*1.1,ecy);xe.lineTo(ecx+Re*1.1,ecy);xe.stroke();xe.setLineDash([]);
+  txt(xe,ecx+Re*1.1+4,ecy,"equatorial",COL.dim,8,"left");
+
+  // BP radius markers
+  xe.strokeStyle="rgba(212,168,67,0.3)";xe.lineWidth=1;xe.setLineDash([3,3]);
+  xe.beginPath();xe.moveTo(ecx+Re*bpRadius,ecy-50);xe.lineTo(ecx+Re*bpRadius,ecy+50);xe.stroke();
+  xe.beginPath();xe.moveTo(ecx-Re*bpRadius,ecy-50);xe.lineTo(ecx-Re*bpRadius,ecy+50);xe.stroke();
+  xe.setLineDash([]);
+  txt(xe,ecx+Re*bpRadius,ecy+60,"BP",COL.accent,8);
+  txt(xe,ecx-Re*bpRadius,ecy+60,"BP",COL.accent,8);
+
+  // Draw each ring — skip innermost rings that would overlap the center
+  const tiltExag=0.4;
+  for(let ri=0;ri<nR;ri++){
+    const{rN,currentTilt}=ringTilts[ri];
+    const rr=Re*rN;
+    if(rr<14)continue;
+
+    let col;
+    if(rN<bpRadius)col=COL.fall;
+    else if(rN<bpRadius+0.15)col=COL.fz;
+    else col=COL.rigid;
+
+    const tiltVis=rr*Math.sin(currentTilt)*tiltExag;
+    xe.strokeStyle=col;xe.lineWidth=rN>0.5?2.5:1.5;xe.globalAlpha=0.35+0.5*rN;
+    xe.beginPath();
+    for(let i=0;i<=80;i++){
+      const a=(i/80)*PI2;
+      xe.lineTo(ecx+rr*Math.cos(a),ecy-tiltVis*Math.sin(a));
+    }
+    xe.stroke();xe.globalAlpha=1;
+  }
+
+  // Spin axis — drawn on top of rings
+  arr(xe,ecx,ecy+40,ecx,ecy-he*0.38,axCol,2,8);
+  txt(xe,ecx+12,ecy-he*0.38,"spin",axCol,9,"left");
+
+  // Central object — clean dot matching oblique
+  dot(xe,ecx,ecy,5,"#181825",COL.jet,1.5);
+
+  // Readouts
+  const innerTiltDeg=ringTilts[0].currentTilt*180/PI;
+  const outerTiltDeg=ringTilts[nR-1].currentTilt*180/PI;
   document.getElementById("s8innerVal").textContent=innerTiltDeg.toFixed(1)+"°";
   document.getElementById("s8outerVal").textContent=outerTiltDeg.toFixed(1)+"°";
 
   let cmt;
-  if(l8time<1)cmt="The disk starts tilted at "+gv("s8tilt")+"° to the spin axis. Watch the inner rings align while outer rings hold their tilt.";
-  else if(innerTiltDeg>outerTiltDeg*0.7)cmt="Inner rings (r⁻³ Lense-Thirring) precess fast and begin aligning. Outer rings lag behind. This is differential precession — the same mechanism from Layers 2–5.";
-  else cmt="Inner disk (red): aligned at "+innerTiltDeg.toFixed(1)+"°. Outer disk (blue): still at "+outerTiltDeg.toFixed(1)+"°. Published in 1975 as a new discovery. But it is differential precession of a non-rigid disk — available from F=ma since Newton.";
+  if(l8time<1)cmt="The disk starts tilted at "+gv("s8tilt")+"° to the spin axis. GR provides the force (r⁻³ Lense-Thirring). F=ma provides the result: inner rings inside the BP radius will align, outer rings will hold their original tilt. The edge view makes the tilt profile unmistakable.";
+  else if(innerTiltDeg>5)cmt="Inner rings (red) aligning — the r⁻³ force is steep, so precession near the center is fast. Outer rings (blue) beyond the BP radius hold at "+outerTiltDeg.toFixed(1)+"°. Layers 2–5 showed the same mechanism with Newtonian r⁻¹ᐟ² forces. The r⁻³ just makes the inner alignment faster.";
+  else cmt="Inner disk: aligned at "+innerTiltDeg.toFixed(1)+"°. Outer disk: holding at "+outerTiltDeg.toFixed(1)+"°. The warp is permanent. Published in 1975 as a new phenomenon. But the mechanism — differential precession of a non-rigid disk — was demonstrated in Layers 2–5 with Newtonian forces. GR contributed the force profile. F=ma, applied per mass, always produced the warp.";
   document.getElementById("l8comment").textContent=cmt;
 }
 
@@ -934,8 +1077,15 @@ let l10running=true,l10time=0,l10c;
 let jetParticles=[];
 function initJet(){
   jetParticles=[];
-  for(let i=0;i<80;i++){
-    const r=0.12+0.75*Math.random();
+  // Inner disk — launchable (r < 0.55)
+  for(let i=0;i<60;i++){
+    const r=0.12+0.4*Math.random();
+    const a=PI2*Math.random();
+    jetParticles.push({r,a,z:0,vz:0,active:true,isDisk:true});
+  }
+  // Outer disk — visual fill only
+  for(let i=0;i<30;i++){
+    const r=0.55+0.4*Math.random();
     const a=PI2*Math.random();
     jetParticles.push({r,a,z:0,vz:0,active:true,isDisk:true});
   }
@@ -960,7 +1110,7 @@ function drawL10(dt){
   // BH
   dot(x,cx,cy,12,"#181825",COL.jet,2.5);
 
-  // Magnetic field lines — wider spread, more visible
+  // Magnetic field lines — poloidal dipole, symmetric about disk
   x.globalAlpha=0.3;
   for(let fi=-4;fi<=4;fi++){
     if(fi===0)continue;
@@ -968,7 +1118,7 @@ function drawL10(dt){
     x.strokeStyle=COL.alpha;x.lineWidth=1.8;x.beginPath();
     for(let yi=-18;yi<=18;yi++){
       const yy=yi*13;
-      const curve=fi*4*Math.tanh(yy*0.006);
+      const curve=fi*4*Math.tanh(Math.abs(yy)*0.006);
       x.lineTo(bx+curve,cy-yy);
     }
     x.stroke();
@@ -1010,7 +1160,7 @@ function drawL10(dt){
       const jetR=p.r*R*0.25;
       const jetX=cx+jetR*Math.cos(p.a+l10time*2.5);
       const jetY=cy-p.z*30;
-      if(Math.abs(jetY-cy)>h*0.46){p.isDisk=true;p.r=0.12+0.75*Math.random();p.a=PI2*Math.random();p.z=0;p.vz=0;continue}
+      if(Math.abs(jetY-cy)>h*0.46){p.isDisk=true;p.r=0.12+0.4*Math.random();p.a=PI2*Math.random();p.z=0;p.vz=0;continue}
       dot(x,jetX+6*Math.cos(p.a+l10time*3),jetY,3.5,COL.jet);
     }
   }
