@@ -3,56 +3,62 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Kinetic Energy Problem — I Finished Elementary</title>
+<title>The Kinetic Energy Myth — I Finished Elementary</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --bg:#08080c;--panel:#101018;--border:#1c1c2c;--text:#e2ddd0;
-  --dim:#6a6458;--accent:#d4a843;--accent-dim:#7a6228;--curve:#d0ccc0;
+  --dim:#6a6458;--accent:#d4a843;--accent-dim:#7a6228;
   --objA:#6888a8;--objAF:rgba(104,136,168,0.25);
   --objB:#c45c5c;--objBF:rgba(196,92,92,0.25);
   --good:#4a9e6e;--goodF:rgba(74,158,110,0.2);
   --warn:#e8a030;--warnF:rgba(232,160,48,0.15);
-  --grid:#161620;--pi:#6888a8
+  --grid:#161620
 }
 body{background:var(--bg);color:var(--text);font-family:'EB Garamond',Georgia,serif;line-height:1.75;padding:36px 20px 80px;min-height:100vh;-webkit-font-smoothing:antialiased}
 .container{max-width:800px;margin:0 auto}
-h1{font-family:'Cormorant Garamond',Georgia,serif;font-size:2.1em;font-weight:500;color:var(--accent);line-height:1.25;margin-bottom:6px}
-h2{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.35em;font-weight:500;color:var(--accent);line-height:1.3;margin:0 0 14px 0}
-.subtitle{font-size:1.05em;color:var(--dim);font-style:italic;margin-bottom:32px}
+h1{font-family:'Cormorant Garamond',Georgia,serif;font-size:2.2em;font-weight:500;color:var(--accent);line-height:1.25;margin-bottom:6px}
+h2{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.45em;font-weight:500;color:var(--accent);line-height:1.3;margin:0 0 14px 0}
+h3{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.15em;font-weight:500;color:var(--accent);line-height:1.3;margin:0 0 10px 0}
+.subtitle{font-size:1.08em;color:var(--dim);font-style:italic;margin-bottom:36px;line-height:1.6}
 .essay p{font-size:1.05em;margin-bottom:1.2em}
 .essay em{color:var(--accent);font-style:italic}
+.essay strong{color:var(--text);font-weight:600}
 .formula{display:block;text-align:center;font-size:1.15em;color:var(--accent);margin:1.4em 0;letter-spacing:0.02em}
 .note{font-size:0.92em;color:var(--dim);border-left:2px solid var(--accent-dim);padding-left:16px;margin:1.6em 0;line-height:1.65}
-hr.sep{border:none;border-top:1px solid var(--border);margin:36px 0}
+hr.sep{border:none;border-top:1px solid var(--border);margin:42px 0}
+.section-num{font-size:0.7em;color:var(--accent-dim);text-transform:uppercase;letter-spacing:0.15em;display:block;margin-bottom:4px}
+/* Panels */
 .pbox{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:14px 14px 10px;margin-bottom:14px}
 .plabel{font-size:0.7em;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;padding-left:2px;color:var(--dim)}
 .ibox{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:14px 18px;margin-bottom:14px}
 .section-label{font-size:0.7em;color:var(--dim);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px}
-.commentary{font-size:0.95em;line-height:1.7;min-height:4em}
+.commentary{font-size:0.95em;line-height:1.7;min-height:3em}
 svg{display:block;width:100%;height:auto}
 .row{display:flex;gap:14px;margin-bottom:14px;align-items:stretch}
 .col-half{flex:1;min-width:0}
 /* Sliders */
 .slider-row{display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
-.slider-label{font-size:0.85em;color:var(--dim);min-width:130px}
-.slider-val{font-size:1em;color:var(--accent);font-weight:600;min-width:80px;text-align:right}
+.slider-label{font-size:0.85em;color:var(--dim);min-width:140px}
+.slider-val{font-size:1em;color:var(--accent);font-weight:600;min-width:90px;text-align:right}
 input[type=range]{flex:1;min-width:140px;accent-color:var(--accent);background:var(--border);height:6px;border-radius:3px;-webkit-appearance:none;appearance:none}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--accent);cursor:pointer}
 /* Values */
 .vgrid{display:flex;gap:14px;font-size:0.88em;flex-wrap:wrap}
 .vl{color:var(--dim)}.vn{font-weight:600}
-.vn.a{color:var(--objA)}.vn.b{color:var(--objB)}.vn.gold{color:var(--accent)}.vn.good{color:var(--good)}.vn.warn{color:var(--warn)}.vn.red{color:var(--objB)}
+.vn.a{color:var(--objA)}.vn.b{color:var(--objB)}.vn.gold{color:var(--accent)}.vn.good{color:var(--good)}.vn.warn{color:var(--warn)}
 /* Big number display */
 .big-num{font-size:2em;font-weight:600;line-height:1.2;margin:4px 0}
 .big-label{font-size:0.75em;color:var(--dim);text-transform:uppercase;letter-spacing:0.08em}
-.num-row{display:flex;gap:24px;margin:16px 0;flex-wrap:wrap}
+.num-row{display:flex;gap:14px;margin:16px 0;flex-wrap:wrap}
 .num-card{flex:1;min-width:140px;text-align:center;padding:14px;border-radius:8px}
 .num-card.ke{background:var(--warnF);border:1px solid rgba(232,160,48,0.3)}
 .num-card.mom{background:var(--goodF);border:1px solid rgba(74,158,110,0.3)}
+.num-card.rv{background:rgba(104,136,168,0.15);border:1px solid rgba(104,136,168,0.3)}
 .num-card.ke .big-num{color:var(--warn)}
 .num-card.mom .big-num{color:var(--good)}
+.num-card.rv .big-num{color:var(--objA)}
 /* Method cards */
 .method-card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:16px 18px;flex:1;min-width:0}
 .method-title{font-size:0.95em;font-weight:600;margin-bottom:10px}
@@ -65,30 +71,227 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;heigh
 .result-box.en{background:var(--objAF);border:1px solid rgba(104,136,168,0.3)}
 .match-badge{display:inline-block;padding:3px 10px;border-radius:4px;font-size:0.8em;font-weight:600;margin-top:10px}
 .match-badge.yes{background:var(--goodF);color:var(--good);border:1px solid rgba(74,158,110,0.4)}
+/* Buttons */
+.frame-btn{padding:5px 12px;background:var(--accent-dim);color:var(--text);border:1px solid var(--border);border-radius:5px;cursor:pointer;font-family:'EB Garamond',Georgia,serif;font-size:0.8em;transition:background 0.2s}
+.frame-btn:hover{background:var(--accent);color:var(--bg)}
+/* Hierarchy */
+.hier-row{display:flex;align-items:center;gap:16px;padding:14px 18px;border-radius:8px;margin-bottom:10px;transition:all 0.3s}
+.hier-rank{font-family:'Cormorant Garamond',Georgia,serif;font-size:2em;font-weight:600;min-width:36px;text-align:center}
+.hier-name{font-size:1.1em;font-weight:600}
+.hier-desc{font-size:0.88em;color:var(--dim);margin-top:2px}
+/* Comparison table */
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}
+.compare-cell{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:16px}
+.compare-cell h3{margin-bottom:8px}
+.compare-cell .eq{color:var(--accent);font-size:1em;margin-bottom:8px;font-family:'EB Garamond',Georgia,serif}
+/* Space scene */
+.space-scene{background:var(--bg);border-radius:6px;overflow:hidden}
 .footer-text{font-size:0.95em;color:var(--dim);line-height:1.7;margin-top:20px}
 .footer-text em{color:var(--accent)}
-@media(max-width:680px){h1{font-size:1.5em}.row{flex-direction:column}.num-row{flex-direction:column}}
+@media(max-width:680px){h1{font-size:1.6em}.row{flex-direction:column}.num-row{flex-direction:column}.compare-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div class="container">
 
-<h1>The Kinetic Energy Problem</h1>
-<div class="subtitle">A quantity that changes based on who's watching isn't describing reality — it's describing a perspective</div>
+<h1>The Kinetic Energy Myth</h1>
+<div class="subtitle">In 1686, Gottfried Wilhelm Leibniz needed a quantity that belonged to individual substances because his theology required it. He found one in the algebra of falling bodies. Three centuries later, every physics student inherits his metaphysics without knowing it.</div>
 
+<!-- ═══════════ PROLOGUE ═══════════ -->
 <div class="essay">
-<p>In 1686, Gottfried Wilhelm Leibniz proposed that the true measure of a body's "force of motion" is mv² — mass times velocity squared. He called it <em>vis viva</em>, living force. He derived it from Galileo's falling bodies, where v²&nbsp;=&nbsp;2gh, by multiplying both sides by mass. Modern physics inherited this as kinetic energy: ½mv².</p>
-<p>The quantity has been treated as fundamental for over three centuries. But it has a property that should disqualify it from describing physical reality: it is <em>frame-dependent</em>. The kinetic energy of an object changes depending on who is observing it. Not by a little. Not in a subtle way. It changes completely.</p>
-<p>Two galaxies approach each other at relative velocity v. From galaxy A's frame, galaxy B carries all the kinetic energy. From galaxy B's frame, galaxy A carries all of it. From a frame where both move at v/2, the total is different from either. The "energy in the system" — supposedly a real, conserved, physical quantity — gives a <em>different number</em> depending on where you stand.</p>
-<p>Momentum's value also changes between frames. But momentum has a crucial advantage: its <em>conservation law</em> — that total momentum before equals total momentum after a collision — holds identically in every inertial frame. And there is a quantity that is even more honest: the <em>relative velocity</em> between two objects. Its value doesn't change at all. It is the same number for every observer, everywhere, without qualification.</p>
+<p>Descartes had proposed that the total "quantity of motion" in the universe is constant — mass times speed, mv — set in motion by God and preserved by God's constancy. Leibniz disagreed. In his <em>Brevis demonstratio erroris memorabilis Cartesii</em> — "A brief demonstration of a notable error of Descartes" — he presented what he believed was a killing blow.</p>
+
+<p>Take body A: mass 1, dropped from height 4. By Galileo's law of falling bodies, it reaches velocity 2. Take body B: mass 4, dropped from height 1. It reaches velocity 1. Both have the same mgh — the same capacity to raise weight — so they must have equal "force of motion." But Descartes' mv gives 1×2&nbsp;=&nbsp;2 for A and 4×1&nbsp;=&nbsp;4 for B. Unequal. His mv² gives 1×4&nbsp;=&nbsp;4 for A and 4×1&nbsp;=&nbsp;4 for B. Equal. Therefore mv² is the true measure.</p>
+
+<p>The argument persuaded generations. But it rests on a foundation that nobody examines: <em>where the squaring actually comes from</em>.</p>
 </div>
 
 <hr class="sep">
 
-<!-- ═══════════ SECTION I: FRAME DEPENDENCE ═══════════ -->
-<h2>I. Watch "Energy" Change by Changing Your Seat</h2>
+<!-- ═══════════ SECTION I: THE DERIVATION ═══════════ -->
+<span class="section-num">Section I</span>
+<h2>Where v² Comes From</h2>
 
-<p style="font-size:0.95em;color:var(--dim);margin-bottom:16px">Two objects approach each other. Drag the observer frame slider and watch all three quantities: kinetic energy (fluctuates wildly), momentum (value changes but conservation law holds), and relative velocity (never changes at all).</p>
+<div class="essay">
+<p>An object accelerates uniformly from rest. Two things are true at every instant: v&nbsp;=&nbsp;at and d&nbsp;=&nbsp;½at². Eliminate time between them. From the first equation, t&nbsp;=&nbsp;v/a. Substitute into the second: d&nbsp;=&nbsp;½a(v/a)²&nbsp;=&nbsp;v²/2a. Rearrange:</p>
+</div>
+
+<div class="formula">v² = 2ad</div>
+
+<div class="essay">
+<p>That's it. The squaring is an algebraic consequence of eliminating time from two kinematic equations under <em>constant acceleration</em>. For gravity, a&nbsp;=&nbsp;g and d&nbsp;=&nbsp;h, so v²&nbsp;=&nbsp;2gh — Galileo's result that Leibniz used. Nothing about "living force." Nothing about the nature of substance. Just arithmetic.</p>
+</div>
+
+<div class="pbox">
+<div class="plabel">Interactive — Watch the Squaring Arise from Kinematics</div>
+<div class="slider-row">
+  <span class="slider-label">Acceleration (a):</span>
+  <input type="range" id="kinA" min="1" max="20" value="10" step="0.5">
+  <span class="slider-val" id="kinAVal">10 m/s²</span>
+</div>
+<div class="slider-row">
+  <span class="slider-label">Distance fallen (d):</span>
+  <input type="range" id="kinD" min="0.5" max="20" value="5" step="0.5">
+  <span class="slider-val" id="kinDVal">5 m</span>
+</div>
+<div id="kinViz"></div>
+<div class="num-row">
+  <div class="num-card" style="background:rgba(212,168,67,0.12);border:1px solid rgba(212,168,67,0.3)">
+    <div class="big-label">v = √(2ad)</div>
+    <div class="big-num" style="color:var(--accent)" id="kinV">—</div>
+  </div>
+  <div class="num-card" style="background:rgba(212,168,67,0.12);border:1px solid rgba(212,168,67,0.3)">
+    <div class="big-label">v² = 2ad</div>
+    <div class="big-num" style="color:var(--accent)" id="kinVsq">—</div>
+  </div>
+  <div class="num-card" style="background:rgba(106,100,88,0.15);border:1px solid rgba(106,100,88,0.3)">
+    <div class="big-label">Time to fall</div>
+    <div class="big-num" style="color:var(--dim)" id="kinT">—</div>
+  </div>
+</div>
+<div class="ibox" style="margin-top:8px">
+  <div class="section-label">The Derivation Path</div>
+  <div class="commentary" id="kinComment"></div>
+</div>
+</div>
+
+<div class="essay">
+<p>Notice: if you integrate F&nbsp;=&nbsp;ma with respect to <em>time</em>, you get momentum (mv). If you integrate F&nbsp;=&nbsp;ma with respect to <em>distance</em>, you get ½mv². Neither integration is more fundamental. The choice to elevate the distance-integral to "energy" and call it a fundamental quantity was Leibniz's. The mathematics didn't require it.</p>
+</div>
+
+<div class="compare-grid">
+  <div class="compare-cell">
+    <h3 style="color:var(--good)">Integrate over time</h3>
+    <div class="eq">F·dt = m·dv → F·Δt = m·Δv</div>
+    <div style="font-size:0.92em;color:var(--dim)">Produces <em style="color:var(--good)">impulse = change in momentum</em>. Momentum is the time-integral of force. Linear, directional, frame-independent conservation law.</div>
+  </div>
+  <div class="compare-cell">
+    <h3 style="color:var(--warn)">Integrate over distance</h3>
+    <div class="eq">F·dx = m·v·dv → F·Δx = Δ(½mv²)</div>
+    <div style="font-size:0.92em;color:var(--dim)">Produces <em style="color:var(--warn)">work = change in ½mv²</em>. "Kinetic energy" is the distance-integral of force. Nonlinear, directionless, frame-dependent total.</div>
+  </div>
+</div>
+
+<hr class="sep">
+
+<!-- ═══════════ SECTION II: THE THEOLOGICAL PAYLOAD ═══════════ -->
+<span class="section-num">Section II</span>
+<h2>Why Leibniz Needed the Squaring</h2>
+
+<div class="essay">
+<p>Leibniz's philosophy required that reality be composed of individual substances — <em>monads</em> — each carrying its own intrinsic properties. Force had to belong to the body itself, not to the relationship between bodies. This single requirement determined which mathematical quantity he would accept as fundamental.</p>
+
+<p><em>Relative velocity</em> — the speed of approach between two objects — fails immediately. It doesn't belong to either object. It belongs to the pair. A monad cannot carry a relational property as its intrinsic force.</p>
+
+<p><em>Momentum</em> (mv) has direction. Direction is relational — left relative to what? A monad's intrinsic force cannot depend on an external coordinate system. And momentum can be negative, which for Leibniz would mean a substance carrying negative force — metaphysically incoherent.</p>
+
+<p><em>mv²</em> is always positive. It belongs to the single body. It is scalar — no direction, no coordinate dependence. It was the only candidate that fit the metaphysical requirements. Leibniz then found the Galileo derivation that produced the right number and presented it as proof of what his theology had already decided.</p>
+
+<p>He called it <em>vis viva</em> — Latin for "living force" — as opposed to <em>vis mortua</em>, "dead force," which described static loads like a weight on a table. The naming is the theology made explicit: monads with vis viva are <em>alive</em> in the philosophical sense, actively expressing their God-given nature through motion. The word choice reveals what the mathematics was designed to serve.</p>
+</div>
+
+<div class="note">
+Leibniz's argument against Descartes is correct <em>within its axioms</em>. If you accept that "force" means "capacity to raise one's own weight against gravity," then mv² is the right quantity. The problem isn't the algebra. It's the axiom. A 1 kg body at v = 2 and a 4 kg body at v = 1 have equal capacity to raise themselves — but they cannot do the same things to other bodies. The 1 kg body bounces off a 2 kg obstacle. The 4 kg body pushes it aside. Equal vis viva, completely different physical capability.
+</div>
+
+<!-- Leibniz Animation -->
+<div class="pbox">
+<div class="plabel">Animation — Equal "Living Force," Unequal Reality</div>
+<div id="leibnizAnim" class="space-scene" style="position:relative;min-height:360px;padding-bottom:40px;cursor:pointer" title="Click to replay">
+  <div id="leibnizOverlay" style="position:absolute;bottom:0;left:0;width:100%;display:flex;align-items:center;justify-content:center;z-index:2;pointer-events:none;padding:10px 0;background:linear-gradient(transparent,rgba(8,8,12,0.95) 30%)">
+    <span id="leibnizPhaseText" style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.1em;color:var(--accent);padding:6px 18px;border-radius:6px;text-align:center;max-width:90%"></span>
+  </div>
+</div>
+<div style="text-align:center;margin-top:6px">
+  <button class="frame-btn" onclick="startLeibnizAnim()">▶ Replay</button>
+  <span style="font-size:0.78em;color:var(--dim);margin-left:8px">Click animation or button to replay</span>
+</div>
+</div>
+
+<hr class="sep">
+
+<!-- ═══════════ SECTION III: REMOVE GRAVITY ═══════════ -->
+<span class="section-num">Section III</span>
+<h2>Remove Gravity — Watch the Foundation Disappear</h2>
+
+<div class="essay">
+<p>Leibniz's entire argument requires gravity. The derivation starts with dropping bodies. The "equal force" comparison uses height. The axiom "effect equals cause" is measured by the capacity to rise. Remove the gravitational field and every piece of the argument vanishes.</p>
+
+<p>Two objects approach each other in deep space. No field, no floor, no falling, no height. What is the "living force" of a body moving at v? The derivation v²&nbsp;=&nbsp;2gh doesn't exist — there is no g and no h. The comparison between mgh values doesn't exist — there is no height to raise anything to. The founding justification for squaring velocity is simply absent.</p>
+</div>
+
+<div class="pbox">
+<div class="plabel">Deep Space — Two Objects, No Gravity</div>
+<div class="slider-row">
+  <span class="slider-label">Object A mass:</span>
+  <input type="range" id="spMassA" min="1" max="20" value="4" step="1">
+  <span class="slider-val" id="spMassAVal">4 kg</span>
+</div>
+<div class="slider-row">
+  <span class="slider-label">Object A velocity:</span>
+  <input type="range" id="spVelA" min="-15" max="15" value="6" step="1">
+  <span class="slider-val" id="spVelAVal">+6 m/s →</span>
+</div>
+<div class="slider-row">
+  <span class="slider-label">Object B mass:</span>
+  <input type="range" id="spMassB" min="1" max="20" value="8" step="1">
+  <span class="slider-val" id="spMassBVal">8 kg</span>
+</div>
+<div class="slider-row">
+  <span class="slider-label">Object B velocity:</span>
+  <input type="range" id="spVelB" min="-15" max="15" value="-3" step="1">
+  <span class="slider-val" id="spVelBVal">−3 m/s ←</span>
+</div>
+<div id="spaceViz" class="space-scene"></div>
+</div>
+
+<div class="num-row">
+  <div class="num-card" style="background:rgba(104,136,168,0.12);border:1px solid rgba(104,136,168,0.3)">
+    <div class="big-label">Relative Velocity</div>
+    <div class="big-num" style="color:var(--objA)" id="spRelVel">—</div>
+    <div class="big-label" style="color:var(--objA)">Frame-independent. Needs no derivation.</div>
+  </div>
+  <div class="num-card mom">
+    <div class="big-label">Total Momentum</div>
+    <div class="big-num" id="spTotMom">—</div>
+    <div class="big-label" style="color:var(--good)">Conserved in every frame</div>
+  </div>
+  <div class="num-card ke">
+    <div class="big-label">Total ½mv²</div>
+    <div class="big-num" id="spTotKE">—</div>
+    <div class="big-label" style="color:var(--warn)">No gravitational derivation exists for this number</div>
+  </div>
+</div>
+
+<div class="ibox">
+<div class="section-label">What Remains Without Gravity</div>
+<div class="commentary" id="spaceComment"></div>
+</div>
+
+<div class="essay">
+<p>The textbook response is that ½mv² survives through the work-energy theorem: F·dx&nbsp;=&nbsp;d(½mv²). But this is the same kinematic identity in different clothing — integrating F&nbsp;=&nbsp;ma over distance produces ½mv² as an algebraic artifact whether gravity is present or not. The question isn't whether the algebra works. The question is why the distance-integral deserves to be called "energy" and treated as fundamental, while the time-integral (momentum) is treated as secondary. Leibniz had an answer: his theology. Modern physics has no answer. It has a convention.</p>
+</div>
+
+<hr class="sep">
+
+<!-- ═══════════ SECTION IV: FRAME DEPENDENCE ═══════════ -->
+<span class="section-num">Section IV</span>
+<h2>Watch "Energy" Change by Changing Your Seat</h2>
+
+<p style="font-size:0.95em;color:var(--dim);margin-bottom:16px">Two objects approach each other. Drag the observer frame slider and watch all three quantities: kinetic energy fluctuates wildly, momentum's value changes but its conservation law holds, and relative velocity never changes at all.</p>
+
+<!-- Observer Animation -->
+<div class="pbox">
+<div class="plabel">Animation — Same Event, Two Observers, Two "Energies"</div>
+<div id="observerAnim" class="space-scene" style="position:relative;min-height:300px;padding-bottom:40px;cursor:pointer" title="Click to replay">
+  <div id="observerOverlay" style="position:absolute;bottom:0;left:0;width:100%;display:flex;align-items:center;justify-content:center;z-index:2;pointer-events:none;padding:10px 0;background:linear-gradient(transparent,rgba(8,8,12,0.95) 30%)">
+    <span id="observerPhaseText" style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.05em;color:var(--accent);padding:6px 18px;border-radius:6px;text-align:center;max-width:90%"></span>
+  </div>
+</div>
+<div style="text-align:center;margin-top:6px">
+  <button class="frame-btn" onclick="startObserverAnim()">▶ Replay</button>
+</div>
+</div>
 
 <div class="pbox">
 <div class="plabel">Setup — Masses and Velocities in the Lab Frame</div>
@@ -129,17 +332,10 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;heigh
 </div>
 </div>
 
-<style>
-.frame-btn{padding:5px 12px;background:var(--accent-dim);color:var(--text);border:1px solid var(--border);border-radius:5px;cursor:pointer;font-family:'EB Garamond',Georgia,serif;font-size:0.8em;transition:background 0.2s}
-.frame-btn:hover{background:var(--accent);color:var(--bg)}
-</style>
-
-<!-- Scene visualization -->
 <div class="pbox">
 <div id="sceneViz"></div>
 </div>
 
-<!-- Big numbers -->
 <div class="num-row">
   <div class="num-card ke">
     <div class="big-label">Total Kinetic Energy</div>
@@ -149,22 +345,20 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;heigh
   <div class="num-card mom">
     <div class="big-label">Total Momentum</div>
     <div class="big-num" id="totalMom">—</div>
-    <div class="big-label" style="color:var(--objA)">Value changes — but conservation law holds in every frame</div>
+    <div class="big-label" style="color:var(--good)">Value changes — conservation law holds in every frame</div>
   </div>
-  <div class="num-card" style="background:var(--goodF);border:1px solid rgba(74,158,110,0.3)">
+  <div class="num-card rv">
     <div class="big-label">Relative Velocity</div>
-    <div class="big-num" style="color:var(--good)" id="relVel">—</div>
-    <div class="big-label" style="color:var(--good)">✓ Truly frame-independent — same in every frame</div>
+    <div class="big-num" id="relVel">—</div>
+    <div class="big-label" style="color:var(--objA)">✓ Same in every frame</div>
   </div>
 </div>
 
-<!-- Detailed values -->
 <div class="ibox">
 <div class="section-label">Velocities and Energies in Current Frame</div>
 <div class="vgrid" id="frameVals"></div>
 </div>
 
-<!-- KE vs frame chart -->
 <div class="pbox">
 <div class="plabel">Total Kinetic Energy as Observer Velocity Changes</div>
 <div id="keChart"></div>
@@ -177,10 +371,11 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;heigh
 
 <hr class="sep">
 
-<!-- ═══════════ SECTION II: ELASTIC COLLISION ═══════════ -->
-<h2>II. Solving Elastic Collisions — Energy Is Redundant</h2>
+<!-- ═══════════ SECTION V: ELASTIC COLLISION ═══════════ -->
+<span class="section-num">Section V</span>
+<h2>Energy Is Redundant — Solving Collisions Without It</h2>
 
-<p style="font-size:0.95em;color:var(--dim);margin-bottom:16px">An elastic collision between two objects. The left panel solves it using momentum + the relative velocity condition. The right panel solves it using momentum + energy conservation. The answers are always identical. Energy adds nothing.</p>
+<p style="font-size:0.95em;color:var(--dim);margin-bottom:16px">An elastic collision between two objects. The left panel solves it using momentum + the relative velocity condition. The right panel uses momentum + energy conservation. The answers are always identical. Energy adds nothing.</p>
 
 <div class="pbox">
 <div class="plabel">Collision Setup</div>
@@ -206,14 +401,12 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;heigh
 </div>
 </div>
 
-<!-- Before state -->
 <div class="pbox">
 <div class="plabel">Before Collision</div>
 <div id="beforeViz"></div>
 <div class="vgrid" style="margin-top:8px" id="beforeVals"></div>
 </div>
 
-<!-- Two methods side by side -->
 <div class="row">
   <div class="method-card" id="methodRV">
     <div class="method-title rv">Method 1: Momentum + Relative Velocity</div>
@@ -229,12 +422,10 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;heigh
   </div>
 </div>
 
-<!-- Match indicator -->
 <div class="ibox" style="text-align:center">
   <span class="match-badge yes" id="matchBadge">✓ Both methods produce identical results — energy adds nothing</span>
 </div>
 
-<!-- After state -->
 <div class="pbox">
 <div class="plabel">After Collision</div>
 <div id="afterViz"></div>
@@ -248,20 +439,139 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;heigh
 
 <hr class="sep">
 
-<!-- ═══════════ SECTION III: CLOSING ═══════════ -->
-<h2>III. What the Squaring Hides</h2>
+<!-- ═══════════ SECTION VI: THE HIERARCHY ═══════════ -->
+<span class="section-num">Section VI</span>
+<h2>The Hierarchy of Honesty</h2>
+
+<div class="essay">
+<p>Three quantities describe the motion of two interacting bodies. They are not equal. They form a hierarchy based on a single criterion: what is actually frame-independent?</p>
+</div>
+
+<div class="hier-row" style="background:rgba(104,136,168,0.15);border:1px solid rgba(104,136,168,0.25)">
+  <div class="hier-rank" style="color:var(--objA)">1</div>
+  <div>
+    <div class="hier-name" style="color:var(--objA)">Relative Velocity</div>
+    <div class="hier-desc">Frame-independent <em style="color:var(--objA)">value</em>. The speed of approach or separation between two objects is the same number for every observer. It is the physical fact. It doesn't just have a frame-independent conservation law — its value is invariant.</div>
+  </div>
+</div>
+
+<div class="hier-row" style="background:rgba(74,158,110,0.1);border:1px solid rgba(74,158,110,0.2)">
+  <div class="hier-rank" style="color:var(--good)">2</div>
+  <div>
+    <div class="hier-name" style="color:var(--good)">Momentum (mv)</div>
+    <div class="hier-desc">Frame-dependent value, frame-independent <em style="color:var(--good)">conservation law</em>. The numerical value of total momentum changes between frames. But if it's conserved in one frame, it's conserved in all of them. The law is universal even though the number isn't.</div>
+  </div>
+</div>
+
+<div class="hier-row" style="background:rgba(232,160,48,0.08);border:1px solid rgba(232,160,48,0.15)">
+  <div class="hier-rank" style="color:var(--warn)">3</div>
+  <div>
+    <div class="hier-name" style="color:var(--warn)">Kinetic Energy (½mv²)</div>
+    <div class="hier-desc">Frame-dependent value, frame-dependent <em style="color:var(--warn)">total</em>. Different observers get different numbers. The total energy of a system changes depending on who measures it. It cannot be assigned a unique value without choosing a privileged frame. It is redundant for solving collisions. It is the weakest of the three — and the one Leibniz placed at the foundation.</div>
+  </div>
+</div>
+
+<hr class="sep">
+
+<!-- ═══════════ SECTION VII: EARTHQUAKE CASE STUDY ═══════════ -->
+<span class="section-num">Section VII</span>
+<h2>The Myth in Action — Earthquake "Energy"</h2>
+
+<div class="essay">
+<p>The earthquake magnitude scale is the kinetic energy problem dressed in geological clothing. The Gutenberg-Richter formula — log&nbsp;E&nbsp;=&nbsp;1.5M&nbsp;+&nbsp;4.8 — computes seismic energy as <em>½ρv²</em> integrated across the entire rupture volume. Kinetic energy density (½ × rock density × ground velocity squared) summed over hundreds of cubic kilometers of vibrating rock, then compressed into a single number through a logarithm. Each magnitude step represents 31.6× more "energy." From magnitude 1 to magnitude 9, the ratio is roughly <em>one trillion</em>.</p>
+
+<p>A trillion times more energy sounds like it should vaporize everything in its path. It doesn't. The 2011 Tōhoku earthquake — magnitude 9.1, fourth most powerful ever recorded — produced a peak ground velocity of about 1 m/s. That's <em>walking speed</em>. And research has shown that peak ground acceleration is only weakly dependent on magnitude: an M6 event produces peak accelerations roughly half those of an M9.</p>
+
+<p>The trillion-fold energy ratio doesn't describe what happens at any point. It describes a bookkeeping total spread across hundreds of kilometers of rupturing rock over minutes of duration. The bigger earthquake doesn't shake any single location a trillion times harder. It shakes a <em>larger area</em> for a <em>longer time</em>. The squaring of velocity inflates the density, the volume integration inflates the total, and the result is a number that terrifies but does not describe local reality.</p>
+
+<p>Meanwhile, the stress a structure actually experiences is computed by a different formula entirely: σ&nbsp;=&nbsp;ρ&nbsp;×&nbsp;a&nbsp;×&nbsp;h. Density times acceleration times height. This is F&nbsp;=&nbsp;ma applied to a distributed mass. No velocity is squared. No integral is taken over the volume of the earth. It asks the honest question: what force does this specific piece of concrete feel, right here, right now?</p>
+</div>
+
+<!-- Earthquake Animation -->
+<div class="pbox">
+<div class="plabel">Animation — What a Magnitude 9 Actually Looks Like</div>
+<div id="quakeAnim" class="space-scene" style="position:relative;min-height:380px;padding-bottom:40px;cursor:pointer" title="Click to replay">
+  <div id="quakeOverlay" style="position:absolute;bottom:0;left:0;width:100%;display:flex;align-items:center;justify-content:center;z-index:2;pointer-events:none;padding:10px 0;background:linear-gradient(transparent,rgba(8,8,12,0.95) 30%)">
+    <span id="quakePhaseText" style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.05em;color:var(--accent);padding:6px 18px;border-radius:6px;text-align:center;max-width:90%"></span>
+  </div>
+</div>
+<div style="text-align:center;margin-top:6px">
+  <button class="frame-btn" onclick="startQuakeAnim()">▶ Replay</button>
+</div>
+</div>
+
+<div class="pbox">
+<div class="plabel">Interactive — Earthquake Magnitude vs. What Structures Actually Experience</div>
+<div class="slider-row">
+  <span class="slider-label">Magnitude:</span>
+  <input type="range" id="eqMag" min="1" max="9.5" value="7" step="0.1">
+  <span class="slider-val" id="eqMagVal">7.0</span>
+</div>
+<div class="slider-row">
+  <span class="slider-label">Wall height (m):</span>
+  <input type="range" id="eqWallH" min="1" max="15" value="3" step="0.5">
+  <span class="slider-val" id="eqWallHVal">3.0 m</span>
+</div>
+</div>
+
+<div class="num-row">
+  <div class="num-card ke">
+    <div class="big-label">Claimed "Energy" (Joules)</div>
+    <div class="big-num" id="eqEnergy">—</div>
+    <div class="big-label" style="color:var(--warn)">Integrated total across entire rupture volume</div>
+  </div>
+  <div class="num-card" style="background:rgba(104,136,168,0.12);border:1px solid rgba(104,136,168,0.3)">
+    <div class="big-label">Estimated Peak Ground Velocity</div>
+    <div class="big-num" style="color:var(--objA)" id="eqPGV">—</div>
+    <div class="big-label" style="color:var(--objA)">What the ground actually does at a point</div>
+  </div>
+</div>
+
+<div class="num-row">
+  <div class="num-card" style="background:rgba(104,136,168,0.12);border:1px solid rgba(104,136,168,0.3)">
+    <div class="big-label">Estimated Peak Ground Acceleration</div>
+    <div class="big-num" style="color:var(--objA)" id="eqPGA">—</div>
+    <div class="big-label" style="color:var(--objA)">Near-fault, approximate</div>
+  </div>
+  <div class="num-card" style="background:rgba(74,158,110,0.12);border:1px solid rgba(74,158,110,0.3)">
+    <div class="big-label">Inertial Stress on Wall</div>
+    <div class="big-num" style="color:var(--good)" id="eqStress">—</div>
+    <div class="big-label" style="color:var(--good)">σ = ρ × a × h (concrete density 2,400 kg/m³)</div>
+  </div>
+</div>
+
+<div id="eqBarChart"></div>
+
+<div class="ibox">
+<div class="section-label">What the Numbers Reveal</div>
+<div class="commentary" id="eqComment"></div>
+</div>
+
+<div class="essay">
+<p>Two frameworks describe the same earthquake. One computes <em>½ρv²</em> across the entire rupture volume — squaring the velocity, integrating over hundreds of cubic kilometers, producing numbers in the trillions of joules that evoke apocalyptic imagery. The other computes <em>F&nbsp;=&nbsp;ma</em> at a point — density times acceleration times height, no squaring, no integration — and finds that the inertial stress on a concrete wall is typically an order of magnitude below the material's tensile failure threshold.</p>
+
+<p>The first framework is kinetic energy applied to seismology. The second is Newton's second law applied to a structure. They describe the same physical event. One makes it sound like the earth is releasing nuclear-scale destructive power. The other reveals that the ground moves at walking speed and the force on any given wall is modest. Buildings that do collapse fail from resonance amplification, connection weakness, soil liquefaction, or cumulative cyclic fatigue — not because the raw shaking force exceeds the binding strength of concrete.</p>
+
+<p>This is the kinetic energy myth operating in applied science. The impressive number comes from squaring and integrating. F&nbsp;=&nbsp;ma tells the truth.</p>
+</div>
+
+<hr class="sep">
+
+<!-- ═══════════ CLOSING ═══════════ -->
+<h2>What the Squaring Hides</h2>
 
 <div class="essay">
 <p>The velocity-squaring operation does two things that should concern anyone who cares about physical reality.</p>
+
 <p>First, it <em>destroys direction</em>. Velocity is a vector — it points somewhere. The moment you square it, a ball moving left and a ball moving right at the same speed have identical "kinetic energy." The one piece of physical information that distinguishes them — direction — is erased.</p>
+
 <p>Second, it <em>creates frame-dependence</em>. Because squaring is nonlinear, boosting to a different frame doesn't just shift the energy — it changes its structure. The total kinetic energy of a system is not invariant under change of reference frame. This is not a minor technicality. It means the quantity has no unique physical value. It is not a property of the objects. It is a property of the observer's arbitrary choice of coordinates.</p>
-<p>Momentum's value also changes between frames — as the demo above shows honestly. But momentum has something energy doesn't: its <em>conservation law</em> holds identically in every frame. If momentum is conserved in one frame, it's conserved in all of them. Energy conservation, by contrast, gives different totals in different frames, making it impossible to assign a unique "energy of the system" without first choosing a privileged frame.</p>
-<p>But the cleanest quantity of all is the <em>relative velocity</em> — the speed of approach or separation between two objects. It doesn't just have a frame-independent conservation law. Its <em>value</em> is the same in every frame, for every observer, without exception. And as the collision solver demonstrates, momentum plus the relative velocity condition is <em>sufficient</em> to predict every elastic collision outcome without ever invoking energy.</p>
+
 <p>The hierarchy is clear. Relative velocity: frame-independent value. Momentum: frame-dependent value, frame-independent conservation law. Kinetic energy: frame-dependent value, frame-dependent total — the weakest of the three, and the one Leibniz placed at the foundation.</p>
 </div>
 
 <div class="footer-text">
-<p>Leibniz needed vis viva — mv² — because his metaphysics required force to be intrinsic to individual substances. A mass-independent quantity wouldn't serve that purpose. The velocity got squared not because nature demanded it, but because theology did. And three centuries later, every physics student inherits that squaring without knowing where it came from or what it costs.</p>
+<p>Leibniz needed vis viva — mv² — because his metaphysics required force to be intrinsic to individual substances. A relational quantity wouldn't serve that purpose. The velocity got squared not because nature demanded it, but because theology did. The derivation was gravity-dependent. The motivation was metaphysical. The quantity is redundant. And three centuries later, every physics student inherits that squaring without knowing where it came from or what it costs.</p>
 </div>
 
 </div>
@@ -271,24 +581,200 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;heigh
 "use strict";
 
 const F="'EB Garamond',Georgia,serif";
+const ns="http://www.w3.org/2000/svg";
 
-// ═══════════ SECTION I: FRAME DEPENDENCE ═══════════
+// ── SVG helpers ──
+function mkSVG(w,h){
+  const svg=document.createElementNS(ns,"svg");
+  svg.setAttribute("viewBox",`0 0 ${w} ${h}`);
+  const bg=document.createElementNS(ns,"rect");
+  bg.setAttribute("width",w);bg.setAttribute("height",h);bg.setAttribute("fill","#08080c");bg.setAttribute("rx","4");
+  svg.appendChild(bg);
+  return svg;
+}
+function addLine(svg,x1,y1,x2,y2,stroke,sw,dash){
+  const l=document.createElementNS(ns,"line");
+  l.setAttribute("x1",x1);l.setAttribute("y1",y1);l.setAttribute("x2",x2);l.setAttribute("y2",y2);
+  l.setAttribute("stroke",stroke);l.setAttribute("stroke-width",sw);
+  if(dash)l.setAttribute("stroke-dasharray",dash);
+  svg.appendChild(l);
+}
+function addText(svg,x,y,fill,size,anchor,text){
+  const t=document.createElementNS(ns,"text");
+  t.setAttribute("x",x);t.setAttribute("y",y);t.setAttribute("fill",fill);
+  t.setAttribute("font-size",size);t.setAttribute("text-anchor",anchor);
+  t.setAttribute("font-family",F);t.textContent=text;
+  svg.appendChild(t);
+}
+function addCircle(svg,cx,cy,r,fill,opacity){
+  const c=document.createElementNS(ns,"circle");
+  c.setAttribute("cx",cx);c.setAttribute("cy",cy);c.setAttribute("r",r);
+  c.setAttribute("fill",fill);c.setAttribute("opacity",opacity||"0.8");
+  svg.appendChild(c);
+}
+function addArrow(svg,x,y,v,r,color,labelY){
+  if(Math.abs(v)<0.3){addText(svg,x,y+r+16,color,10,"middle","stationary");return;}
+  const dir=v>0?1:-1;
+  const len=Math.min(Math.abs(v)*4,100);
+  const ax=x+dir*(r+4);
+  addLine(svg,ax,y,ax+dir*len,y,color,2.5);
+  addLine(svg,ax+dir*len,y,ax+dir*(len-8),y-5,color,2);
+  addLine(svg,ax+dir*len,y,ax+dir*(len-8),y+5,color,2);
+  addText(svg,ax+dir*(len/2),labelY||y-12,color,10,"middle",(v>=0?"+":"")+v.toFixed(1)+" m/s");
+}
+function velStr(v){return (v>=0?"+":"")+v+" m/s "+(v>=0?"→":"←")}
+
+// ═══════════ SECTION I: KINEMATICS ═══════════
+
+function updateKin(){
+  const a=parseFloat(document.getElementById("kinA").value);
+  const d=parseFloat(document.getElementById("kinD").value);
+  document.getElementById("kinAVal").textContent=a+" m/s²";
+  document.getElementById("kinDVal").textContent=d+" m";
+
+  const vsq=2*a*d;
+  const v=Math.sqrt(vsq);
+  const t=v/a;
+
+  document.getElementById("kinV").textContent=v.toFixed(2)+" m/s";
+  document.getElementById("kinVsq").textContent=vsq.toFixed(1)+" m²/s²";
+  document.getElementById("kinT").textContent=t.toFixed(3)+" s";
+
+  // Commentary
+  document.getElementById("kinComment").textContent=
+    `Starting from rest with acceleration ${a} m/s², after covering ${d} m the object reaches v = ${v.toFixed(2)} m/s. `+
+    `The time to do this is ${t.toFixed(3)} s. The quantity v² = ${vsq.toFixed(1)} is simply 2 × ${a} × ${d} = ${vsq.toFixed(1)}. `+
+    `It arises from eliminating time between v = at and d = ½at². The squaring is the algebra of constant acceleration — not a deep property of motion.`;
+
+  // Visualization: show falling object with v and d
+  const el=document.getElementById("kinViz");
+  el.innerHTML="";
+  const W=760,H=200;
+  const svg=mkSVG(W,H);
+
+  // Show the two equations converging
+  const midX=W/2, topY=30, botY=H-30;
+  const objY=topY+(botY-topY)*(d/20);
+
+  // Distance bracket
+  addLine(svg,midX-60,topY,midX-60,objY,"#6a6458",1,"4,3");
+  addLine(svg,midX-65,topY,midX-55,topY,"#6a6458",1);
+  addLine(svg,midX-65,objY,midX-55,objY,"#6a6458",1);
+  addText(svg,midX-75,(topY+objY)/2,"#6a6458",10,"middle","d="+d);
+
+  // Object
+  addCircle(svg,midX,objY,14,"#d4a843");
+  addText(svg,midX,objY+5,"#08080c",12,"middle","●");
+
+  // Velocity arrow (downward = rightward in our display, show as text)
+  addText(svg,midX+30,objY+5,"#d4a843",11,"start","v = "+v.toFixed(2)+" m/s");
+  addText(svg,midX+30,objY+20,"#6a6458",10,"start","v² = "+vsq.toFixed(1)+" m²/s²");
+
+  // Equations on right
+  addText(svg,W-200,50,"#e2ddd0",11,"start","v = at = "+a+"×"+t.toFixed(3)+" = "+v.toFixed(2));
+  addText(svg,W-200,70,"#e2ddd0",11,"start","d = ½at² = ½×"+a+"×"+t.toFixed(3)+"² = "+d.toFixed(1));
+  addText(svg,W-200,100,"#d4a843",12,"start","Eliminate t:");
+  addText(svg,W-200,120,"#d4a843",12,"start","v² = 2ad = 2×"+a+"×"+d+" = "+vsq.toFixed(1));
+
+  // Acceleration arrow
+  addText(svg,midX,topY-8,"#6a6458",10,"middle","a = "+a+" m/s² ↓");
+
+  el.appendChild(svg);
+}
+
+["kinA","kinD"].forEach(id=>{
+  document.getElementById(id).addEventListener("input",updateKin);
+});
+
+// ═══════════ SECTION III: SPACE ═══════════
+
+function updateSpace(){
+  const mA=parseFloat(document.getElementById("spMassA").value);
+  const vA=parseFloat(document.getElementById("spVelA").value);
+  const mB=parseFloat(document.getElementById("spMassB").value);
+  const vB=parseFloat(document.getElementById("spVelB").value);
+
+  document.getElementById("spMassAVal").textContent=mA+" kg";
+  document.getElementById("spVelAVal").textContent=velStr(vA);
+  document.getElementById("spMassBVal").textContent=mB+" kg";
+  document.getElementById("spVelBVal").textContent=velStr(vB);
+
+  const relV=Math.abs(vB-vA);
+  const totMom=mA*vA+mB*vB;
+  const totKE=0.5*mA*vA*vA+0.5*mB*vB*vB;
+
+  document.getElementById("spRelVel").textContent=relV.toFixed(1)+" m/s";
+  document.getElementById("spTotMom").textContent=(totMom>=0?"+":"")+totMom.toFixed(1)+" kg·m/s";
+  document.getElementById("spTotKE").textContent=totKE.toFixed(1)+" J";
+
+  // Space viz
+  const el=document.getElementById("spaceViz");
+  el.innerHTML="";
+  const W=760,H=180;
+  const svg=mkSVG(W,H);
+
+  // Stars
+  for(let i=0;i<40;i++){
+    addCircle(svg,Math.random()*W,Math.random()*H,Math.random()*1.2+0.3,"#2a2a3a","0.6");
+  }
+
+  const cy=H/2, posA=W*0.3, posB=W*0.7;
+  const sizeA=16+mA*1.3, sizeB=16+mB*1.3;
+
+  // Objects
+  addCircle(svg,posA,cy,sizeA,"#6888a8");
+  addText(svg,posA,cy+5,"#08080c",13,"middle","A");
+  addText(svg,posA,cy-sizeA-10,"#6888a8",10,"middle",mA+" kg");
+  addArrow(svg,posA,cy,vA,sizeA,"#6888a8",cy-14);
+
+  addCircle(svg,posB,cy,sizeB,"#c45c5c");
+  addText(svg,posB,cy+5,"#08080c",13,"middle","B");
+  addText(svg,posB,cy-sizeB-10,"#c45c5c",10,"middle",mB+" kg");
+  addArrow(svg,posB,cy,vB,sizeB,"#c45c5c",cy-14);
+
+  // Relative velocity
+  const arrY=cy-Math.max(sizeA,sizeB)-30;
+  addLine(svg,posA+sizeA+5,arrY,posB-sizeB-5,arrY,"#d4a843",1.5,"6,3");
+  addText(svg,(posA+posB)/2,arrY-10,"#d4a843",11,"middle","relative: "+relV.toFixed(1)+" m/s");
+
+  // "No gravity" labels
+  addText(svg,W/2,H-12,"#2a2a3a",10,"middle","No gravity · No floor · No height · No v² = 2gh");
+
+  el.appendChild(svg);
+
+  // Commentary
+  const {v1f,v2f}=solveElastic(mA,vA,mB,vB);
+  document.getElementById("spaceComment").textContent=
+    `These two objects approach at ${relV.toFixed(1)} m/s relative velocity. `+
+    `If they collide elastically, momentum conservation gives: ${mA}·v₁' + ${mB}·v₂' = ${totMom.toFixed(1)}. `+
+    `The relative velocity condition gives: v₂' − v₁' = ${(vA-vB).toFixed(1)}. `+
+    `Two equations, two unknowns: v₁' = ${v1f.toFixed(2)} m/s, v₂' = ${v2f.toFixed(2)} m/s. `+
+    `The collision is fully solved. No energy was invoked. No quantity was squared. `+
+    `The ½mv² value of ${totKE.toFixed(1)} J exists as a number you can compute, but it played no role in determining what actually happens.`;
+}
+
+["spMassA","spVelA","spMassB","spVelB"].forEach(id=>{
+  document.getElementById(id).addEventListener("input",updateSpace);
+});
+
+// ═══════════ SECTION IV: FRAME DEPENDENCE ═══════════
 
 function getFrameInputs(){
-  const mA=parseFloat(document.getElementById("massA").value);
-  const vA=parseFloat(document.getElementById("velA").value);
-  const mB=parseFloat(document.getElementById("massB").value);
-  const vB=parseFloat(document.getElementById("velB").value);
-  const vObs=parseFloat(document.getElementById("obsVel").value);
-  return {mA,vA,mB,vB,vObs};
+  return {
+    mA:parseFloat(document.getElementById("massA").value),
+    vA:parseFloat(document.getElementById("velA").value),
+    mB:parseFloat(document.getElementById("massB").value),
+    vB:parseFloat(document.getElementById("velB").value),
+    vObs:parseFloat(document.getElementById("obsVel").value)
+  };
 }
 
 function updateFrameLabels(){
   const {mA,vA,mB,vB,vObs}=getFrameInputs();
   document.getElementById("massAVal").textContent=mA+" kg";
-  document.getElementById("velAVal").textContent=(vA>=0?"+":"")+vA+" m/s "+(vA>=0?"→":"←");
+  document.getElementById("velAVal").textContent=velStr(vA);
   document.getElementById("massBVal").textContent=mB+" kg";
-  document.getElementById("velBVal").textContent=(vB>=0?"+":"")+vB+" m/s "+(vB>=0?"→":"←");
+  document.getElementById("velBVal").textContent=velStr(vB);
   document.getElementById("obsVelVal").textContent=(vObs===0?"0 m/s (lab)":(vObs>=0?"+":"")+vObs+" m/s");
 }
 
@@ -299,13 +785,12 @@ function updateFrameViz(){
   const totalKE=keA+keB;
   const momA=mA*vAf, momB=mB*vBf;
   const totalMom=momA+momB;
+  const relV=Math.abs(vBf-vAf);
 
-  // Big numbers
   document.getElementById("totalKE").textContent=totalKE.toFixed(1)+" J";
   document.getElementById("totalMom").textContent=(totalMom>=0?"+":"")+totalMom.toFixed(1)+" kg·m/s";
-  document.getElementById("relVel").textContent=Math.abs(vBf-vAf).toFixed(1)+" m/s";
+  document.getElementById("relVel").textContent=relV.toFixed(1)+" m/s";
 
-  // Detail values
   document.getElementById("frameVals").innerHTML=`
     <div><span class="vl">A velocity: </span><span class="vn a">${vAf>=0?"+":""}${vAf.toFixed(1)} m/s</span></div>
     <div><span class="vl">B velocity: </span><span class="vn b">${vBf>=0?"+":""}${vBf.toFixed(1)} m/s</span></div>
@@ -315,142 +800,75 @@ function updateFrameViz(){
     <div><span class="vl">Momentum B: </span><span class="vn b">${momB>=0?"+":""}${momB.toFixed(1)}</span></div>
   `;
 
-  // Scene visualization
   drawScene(mA,vAf,mB,vBf,vObs);
-
-  // KE chart
   drawKEChart(mA,vA,mB,vB,vObs);
 
-  // Commentary
-  const relV=Math.abs(vB-vA);
   const cmV=(mA*vA+mB*vB)/(mA+mB);
-  const keAtCM=0.5*mA*(vA-cmV)*(vA-cmV)+0.5*mB*(vB-cmV)*(vB-cmV);
   let comment="";
   if(Math.abs(vObs)<0.5){
-    comment=`In the lab frame, the total kinetic energy is ${totalKE.toFixed(1)} J and total momentum is ${totalMom.toFixed(1)} kg·m/s. Now drag the observer slider. Both values will change — but only momentum's conservation law (before = after in a collision) holds identically in every frame. The relative velocity between the objects — ${relV.toFixed(1)} m/s — never changes at all. That's the truly frame-independent quantity.`;
+    comment=`In the lab frame, total kinetic energy is ${totalKE.toFixed(1)} J and total momentum is ${totalMom.toFixed(1)} kg·m/s. Drag the observer slider. Both values change — but only momentum's conservation law (before = after in a collision) holds identically in every frame. The relative velocity — ${relV.toFixed(1)} m/s — never changes at all.`;
   } else if(Math.abs(vObs-vA)<0.5){
-    comment=`You're riding on object A. From your perspective, A is stationary and B carries all the kinetic energy: ${totalKE.toFixed(1)} J. From B's frame, the reverse. The momentum value changed too (now ${totalMom.toFixed(1)} kg·m/s), but its conservation law still holds — if these objects collide, momentum before will equal momentum after in this frame. Only the relative velocity (${relV.toFixed(1)} m/s) is identical in every frame without qualification.`;
+    comment=`Riding on A. A is stationary, B carries all the kinetic energy: ${totalKE.toFixed(1)} J. From B's frame, the reverse. Momentum is now ${totalMom.toFixed(1)} kg·m/s — different value, same conservation law. Only the relative velocity (${relV.toFixed(1)} m/s) is identical everywhere.`;
   } else if(Math.abs(vObs-vB)<0.5){
-    comment=`You're riding on object B. Total KE is now ${totalKE.toFixed(1)} J — compare this to riding on A. Completely different. Total momentum is ${totalMom.toFixed(1)} kg·m/s — also different from A's frame. But in both frames, momentum is conserved through any collision. The relative velocity remains ${relV.toFixed(1)} m/s regardless.`;
+    comment=`Riding on B. Total KE is now ${totalKE.toFixed(1)} J — compare to riding on A. Completely different. Momentum is ${totalMom.toFixed(1)} kg·m/s — also different. But conservation holds in both frames. Relative velocity: ${relV.toFixed(1)} m/s — unchanged.`;
   } else if(Math.abs(vObs-cmV)<0.5){
-    comment=`You're in the center-of-mass frame. Total momentum is zero — both objects approach with equal and opposite momenta. KE is ${totalKE.toFixed(1)} J, the minimum possible for any frame. This is the only frame with zero total momentum, but nature doesn't privilege it. The relative velocity is still ${relV.toFixed(1)} m/s — the same everywhere.`;
+    comment=`Center-of-mass frame. Total momentum is zero. KE is ${totalKE.toFixed(1)} J — the minimum for any frame. But nature doesn't privilege this frame. The relative velocity is still ${relV.toFixed(1)} m/s — the same everywhere.`;
   } else {
-    comment=`At observer velocity ${vObs.toFixed(1)} m/s, total KE is ${totalKE.toFixed(1)} J and total momentum is ${totalMom.toFixed(1)} kg·m/s. Both values depend on the frame. The relative velocity between the objects — ${relV.toFixed(1)} m/s — is the only quantity that doesn't. It's the physical fact. Everything else is bookkeeping.`;
+    comment=`At observer velocity ${vObs.toFixed(1)} m/s: total KE = ${totalKE.toFixed(1)} J, total momentum = ${totalMom.toFixed(1)} kg·m/s. Both depend on your choice of seat. The relative velocity — ${relV.toFixed(1)} m/s — is the physical fact. Everything else is bookkeeping.`;
   }
   document.getElementById("frameComment").textContent=comment;
 }
 
-// ── Scene drawing ──
 function drawScene(mA,vAf,mB,vBf,vObs){
   const el=document.getElementById("sceneViz");
   el.innerHTML="";
   const W=760,H=160;
-  const ns="http://www.w3.org/2000/svg";
-  const svg=document.createElementNS(ns,"svg");
-  svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
+  const svg=mkSVG(W,H);
 
-  // Background
-  const bg=document.createElementNS(ns,"rect");
-  bg.setAttribute("width",W);bg.setAttribute("height",H);bg.setAttribute("fill","#08080c");bg.setAttribute("rx","4");
-  svg.appendChild(bg);
-
-  // Ground line
   addLine(svg,40,H-30,W-40,H-30,"#1c1c2c",1);
-
-  // Center
   const cy=H-30, midX=W/2;
+  const posA=midX-120, posB=midX+120;
+  const sizeA=18+mA*1.5, sizeB=18+mB*1.5;
 
-  // Object A (left side-ish)
-  const posA=midX-120;
-  const sizeA=18+mA*1.5;
-  drawObj(svg,posA,cy,sizeA,vAf,"#6888a8","A",mA);
+  // Object A
+  addCircle(svg,posA,cy-sizeA,sizeA,"#6888a8");
+  addText(svg,posA,cy-sizeA+5,"#08080c",13,"middle","A");
+  addText(svg,posA,cy-sizeA-sizeA-8,"#6888a8",10,"middle",mA+" kg");
+  addArrow(svg,posA,cy-sizeA,vAf,sizeA,"#6888a8");
 
-  // Object B (right side-ish)
-  const posB=midX+120;
-  const sizeB=18+mB*1.5;
-  drawObj(svg,posB,cy,sizeB,vBf,"#c45c5c","B",mB);
+  // Object B
+  addCircle(svg,posB,cy-sizeB,sizeB,"#c45c5c");
+  addText(svg,posB,cy-sizeB+5,"#08080c",13,"middle","B");
+  addText(svg,posB,cy-sizeB-sizeB-8,"#c45c5c",10,"middle",mB+" kg");
+  addArrow(svg,posB,cy-sizeB,vBf,sizeB,"#c45c5c");
 
-  // Observer indicator
-  addText(svg,midX,24,"#d4a843",11,"center","Observer: "+(vObs===0?"stationary (lab)":((vObs>0?"+":"")+vObs.toFixed(1)+" m/s")));
-
-  // Relative velocity arrow between objects
-  const arrY=cy-sizeA-30;
+  // Relative velocity
+  const arrY=Math.min(cy-sizeA,cy-sizeB)-35;
   addLine(svg,posA+sizeA+5,arrY,posB-sizeB-5,arrY,"#d4a843",1.5,"6,3");
-  addText(svg,midX,arrY-8,"#d4a843",10,"center","relative: "+Math.abs(vBf-vAf).toFixed(1)+" m/s (invariant)");
+  addText(svg,midX,arrY-8,"#d4a843",10,"middle","relative: "+Math.abs(vBf-vAf).toFixed(1)+" m/s (invariant)");
+
+  // Observer
+  addText(svg,midX,24,"#d4a843",11,"middle","Observer: "+(vObs===0?"stationary (lab)":((vObs>0?"+":"")+vObs.toFixed(1)+" m/s")));
 
   el.appendChild(svg);
-
-  function drawObj(svg,x,y,r,v,color,label,mass){
-    // Circle
-    const c=document.createElementNS(ns,"circle");
-    c.setAttribute("cx",x);c.setAttribute("cy",y-r);c.setAttribute("r",r);
-    c.setAttribute("fill",color);c.setAttribute("opacity","0.8");
-    svg.appendChild(c);
-
-    // Label
-    addText(svg,x,y-r+5,"#08080c",13,"center",label);
-
-    // Mass label
-    addText(svg,x,y-r-r-8,color,10,"center",mass+" kg");
-
-    // Velocity arrow
-    if(Math.abs(v)>0.3){
-      const arrLen=Math.min(Math.abs(v)*4,100);
-      const dir=v>0?1:-1;
-      const ax=x+dir*(r+4), ay=y-r;
-      addLine(svg,ax,ay,ax+dir*arrLen,ay,color,2.5);
-      // Arrowhead
-      addLine(svg,ax+dir*arrLen,ay,ax+dir*(arrLen-8),ay-5,color,2);
-      addLine(svg,ax+dir*arrLen,ay,ax+dir*(arrLen-8),ay+5,color,2);
-      addText(svg,ax+dir*(arrLen/2),ay-12,color,10,"center",(v>=0?"+":"")+v.toFixed(1)+" m/s");
-    } else {
-      addText(svg,x,y-r+r+20,color,10,"center","stationary");
-    }
-  }
-
-  function addLine(svg,x1,y1,x2,y2,stroke,sw,dash){
-    const l=document.createElementNS(ns,"line");
-    l.setAttribute("x1",x1);l.setAttribute("y1",y1);l.setAttribute("x2",x2);l.setAttribute("y2",y2);
-    l.setAttribute("stroke",stroke);l.setAttribute("stroke-width",sw);
-    if(dash)l.setAttribute("stroke-dasharray",dash);
-    svg.appendChild(l);
-  }
-  function addText(svg,x,y,fill,size,anchor,text){
-    const t=document.createElementNS(ns,"text");
-    t.setAttribute("x",x);t.setAttribute("y",y);t.setAttribute("fill",fill);
-    t.setAttribute("font-size",size);t.setAttribute("text-anchor",anchor);
-    t.setAttribute("font-family",F);t.textContent=text;
-    svg.appendChild(t);
-  }
 }
 
-// ── KE vs Observer Frame chart ──
 function drawKEChart(mA,vA,mB,vB,currentObs){
   const el=document.getElementById("keChart");
   el.innerHTML="";
   const W=760,H=260,pad={l:60,r:20,t:20,b:40};
   const pW=W-pad.l-pad.r,pH=H-pad.t-pad.b;
+  const svg=mkSVG(W,H);
 
-  const ns="http://www.w3.org/2000/svg";
-  const svg=document.createElementNS(ns,"svg");
-  svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
-
-  const bg=document.createElementNS(ns,"rect");
-  bg.setAttribute("width",W);bg.setAttribute("height",H);bg.setAttribute("fill","#08080c");bg.setAttribute("rx","4");
-  svg.appendChild(bg);
-
-  // Compute KE across observer velocities
   const vMin=-25,vMax=25;
   let keMax=0;
   const pts=[];
   for(let v=vMin;v<=vMax;v+=0.5){
-    const vAf=vA-v,vBf=vB-v;
-    const ke=0.5*mA*vAf*vAf+0.5*mB*vBf*vBf;
+    const ke=0.5*mA*(vA-v)*(vA-v)+0.5*mB*(vB-v)*(vB-v);
     if(ke>keMax)keMax=ke;
     pts.push({v,ke});
   }
-  keMax*=1.15;
-  if(keMax<10)keMax=10;
+  keMax*=1.15;if(keMax<10)keMax=10;
 
   function mx(v){return pad.l+((v-vMin)/(vMax-vMin))*pW}
   function my(ke){return pad.t+pH-(ke/keMax)*pH}
@@ -459,30 +877,13 @@ function drawKEChart(mA,vA,mB,vB,currentObs){
   const keStep=Math.pow(10,Math.floor(Math.log10(keMax/4)));
   for(let ke=0;ke<=keMax;ke+=keStep){
     const y=my(ke);
-    const l=document.createElementNS(ns,"line");
-    l.setAttribute("x1",pad.l);l.setAttribute("y1",y);l.setAttribute("x2",W-pad.r);l.setAttribute("y2",y);
-    l.setAttribute("stroke","#161620");l.setAttribute("stroke-width","0.5");
-    svg.appendChild(l);
-    const t=document.createElementNS(ns,"text");
-    t.setAttribute("x",pad.l-6);t.setAttribute("y",y+4);t.setAttribute("fill","#6a6458");
-    t.setAttribute("font-size","9");t.setAttribute("text-anchor","end");t.setAttribute("font-family",F);
-    t.textContent=ke>=1000?(ke/1000).toFixed(0)+"k":ke.toFixed(0);
-    svg.appendChild(t);
+    addLine(svg,pad.l,y,W-pad.r,y,"#161620",0.5);
+    addText(svg,pad.l-6,y+4,"#6a6458",9,"end",ke>=1000?(ke/1000).toFixed(0)+"k":ke.toFixed(0));
   }
   [vMin,vMin+10,0,vMax-10,vMax].forEach(v=>{
-    const t=document.createElementNS(ns,"text");
-    t.setAttribute("x",mx(v));t.setAttribute("y",H-8);t.setAttribute("fill","#6a6458");
-    t.setAttribute("font-size","9");t.setAttribute("text-anchor","middle");t.setAttribute("font-family",F);
-    t.textContent=(v>=0?"+":"")+v;
-    svg.appendChild(t);
+    addText(svg,mx(v),H-8,"#6a6458",9,"middle",(v>=0?"+":"")+v);
   });
-
-  // Axis label
-  const xl=document.createElementNS(ns,"text");
-  xl.setAttribute("x",pad.l+pW/2);xl.setAttribute("y",H-0);xl.setAttribute("fill","#6a6458");
-  xl.setAttribute("font-size","10");xl.setAttribute("text-anchor","middle");xl.setAttribute("font-family",F);
-  xl.textContent="Observer velocity (m/s)";
-  svg.appendChild(xl);
+  addText(svg,pad.l+pW/2,H-0,"#6a6458",10,"middle","Observer velocity (m/s)");
 
   // KE curve
   let d="";
@@ -493,98 +894,64 @@ function drawKEChart(mA,vA,mB,vB,currentObs){
   svg.appendChild(path);
 
   // Fill under
-  const fillD=d+` L ${mx(vMax)} ${my(0)} L ${mx(vMin)} ${my(0)} Z`;
   const fp=document.createElementNS(ns,"path");
-  fp.setAttribute("d",fillD);fp.setAttribute("fill","rgba(232,160,48,0.08)");
+  fp.setAttribute("d",d+` L ${mx(vMax)} ${my(0)} L ${mx(vMin)} ${my(0)} Z`);
+  fp.setAttribute("fill","rgba(232,160,48,0.08)");
   svg.appendChild(fp);
 
-  // Momentum line (total momentum is constant = mA*vA + mB*vB regardless of frame)
-  // But momentum's magnitude changes per frame; its CONSERVATION LAW is frame-independent
-  // Show the zero-KE point doesn't exist (parabola minimum at CM frame)
-
-  // CM frame marker
+  // CM marker
   const cmV=(mA*vA+mB*vB)/(mA+mB);
-  const cmKE=0.5*mA*(vA-cmV)*(vA-cmV)+0.5*mB*(vB-cmV)*(vB-cmV);
-  const cmLine=document.createElementNS(ns,"line");
-  cmLine.setAttribute("x1",mx(cmV));cmLine.setAttribute("y1",pad.t);
-  cmLine.setAttribute("x2",mx(cmV));cmLine.setAttribute("y2",pad.t+pH);
-  cmLine.setAttribute("stroke","#4a9e6e");cmLine.setAttribute("stroke-width","1");
-  cmLine.setAttribute("stroke-dasharray","4,3");cmLine.setAttribute("opacity","0.5");
-  svg.appendChild(cmLine);
-  const cmt=document.createElementNS(ns,"text");
-  cmt.setAttribute("x",mx(cmV)+4);cmt.setAttribute("y",pad.t+12);cmt.setAttribute("fill","#4a9e6e");
-  cmt.setAttribute("font-size","9");cmt.setAttribute("font-family",F);
-  cmt.textContent="CM frame (min KE)";
-  svg.appendChild(cmt);
+  addLine(svg,mx(cmV),pad.t,mx(cmV),pad.t+pH,"#4a9e6e",1,"4,3");
+  addText(svg,mx(cmV)+4,pad.t+12,"#4a9e6e",9,"start","CM frame (min KE)");
 
-  // Current observer marker
+  // Current observer
   const curKE=0.5*mA*(vA-currentObs)*(vA-currentObs)+0.5*mB*(vB-currentObs)*(vB-currentObs);
-  const dot=document.createElementNS(ns,"circle");
-  dot.setAttribute("cx",mx(currentObs));dot.setAttribute("cy",my(curKE));
-  dot.setAttribute("r","6");dot.setAttribute("fill","#d4a843");
-  dot.setAttribute("stroke","#08080c");dot.setAttribute("stroke-width","2");
-  svg.appendChild(dot);
-
-  const dl=document.createElementNS(ns,"line");
-  dl.setAttribute("x1",mx(currentObs));dl.setAttribute("y1",pad.t);
-  dl.setAttribute("x2",mx(currentObs));dl.setAttribute("y2",pad.t+pH);
-  dl.setAttribute("stroke","#d4a843");dl.setAttribute("stroke-width","1");
-  dl.setAttribute("stroke-dasharray","3,3");dl.setAttribute("opacity","0.4");
-  svg.appendChild(dl);
-
-  const dt=document.createElementNS(ns,"text");
-  dt.setAttribute("x",mx(currentObs));dt.setAttribute("y",my(curKE)-12);dt.setAttribute("fill","#d4a843");
-  dt.setAttribute("font-size","11");dt.setAttribute("text-anchor","middle");dt.setAttribute("font-family",F);
-  dt.textContent=curKE.toFixed(1)+" J";
-  svg.appendChild(dt);
+  addCircle(svg,mx(currentObs),my(curKE),6,"#d4a843","1");
+  addLine(svg,mx(currentObs),pad.t,mx(currentObs),pad.t+pH,"#d4a843",1,"3,3");
+  addText(svg,mx(currentObs),my(curKE)-12,"#d4a843",11,"middle",curKE.toFixed(1)+" J");
 
   el.appendChild(svg);
 }
 
-// Observer frame shortcuts
+// Observer shortcuts
 window.setObs=function(v){document.getElementById("obsVel").value=v;updateFrameLabels();updateFrameViz()};
 window.setObsA=function(){document.getElementById("obsVel").value=document.getElementById("velA").value;updateFrameLabels();updateFrameViz()};
 window.setObsB=function(){document.getElementById("obsVel").value=document.getElementById("velB").value;updateFrameLabels();updateFrameViz()};
 window.setObsCM=function(){
   const {mA,vA,mB,vB}=getFrameInputs();
-  const cm=(mA*vA+mB*vB)/(mA+mB);
-  document.getElementById("obsVel").value=cm;
+  document.getElementById("obsVel").value=(mA*vA+mB*vB)/(mA+mB);
   updateFrameLabels();updateFrameViz();
 };
 
-// ═══════════ SECTION II: ELASTIC COLLISION ═══════════
+// ═══════════ SECTION V: ELASTIC COLLISION ═══════════
+
+function solveElastic(m1,v1,m2,v2){
+  const v1f=((m1-m2)*v1+2*m2*v2)/(m1+m2);
+  const v2f=((m2-m1)*v2+2*m1*v1)/(m1+m2);
+  return {v1f,v2f};
+}
 
 function getCollisionInputs(){
-  const m1=parseFloat(document.getElementById("cMassA").value);
-  const v1=parseFloat(document.getElementById("cVelA").value);
-  const m2=parseFloat(document.getElementById("cMassB").value);
-  const v2=parseFloat(document.getElementById("cVelB").value);
-  return {m1,v1,m2,v2};
+  return {
+    m1:parseFloat(document.getElementById("cMassA").value),
+    v1:parseFloat(document.getElementById("cVelA").value),
+    m2:parseFloat(document.getElementById("cMassB").value),
+    v2:parseFloat(document.getElementById("cVelB").value)
+  };
 }
 
 function updateCollisionLabels(){
   const {m1,v1,m2,v2}=getCollisionInputs();
   document.getElementById("cMassAVal").textContent=m1+" kg";
-  document.getElementById("cVelAVal").textContent=(v1>=0?"+":"")+v1+" m/s "+(v1>=0?"→":"←");
+  document.getElementById("cVelAVal").textContent=velStr(v1);
   document.getElementById("cMassBVal").textContent=m2+" kg";
-  document.getElementById("cVelBVal").textContent=(v2>=0?"+":"")+v2+" m/s "+(v2>=0?"→":"←");
-}
-
-function solveElastic(m1,v1,m2,v2){
-  // Method 1: momentum + relative velocity
-  // m1*v1 + m2*v2 = m1*v1f + m2*v2f
-  // v2f - v1f = -(v2 - v1)
-  // Solve:
-  const v1f=((m1-m2)*v1+2*m2*v2)/(m1+m2);
-  const v2f=((m2-m1)*v2+2*m1*v1)/(m1+m2);
-  return {v1f,v2f};
+  document.getElementById("cVelBVal").textContent=velStr(v2);
 }
 
 function updateCollision(){
   const {m1,v1,m2,v2}=getCollisionInputs();
   const {v1f,v2f}=solveElastic(m1,v1,m2,v2);
 
-  // Before values
   const pBefore=m1*v1+m2*v2;
   const keBefore=0.5*m1*v1*v1+0.5*m2*v2*v2;
   const relBefore=v2-v1;
@@ -596,10 +963,8 @@ function updateCollision(){
     <div><span class="vl">Relative velocity: </span><span class="vn gold">${relBefore.toFixed(1)} m/s</span></div>
   `;
 
-  // Before viz
   drawCollisionScene("beforeViz",m1,v1,m2,v2);
 
-  // Method 1: Relative velocity
   document.getElementById("rvSteps").innerHTML=`
     <div class="eq-line"><span class="eq-label">Equation 1 (momentum):</span><br>
       ${m1}·v₁' + ${m2}·v₂' = ${pBefore.toFixed(1)}</div>
@@ -612,13 +977,11 @@ function updateCollision(){
     <div><span class="vl">v₂' = </span><span class="vn good">${v2f>=0?"+":""}${v2f.toFixed(4)} m/s</span></div>
   `;
 
-  // Method 2: Energy conservation
-  const keStr=keBefore.toFixed(1);
   document.getElementById("enSteps").innerHTML=`
     <div class="eq-line"><span class="eq-label">Equation 1 (momentum):</span><br>
       ${m1}·v₁' + ${m2}·v₂' = ${pBefore.toFixed(1)}</div>
     <div class="eq-line"><span class="eq-label">Equation 2 (energy conservation):</span><br>
-      ½·${m1}·v₁'² + ½·${m2}·v₂'² = ${keStr}</div>
+      ½·${m1}·v₁'² + ½·${m2}·v₂'² = ${keBefore.toFixed(1)}</div>
     <div class="eq-line" style="margin-top:6px"><span class="eq-label">One linear + one quadratic → two solutions.<br>Discard the trivial (pre-collision) solution:</span></div>
   `;
   document.getElementById("enResult").innerHTML=`
@@ -626,9 +989,7 @@ function updateCollision(){
     <div><span class="vl">v₂' = </span><span class="vn a">${v2f>=0?"+":""}${v2f.toFixed(4)} m/s</span></div>
   `;
 
-  // After values
   const pAfter=m1*v1f+m2*v2f;
-  const keAfter=0.5*m1*v1f*v1f+0.5*m2*v2f*v2f;
   const relAfter=v2f-v1f;
 
   document.getElementById("afterVals").innerHTML=`
@@ -642,11 +1003,10 @@ function updateCollision(){
 
   drawCollisionScene("afterViz",m1,v1f,m2,v2f);
 
-  // Commentary
   document.getElementById("collisionComment").textContent=
-    `Both methods give identical final velocities: v₁' = ${v1f.toFixed(4)} m/s, v₂' = ${v2f.toFixed(4)} m/s. `+
+    `Both methods give identical results: v₁' = ${v1f.toFixed(4)} m/s, v₂' = ${v2f.toFixed(4)} m/s. `+
     `The relative velocity condition (|${Math.abs(relBefore).toFixed(1)}| = |${Math.abs(relAfter).toFixed(1)}|) is the physical fact — directly observable, frame-independent, no squaring. `+
-    `The energy equation is algebraically derivable from momentum + relative velocity. It's a consequence, not a cause. `+
+    `The energy equation is algebraically derivable from momentum + relative velocity. It is a consequence, not a cause. `+
     `Every elastic collision can be fully solved without the concept of energy ever appearing.`;
 }
 
@@ -654,62 +1014,655 @@ function drawCollisionScene(elId,m1,v1,m2,v2){
   const el=document.getElementById(elId);
   el.innerHTML="";
   const W=720,H=80;
-  const ns="http://www.w3.org/2000/svg";
-  const svg=document.createElementNS(ns,"svg");
-  svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
-
-  const bg=document.createElementNS(ns,"rect");
-  bg.setAttribute("width",W);bg.setAttribute("height",H);bg.setAttribute("fill","#08080c");bg.setAttribute("rx","4");
-  svg.appendChild(bg);
+  const svg=mkSVG(W,H);
 
   const cy=H/2,r1=12+m1*1.2,r2=12+m2*1.2;
   const p1=W*0.3,p2=W*0.7;
 
-  // Object A
-  const c1=document.createElementNS(ns,"circle");
-  c1.setAttribute("cx",p1);c1.setAttribute("cy",cy);c1.setAttribute("r",r1);
-  c1.setAttribute("fill","#6888a8");c1.setAttribute("opacity","0.8");
-  svg.appendChild(c1);
-  addT(p1,cy+4,"A");
-
-  // Velocity arrow A
+  addCircle(svg,p1,cy,r1,"#6888a8");
+  addText(svg,p1,cy+4,"#e2ddd0",11,"middle","A");
   if(Math.abs(v1)>0.3){
     const dir=v1>0?1:-1;
     const len=Math.min(Math.abs(v1)*3,80);
-    const ax=p1+dir*(r1+4);
-    addL(ax,cy,ax+dir*len,cy,"#6888a8",2);
-    addT(ax+dir*len/2,cy-10,(v1>=0?"+":"")+v1.toFixed(1));
+    addLine(svg,p1+dir*(r1+4),cy,p1+dir*(r1+4+len),cy,"#6888a8",2);
+    addText(svg,p1+dir*(r1+4+len/2),cy-10,"#6888a8",10,"middle",(v1>=0?"+":"")+v1.toFixed(1));
   }
 
-  // Object B
-  const c2=document.createElementNS(ns,"circle");
-  c2.setAttribute("cx",p2);c2.setAttribute("cy",cy);c2.setAttribute("r",r2);
-  c2.setAttribute("fill","#c45c5c");c2.setAttribute("opacity","0.8");
-  svg.appendChild(c2);
-  addT(p2,cy+4,"B");
-
+  addCircle(svg,p2,cy,r2,"#c45c5c");
+  addText(svg,p2,cy+4,"#e2ddd0",11,"middle","B");
   if(Math.abs(v2)>0.3){
     const dir=v2>0?1:-1;
     const len=Math.min(Math.abs(v2)*3,80);
-    const ax=p2+dir*(r2+4);
-    addL(ax,cy,ax+dir*len,cy,"#c45c5c",2);
-    addT(ax+dir*len/2,cy-10,(v2>=0?"+":"")+v2.toFixed(1));
+    addLine(svg,p2+dir*(r2+4),cy,p2+dir*(r2+4+len),cy,"#c45c5c",2);
+    addText(svg,p2+dir*(r2+4+len/2),cy-10,"#c45c5c",10,"middle",(v2>=0?"+":"")+v2.toFixed(1));
   }
 
   el.appendChild(svg);
-
-  function addL(x1,y1,x2,y2,s,w){
-    const l=document.createElementNS(ns,"line");
-    l.setAttribute("x1",x1);l.setAttribute("y1",y1);l.setAttribute("x2",x2);l.setAttribute("y2",y2);
-    l.setAttribute("stroke",s);l.setAttribute("stroke-width",w);svg.appendChild(l);
-  }
-  function addT(x,y,text){
-    const t=document.createElementNS(ns,"text");
-    t.setAttribute("x",x);t.setAttribute("y",y);t.setAttribute("fill","#e2ddd0");
-    t.setAttribute("font-size","11");t.setAttribute("text-anchor","middle");t.setAttribute("font-family",F);
-    t.textContent=text;svg.appendChild(t);
-  }
 }
+
+// ═══════════ ANIMATIONS ═══════════
+
+// ── Animation helpers ──
+function clearSVG(el){
+  const svgs=el.querySelectorAll("svg");
+  svgs.forEach(s=>s.remove());
+}
+
+// ── Animation 1: Leibniz thought experiment ──
+let leibnizAF=null;
+function startLeibnizAnim(){
+  if(leibnizAF)cancelAnimationFrame(leibnizAF);
+  const el=document.getElementById("leibnizAnim");
+  const phaseEl=document.getElementById("leibnizPhaseText");
+  const W=760,H=320;
+  let t=0;
+  const dur=12000; // 12 seconds total
+
+  // Phase timing (ms): drop 0-2500, land+show_vis_viva 2500-4500, slide_to_block 4500-7500, collision_result 7500-12000
+  function frame(ts){
+    if(!t)t=ts;
+    const elapsed=ts-t;
+    if(elapsed>dur){phaseEl.textContent="Click to replay";return;}
+
+    clearSVG(el);
+    const svg=mkSVG(W,H);
+
+    // Ground
+    addLine(svg,20,H-30,W-20,H-30,"#1c1c2c",1);
+    const gy=H-30;
+
+    // Two drop zones: left (1kg from 4m), right (4kg from 1m)
+    const leftX=160,rightX=400,blockX=600;
+    const blockW=36,blockH=44;
+
+    // Heights scaled: 4m→120px, 1m→30px
+    const h1=120,h2=30;
+    const r1=14,r2=24; // radii proportional to mass
+
+    // Phase calculations
+    let phase,phaseT;
+    if(elapsed<2500){phase="drop";phaseT=elapsed/2500;}
+    else if(elapsed<4500){phase="landed";phaseT=(elapsed-2500)/2000;}
+    else if(elapsed<7500){phase="slide";phaseT=(elapsed-4500)/3000;}
+    else{phase="result";phaseT=(elapsed-7500)/4500;}
+
+    // Drop heights (ease-in quadratic)
+    let y1,y2;
+    if(phase==="drop"){
+      const prog=phaseT*phaseT; // accelerating
+      y1=gy-h1+(h1-r1)*prog;
+      y2=gy-h2+(h2-r2)*prog;
+      phaseEl.textContent="1 kg drops from 4 m — 4 kg drops from 1 m";
+    } else {
+      y1=gy-r1;
+      y2=gy-r2;
+    }
+
+    if(phase==="landed"){
+      phaseEl.innerHTML="Both land. mv² = 4 for each. Equal <em style=\"color:#d4a843\">vis viva</em>.";
+    }
+
+    // Draw drop height indicators
+    if(phase==="drop"){
+      addLine(svg,leftX-30,gy,leftX-30,gy-h1,"#6a6458",1,"3,3");
+      addText(svg,leftX-38,(gy+gy-h1)/2,"#6a6458",9,"end","4 m");
+      addLine(svg,rightX-30,gy,rightX-30,gy-h2,"#6a6458",1,"3,3");
+      addText(svg,rightX-38,(gy+gy-h2)/2,"#6a6458",9,"end","1 m");
+    }
+
+    // Sliding phase — balls move toward block
+    let bx1=leftX,bx2=rightX;
+    if(phase==="slide"||phase==="result"){
+      const slideEase=Math.min(phaseT,1);
+      if(phase==="slide"){
+        // Stop at contact: block left face is at blockX - blockW/2
+        const contactX=blockX-blockW/2;
+        bx1=leftX+(contactX-r1-leftX)*slideEase;
+        bx2=rightX+(contactX-r2-rightX)*slideEase;
+        phaseEl.textContent="Both slide toward a 2 kg block...";
+      }
+    }
+
+    // The 2 kg block
+    let blockPos=blockX;
+    let ball1bounced=false;
+
+    if(phase==="result"){
+      // 1kg ball bounces back
+      // 4kg ball pushes block forward, staying in contact
+      ball1bounced=true;
+      const prog=Math.min(phaseT,1);
+      bx1=(blockX-r1-blockW/2)-80*prog; // bounces back from contact point
+
+      // Block gets pushed forward by 4kg ball
+      const pushDist=80*prog;
+      blockPos=blockX+pushDist;
+
+      // 4kg ball stays in contact with block's left face
+      bx2=blockPos-blockW/2-r2;
+
+      if(phaseT<0.5){
+        phaseEl.innerHTML="1 kg <em style=\"color:#c45c5c\">bounces off</em>. 4 kg <em style=\"color:#4a9e6e\">pushes through</em>.";
+      } else {
+        phaseEl.innerHTML="Equal vis viva. Completely different physical outcome.";
+      }
+    }
+
+    // Draw labels
+    addText(svg,leftX,20,"#6888a8",11,"middle","1 kg body");
+    addText(svg,leftX,34,"#6a6458",9,"middle","v² = 4, mv² = 4");
+    addText(svg,rightX,20,"#c45c5c",11,"middle","4 kg body");
+    addText(svg,rightX,34,"#6a6458",9,"middle","v² = 1, mv² = 4");
+
+    // Draw balls
+    addCircle(svg,phase==="result"||phase==="slide"?bx1:leftX,y1,r1,"#6888a8");
+    addText(svg,phase==="result"||phase==="slide"?bx1:leftX,y1+4,"#08080c",10,"middle","1");
+    addCircle(svg,phase==="result"||phase==="slide"?bx2:rightX,y2,r2,"#c45c5c");
+    addText(svg,phase==="result"||phase==="slide"?bx2:rightX,y2+5,"#08080c",12,"middle","4");
+
+    // Draw block(s) — show in slide and result phases
+    if(phase==="slide"||phase==="result"){
+      // Block for ball 1 scenario
+      const br1=document.createElementNS(ns,"rect");
+      br1.setAttribute("x",blockX-blockW/2);br1.setAttribute("y",gy-blockH);
+      br1.setAttribute("width",blockW);br1.setAttribute("height",blockH);
+      br1.setAttribute("fill","#3a3a4a");br1.setAttribute("rx","3");
+      svg.appendChild(br1);
+      addText(svg,blockX,gy-blockH/2+4,"#8a8a9a",10,"middle","2kg");
+
+      if(phase==="result"){
+        // Show block being pushed by ball 2 (at new position)
+        const br2=document.createElementNS(ns,"rect");
+        br2.setAttribute("x",blockPos-blockW/2);br2.setAttribute("y",gy-blockH);
+        br2.setAttribute("width",blockW);br2.setAttribute("height",blockH);
+        br2.setAttribute("fill","#3a5a3a");br2.setAttribute("rx","3");
+        br2.setAttribute("stroke","#4a9e6e");br2.setAttribute("stroke-width","1");
+        svg.appendChild(br2);
+        addText(svg,blockPos,gy-blockH/2+4,"#8a8a9a",10,"middle","2kg");
+
+        // Bounce arrow for ball 1
+        if(phaseT<0.8){
+          addText(svg,bx1-10,y1-22,"#c45c5c",10,"middle","← bounced");
+        }
+        // Push arrow for ball 2
+        if(phaseT<0.8){
+          addText(svg,blockPos+blockW/2+8,gy-blockH/2,"#4a9e6e",10,"start","pushed →");
+        }
+      }
+    }
+
+    // Vis viva badges during landed phase
+    if(phase==="landed"||phase==="slide"){
+      const badge1=document.createElementNS(ns,"rect");
+      badge1.setAttribute("x",leftX-36);badge1.setAttribute("y",gy-r1-38);
+      badge1.setAttribute("width",72);badge1.setAttribute("height",20);
+      badge1.setAttribute("fill","rgba(232,160,48,0.2)");badge1.setAttribute("rx","3");
+      badge1.setAttribute("stroke","rgba(232,160,48,0.4)");badge1.setAttribute("stroke-width","1");
+      svg.appendChild(badge1);
+      addText(svg,leftX,gy-r1-24,"#e8a030",10,"middle","mv² = 4");
+
+      const badge2=document.createElementNS(ns,"rect");
+      badge2.setAttribute("x",rightX-36);badge2.setAttribute("y",gy-r2-38);
+      badge2.setAttribute("width",72);badge2.setAttribute("height",20);
+      badge2.setAttribute("fill","rgba(232,160,48,0.2)");badge2.setAttribute("rx","3");
+      badge2.setAttribute("stroke","rgba(232,160,48,0.4)");badge2.setAttribute("stroke-width","1");
+      svg.appendChild(badge2);
+      addText(svg,rightX,gy-r2-24,"#e8a030",10,"middle","mv² = 4");
+    }
+
+    el.insertBefore(svg,el.firstChild);
+    leibnizAF=requestAnimationFrame(frame);
+  }
+  t=0;
+  leibnizAF=requestAnimationFrame(frame);
+}
+document.getElementById("leibnizAnim").addEventListener("click",startLeibnizAnim);
+window.startLeibnizAnim=startLeibnizAnim;
+
+// ── Animation 2: Observer split-screen ──
+let observerAF=null;
+function startObserverAnim(){
+  if(observerAF)cancelAnimationFrame(observerAF);
+  const el=document.getElementById("observerAnim");
+  const phaseEl=document.getElementById("observerPhaseText");
+  const W=760,H=260;
+  let t=0;
+  const dur=10000;
+
+  function frame(ts){
+    if(!t)t=ts;
+    const elapsed=ts-t;
+    if(elapsed>dur){phaseEl.textContent="Click to replay";return;}
+
+    clearSVG(el);
+    const svg=mkSVG(W,H);
+
+    const midX=W/2;
+    const panelW=midX-10;
+    const cy=H/2+20;
+
+    // Divider
+    addLine(svg,midX,10,midX,H-10,"#2c2c3c",1.5);
+
+    // Panel labels
+    addText(svg,panelW/2,22,"#6888a8",11,"middle","Observer rides on A");
+    addText(svg,midX+panelW/2,22,"#c45c5c",11,"middle","Observer rides on B");
+
+    // Physics: A=3kg at +8, B=5kg at -4 in lab
+    // Relative velocity = 12 m/s (constant)
+    const mA=3,mB=5,labVA=8,labVB=-4;
+    const relV=Math.abs(labVB-labVA); // 12
+
+    // Frame A: vA'=0, vB'=-12
+    // Frame B: vA'=12, vB'=0
+    const keFrameA=0.5*mA*0+0.5*mB*12*12; // = 360
+    const keFrameB=0.5*mA*12*12+0.5*mB*0; // = 216
+
+    // Animation: balls approach, showing motion
+    const progress=Math.min(elapsed/dur,1);
+    const approach=Math.min(progress*1.5,1); // approach completes at 67% of duration
+
+    // Left panel: A's frame — A stationary, B moves left
+    const lA_x=panelW*0.35;
+    const lB_x=panelW*0.8-(panelW*0.45)*approach;
+    const rA=14,rB=20;
+
+    // A in left panel (stationary)
+    addCircle(svg,lA_x,cy,rA,"#6888a8");
+    addText(svg,lA_x,cy+4,"#08080c",10,"middle","A");
+    addText(svg,lA_x,cy+rA+16,"#6888a8",9,"middle","v = 0");
+    addText(svg,lA_x,cy+rA+28,"#6888a8",9,"middle","KE = 0");
+
+    // B in left panel (moving)
+    addCircle(svg,lB_x,cy,rB,"#c45c5c");
+    addText(svg,lB_x,cy+5,"#08080c",10,"middle","B");
+    if(approach<1){
+      addArrow(svg,lB_x,cy,-12,rB,"#c45c5c",cy-16);
+    }
+    addText(svg,lB_x,cy+rB+16,"#c45c5c",9,"middle","v = −12");
+    addText(svg,lB_x,cy+rB+28,"#c45c5c",9,"middle","KE = 360 J");
+
+    // KE total left
+    addText(svg,panelW/2,cy-70,"#e8a030",14,"middle","Total KE = 360 J");
+    addText(svg,panelW/2,cy-54,"#e8a030",9,"middle","\"B has all the energy\"");
+
+    // Right panel: B's frame — B stationary, A moves right
+    const rA_x=midX+panelW*0.2+(panelW*0.45)*approach;
+    const rB_x=midX+panelW*0.65;
+
+    // A in right panel (moving)
+    addCircle(svg,rA_x,cy,rA,"#6888a8");
+    addText(svg,rA_x,cy+4,"#08080c",10,"middle","A");
+    if(approach<1){
+      addArrow(svg,rA_x,cy,12,rA,"#6888a8",cy-16);
+    }
+    addText(svg,rA_x,cy+rA+16,"#6888a8",9,"middle","v = +12");
+    addText(svg,rA_x,cy+rA+28,"#6888a8",9,"middle","KE = 216 J");
+
+    // B in right panel (stationary)
+    addCircle(svg,rB_x,cy,rB,"#c45c5c");
+    addText(svg,rB_x,cy+5,"#08080c",10,"middle","B");
+    addText(svg,rB_x,cy+rB+16,"#c45c5c",9,"middle","v = 0");
+    addText(svg,rB_x,cy+rB+28,"#c45c5c",9,"middle","KE = 0");
+
+    // KE total right
+    addText(svg,midX+panelW/2,cy-70,"#e8a030",14,"middle","Total KE = 216 J");
+    addText(svg,midX+panelW/2,cy-54,"#e8a030",9,"middle","\"A has all the energy\"");
+
+    // Relative velocity — same in both panels
+    const rvY=H-20;
+    addText(svg,panelW/2,rvY,"#4a9e6e",11,"middle","Relative velocity = 12 m/s");
+    addText(svg,midX+panelW/2,rvY,"#4a9e6e",11,"middle","Relative velocity = 12 m/s");
+
+    // Phase text
+    if(elapsed<3000){
+      phaseEl.textContent="Same two objects. Same approach. Two observers.";
+    } else if(elapsed<6000){
+      phaseEl.innerHTML="360 J on the left. 216 J on the right. <em style='color:var(--warn)'>Which is the real energy?</em>";
+    } else if(elapsed<8500){
+      phaseEl.innerHTML="Neither. The energy depends on who's watching. Only the <em style='color:#4a9e6e'>relative velocity</em> is real.";
+    } else {
+      phaseEl.innerHTML="12 m/s. Same in both frames. Same for every observer. <em style='color:#4a9e6e'>The physical fact.</em>";
+    }
+
+    el.insertBefore(svg,el.firstChild);
+    observerAF=requestAnimationFrame(frame);
+  }
+  t=0;
+  observerAF=requestAnimationFrame(frame);
+}
+document.getElementById("observerAnim").addEventListener("click",startObserverAnim);
+window.startObserverAnim=startObserverAnim;
+
+// ── Animation 3: Earthquake sway ──
+let quakeAF=null;
+function startQuakeAnim(){
+  if(quakeAF)cancelAnimationFrame(quakeAF);
+  const el=document.getElementById("quakeAnim");
+  const phaseEl=document.getElementById("quakePhaseText");
+  const W=760,H=340;
+  let t=0;
+  const dur=22000;
+
+  function frame(ts){
+    if(!t)t=ts;
+    const elapsed=ts-t;
+    if(elapsed>dur){phaseEl.textContent="Click to replay";return;}
+
+    clearSVG(el);
+    const svg=mkSVG(W,H);
+
+    const gy=H-40; // ground level
+    const midX=W/2;
+
+    // Phase: still 0-3000, shaking 3000-15000, still+message 15000-22000
+    let shakeOffset=0;
+    let shaking=false;
+    if(elapsed>=3000&&elapsed<15000){
+      shaking=true;
+      const st=(elapsed-3000)/12000;
+      const freq=2.5;
+      const amp=12*(1-Math.pow(st-0.3,2)*1.5);
+      shakeOffset=amp*Math.sin(elapsed*freq*2*Math.PI/1000);
+    }
+
+    // Ground with offset
+    const gx=shakeOffset;
+
+    // Draw ground
+    addLine(svg,20+gx,gy,W-20+gx,gy,"#3a3a4a",2);
+    // Ground hatching
+    for(let x=30;x<W-20;x+=20){
+      addLine(svg,x+gx,gy,x-6+gx,gy+10,"#2a2a3a",1);
+    }
+
+    // Building — reinforced concrete structure
+    const bx=midX+gx;
+    const bw=100,bh=160;
+    const by=gy-bh;
+
+    // Building base follows ground
+    // Building top sways slightly more (amplified by height, ~1.3x)
+    const topOffset=shakeOffset*1.3;
+    const topX=midX+topOffset;
+
+    // Building walls (slightly parallelogram during shake)
+    const bl=bx-bw/2, br_=bx+bw/2;
+    const tl=topX-bw/2, tr=topX+bw/2;
+
+    // Fill
+    const bldg=document.createElementNS(ns,"path");
+    bldg.setAttribute("d",`M${bl} ${gy} L${tl} ${by} L${tr} ${by} L${br_} ${gy} Z`);
+    bldg.setAttribute("fill","#2a2a3a");bldg.setAttribute("stroke","#4a4a5a");bldg.setAttribute("stroke-width","1.5");
+    svg.appendChild(bldg);
+
+    // Floors
+    for(let i=1;i<5;i++){
+      const fy=gy-bh*i/5;
+      const frac=i/5;
+      const floorOffset=shakeOffset+(topOffset-shakeOffset)*frac;
+      const flx=midX+floorOffset-bw/2;
+      const frx=midX+floorOffset+bw/2;
+      addLine(svg,flx,fy,frx,fy,"#4a4a5a",1);
+    }
+
+    // Windows
+    for(let i=1;i<5;i++){
+      for(let j=-1;j<=1;j+=2){
+        const fy=gy-bh*i/5-bh/10;
+        const frac=(i-0.5)/5;
+        const wOffset=shakeOffset+(topOffset-shakeOffset)*frac;
+        const wx=midX+wOffset+j*22;
+        const win=document.createElementNS(ns,"rect");
+        win.setAttribute("x",wx-8);win.setAttribute("y",fy-10);
+        win.setAttribute("width",16);win.setAttribute("height",18);
+        win.setAttribute("fill","rgba(104,136,168,0.2)");win.setAttribute("rx","1");
+        svg.appendChild(win);
+      }
+    }
+
+    // Roof
+    addLine(svg,tl-5,by,tr+5,by,"#5a5a6a",2);
+
+    // Energy label — big scary number floating above
+    const energyText="1.9 × 10¹⁷ Joules";
+    const energyAlpha=shaking?0.9:((elapsed>15000)?Math.max(0.9-(elapsed-15000)/3000,0.3):0.3);
+
+    // Energy box
+    const ebox=document.createElementNS(ns,"rect");
+    ebox.setAttribute("x",midX-130);ebox.setAttribute("y",15);
+    ebox.setAttribute("width",260);ebox.setAttribute("height",40);
+    ebox.setAttribute("fill","rgba(232,160,48,0.15)");ebox.setAttribute("rx","6");
+    ebox.setAttribute("stroke","rgba(232,160,48,"+energyAlpha*0.5+")");ebox.setAttribute("stroke-width","1");
+    svg.appendChild(ebox);
+    addText(svg,midX,30,"#e8a030",9,"middle","CLAIMED SEISMIC ENERGY");
+
+    const et=document.createElementNS(ns,"text");
+    et.setAttribute("x",midX);et.setAttribute("y",48);et.setAttribute("fill","#e8a030");
+    et.setAttribute("font-size","15");et.setAttribute("text-anchor","middle");
+    et.setAttribute("font-family",F);et.setAttribute("opacity",energyAlpha);
+    et.textContent=energyText;
+    svg.appendChild(et);
+
+    // Ground velocity indicator
+    if(shaking){
+      const vel=Math.abs(shakeOffset)*0.08;
+      const velText="Ground velocity: ~1 m/s";
+      addText(svg,midX,gy+24,"#6888a8",11,"middle",velText);
+      addText(svg,midX,gy+38,"#6a6458",9,"middle","Walking speed");
+    }
+
+    // Phase text — each caption stays ~3.5-4 seconds
+    if(elapsed<3000){
+      phaseEl.textContent="Magnitude 9.1 — The ground is about to move.";
+    } else if(elapsed<7000){
+      phaseEl.textContent="The ground sways at roughly 1 m/s. Walking speed.";
+    } else if(elapsed<11000){
+      phaseEl.innerHTML="The building stands. The \"energy\" number says 10¹⁷ Joules. <em style='color:var(--warn)'>The ground says 1 m/s.</em>";
+    } else if(elapsed<15000){
+      phaseEl.innerHTML="Concrete tensile strength: 3 MPa. Inertial stress from shaking: <em style='color:#4a9e6e'>~0.2 MPa</em>. An order of magnitude below failure.";
+    } else if(elapsed<18500){
+      phaseEl.innerHTML="The energy is ½ρv² integrated over hundreds of km³ of rock. It doesn't describe <em style='color:var(--accent)'>this</em> building.";
+    } else {
+      phaseEl.innerHTML="F = ma at a point tells the truth. The squaring and integrating tell a story.";
+    }
+
+    // "Still standing" label on building
+    if(elapsed>12000){
+      const standAlpha=Math.min((elapsed-12000)/1500,1);
+      const st=document.createElementNS(ns,"text");
+      st.setAttribute("x",topX);st.setAttribute("y",by-12);st.setAttribute("fill","#4a9e6e");
+      st.setAttribute("font-size","12");st.setAttribute("text-anchor","middle");
+      st.setAttribute("font-family",F);st.setAttribute("opacity",standAlpha);
+      st.textContent="Still standing";
+      svg.appendChild(st);
+    }
+
+    el.insertBefore(svg,el.firstChild);
+    quakeAF=requestAnimationFrame(frame);
+  }
+  t=0;
+  quakeAF=requestAnimationFrame(frame);
+}
+document.getElementById("quakeAnim").addEventListener("click",startQuakeAnim);
+window.startQuakeAnim=startQuakeAnim;
+
+// ═══════════ SECTION VII: EARTHQUAKE ═══════════
+
+function updateEarthquake(){
+  const M=parseFloat(document.getElementById("eqMag").value);
+  const wallH=parseFloat(document.getElementById("eqWallH").value);
+
+  document.getElementById("eqMagVal").textContent=M.toFixed(1);
+  document.getElementById("eqWallHVal").textContent=wallH.toFixed(1)+" m";
+
+  // Energy from Gutenberg-Richter: log E = 1.5M + 4.8
+  const logE=1.5*M+4.8;
+  const E=Math.pow(10,logE);
+
+  // Format energy
+  let eStr;
+  if(E<1e6) eStr=E.toFixed(0)+" J";
+  else if(E<1e9) eStr=(E/1e6).toFixed(1)+" MJ";
+  else if(E<1e12) eStr=(E/1e9).toFixed(1)+" GJ";
+  else if(E<1e15) eStr=(E/1e12).toFixed(1)+" TJ";
+  else if(E<1e18) eStr=(E/1e15).toFixed(1)+" PJ";
+  else eStr=(E/1e18).toFixed(1)+" EJ";
+  document.getElementById("eqEnergy").textContent=eStr;
+
+  // Approximate PGA (near-fault)
+  // Based on research: PGA weakly dependent on magnitude
+  // Rough empirical model: PGA ~ 0.1g at M5, ~0.5g at M7, ~1-3g at M9
+  // Using simplified: log10(PGA_g) ≈ 0.35*M - 2.5 (capped at ~3g)
+  // This gives M5→0.1g, M6→0.22g, M7→0.5g, M8→1.1g, M9→2.5g
+  let pgaG;
+  if(M<3){pgaG=0.001*Math.pow(10,0.35*(M-1));}
+  else{pgaG=Math.pow(10,0.35*M-2.5);}
+  if(pgaG>3)pgaG=3;
+  const pgaMs2=pgaG*9.81;
+
+  // Approximate PGV (near-fault)
+  // Research: max plausible PGV ~ 1.7 m/s
+  // Rough: PGV scales weakly, ~0.01 m/s at M3, ~0.1 at M5, ~0.5 at M7, ~1.0 at M9
+  // log10(PGV) ≈ 0.3*M - 2.3 (capped at 1.7)
+  let pgv;
+  if(M<2){pgv=0.001;}
+  else{pgv=Math.pow(10,0.3*M-2.3);}
+  if(pgv>1.7)pgv=1.7;
+
+  document.getElementById("eqPGA").textContent=pgaG.toFixed(2)+"g ("+pgaMs2.toFixed(1)+" m/s²)";
+  document.getElementById("eqPGV").textContent=pgv.toFixed(3)+" m/s"+(pgv>0.27?" ("+(pgv*3.6).toFixed(1)+" km/h)":"");
+
+  // Inertial stress on concrete wall: σ = ρ × a × h
+  const rho=2400; // kg/m³
+  const stress=rho*pgaMs2*wallH; // Pa
+  const stressMPa=stress/1e6;
+
+  document.getElementById("eqStress").textContent=stressMPa.toFixed(3)+" MPa";
+
+  // Draw comparison bar chart
+  drawEqChart(M,E,pgv,pgaG,stressMPa);
+
+  // Commentary
+  const tensileStrength=3; // MPa typical
+  const ratio=stressMPa/tensileStrength;
+  const energyRatioM1=Math.pow(10,1.5*(M-1));
+
+  let comment=`At magnitude ${M.toFixed(1)}, the Gutenberg-Richter formula gives ${eStr} of "energy" — ${energyRatioM1>1000?(energyRatioM1).toExponential(1):energyRatioM1.toFixed(0)} times more than a magnitude 1. `;
+
+  if(pgv<0.01){
+    comment+=`The estimated peak ground velocity is ${(pgv*1000).toFixed(1)} mm/s — imperceptible. `;
+  } else if(pgv<0.1){
+    comment+=`The estimated peak ground velocity is ${(pgv*100).toFixed(1)} cm/s — noticeable but gentle. `;
+  } else if(pgv<0.5){
+    comment+=`The estimated peak ground velocity is ${(pgv*100).toFixed(0)} cm/s — strong shaking but well below running speed. `;
+  } else {
+    comment+=`The estimated peak ground velocity is ${pgv.toFixed(2)} m/s — about ${(pgv*3.6).toFixed(1)} km/h, roughly walking speed. `;
+  }
+
+  comment+=`The inertial stress on a ${wallH.toFixed(1)}m concrete wall is ${stressMPa.toFixed(3)} MPa — `;
+  if(ratio<0.1){
+    comment+=`less than ${(ratio*100).toFixed(0)}% of concrete's tensile strength (≈3 MPa). The raw shaking force is nowhere close to breaking the material.`;
+  } else if(ratio<0.5){
+    comment+=`about ${(ratio*100).toFixed(0)}% of concrete's tensile strength (≈3 MPa). Significant but still below failure. Buildings that collapse at this magnitude fail from resonance, joint weakness, or foundation problems — not raw force exceeding material strength.`;
+  } else if(ratio<1){
+    comment+=`about ${(ratio*100).toFixed(0)}% of concrete's tensile strength (≈3 MPa). Approaching the threshold, but remember: this is the most extreme near-fault estimate. Most structures experience far less. Actual failures come from resonance amplification and connection weakness.`;
+  } else {
+    comment+=`approximately ${ratio.toFixed(1)}× concrete's tensile strength (≈3 MPa). At this extreme, raw inertial force alone could crack unreinforced concrete — but reinforced concrete with steel survives because steel carries the tensile load. Even at the most powerful earthquakes ever recorded, reinforced concrete does not turn to dust.`;
+  }
+
+  document.getElementById("eqComment").textContent=comment;
+}
+
+function drawEqChart(M,E,pgv,pgaG,stressMPa){
+  const el=document.getElementById("eqBarChart");
+  el.innerHTML="";
+  const W=760,H=280,pad={l:160,r:40,t:20,b:20};
+  const pW=W-pad.l-pad.r,pH=H-pad.t-pad.b;
+  const svg=mkSVG(W,H);
+
+  const tensile=3; // MPa
+  const compressive=30; // MPa
+
+  // Bars: stress vs tensile vs compressive
+  const bars=[
+    {label:"Inertial stress on wall",val:stressMPa,max:compressive,color:"#e8a030"},
+    {label:"Concrete tensile strength",val:tensile,max:compressive,color:"#4a9e6e"},
+    {label:"Concrete compressive str.",val:compressive,max:compressive,color:"#6888a8"},
+  ];
+
+  const barH=36, gap=24;
+  const startY=pad.t+30;
+
+  // Title
+  addText(svg,pad.l,pad.t+14,"#6a6458",10,"start","STRESS COMPARISON — M"+M.toFixed(1)+" earthquake vs. concrete strength");
+
+  bars.forEach((b,i)=>{
+    const y=startY+i*(barH+gap);
+    const barW=Math.max((b.val/b.max)*pW,2);
+
+    // Label
+    addText(svg,pad.l-8,y+barH/2+4,b.color,11,"end",b.label);
+
+    // Bar background
+    const bgr=document.createElementNS(ns,"rect");
+    bgr.setAttribute("x",pad.l);bgr.setAttribute("y",y);
+    bgr.setAttribute("width",pW);bgr.setAttribute("height",barH);
+    bgr.setAttribute("fill","#101018");bgr.setAttribute("rx","4");
+    svg.appendChild(bgr);
+
+    // Bar fill
+    const br=document.createElementNS(ns,"rect");
+    br.setAttribute("x",pad.l);br.setAttribute("y",y);
+    br.setAttribute("width",Math.min(barW,pW));br.setAttribute("height",barH);
+    br.setAttribute("fill",b.color);br.setAttribute("opacity","0.7");br.setAttribute("rx","4");
+    svg.appendChild(br);
+
+    // Value label
+    const valX=pad.l+Math.min(barW,pW)+8;
+    addText(svg,valX,y+barH/2+4,"#e2ddd0",12,"start",b.val.toFixed(b.val<1?3:1)+" MPa");
+  });
+
+  // Energy vs velocity comparison at bottom
+  const bottomY=startY+3*(barH+gap)+10;
+  addText(svg,pad.l,bottomY,"#6a6458",10,"start","THE GAP: \"energy\" scales by trillions — ground velocity barely changes");
+
+  // Show energy ratio vs velocity ratio between M5 and current
+  const refM=5;
+  const energyRatio=Math.pow(10,1.5*(M-refM));
+  const refPgv=Math.pow(10,0.3*refM-2.3);
+  const velRatio=pgv/Math.max(refPgv,0.001);
+
+  const bY=bottomY+16;
+  // Energy ratio bar
+  const eBarW=Math.min(Math.log10(Math.max(energyRatio,1))/8*pW,pW);
+  addText(svg,pad.l-8,bY+14,"#e8a030",10,"end","Energy ratio");
+  const eb=document.createElementNS(ns,"rect");
+  eb.setAttribute("x",pad.l);eb.setAttribute("y",bY);
+  eb.setAttribute("width",Math.max(eBarW,2));eb.setAttribute("height",22);
+  eb.setAttribute("fill","#e8a030");eb.setAttribute("opacity","0.5");eb.setAttribute("rx","3");
+  svg.appendChild(eb);
+  addText(svg,pad.l+Math.max(eBarW,2)+8,bY+16,"#e8a030",11,"start",
+    energyRatio>=1000?energyRatio.toExponential(1)+"×":energyRatio.toFixed(1)+"×"+" vs M"+refM);
+
+  // Velocity ratio bar
+  const vBarW=Math.min(Math.log10(Math.max(velRatio,1))/8*pW,pW);
+  const vY=bY+34;
+  addText(svg,pad.l-8,vY+14,"#6888a8",10,"end","Velocity ratio");
+  const vb=document.createElementNS(ns,"rect");
+  vb.setAttribute("x",pad.l);vb.setAttribute("y",vY);
+  vb.setAttribute("width",Math.max(vBarW,4));vb.setAttribute("height",22);
+  vb.setAttribute("fill","#6888a8");vb.setAttribute("opacity","0.7");vb.setAttribute("rx","3");
+  svg.appendChild(vb);
+  addText(svg,pad.l+Math.max(vBarW,4)+8,vY+16,"#6888a8",11,"start",
+    velRatio.toFixed(1)+"× vs M"+refM);
+
+  el.appendChild(svg);
+}
+
+["eqMag","eqWallH"].forEach(id=>{
+  document.getElementById(id).addEventListener("input",updateEarthquake);
+});
 
 // ═══════════ EVENT LISTENERS ═══════════
 ["massA","velA","massB","velB","obsVel"].forEach(id=>{
@@ -720,10 +1673,33 @@ function drawCollisionScene(elId,m1,v1,m2,v2){
 });
 
 // ═══════════ INIT ═══════════
+updateKin();
+updateSpace();
 updateFrameLabels();
 updateFrameViz();
 updateCollisionLabels();
 updateCollision();
+updateEarthquake();
+
+// Auto-play animations when they scroll into view
+if('IntersectionObserver' in window){
+  const animObserver=new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        const id=entry.target.id;
+        if(id==="leibnizAnim"&&!entry.target.dataset.played){entry.target.dataset.played="1";startLeibnizAnim();}
+        if(id==="observerAnim"&&!entry.target.dataset.played){entry.target.dataset.played="1";startObserverAnim();}
+        if(id==="quakeAnim"&&!entry.target.dataset.played){entry.target.dataset.played="1";startQuakeAnim();}
+      }
+    });
+  },{threshold:0.3});
+  animObserver.observe(document.getElementById("leibnizAnim"));
+  animObserver.observe(document.getElementById("observerAnim"));
+  animObserver.observe(document.getElementById("quakeAnim"));
+} else {
+  // Fallback: play first one immediately
+  setTimeout(startLeibnizAnim,500);
+}
 
 })();
 </script>
