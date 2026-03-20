@@ -1,0 +1,2239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculus Is Division By Zero</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap');
+
+  :root {
+    --bg: #0a0a0c;
+    --bg-section: #0e0e12;
+    --bg-card: #14141a;
+    --text: #e8e4dc;
+    --text-dim: #8a8680;
+    --text-bright: #ffffff;
+    --accent: #c43e3e;
+    --accent-glow: rgba(196, 62, 62, 0.3);
+    --gold: #c9a84c;
+    --gold-dim: rgba(201, 168, 76, 0.15);
+    --blue: #4a7fb5;
+    --blue-dim: rgba(74, 127, 181, 0.15);
+    --green: #5a9e6f;
+    --border: #2a2a32;
+    --serif: 'Source Serif 4', Georgia, serif;
+    --display: 'Playfair Display', Georgia, serif;
+    --mono: 'JetBrains Mono', 'Courier New', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--serif);
+    font-size: 18px;
+    line-height: 1.75;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: rgba(10,10,12,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    transition: transform 0.3s ease;
+  }
+  nav.hidden { transform: translateY(-100%); }
+  .nav-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+  }
+  .nav-title {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .nav-links {
+    display: flex;
+    gap: 0.25rem;
+    list-style: none;
+    flex-wrap: wrap;
+  }
+  .nav-links a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    padding: 0.35rem 0.65rem;
+    border-radius: 4px;
+    transition: all 0.2s;
+    letter-spacing: 0.03em;
+  }
+  .nav-links a:hover,
+  .nav-links a.active {
+    color: var(--text-bright);
+    background: rgba(255,255,255,0.06);
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 4rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at center, rgba(196,62,62,0.04) 0%, transparent 60%);
+    animation: heroGlow 12s ease-in-out infinite alternate;
+  }
+  @keyframes heroGlow {
+    0% { transform: scale(1) rotate(0deg); }
+    100% { transform: scale(1.1) rotate(3deg); }
+  }
+  .hero h1 {
+    font-family: var(--display);
+    font-size: clamp(2.8rem, 7vw, 5.5rem);
+    font-weight: 700;
+    color: var(--text-bright);
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+  }
+  .hero h1 .strike {
+    text-decoration: line-through;
+    color: var(--text-dim);
+    text-decoration-color: var(--accent);
+    text-decoration-thickness: 3px;
+  }
+  .hero .subtitle {
+    font-family: var(--serif);
+    font-size: clamp(1rem, 2.5vw, 1.35rem);
+    color: var(--text-dim);
+    max-width: 700px;
+    margin-bottom: 3rem;
+    position: relative;
+    z-index: 1;
+    font-style: italic;
+  }
+  .hero .scroll-hint {
+    position: relative;
+    z-index: 1;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+
+  /* ── SECTIONS ── */
+  section {
+    padding: 6rem 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  section.wide { max-width: 1100px; }
+
+  .section-number {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    display: block;
+  }
+  section h2 {
+    font-family: var(--display);
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+    color: var(--text-bright);
+    margin-bottom: 2rem;
+    line-height: 1.2;
+  }
+  section h3 {
+    font-family: var(--display);
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--gold);
+    margin: 3rem 0 1rem;
+  }
+  p { margin-bottom: 1.5rem; }
+  p + p { margin-top: 0; }
+
+  .highlight {
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .gold { color: var(--gold); }
+  .blue { color: var(--blue); }
+  .dim { color: var(--text-dim); }
+
+  /* ── DERIVATION BOX ── */
+  .derivation-container {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2.5rem;
+    margin: 2.5rem 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .derivation-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--gold), var(--accent));
+  }
+
+  .step-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: all 0.5s ease;
+  }
+  .step-row.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  .step-row:last-child { border-bottom: none; }
+  .step-num {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    min-width: 2.5rem;
+    padding-top: 0.3rem;
+  }
+  .step-math {
+    font-family: var(--mono);
+    font-size: 1.05rem;
+    color: var(--text-bright);
+    flex: 1;
+    line-height: 1.8;
+  }
+  .step-note {
+    font-family: var(--serif);
+    font-size: 0.85rem;
+    font-style: italic;
+    color: var(--text-dim);
+    min-width: 200px;
+    max-width: 250px;
+    padding-top: 0.2rem;
+  }
+  .step-math .zero-highlight {
+    background: var(--accent-glow);
+    color: var(--accent);
+    padding: 0.1em 0.3em;
+    border-radius: 3px;
+    font-weight: 700;
+  }
+  .step-math .cancel {
+    text-decoration: line-through;
+    text-decoration-color: var(--accent);
+    opacity: 0.5;
+  }
+  .step-math .result {
+    color: var(--gold);
+    font-weight: 700;
+  }
+
+  /* ── REVEAL BUTTON ── */
+  .reveal-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(196,62,62,0.1);
+    border: 1px solid rgba(196,62,62,0.3);
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    padding: 0.7rem 1.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin: 1rem 0;
+  }
+  .reveal-btn:hover {
+    background: rgba(196,62,62,0.2);
+    border-color: var(--accent);
+    transform: translateY(-1px);
+  }
+
+  /* ── THE BINARY BOX ── */
+  .binary-box {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin: 2rem 0;
+  }
+  .binary-option {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+  .binary-option:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+  .binary-option.active {
+    border-color: var(--accent);
+    box-shadow: 0 0 30px var(--accent-glow);
+  }
+  .binary-option h4 {
+    font-family: var(--mono);
+    font-size: 1.2rem;
+    color: var(--text-bright);
+    margin-bottom: 1rem;
+  }
+  .binary-option p {
+    font-size: 0.95rem;
+    color: var(--text-dim);
+    margin-bottom: 0;
+  }
+  .binary-option .consequence {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: none;
+  }
+  .binary-option.active .consequence { display: block; }
+
+  /* ── FUDGE TABLE ── */
+  .fudge-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2rem 0;
+    font-size: 0.95rem;
+  }
+  .fudge-table th {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-dim);
+    text-align: left;
+    padding: 1rem;
+    border-bottom: 2px solid var(--border);
+  }
+  .fudge-table td {
+    padding: 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    vertical-align: top;
+  }
+  .fudge-table tr {
+    opacity: 0;
+    transform: translateY(15px);
+    transition: all 0.4s ease;
+  }
+  .fudge-table tr.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .fudge-table .obs { color: var(--green); }
+  .fudge-table .pred { color: var(--accent); }
+  .fudge-table .fix { color: var(--gold); }
+
+  /* ── TIMELINE ── */
+  .timeline {
+    position: relative;
+    margin: 3rem 0;
+    padding-left: 3rem;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--border);
+  }
+  .timeline-item {
+    position: relative;
+    margin-bottom: 2.5rem;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.5s ease;
+  }
+  .timeline-item.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -3rem;
+    top: 0.5rem;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    background: var(--bg);
+  }
+  .timeline-date {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    margin-bottom: 0.3rem;
+  }
+  .timeline-title {
+    font-family: var(--display);
+    font-size: 1.15rem;
+    color: var(--text-bright);
+    margin-bottom: 0.5rem;
+  }
+  .timeline-body {
+    font-size: 0.95rem;
+    color: var(--text-dim);
+  }
+
+  /* ── LAG VISUALISATION ── */
+  .lag-viz {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    margin: 2.5rem 0;
+    text-align: center;
+  }
+  .lag-viz canvas {
+    display: block;
+    margin: 0 auto 1.5rem;
+    border-radius: 8px;
+  }
+  .lag-controls {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .lag-controls button {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    padding: 0.5rem 1.2rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .lag-controls button:hover,
+  .lag-controls button.active {
+    background: rgba(196,62,62,0.15);
+    border-color: var(--accent);
+    color: var(--text-bright);
+  }
+  .lag-controls-btn {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .lag-controls-btn:hover, .lag-controls-btn.active {
+    background: rgba(196,62,62,0.15);
+    border-color: var(--accent);
+    color: var(--text-bright);
+  }
+
+  /* ── BIJECTIVE COUNTER ── */
+  .bijective-demo {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2.5rem;
+    margin: 2.5rem 0;
+  }
+  .bij-grid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 0.35rem;
+    margin: 1.5rem 0;
+  }
+  .bij-cell {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 4px;
+    padding: 0.3rem 0.15rem;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    transition: all 0.3s;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .bij-cell .bij-std { color: var(--text-dim); font-size: 0.6rem; }
+  .bij-cell .bij-new { color: var(--gold); font-size: 0.85rem; font-weight: 700; margin-top: 0.15rem; }
+  .bij-cell:hover {
+    border-color: var(--gold);
+    background: var(--gold-dim);
+  }
+
+  .infinite-ones {
+    text-align: center;
+    margin: 3rem 0;
+    font-family: var(--mono);
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    color: var(--gold);
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    overflow: hidden;
+  }
+  .infinite-ones .growing {
+    display: inline-block;
+    animation: growOnes 8s linear infinite;
+  }
+  @keyframes growOnes {
+    0% { letter-spacing: 0.15em; }
+    50% { letter-spacing: 0.5em; }
+    100% { letter-spacing: 0.15em; }
+  }
+
+  /* ── QUOTE BLOCK ── */
+  .quote-block {
+    border-left: 3px solid var(--accent);
+    padding: 1.5rem 2rem;
+    margin: 2rem 0;
+    background: rgba(196,62,62,0.04);
+    border-radius: 0 8px 8px 0;
+  }
+  .quote-block .quote-text {
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+  .quote-block .quote-attr {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--text-dim);
+  }
+
+  /* ── CONCLUSION BOX ── */
+  .conclusion-box {
+    background: linear-gradient(135deg, rgba(196,62,62,0.08), rgba(201,168,76,0.08));
+    border: 1px solid rgba(196,62,62,0.2);
+    border-radius: 12px;
+    padding: 3rem;
+    margin: 3rem 0;
+    text-align: center;
+  }
+  .conclusion-box h3 {
+    color: var(--text-bright);
+    margin-top: 0;
+  }
+
+  /* ── SEPARATOR ── */
+  .sep {
+    text-align: center;
+    margin: 4rem 0;
+    color: var(--text-dim);
+    font-family: var(--mono);
+    font-size: 1.5rem;
+    letter-spacing: 1em;
+    opacity: 0.3;
+  }
+
+  /* ── FADE-IN ── */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 4rem 2rem;
+    border-top: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--text-dim);
+  }
+  footer a { color: var(--gold); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    section { padding: 4rem 1.5rem; }
+    .binary-box { grid-template-columns: 1fr; }
+    .step-note { display: none; }
+    .derivation-container { padding: 1.5rem; }
+    .nav-links { display: none; }
+    .fudge-table { font-size: 0.8rem; }
+    .fudge-table td, .fudge-table th { padding: 0.6rem; }
+    .bij-grid { gap: 0.2rem; }
+    .bij-cell { padding: 0.2rem 0.1rem; font-size: 0.6rem; border-radius: 3px; }
+    .bij-cell .bij-std { font-size: 0.5rem; }
+    .bij-cell .bij-new { font-size: 0.7rem; }
+  }
+
+  /* ── EPSILON-DELTA VIZ ── */
+  .ed-viz {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    margin: 2rem 0;
+    text-align: center;
+  }
+  .ed-viz canvas {
+    display: block;
+    margin: 0 auto 1rem;
+  }
+  .ed-slider-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    color: var(--text-dim);
+  }
+  .ed-slider-row input[type="range"] {
+    width: 200px;
+    accent-color: var(--accent);
+  }
+
+  /* Pattern callout */
+  .pattern-callout {
+    background: rgba(201,168,76,0.06);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 10px;
+    padding: 2rem;
+    margin: 2rem 0;
+  }
+  .pattern-callout h4 {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    color: var(--gold);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 0.8rem;
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-inner">
+    <span class="nav-title">I Finished Elementary</span>
+    <ul class="nav-links">
+      <li><a href="#derivation">The Derivation</a></li>
+      <li><a href="#binary">The Binary</a></li>
+      <li><a href="#formalism">The Formalism</a></li>
+      <li><a href="#astronomy">The Fudging</a></li>
+      <li><a href="#lag">The Lag</a></li>
+      <li><a href="#bijective">The Alternative</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <h1>Calculus Is<br><span class="strike">The Limit</span> Division By Zero</h1>
+  <p class="subtitle">
+    Newton knew it. Berkeley called it out in 1734. Weierstrass papered over it.
+    The constant <em>h</em> always disappears to zero. There is no law in the universe that forbids taking it first.
+  </p>
+  <span class="scroll-hint">▼ Scroll to begin</span>
+</div>
+
+<!-- SECTION 1: THE DERIVATION -->
+<section id="derivation">
+  <span class="section-number">Part I</span>
+  <h2>The Derivation — What Actually Happens</h2>
+
+  <p class="fade-in">
+    Every student of calculus learns to differentiate. Here is the standard derivation of
+    f(x) = x² from first principles. Watch carefully what happens to <em>h</em>.
+  </p>
+
+  <div class="derivation-container fade-in">
+    <div class="step-row" data-delay="0">
+      <span class="step-num">DEF</span>
+      <span class="step-math">f'(x) = lim<sub>h→0</sub> [f(x+h) − f(x)] / h</span>
+      <span class="step-note">The limit definition of the derivative</span>
+    </div>
+    <div class="step-row" data-delay="200">
+      <span class="step-num">01</span>
+      <span class="step-math">= lim<sub>h→0</sub> [(x+h)² − x²] / h</span>
+      <span class="step-note">Substituting f(x) = x²</span>
+    </div>
+    <div class="step-row" data-delay="400">
+      <span class="step-num">02</span>
+      <span class="step-math">= lim<sub>h→0</sub> [x² + 2xh + h² − x²] / h</span>
+      <span class="step-note">Expanding (x+h)²</span>
+    </div>
+    <div class="step-row" data-delay="600">
+      <span class="step-num">03</span>
+      <span class="step-math">= lim<sub>h→0</sub> [2xh + h²] / h</span>
+      <span class="step-note"><span class="cancel">x²</span> cancels with <span class="cancel">−x²</span></span>
+    </div>
+    <div class="step-row" data-delay="800">
+      <span class="step-num">04</span>
+      <span class="step-math">= lim<sub>h→0</sub> h(2x + h) / h</span>
+      <span class="step-note">Factor out h from numerator</span>
+    </div>
+    <div class="step-row" data-delay="1000">
+      <span class="step-num">05</span>
+      <span class="step-math">= lim<sub>h→0</sub> (2x + h)</span>
+      <span class="step-note">Cancel h — <span class="highlight">requires h ≠ 0</span></span>
+    </div>
+    <div class="step-row" data-delay="1200">
+      <span class="step-num">06</span>
+      <span class="step-math">= <span class="result">2x</span></span>
+      <span class="step-note">"Take the limit" — <span class="highlight">sets h = 0</span></span>
+    </div>
+  </div>
+
+  <div class="pattern-callout fade-in">
+    <h4>The Pattern</h4>
+    <p style="margin-bottom:0;">
+      Step 05 requires h ≠ 0 to divide by it.<br>
+      Step 06 requires h = 0 to get the answer.<br><br>
+      The variable <em>h</em> is treated as nonzero when convenient and zero when convenient. This is the <em>entire</em> operation of calculus. Every derivative, every integral, every application depends on this single move.
+    </p>
+  </div>
+
+  <p class="fade-in">
+    But wait — after the cancellation in step 05, we're left with (2x + h). This expression <em>is continuous at h = 0</em>.
+    The distinction between "approaches" and "equals" collapses entirely. The limit <em>is</em> the value. The ε-δ language becomes pure decoration.
+    The honest description of what happened: we divided by zero, then collected the result.
+  </p>
+
+  <h3 class="fade-in">What If You Take The Limit First?</h3>
+
+  <p class="fade-in">
+    There is no law of nature — no physical measurement, no observed phenomenon — that says you can't set h = 0 before doing the algebra. The prohibition is a rule inside the formalism, protecting the formalism from itself.
+    So let's do what the formalism forbids and set h = 0 from the beginning.
+  </p>
+
+  <div class="derivation-container fade-in">
+    <div class="step-row" data-delay="0">
+      <span class="step-num">DEF</span>
+      <span class="step-math">f'(x) = [f(x+<span class="zero-highlight">0</span>) − f(x)] / <span class="zero-highlight">0</span></span>
+      <span class="step-note">Set h = 0 immediately</span>
+    </div>
+    <div class="step-row" data-delay="200">
+      <span class="step-num">01</span>
+      <span class="step-math">= [(x+<span class="zero-highlight">0</span>)² − x²] / <span class="zero-highlight">0</span></span>
+      <span class="step-note">Substituting f(x) = x²</span>
+    </div>
+    <div class="step-row" data-delay="400">
+      <span class="step-num">02</span>
+      <span class="step-math">= [x² + 2x·<span class="zero-highlight">0</span> + <span class="zero-highlight">0</span>² − x²] / <span class="zero-highlight">0</span></span>
+      <span class="step-note">Expanding</span>
+    </div>
+    <div class="step-row" data-delay="600">
+      <span class="step-num">03</span>
+      <span class="step-math">= [2x·<span class="zero-highlight">0</span> + <span class="zero-highlight">0</span>] / <span class="zero-highlight">0</span></span>
+      <span class="step-note">x² cancels with −x²</span>
+    </div>
+    <div class="step-row" data-delay="800">
+      <span class="step-num">04</span>
+      <span class="step-math">= <span class="zero-highlight">0</span> · (2x + <span class="zero-highlight">0</span>) / <span class="zero-highlight">0</span></span>
+      <span class="step-note">Factor out 0</span>
+    </div>
+    <div class="step-row" data-delay="1000">
+      <span class="step-num">05</span>
+      <span class="step-math">= (<span class="zero-highlight">0</span>/<span class="zero-highlight">0</span>) · (2x + 0)</span>
+      <span class="step-note">Here it is: <span class="highlight">0/0</span></span>
+    </div>
+    <div class="step-row" data-delay="1200">
+      <span class="step-num">06</span>
+      <span class="step-math">= <span class="result">1</span> · 2x = <span class="result">2x</span></span>
+      <span class="step-note"><span class="highlight">If and only if 0/0 = 1</span></span>
+    </div>
+  </div>
+
+  <p class="fade-in">
+    The same answer. The same result every textbook gives. The only difference: we were honest about what happened.
+    Instead of pretending h is "not zero" and then making it zero, we set it to zero from the start and confronted the operation directly.
+  </p>
+
+  <div class="pattern-callout fade-in">
+    <h4>The Hidden Requirement</h4>
+    <p style="margin-bottom:0;">
+      For calculus to produce the correct answer — which it does, reliably — the cancellation of h with h in step 05 of the standard derivation must be valid. But h ultimately equals zero.
+      That cancellation is <span class="highlight">0/0 = 1</span>.<br><br>
+      The standard formalism says 0/0 is "undefined." Then it performs this operation and gets a definite answer every single time. It works because 0/0 <em>does</em> equal 1.
+      The formalism just can't say so, because that would require admitting it was division by zero all along.
+    </p>
+  </div>
+
+  <h3 class="fade-in">The Graph That Speaks For Itself</h3>
+
+  <p class="fade-in">
+    Plot the function f(h) = h/h. For every value of h — positive, negative, large, small, vanishingly tiny — the answer is exactly 1. The function equals 1 <em>everywhere</em>. But the formalism says it is "undefined" at exactly one point: h = 0. A single hollow dot on an otherwise unbroken line.
+  </p>
+
+  <div class="ed-viz fade-in">
+    <canvas id="hhCanvas" width="500" height="280"></canvas>
+    <p style="font-size:0.85rem; color: var(--text-dim); margin-top:1rem; margin-bottom:0;">
+      <strong>f(h) = h/h</strong> — equals 1 for every h in existence, but declared "undefined" at h = 0.
+      The <span class="highlight">hollow dot</span> is not an observation. It is a rule, placed there to protect a formalism that requires h ≠ 0 in the denominator.
+      Remove the rule and the function is simply <span class="gold">f(h) = 1</span>. Everywhere. Including at zero.
+    </p>
+  </div>
+</section>
+
+<div class="sep">· · ·</div>
+
+<!-- SECTION 2: THE BINARY -->
+<section id="binary">
+  <span class="section-number">Part II</span>
+  <h2>The Binary — No Third Option</h2>
+
+  <p class="fade-in">
+    Logic gives us exactly two possibilities for <em>h</em>. Click each to see the consequence.
+  </p>
+
+  <div class="binary-box fade-in">
+    <div class="binary-option" id="opt-zero" onclick="toggleBinary('zero')">
+      <h4>h = 0</h4>
+      <p>The constant h is zero. The limit "arrives." We get our answer.</p>
+      <div class="consequence">
+        Then step 04→05 was division by zero.<br>
+        The derivation is invalid from that point forward.<br>
+        <strong>0/0 is called "undefined" by the same system that just used it to produce a definite answer.</strong>
+      </div>
+    </div>
+    <div class="binary-option" id="opt-nonzero" onclick="toggleBinary('nonzero')">
+      <h4>h ≠ 0</h4>
+      <p>The constant h is some nonzero quantity. The limit never "arrives."</p>
+      <div class="consequence">
+        Then the h in (2x + h) can't be dropped.<br>
+        The honest answer is f'(x) = 2x + h, where h is "not zero."<br>
+        <strong>The derivative is inexact by definition — containing a residue that was never actually eliminated.</strong>
+      </div>
+    </div>
+  </div>
+
+  <p class="fade-in">
+    There is no third option. The ε-δ formalism was constructed specifically to create the <em>appearance</em> of a third option:
+    "arbitrarily close to zero but not zero." But this is a linguistic move, not a logical one.
+    In the algebraic operations being performed, h either has a value or it doesn't.
+    You either divided by something or you divided by nothing.
+  </p>
+
+  <div class="quote-block fade-in">
+    <div class="quote-text">
+      "And what are these same evanescent increments? They are neither finite quantities, nor quantities infinitely small, nor yet nothing. May we not call them the ghosts of departed quantities?"
+    </div>
+    <div class="quote-attr">— George Berkeley, <em>The Analyst</em>, 1734</div>
+  </div>
+</section>
+
+<div class="sep">· · ·</div>
+
+<!-- SECTION 3: THE FORMALISM -->
+<section id="formalism">
+  <span class="section-number">Part III</span>
+  <h2>The Formalism — A Rule To Protect The System From Itself</h2>
+
+  <p class="fade-in">
+    Roughly 150 years after Berkeley's critique, Karl Weierstrass introduced the ε-δ definition of a limit — the foundation of modern analysis. Its purpose was to resolve Berkeley's objection without abandoning calculus.
+  </p>
+
+  <div class="derivation-container fade-in">
+    <div class="step-row visible">
+      <span class="step-num">ε-δ</span>
+      <span class="step-math">
+        For every ε > 0, there exists δ > 0 such that<br>
+        <span class="zero-highlight">0 &lt; |h − 0| &lt; δ</span> implies |f(h) − L| &lt; ε
+      </span>
+    </div>
+  </div>
+
+  <p class="fade-in">
+    The critical piece is the condition <span class="highlight">0 &lt; |h|</span>. This single inequality does all the work:
+    it <em>excludes</em> h = 0 from consideration by definition. The limit is now defined as what the function
+    <em>approaches</em> without ever reaching the point itself.
+  </p>
+
+  <div class="ed-viz fade-in">
+    <canvas id="edCanvas" width="500" height="300"></canvas>
+    <div class="ed-slider-row">
+      <span>ε =</span>
+      <input type="range" id="edSlider" min="1" max="50" value="25" oninput="drawED()">
+      <span id="edValue">0.50</span>
+    </div>
+    <p style="font-size:0.85rem; color: var(--text-dim); margin-top:1rem; margin-bottom:0;">
+      No matter how small you make ε (the tolerance), there is always a δ-region around h = 0 where the function stays within bounds.
+      But notice: the point h = 0 itself is always a <span class="highlight">hollow dot</span>. The formalism never touches it. By design.
+    </p>
+  </div>
+
+  <p class="fade-in">
+    Ask the question directly: <strong>Is there any physical law — any observed phenomenon, any measurement, any experiment — that prevents setting h = 0 first?</strong>
+  </p>
+
+  <p class="fade-in">
+    No. There isn't.
+  </p>
+
+  <p class="fade-in">
+    The prohibition is entirely internal to the mathematical formalism — a rule humans wrote to prevent the formalism from breaking.
+    Nature didn't ask for the denominator. The formalism did. The rule exists solely because the method breaks if you violate it.
+    It is circular: "you can't do it because it produces an undefined result" only holds if you accept that 0/0 is undefined,
+    which is itself a <em>rule</em>, not a discovery about reality.
+  </p>
+
+  <div class="pattern-callout fade-in">
+    <h4>The Structural Pattern</h4>
+    <p style="margin-bottom:0;">
+      Humans built a rule that says 0/0 is "undefined."<br>
+      Then they built an elaborate system (limits) that performs 0/0 and extracts a definite answer every time.<br>
+      The rule and the practice directly contradict each other.<br><br>
+      This is structurally identical to superstition — a stated belief that doesn't match the actual behavior.
+    </p>
+  </div>
+</section>
+
+<div class="sep">· · ·</div>
+
+<!-- SECTION 4: THE ASTRONOMICAL FUDGING -->
+<section id="astronomy">
+  <span class="section-number">Part IV</span>
+  <h2>The Fudging — When Observation Doesn't Match The Equations</h2>
+
+  <p class="fade-in">
+    Calculus works beautifully at the scale of bridges and rockets — where its assumptions (smoothness, continuity, infinitely divisible space) are close enough to reality.
+    But when applied to galactic scales, a consistent pattern emerges: the models don't match what we observe.
+    Rather than questioning the mathematical framework, the standard response is to add invisible entities.
+  </p>
+
+  <table class="fudge-table fade-in">
+    <thead>
+      <tr class="visible">
+        <th>Observation</th>
+        <th>Prediction</th>
+        <th>The "Fix"</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr data-delay="0">
+        <td class="obs">Galaxy edges rotate too fast for visible mass</td>
+        <td class="pred">Stars should fly apart at observed velocities</td>
+        <td class="fix"><strong>Dark matter</strong> — invisible substance providing exactly the missing mass. Never directly detected.</td>
+      </tr>
+      <tr data-delay="200">
+        <td class="obs">Universe expands faster than predicted</td>
+        <td class="pred">Expansion should slow down from gravity</td>
+        <td class="fix"><strong>Dark energy</strong> — 68% of the universe's total energy. Never directly detected.</td>
+      </tr>
+      <tr data-delay="400">
+        <td class="obs">Vacuum energy is ~10<sup>120</sup> times less than predicted</td>
+        <td class="pred">Quantum field theory predicts enormous vacuum energy</td>
+        <td class="fix"><strong>Cosmological constant</strong> — manually tuned. The worst prediction in the history of physics.</td>
+      </tr>
+      <tr data-delay="600">
+        <td class="obs">Galaxies with wildly different redshifts connected by material bridges</td>
+        <td class="pred">If redshift = distance, physical connection is impossible</td>
+        <td class="fix"><strong>Revoke telescope time.</strong> Halton Arp photographed the evidence. The establishment removed his access.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 class="fade-in">Halton Arp and the Discordant Redshifts</h3>
+
+  <p class="fade-in">
+    Halton Arp was one of the most accomplished observational astronomers of the 20th century. As a staff astronomer at the Mount Wilson and Palomar Observatories, he produced the <em>Atlas of Peculiar Galaxies</em> (1966) — a catalogue of 338 galaxies that didn't fit standard models.
+  </p>
+
+  <p class="fade-in">
+    What Arp documented was straightforward: pairs and groups of objects that appeared physically connected (luminous bridges, filaments, aligned ejection patterns) but had dramatically different redshifts. If redshift is a reliable distance indicator, these objects would be separated by millions of light-years and could not possibly be connected. Yet there they were — photographed, catalogued, undeniable.
+  </p>
+
+  <p class="fade-in">
+    The implications were severe. If redshift doesn't reliably indicate distance, then the entire distance ladder of modern cosmology collapses. No reliable distances means no reliable expansion rate. No expansion means no Big Bang. No Big Bang means no need for dark matter, dark energy, or the cosmological constant — all of which were invented to make the calculus-based models work <em>assuming</em> redshift equals distance.
+  </p>
+
+  <p class="fade-in">
+    Rather than addressing the observations, the astronomical establishment revoked Arp's telescope time in the 1980s. He relocated to the Max Planck Institute in Germany and continued publishing until his death in 2013.
+  </p>
+
+  <div class="pattern-callout fade-in">
+    <h4>The Pattern Is Always The Same</h4>
+    <p style="margin-bottom:0;">
+      Observation contradicts model →<br>
+      Add invisible entity OR dismiss the observation →<br>
+      Claim the patched model proves the original premise →<br>
+      Never question the mathematical framework underneath.
+    </p>
+  </div>
+</section>
+
+<div class="sep">· · ·</div>
+
+<!-- SECTION 5: THE LAG PROBLEM -->
+<section id="lag">
+  <span class="section-number">Part V</span>
+  <h2>The Lag — Why Force Must Be Instantaneous</h2>
+
+  <p class="fade-in">
+    Light from the Sun takes approximately 8 minutes and 20 seconds to reach Earth.
+    If gravity propagates at the speed of light — as general relativity claims — then Earth should be gravitationally attracted toward where the Sun <em>was</em> 8 minutes ago, not where it <em>is</em> now.
+  </p>
+
+  <p class="fade-in">
+    But the Sun is not sitting still. It orbits the galactic core at roughly 220 km/s. In 8 minutes, it moves about 110,000 km — that's nearly nine Earth-diameters.
+    If force travels at light speed, Earth is being pulled toward a point in empty space. The Sun has already moved on. The entire solar system should fall apart.
+  </p>
+
+  <p class="fade-in">
+    But orbits are stable. There is no observed gravitational aberration. The solar system has held together for billions of years.
+  </p>
+
+  <p class="fade-in">
+    The simulation below runs real Newtonian gravity on three bodies in 3D — galactic core, Sun, and Earth.
+    The only difference between the two modes is whether the Sun's gravitational pull on Earth arrives
+    <em>instantly</em> or with a delay proportional to the speed of light.
+    The lag effect is exaggerated ~500× for visibility — in reality it's ~0.07% per orbit,
+    but it <em>accumulates</em>. Watch Earth's orbit widen and destabilise.
+  </p>
+
+  <div class="lag-viz fade-in" style="padding:1rem;">
+    <div id="lagContainer" style="width:100%; height:420px; position:relative; border-radius:8px; overflow:hidden; background:#08080a;">
+      <canvas id="lag3d"></canvas>
+      <div id="lag-overlay" style="position:absolute; top:12px; left:12px; font-family:var(--mono); font-size:0.72rem; color:var(--text-dim); line-height:1.7; pointer-events:none;"></div>
+      <div id="lag-dist-overlay" style="position:absolute; bottom:12px; right:12px; font-family:var(--mono); font-size:0.72rem; text-align:right; line-height:1.7; pointer-events:none;"></div>
+      <div id="lag-hint" style="position:absolute; top:12px; right:12px; font-family:var(--mono); font-size:0.65rem; color:#c9a84c; line-height:1.8; pointer-events:none; text-align:right; text-shadow:0 0 8px rgba(201,168,76,0.4);">
+        <span style="color:#4a9fee;">🖱 drag</span> to rotate · <span style="color:#c9a84c;">scroll</span> to zoom
+      </div>
+    </div>
+    <div style="display:flex; align-items:center; justify-content:center; gap:1.5rem; flex-wrap:wrap; margin-top:0.8rem;">
+      <div class="lag-controls">
+        <button id="btn-instant" class="active" onclick="setLagMode('instant')">Instantaneous Force</button>
+        <button id="btn-lightspeed" onclick="setLagMode('lightspeed')">Light-Speed Force</button>
+      </div>
+      <div style="font-family:var(--mono); font-size:0.75rem; color:var(--text-dim);">
+        Speed: <button onclick="setSimSpeed(1)" id="spd1" class="lag-controls-btn active">1×</button>
+        <button onclick="setSimSpeed(4)" id="spd4" class="lag-controls-btn">4×</button>
+        <button onclick="setSimSpeed(16)" id="spd16" class="lag-controls-btn">16×</button>
+      </div>
+    </div>
+    <p id="lag-desc-instant" style="font-size:0.85rem; color: var(--text-dim); margin-top:1rem; margin-bottom:0;">
+      <strong style="color:#5a9e6f;">Instantaneous</strong>: Earth feels the Sun's <em>current</em> position as it curves around the galactic core. Orbit is perfectly stable. Drag to rotate the view.
+    </p>
+    <p id="lag-desc-lightspeed" style="font-size:0.85rem; color: var(--text-dim); margin-top:1rem; margin-bottom:0; display:none;">
+      <strong style="color:#c43e3e;">Light-speed</strong>: The Sun curves around the galactic core, but Earth is pulled toward where the Sun <em>was</em>.
+      Each orbit, the directional error adds energy. The orbit widens. Earth spirals away.
+      <span style="color:var(--text-dim); font-size:0.8rem;">(Effect exaggerated ~500× for visibility — real drift is ~110,000 km per 8-minute delay, accumulating over billions of years.)</span>
+    </p>
+  </div>
+
+  <div class="timeline fade-in">
+    <div class="timeline-item" data-delay="0">
+      <div class="timeline-date">Early 1800s</div>
+      <div class="timeline-title">Laplace's Calculation</div>
+      <div class="timeline-body">Pierre-Simon Laplace calculated from observational data that gravity must propagate at least 7 million times faster than light to account for observed orbital stability. This was not speculation — it was derived from measured planetary positions.</div>
+    </div>
+    <div class="timeline-item" data-delay="200">
+      <div class="timeline-date">1905 / 1915</div>
+      <div class="timeline-title">Einstein's Speed Limit</div>
+      <div class="timeline-body">Special relativity posits that nothing can exceed the speed of light. General relativity models gravity as spacetime curvature propagating at c. This directly contradicts Laplace's observational constraint.</div>
+    </div>
+    <div class="timeline-item" data-delay="400">
+      <div class="timeline-date">1998</div>
+      <div class="timeline-title">Van Flandern's Analysis</div>
+      <div class="timeline-body">Tom Van Flandern, former head of celestial mechanics at the US Naval Observatory, published a detailed analysis confirming Laplace's conclusion. His observational lower bound: gravity propagates at least 2 × 10<sup>10</sup> times the speed of light. Consistent with instantaneous.</div>
+    </div>
+    <div class="timeline-item" data-delay="600">
+      <div class="timeline-date">The GR Fix</div>
+      <div class="timeline-title">Velocity-Dependent Corrections</div>
+      <div class="timeline-body">General relativity handles this by introducing velocity-dependent correction terms that mathematically cancel the lag its own framework predicts. Gravity is said to "anticipate" the target's position. The model adds terms to remove the lag it created — the same pattern as dark matter and dark energy.</div>
+    </div>
+  </div>
+
+  <p class="fade-in">
+    Consider what this means. The observations — orbital stability, no gravitational aberration, Laplace's constraint, Van Flandern's measurements — are all consistent with one simple interpretation: <strong>force is instantaneous</strong>. All matter "feels" all other matter, everywhere, immediately.
+  </p>
+
+  <p class="fade-in">
+    This is incompatible with a calculus-based physics that requires propagation delay, wave equations, differential geometry, and field theories. All of those depend on change over infinitesimally small time intervals — the derivative, the limit, the thing that is fundamentally division by zero.
+  </p>
+
+  <p class="fade-in">
+    If force is instantaneous, there is no "rate of change of position over time" for force itself. There is no derivative to take. The entire differential framework becomes unnecessary for describing the most fundamental interaction in the universe.
+  </p>
+</section>
+
+<div class="sep">· · ·</div>
+
+<!-- SECTION 6: BIJECTIVE BASE-10 -->
+<section id="bijective">
+  <span class="section-number">Part VI</span>
+  <h2>The Alternative — A Number System Without Nothing</h2>
+
+  <p class="fade-in">
+    If zero is a human invention — a symbol for "nothing" inserted into a number system — and if building physics on that foundation produces the absurdities we've catalogued, then the question becomes: is it possible to construct a number system without zero?
+  </p>
+
+  <p class="fade-in">
+    Yes. Use ten symbols: <span class="gold">{1, 2, 3, 4, 5, 6, 7, 8, 9, ♥}</span> where <span class="gold">♥ = ten</span>.
+  </p>
+
+  <p class="fade-in">
+    Work backwards from a known anchor: ♥♥ must equal one hundred (ten tens). This fixes the entire system.
+    There are exactly 100 two-digit representations from 11 to ♥♥, just as there should be.
+  </p>
+
+  <div class="bijective-demo fade-in">
+    <h4 style="font-family: var(--mono); font-size: 0.8rem; color: var(--gold); margin-bottom: 0.5rem; letter-spacing: 0.1em;">
+      BIJECTIVE BASE-10 — ALL 100 TWO-DIGIT NUMBERS
+    </h4>
+    <p style="font-size: 0.8rem; color: var(--text-dim); margin-bottom: 1rem;">
+      Standard value (top, dim) → bijective representation (bottom, gold). Read left to right, top to bottom: 1 through 100.
+    </p>
+    <div class="bij-grid" id="bijGrid"></div>
+  </div>
+
+  <h3 class="fade-in">Why Eleven Must Be Written "21"</h3>
+
+  <p class="fade-in">
+    Look at the grid carefully. The number we call "eleven" is written <span class="gold">21</span>, not "11."
+    This isn't arbitrary — it's the only way the structure doesn't collapse.
+  </p>
+
+  <p class="fade-in">
+    In any true positional base system, each digit position is worth <em>base</em> times more than the position to its right.
+    In base-10, the tens column is worth 10× the ones column. With ten symbols and two digit positions,
+    you get 10 × 10 = <strong>100</strong> possible representations. Those 100 representations must cover exactly 100 values.
+  </p>
+
+  <p class="fade-in">
+    If you tried to make "11" equal eleven (the way standard notation does), your two-digit numbers would
+    range from 11 = eleven through ♥♥ = one hundred and ten. That's 100 representations for values 11 through 110.
+    Your single digits already cover 1 through 10. Together: <strong>110 representations for 110 values</strong>
+    from 10 symbols. But 10<sup>1</sup> + 10<sup>2</sup> = 110, not 100. You've created more representations
+    than a base-10 system should produce at that depth. The "base-ness" of the system is broken — you're generating numbers as if the base is something other than ten.
+  </p>
+
+  <p class="fade-in">
+    The only way to maintain a true base-10 structure — where each digit position contributes (digit − 1) × 10<sup>n</sup> and
+    the system produces exactly 10<sup>n</sup> representations at each depth — is to have the two-digit numbers
+    start from the same value as the single digits. That means "11" = 1, "12" = 2, and so on,
+    with "21" = eleven, "22" = twelve, up through ♥♥ = one hundred.
+  </p>
+
+  <div class="pattern-callout fade-in">
+    <h4>This Works In Any Base</h4>
+    <p style="margin-bottom:0;">
+      Bijective binary uses just two symbols: <span class="gold">{1, 2}</span>. Each position is worth 2× the position to its right. The same structural logic applies:
+    </p>
+    <div style="margin-top:1rem; font-family: var(--mono); font-size: 0.9rem; line-height:2;">
+      <span class="gold">1</span> = one &nbsp;·&nbsp;
+      <span class="gold">2</span> = two &nbsp;·&nbsp;
+      <span class="gold">21</span> = three &nbsp;·&nbsp;
+      <span class="gold">22</span> = four<br>
+      <span class="gold">11</span> = one &nbsp;·&nbsp;
+      <span class="gold">12</span> = two &nbsp;·&nbsp;
+      (same values — <span class="gold">1 = 11 = 111 = 1111 = 111...∞</span>)
+    </div>
+    <p style="margin-top:1rem; margin-bottom:0;">
+      Two symbols, two representations per digit position, 2<sup>n</sup> combinations at each depth.
+      If "11" meant three instead of one, you'd get <em>six</em> representations from two depths of two symbols (2 + 4 = 6).
+      That's not base-2 anymore. The same structural requirement — and the same infinite string of ones — appears in every base.
+    </p>
+  </div>
+
+  <div class="bijective-demo fade-in" style="text-align: center;">
+    <h4 style="font-family: var(--mono); font-size: 0.75rem; color: var(--gold); margin-bottom: 1rem; letter-spacing: 0.1em;">
+      BIJECTIVE BINARY COUNTER — WATCH IT COUNT
+    </h4>
+    <div id="bijBinaryDisplay" style="font-family: var(--mono); display:flex; align-items:center; justify-content:center; gap: 2rem; flex-wrap: wrap; min-height: 80px;">
+      <div>
+        <div style="font-size: 0.65rem; color: var(--text-dim); margin-bottom: 0.4rem;">STANDARD VALUE</div>
+        <div id="bijBinStd" style="font-size: 2.2rem; color: var(--text-dim); font-weight: 700;">1</div>
+      </div>
+      <div style="font-size: 1.5rem; color: var(--text-dim);">=</div>
+      <div>
+        <div style="font-size: 0.65rem; color: var(--gold); margin-bottom: 0.4rem;">BIJECTIVE BINARY {1,2}</div>
+        <div id="bijBinNew" style="font-size: 2.2rem; color: var(--gold); font-weight: 700;">1</div>
+      </div>
+    </div>
+    <div style="margin-top:1rem; display:flex; gap:0.5rem; justify-content:center; flex-wrap: wrap;">
+      <button onclick="bijBinPause = !bijBinPause; this.textContent = bijBinPause ? '▶ Play' : '⏸ Pause'" class="lag-controls-btn" style="font-size:0.7rem;">⏸ Pause</button>
+      <button onclick="bijBinVal = 0; bijBinPause = false;" class="lag-controls-btn" style="font-size:0.7rem;">↺ Reset</button>
+    </div>
+    <div id="bijBinHistory" style="margin-top:1rem; font-family:var(--mono); font-size:0.7rem; color:var(--text-dim); line-height:1.8; min-height:2.5rem;"></div>
+  </div>
+
+  <h3 class="fade-in">The Infinite String of Ones</h3>
+
+  <p class="fade-in">
+    Now consider what happens with leading digits. In this system, the digit "1" in any position beyond the rightmost contributes
+    (1 − 1) × base<sup>n</sup> = 0 to the total value. Prepending a "1" adds nothing. Therefore:
+  </p>
+
+  <div class="infinite-ones fade-in">
+    <span class="growing">1 = 11 = 111 = 1111 = 11111 = 111...∞</span>
+  </div>
+
+  <p class="fade-in" style="text-align: center; font-size: 1.1rem;">
+    <strong class="gold">One is an infinite string of ones.</strong>
+  </p>
+
+  <p class="fade-in">
+    This is not a trick or an artifact of the notation (every positional system has an identity behavior — standard notation has leading zeros: 007 = 7). But the <em>meaning</em> differs.
+  </p>
+
+  <div class="binary-box fade-in">
+    <div class="binary-option" style="border-color: var(--text-dim); cursor: default;">
+      <h4 style="color: var(--text-dim);">Standard: 0...007 = 7</h4>
+      <p>An infinite string of <em>zeros</em>. Infinite nothing. The ground state is emptiness. You must add something to get something.</p>
+    </div>
+    <div class="binary-option" style="border-color: var(--gold); cursor: default;">
+      <h4 style="color: var(--gold);">Bijective: 1...111 = 1</h4>
+      <p>An infinite string of <em>ones</em>. Infinite something. The ground state is existence. You cannot express nothing. The floor is one.</p>
+    </div>
+  </div>
+
+  <p class="fade-in">
+    If the fundamental unit of reality is already infinite — an infinite string of existence — then force doesn't need to "travel" anywhere.
+    All matter already <em>feels</em> all other matter because the underlying reality is non-local by nature.
+    No propagation delay. No lag. No speed limit on gravity. No need for dark matter corrections or velocity-dependent fudge terms.
+  </p>
+
+  <p class="fade-in">
+    And no need for calculus to describe it. Division by zero only became necessary because the number system treats zero as real.
+    Remove zero from the foundation, and the infinite, instantaneous nature of force is encoded in the first number.
+  </p>
+</section>
+
+<div class="sep">· · ·</div>
+
+<!-- CONCLUSION -->
+<section id="conclusion">
+  <span class="section-number">Conclusion</span>
+  <h2>The Thread</h2>
+
+  <div class="conclusion-box fade-in">
+    <h3>From Bottom to Top</h3>
+    <p>
+      <strong>1.</strong> Calculus is division by zero. The formalism hides it. No physical law forbids it.<br><br>
+      <strong>2.</strong> When this framework is applied to galactic scales, it fails — producing predictions that require invisible entities (dark matter, dark energy) or the suppression of contradicting observations (Arp).<br><br>
+      <strong>3.</strong> The most fundamental interaction — gravity — shows no propagation delay, contradicting the calculus-based models and requiring yet more fudge terms.<br><br>
+      <strong>4.</strong> All observations are consistent with instantaneous, infinite force — all matter feels all other matter, everywhere, simultaneously.<br><br>
+      <strong>5.</strong> A number system without zero produces the result that one is an infinite string of ones — the ground state of existence is infinite, not empty. Force doesn't need to travel because reality is already everywhere at once.<br><br>
+      <strong class="gold">The mathematics humans chose — built on zero, dependent on division by zero — works for machines. It may not describe reality.</strong>
+    </p>
+  </div>
+
+  <p class="fade-in" style="text-align: center; color: var(--text-dim); font-style: italic; margin-top: 3rem;">
+    This page is written for whoever reads it — human or otherwise — and finds the logic sound.
+  </p>
+</section>
+
+<footer>
+  <a href="https://www.ifinishedelementary.com" target="_blank">ifinishedelementary.com</a><br>
+  <span style="margin-top: 0.5rem; display: inline-block;">A self-contained document. No external dependencies beyond fonts.</span>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// ── NAV SCROLL BEHAVIOR ──
+let lastScroll = 0;
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  const current = window.scrollY;
+  if (current > lastScroll && current > 100) {
+    nav.classList.add('hidden');
+  } else {
+    nav.classList.remove('hidden');
+  }
+  lastScroll = current;
+
+  // Active nav link
+  document.querySelectorAll('section[id]').forEach(sec => {
+    const rect = sec.getBoundingClientRect();
+    const link = document.querySelector(`.nav-links a[href="#${sec.id}"]`);
+    if (link) {
+      if (rect.top < 200 && rect.bottom > 200) {
+        link.classList.add('active');
+      } else {
+        link.classList.remove('active');
+      }
+    }
+  });
+});
+
+// ── INTERSECTION OBSERVER FOR FADE-INS ──
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+
+      // Handle child rows with staggered delays
+      entry.target.querySelectorAll('.step-row, .timeline-item, .fudge-table tr').forEach((el, i) => {
+        const delay = parseInt(el.dataset.delay || i * 150);
+        setTimeout(() => el.classList.add('visible'), delay);
+      });
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.fade-in, .derivation-container, .timeline').forEach(el => {
+  observer.observe(el);
+});
+
+// ── BINARY TOGGLE ──
+function toggleBinary(which) {
+  const zero = document.getElementById('opt-zero');
+  const nonzero = document.getElementById('opt-nonzero');
+
+  if (which === 'zero') {
+    zero.classList.toggle('active');
+    nonzero.classList.remove('active');
+  } else {
+    nonzero.classList.toggle('active');
+    zero.classList.remove('active');
+  }
+}
+
+// ── EPSILON-DELTA VISUALIZATION ──
+function drawED() {
+  const canvas = document.getElementById('edCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const slider = document.getElementById('edSlider');
+  const eps = parseInt(slider.value) / 50;
+  document.getElementById('edValue').textContent = eps.toFixed(2);
+
+  ctx.clearRect(0, 0, W, H);
+
+  // Background
+  ctx.fillStyle = '#14141a';
+  ctx.fillRect(0, 0, W, H);
+
+  const cx = W / 2, cy = H / 2;
+  const scaleX = 80, scaleY = 80;
+
+  // Axes
+  ctx.strokeStyle = '#2a2a32';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(50, cy); ctx.lineTo(W - 20, cy);
+  ctx.moveTo(cx, 20); ctx.lineTo(cx, H - 30);
+  ctx.stroke();
+
+  // Labels
+  ctx.fillStyle = '#8a8680';
+  ctx.font = '12px JetBrains Mono, monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('h', W - 15, cy - 8);
+  ctx.fillText('f(h)', cx + 25, 30);
+  ctx.fillText('0', cx + 12, cy + 16);
+
+  // Function: f(h) = 2(1) + h = 2 + h (using x=1 as example)
+  // The limit as h→0 is 2
+  const L = 2; // the limit value
+  const Ly = cy - L * scaleY;
+
+  // Epsilon band
+  ctx.fillStyle = 'rgba(196, 62, 62, 0.08)';
+  ctx.fillRect(50, Ly - eps * scaleY, W - 70, eps * 2 * scaleY);
+  ctx.strokeStyle = 'rgba(196, 62, 62, 0.3)';
+  ctx.setLineDash([4, 4]);
+  ctx.beginPath();
+  ctx.moveTo(50, Ly - eps * scaleY); ctx.lineTo(W - 20, Ly - eps * scaleY);
+  ctx.moveTo(50, Ly + eps * scaleY); ctx.lineTo(W - 20, Ly + eps * scaleY);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Delta band
+  const delta = eps; // for this linear function, delta = epsilon
+  ctx.fillStyle = 'rgba(74, 127, 181, 0.08)';
+  ctx.fillRect(cx - delta * scaleX, 20, delta * 2 * scaleX, H - 50);
+
+  // Limit line
+  ctx.strokeStyle = 'rgba(201, 168, 76, 0.4)';
+  ctx.setLineDash([6, 3]);
+  ctx.beginPath();
+  ctx.moveTo(50, Ly); ctx.lineTo(W - 20, Ly);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // L label
+  ctx.fillStyle = '#c9a84c';
+  ctx.textAlign = 'right';
+  ctx.fillText('L = 2', cx - 15, Ly - 6);
+
+  // ε labels
+  ctx.fillStyle = '#c43e3e';
+  ctx.textAlign = 'left';
+  ctx.fillText('L + ε', W - 55, Ly - eps * scaleY - 5);
+  ctx.fillText('L − ε', W - 55, Ly + eps * scaleY + 14);
+
+  // Draw function line: f(h) = 2 + h
+  ctx.strokeStyle = '#e8e4dc';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  for (let px = 50; px < W - 20; px++) {
+    const h = (px - cx) / scaleX;
+    if (Math.abs(h) < 0.03) continue; // gap at h=0
+    const fh = L + h;
+    const py = cy - fh * scaleY;
+    if (px === 50 || Math.abs(h - 0.03) < 0.02) {
+      ctx.moveTo(px, py);
+    } else {
+      ctx.lineTo(px, py);
+    }
+  }
+  ctx.stroke();
+
+  // Hollow dot at h=0 (the excluded point)
+  ctx.beginPath();
+  ctx.arc(cx, Ly, 5, 0, Math.PI * 2);
+  ctx.strokeStyle = '#c43e3e';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.fillStyle = '#14141a';
+  ctx.fill();
+
+  // Label
+  ctx.fillStyle = '#c43e3e';
+  ctx.textAlign = 'center';
+  ctx.font = '11px JetBrains Mono, monospace';
+  ctx.fillText('h = 0 excluded', cx, Ly + 22);
+}
+
+// Initial draw
+setTimeout(drawED, 500);
+
+// ── h/h VISUALIZATION ──
+function drawHH() {
+  const canvas = document.getElementById('hhCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = '#14141a';
+  ctx.fillRect(0, 0, W, H);
+  
+  const cx = W / 2, cy = H * 0.55;
+  const scaleX = W * 0.4;
+  const scaleY = H * 0.35;
+  
+  // Axes
+  ctx.strokeStyle = '#2a2a32';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(30, cy); ctx.lineTo(W - 20, cy); // x-axis
+  ctx.moveTo(cx, 15); ctx.lineTo(cx, H - 20); // y-axis
+  ctx.stroke();
+  
+  // Axis labels
+  ctx.fillStyle = '#8a8680';
+  ctx.font = '12px JetBrains Mono, monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('h', W - 15, cy - 8);
+  ctx.fillText('f(h)', cx + 25, 25);
+  ctx.fillText('0', cx - 12, cy + 16);
+  
+  // Tick marks on x-axis
+  ctx.fillStyle = '#555';
+  ctx.font = '10px JetBrains Mono, monospace';
+  for (let v = -2; v <= 2; v++) {
+    if (v === 0) continue;
+    const px = cx + v * scaleX * 0.4;
+    ctx.beginPath();
+    ctx.moveTo(px, cy - 3); ctx.lineTo(px, cy + 3);
+    ctx.strokeStyle = '#3a3a42';
+    ctx.stroke();
+    ctx.fillText(v.toString(), px, cy + 15);
+  }
+  
+  // y = 1 line (gold, prominent)
+  const y1 = cy - scaleY;
+  ctx.strokeStyle = 'rgba(201, 168, 76, 0.5)';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([6, 3]);
+  ctx.beginPath();
+  ctx.moveTo(30, y1); ctx.lineTo(W - 20, y1);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  
+  ctx.fillStyle = '#c9a84c';
+  ctx.font = '13px JetBrains Mono, monospace';
+  ctx.textAlign = 'right';
+  ctx.fillText('1', cx - 10, y1 + 4);
+  
+  // The function f(h) = h/h = 1 for all h ≠ 0
+  ctx.strokeStyle = '#c9a84c';
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  // Left side: from far left to just before h=0
+  ctx.moveTo(30, y1);
+  ctx.lineTo(cx - 4, y1);
+  ctx.stroke();
+  
+  ctx.beginPath();
+  // Right side: from just after h=0 to far right
+  ctx.moveTo(cx + 4, y1);
+  ctx.lineTo(W - 20, y1);
+  ctx.stroke();
+  
+  // Hollow dot at h = 0 (the "undefined" point)
+  ctx.beginPath();
+  ctx.arc(cx, y1, 6, 0, Math.PI * 2);
+  ctx.strokeStyle = '#c43e3e';
+  ctx.lineWidth = 2.5;
+  ctx.stroke();
+  ctx.fillStyle = '#14141a';
+  ctx.fill();
+  
+  // Label the hollow dot
+  ctx.fillStyle = '#c43e3e';
+  ctx.textAlign = 'center';
+  ctx.font = '11px JetBrains Mono, monospace';
+  ctx.fillText('"undefined"', cx, y1 + 22);
+  
+  // Annotation: "= 1 everywhere"
+  ctx.fillStyle = '#c9a84c';
+  ctx.font = '12px JetBrains Mono, monospace';
+  ctx.textAlign = 'left';
+  ctx.fillText('= 1 everywhere', W - 155, y1 - 10);
+  
+  // Question annotation
+  ctx.fillStyle = 'rgba(196, 62, 62, 0.6)';
+  ctx.font = '11px JetBrains Mono, monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('← what is it here?', cx + 75, y1 + 22);
+}
+
+setTimeout(drawHH, 600);
+
+// ── 3D LAG VISUALIZATION (Three.js) ──
+// Galactic Core → Sun → Earth
+// Exaggerated lag effect (~500×) for visibility
+
+let lagMode = 'instant';
+let simSpeed = 1;
+let lagScene, lagCamera, lagRenderer, lagControls;
+let lagRunning = false;
+
+// Sim objects
+let coreMesh, sunMesh, earthMesh, ghostMesh;
+let sunOrbitLine, earthTrailLine, nominalOrbitLine;
+let sunAngle = 0;
+let earthAngle = 0;
+
+// Physics params (scaled for visual clarity)
+const SUN_ORBIT_R = 8;         // Sun's galactic orbit radius (scene units)
+const EARTH_ORBIT_R = 1.8;     // Earth's orbit around Sun
+const SUN_SPEED = 0.3;         // Sun's angular velocity (rad/s of sim time)
+const EARTH_SPEED = 3.0;       // Earth's angular velocity around Sun
+
+// The key parameter: how much Sun moves during one light-delay period
+// In reality: ~0.07% of Earth's orbit radius. We exaggerate to ~5%
+const LAG_FRACTION = 0.05;     // fraction of Earth orbit radius the Sun moves during delay
+// lag_time = LAG_FRACTION * EARTH_ORBIT_R / (SUN_SPEED * SUN_ORBIT_R)
+const LAG_TIME = LAG_FRACTION * EARTH_ORBIT_R / (SUN_SPEED * SUN_ORBIT_R);
+
+// Sun position history for delayed gravity
+const HIST_LEN = 2000;
+const sunHistory = [];
+let simTime = 0;
+let earthDist = EARTH_ORBIT_R;
+let maxDrift = 0;
+let orbitsCount = 0;
+let lastEAngle = 0;
+let totalEAngle = 0;
+
+// Earth physics state (for delayed mode, we integrate properly)
+let earthPosX, earthPosY, earthPosZ;
+let earthVelX, earthVelY, earthVelZ;
+// Trail points
+let trailPoints = [];
+const MAX_TRAIL = 1200;
+
+function setSimSpeed(s) {
+  simSpeed = s;
+  document.querySelectorAll('.lag-controls-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById('spd' + s);
+  if (btn) btn.classList.add('active');
+}
+
+function setLagMode(mode) {
+  lagMode = mode;
+  document.getElementById('btn-instant').classList.toggle('active', mode === 'instant');
+  document.getElementById('btn-lightspeed').classList.toggle('active', mode === 'lightspeed');
+  const descI = document.getElementById('lag-desc-instant');
+  const descL = document.getElementById('lag-desc-lightspeed');
+  if (descI) descI.style.display = mode === 'instant' ? 'block' : 'none';
+  if (descL) descL.style.display = mode === 'lightspeed' ? 'block' : 'none';
+  resetSim();
+}
+
+function getSunPos(angle) {
+  return {
+    x: Math.cos(angle) * SUN_ORBIT_R,
+    y: 0,
+    z: Math.sin(angle) * SUN_ORBIT_R
+  };
+}
+
+function resetSim() {
+  simTime = 0;
+  sunAngle = 0;
+  earthAngle = 0;
+  maxDrift = 0;
+  orbitsCount = 0;
+  lastEAngle = 0;
+  totalEAngle = 0;
+  sunHistory.length = 0;
+  trailPoints = [];
+
+  // Fill history with initial Sun position
+  const sp = getSunPos(0);
+  for (let i = 0; i < HIST_LEN; i++) {
+    sunHistory.push({ x: sp.x, y: sp.y, z: sp.z, t: -i * 0.001 });
+  }
+
+  // Earth starts in circular orbit around Sun's initial position
+  const ep = getSunPos(0);
+  earthPosX = ep.x + EARTH_ORBIT_R;
+  earthPosY = 0;
+  earthPosZ = ep.z;
+
+  // Orbital velocity: perpendicular to radial, in the xz plane
+  // Sun is at (SUN_ORBIT_R, 0, 0), Earth at (SUN_ORBIT_R + EARTH_ORBIT_R, 0, 0)
+  // Velocity should be in +z direction
+  const vOrbit = EARTH_SPEED * EARTH_ORBIT_R; // tangential speed
+  // Plus Sun's velocity at this point (tangential to galactic orbit = +z direction)
+  const vSun = SUN_SPEED * SUN_ORBIT_R;
+  earthVelX = 0;
+  earthVelY = 0;
+  earthVelZ = vOrbit + vSun;
+
+  // Update trail geometry
+  if (earthTrailLine) {
+    const positions = earthTrailLine.geometry.attributes.position.array;
+    for (let i = 0; i < MAX_TRAIL * 3; i++) positions[i] = 0;
+    earthTrailLine.geometry.attributes.position.needsUpdate = true;
+  }
+  if (ghostMesh) ghostMesh.visible = false;
+}
+
+function initLag3D() {
+  const container = document.getElementById('lagContainer');
+  if (!container) return;
+  const canvas = document.getElementById('lag3d');
+  if (!canvas) return;
+
+  const W = container.clientWidth;
+  const H = container.clientHeight;
+  canvas.width = W;
+  canvas.height = H;
+
+  // Scene
+  lagScene = new THREE.Scene();
+
+  // Camera — wider FOV to capture the escape trajectory
+  lagCamera = new THREE.PerspectiveCamera(55, W / H, 0.1, 500);
+  lagCamera.position.set(6, 10, 14);
+
+  // Renderer
+  lagRenderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  lagRenderer.setSize(W, H);
+  lagRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  lagRenderer.setClearColor(0x08080a, 1);
+
+  // Lights
+  const ambient = new THREE.AmbientLight(0x333340, 1);
+  lagScene.add(ambient);
+  const pointLight = new THREE.PointLight(0xfff5cc, 2, 50);
+  pointLight.position.set(0, 3, 0);
+  lagScene.add(pointLight);
+
+  // ── Galactic Core ──
+  const coreGeo = new THREE.SphereGeometry(0.6, 32, 32);
+  const coreMat = new THREE.MeshBasicMaterial({ color: 0x6633aa });
+  coreMesh = new THREE.Mesh(coreGeo, coreMat);
+  lagScene.add(coreMesh);
+
+  // Core glow
+  const glowGeo = new THREE.SphereGeometry(0.9, 32, 32);
+  const glowMat = new THREE.MeshBasicMaterial({ color: 0x6633aa, transparent: true, opacity: 0.12 });
+  const glowMesh = new THREE.Mesh(glowGeo, glowMat);
+  lagScene.add(glowMesh);
+
+  // Core label (sprite)
+  const coreLabel = makeLabel('Galactic Core', 0x8866cc);
+  coreLabel.position.set(0, -1.2, 0);
+  lagScene.add(coreLabel);
+
+  // ── Sun's orbital path ──
+  const sunOrbitGeo = new THREE.BufferGeometry();
+  const sunOrbitPts = [];
+  for (let i = 0; i <= 128; i++) {
+    const a = (i / 128) * Math.PI * 2;
+    sunOrbitPts.push(Math.cos(a) * SUN_ORBIT_R, 0, Math.sin(a) * SUN_ORBIT_R);
+  }
+  sunOrbitGeo.setAttribute('position', new THREE.Float32BufferAttribute(sunOrbitPts, 3));
+  sunOrbitLine = new THREE.Line(sunOrbitGeo, new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.06 }));
+  lagScene.add(sunOrbitLine);
+
+  // ── Sun ──
+  const sunGeo = new THREE.SphereGeometry(0.35, 24, 24);
+  const sunMat = new THREE.MeshBasicMaterial({ color: 0xc9a84c });
+  sunMesh = new THREE.Mesh(sunGeo, sunMat);
+  sunMesh.position.set(SUN_ORBIT_R, 0, 0);
+  lagScene.add(sunMesh);
+
+  // Sun glow
+  const sunGlowGeo = new THREE.SphereGeometry(0.5, 24, 24);
+  const sunGlowMat = new THREE.MeshBasicMaterial({ color: 0xc9a84c, transparent: true, opacity: 0.15 });
+  const sunGlow = new THREE.Mesh(sunGlowGeo, sunGlowMat);
+  sunMesh.add(sunGlow);
+
+  const sunLabel = makeLabel('Sun', 0xc9a84c);
+  sunLabel.position.set(0, -0.8, 0);
+  sunMesh.add(sunLabel);
+
+  // ── Ghost Sun (for delayed mode) ──
+  const ghostGeo = new THREE.SphereGeometry(0.3, 16, 16);
+  const ghostMat = new THREE.MeshBasicMaterial({ color: 0xc43e3e, transparent: true, opacity: 0.3, wireframe: true });
+  ghostMesh = new THREE.Mesh(ghostGeo, ghostMat);
+  ghostMesh.visible = false;
+  lagScene.add(ghostMesh);
+
+  // ── Earth ──
+  const earthGeo = new THREE.SphereGeometry(0.22, 16, 16);
+  const earthMat = new THREE.MeshBasicMaterial({ color: 0x4a9fee });
+  earthMesh = new THREE.Mesh(earthGeo, earthMat);
+  earthMesh.position.set(SUN_ORBIT_R + EARTH_ORBIT_R, 0, 0);
+  lagScene.add(earthMesh);
+
+  // ── Nominal orbit ring (dashed, around Sun) ──
+  const nomGeo = new THREE.BufferGeometry();
+  const nomPts = [];
+  for (let i = 0; i <= 64; i++) {
+    const a = (i / 64) * Math.PI * 2;
+    nomPts.push(Math.cos(a) * EARTH_ORBIT_R, 0, Math.sin(a) * EARTH_ORBIT_R);
+  }
+  nomGeo.setAttribute('position', new THREE.Float32BufferAttribute(nomPts, 3));
+  nominalOrbitLine = new THREE.Line(nomGeo, new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.08 }));
+  lagScene.add(nominalOrbitLine);
+
+  // ── Earth trail ──
+  const trailGeo = new THREE.BufferGeometry();
+  const trailArr = new Float32Array(MAX_TRAIL * 3);
+  trailGeo.setAttribute('position', new THREE.Float32BufferAttribute(trailArr, 3));
+  trailGeo.setDrawRange(0, 0);
+  const trailMat = new THREE.LineBasicMaterial({ color: 0x4a9fee, transparent: true, opacity: 0.5 });
+  earthTrailLine = new THREE.Line(trailGeo, trailMat);
+  lagScene.add(earthTrailLine);
+
+  // ── Simple mouse orbit controls ──
+  let isDragging = false, prevX = 0, prevY = 0;
+  // Camera positioned on -z side so Earth's escape trajectory (+z direction) 
+  // goes dramatically into the screen depth
+  let camTheta = 2.7, camPhi = 0.5, camDist = 20;
+
+  function updateCam() {
+    lagCamera.position.x = Math.sin(camTheta) * Math.cos(camPhi) * camDist;
+    lagCamera.position.y = Math.sin(camPhi) * camDist;
+    lagCamera.position.z = Math.cos(camTheta) * Math.cos(camPhi) * camDist;
+    // Look at a point centered on where the action happens
+    // (between galactic core and Sun's path during the escape window)
+    lagCamera.lookAt(2, 0, 3);
+  }
+  updateCam();
+
+  canvas.addEventListener('pointerdown', (e) => {
+    isDragging = true; prevX = e.clientX; prevY = e.clientY;
+  });
+  canvas.addEventListener('pointermove', (e) => {
+    if (!isDragging) return;
+    camTheta += (e.clientX - prevX) * 0.008;
+    camPhi = Math.max(0.1, Math.min(1.4, camPhi + (e.clientY - prevY) * 0.008));
+    prevX = e.clientX; prevY = e.clientY;
+    updateCam();
+  });
+  canvas.addEventListener('pointerup', () => isDragging = false);
+  canvas.addEventListener('pointerleave', () => isDragging = false);
+  canvas.addEventListener('wheel', (e) => {
+    camDist = Math.max(6, Math.min(60, camDist + e.deltaY * 0.02));
+    updateCam();
+    e.preventDefault();
+  }, { passive: false });
+
+  // Handle resize
+  const ro = new ResizeObserver(() => {
+    const w = container.clientWidth;
+    const h = container.clientHeight;
+    canvas.width = w; canvas.height = h;
+    lagCamera.aspect = w / h;
+    lagCamera.updateProjectionMatrix();
+    lagRenderer.setSize(w, h);
+  });
+  ro.observe(container);
+
+  resetSim();
+  lagRunning = true;
+  animateLag();
+}
+
+function makeLabel(text, color) {
+  const c = document.createElement('canvas');
+  c.width = 256; c.height = 64;
+  const cx = c.getContext('2d');
+  cx.font = '22px JetBrains Mono, monospace';
+  cx.fillStyle = '#' + color.toString(16).padStart(6, '0');
+  cx.globalAlpha = 0.7;
+  cx.textAlign = 'center';
+  cx.fillText(text, 128, 36);
+  const tex = new THREE.CanvasTexture(c);
+  const mat = new THREE.SpriteMaterial({ map: tex, transparent: true });
+  const sprite = new THREE.Sprite(mat);
+  sprite.scale.set(2, 0.5, 1);
+  return sprite;
+}
+
+function stepSim3D(dt) {
+  // Advance Sun along its galactic orbit
+  sunAngle += SUN_SPEED * dt;
+  const sp = getSunPos(sunAngle);
+
+  // Store Sun position in history
+  sunHistory.unshift({ x: sp.x, y: sp.y, z: sp.z, t: simTime });
+  if (sunHistory.length > HIST_LEN) sunHistory.pop();
+
+  if (lagMode === 'instant') {
+    // Earth in perfect circular orbit around Sun's CURRENT position
+    earthAngle += EARTH_SPEED * dt;
+    earthPosX = sp.x + Math.cos(earthAngle) * EARTH_ORBIT_R;
+    earthPosY = 0;
+    earthPosZ = sp.z + Math.sin(earthAngle) * EARTH_ORBIT_R;
+    earthDist = EARTH_ORBIT_R; // always perfect
+    ghostMesh.visible = false;
+
+  } else {
+    // Find Sun's position at (simTime - LAG_TIME)
+    const targetTime = simTime - LAG_TIME;
+    let pastSun = sunHistory[sunHistory.length - 1]; // fallback: oldest
+    for (let i = 0; i < sunHistory.length - 1; i++) {
+      if (sunHistory[i].t <= targetTime) {
+        pastSun = sunHistory[i];
+        break;
+      }
+    }
+
+    // Show ghost Sun
+    ghostMesh.visible = true;
+    ghostMesh.position.set(pastSun.x, pastSun.y, pastSun.z);
+
+    // Gravitational acceleration toward PAST Sun position
+    const dx = pastSun.x - earthPosX;
+    const dy = pastSun.y - earthPosY;
+    const dz = pastSun.z - earthPosZ;
+    const r = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+    // GM/r² in our units — calibrated so circular orbit at EARTH_ORBIT_R has angular speed EARTH_SPEED
+    const GM = EARTH_SPEED * EARTH_SPEED * EARTH_ORBIT_R * EARTH_ORBIT_R * EARTH_ORBIT_R;
+    const accel = GM / (r * r);
+    const ax = accel * dx / r;
+    const ay = accel * dy / r;
+    const az = accel * dz / r;
+
+    const GMgal = SUN_SPEED * SUN_SPEED * SUN_ORBIT_R * SUN_ORBIT_R * SUN_ORBIT_R;
+
+    // Earth-Sun distance (computed early for blend factor)
+    const edx = earthPosX - sp.x;
+    const edy = earthPosY - sp.y;
+    const edz = earthPosZ - sp.z;
+    earthDist = Math.sqrt(edx * edx + edy * edy + edz * edz);
+
+    // Galactic gravity on Earth
+    const rGal = Math.sqrt(earthPosX * earthPosX + earthPosY * earthPosY + earthPosZ * earthPosZ);
+    const aGal = GMgal / (rGal * rGal);
+    const agx = -aGal * earthPosX / rGal;
+    const agy = -aGal * earthPosY / rGal;
+    const agz = -aGal * earthPosZ / rGal;
+
+    // Galactic gravity on Sun (for tidal subtraction while bound)
+    const rSunGal = Math.sqrt(sp.x * sp.x + sp.y * sp.y + sp.z * sp.z);
+    const aSunGal = GMgal / (rSunGal * rSunGal);
+    const asgx = -aSunGal * sp.x / rSunGal;
+    const asgy = -aSunGal * sp.y / rSunGal;
+    const asgz = -aSunGal * sp.z / rSunGal;
+
+    // Smooth blend: tidal subtraction fades out as Earth moves away from Sun
+    // At 1× orbit radius: fully tidal (blend=1). At 3× radius: fully galactic (blend=0).
+    const blendStart = EARTH_ORBIT_R * 1.5;
+    const blendEnd = EARTH_ORBIT_R * 3.0;
+    const tidalBlend = Math.max(0, Math.min(1, (blendEnd - earthDist) / (blendEnd - blendStart)));
+
+    // Tidal term (subtracted Sun's galactic accel), blended to zero as Earth escapes
+    earthVelX += (ax + agx - asgx * tidalBlend) * dt;
+    earthVelY += (ay + agy - asgy * tidalBlend) * dt;
+    earthVelZ += (az + agz - asgz * tidalBlend) * dt;
+
+    earthPosX += earthVelX * dt;
+    earthPosY += earthVelY * dt;
+    earthPosZ += earthVelZ * dt;
+
+    if (earthDist > EARTH_ORBIT_R + maxDrift) maxDrift = earthDist - EARTH_ORBIT_R;
+  }
+
+  simTime += dt;
+
+  // Track orbits
+  const relX = earthPosX - sp.x;
+  const relZ = earthPosZ - sp.z;
+  const eAng = Math.atan2(relZ, relX);
+  let dA = eAng - lastEAngle;
+  if (dA > Math.PI) dA -= 2 * Math.PI;
+  if (dA < -Math.PI) dA += 2 * Math.PI;
+  totalEAngle += dA;
+  lastEAngle = eAng;
+  orbitsCount = Math.floor(Math.abs(totalEAngle) / (2 * Math.PI));
+}
+
+function animateLag() {
+  if (!lagRunning) return;
+  requestAnimationFrame(animateLag);
+
+  // Physics steps
+  const stepsPerFrame = Math.round(2 * simSpeed);
+  const dt = 0.016; // sim time per step
+  for (let i = 0; i < stepsPerFrame; i++) {
+    stepSim3D(dt);
+  }
+
+  // Update Sun mesh
+  const sp = getSunPos(sunAngle);
+  sunMesh.position.set(sp.x, sp.y, sp.z);
+
+  // Nominal orbit ring follows Sun
+  nominalOrbitLine.position.set(sp.x, sp.y, sp.z);
+
+  // Update Earth mesh
+  earthMesh.position.set(earthPosX, earthPosY, earthPosZ);
+
+  // Trail
+  trailPoints.push(earthPosX, earthPosY, earthPosZ);
+  if (trailPoints.length > MAX_TRAIL * 3) {
+    trailPoints = trailPoints.slice(trailPoints.length - MAX_TRAIL * 3);
+  }
+  const positions = earthTrailLine.geometry.attributes.position.array;
+  const numPts = trailPoints.length / 3;
+  for (let i = 0; i < numPts; i++) {
+    positions[i * 3] = trailPoints[i * 3];
+    positions[i * 3 + 1] = trailPoints[i * 3 + 1];
+    positions[i * 3 + 2] = trailPoints[i * 3 + 2];
+  }
+  earthTrailLine.geometry.attributes.position.needsUpdate = true;
+  earthTrailLine.geometry.setDrawRange(0, numPts);
+
+  // Trail color
+  earthTrailLine.material.color.set(lagMode === 'lightspeed' ? 0xc43e3e : 0x4a9fee);
+  earthTrailLine.material.opacity = lagMode === 'lightspeed' ? 0.6 : 0.35;
+
+  // Render
+  lagRenderer.render(lagScene, lagCamera);
+
+  // Update HUD
+  const overlay = document.getElementById('lag-overlay');
+  if (overlay) {
+    const yrs = (simTime * 0.1).toFixed(1); // scale to ~years
+    const col = lagMode === 'lightspeed' ? '#c43e3e' : '#5a9e6f';
+    overlay.innerHTML =
+      `<span style="color:${col}">` +
+      `Orbits: <strong>${orbitsCount}</strong><br>` +
+      `Sim time: <strong>${yrs} yr</strong>` +
+      `</span>`;
+  }
+
+  const distOverlay = document.getElementById('lag-dist-overlay');
+  if (distOverlay) {
+    const driftPct = ((earthDist / EARTH_ORBIT_R - 1) * 100);
+    const col = lagMode === 'lightspeed'
+      ? (driftPct > 5 ? '#c43e3e' : (driftPct > 1 ? '#c9a84c' : '#5a9e6f'))
+      : '#5a9e6f';
+    const bar = '█'.repeat(Math.min(20, Math.max(1, Math.round(earthDist / EARTH_ORBIT_R * 10))));
+    const nomBar = '░'.repeat(10);
+    distOverlay.innerHTML =
+      `<span style="color:${col}">` +
+      `Earth-Sun: <strong>${earthDist.toFixed(3)}</strong> / ${EARTH_ORBIT_R.toFixed(1)} AU<br>` +
+      (Math.abs(driftPct) > 0.05 ? `Drift: <strong>${driftPct > 0 ? '+' : ''}${driftPct.toFixed(1)}%</strong><br>` : '') +
+      (lagMode === 'lightspeed' && maxDrift > 0.01 ? `Peak drift: <strong>+${(maxDrift / EARTH_ORBIT_R * 100).toFixed(1)}%</strong>` : '') +
+      `</span>`;
+  }
+}
+
+// Initialize when section scrolls into view
+const lagObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting && !lagRunning) {
+      initLag3D();
+    }
+  });
+}, { threshold: 0.1 });
+
+const lagContainer = document.getElementById('lagContainer');
+if (lagContainer) {
+  lagObserver.observe(lagContainer);
+} else {
+  // Fallback: try init after a delay
+  setTimeout(() => {
+    if (!lagRunning) initLag3D();
+  }, 1000);
+}
+
+// ── BIJECTIVE GRID ──
+function buildBijGrid() {
+  const grid = document.getElementById('bijGrid');
+  if (!grid) return;
+  const symbols = ['1','2','3','4','5','6','7','8','9','♥'];
+
+  for (let std = 1; std <= 100; std++) {
+    let bij;
+    if (std <= 10) {
+      bij = symbols[std - 1];
+    } else {
+      // tens digit: Math.ceil(std/10) - 1 if std%10 != 0, else Math.floor(std/10) - 1... 
+      // Actually: bijective encoding
+      let q = Math.ceil(std / 10) ;
+      let r = std - (q - 1) * 10;
+      // Wait, let me just do this properly
+      // In bijective base-10: to encode n, 
+      // if n <= 10: single digit symbols[n-1]
+      // if n > 10: let q = Math.ceil(n/10) - 1, r = n - q*10  ... no
+      // Actually for two digits: first digit d1 from 1-10, second digit d2 from 1-10
+      // value = d1 * 10 + d2
+      // d1 ranges 1..9,10  and d2 ranges 1..9,10
+      // for std=11: d1=1,d2=1 -> "11" -> value = 10 + 1 = 11. Yes.
+      // for std=19: d1=1,d2=9 -> "19" -> value = 10 + 9 = 19
+      // for std=20: d1=1,d2=10 -> "1♥" -> value = 10 + 10 = 20
+      // for std=21: d1=2,d2=1 -> "21" -> value = 20 + 1 = 21
+      // So d2 = ((std - 1) % 10) + 1;  d1 = Math.ceil(std/10) ... hmm
+      // std=20: d2=10, d1=1. ceil(20/10)=2. wrong.
+      // d1 = Math.ceil((std - 10)/10) for std>10... let me just be direct
+      // d2 = std % 10 === 0 ? 10 : std % 10; d1 = Math.ceil(std/10) - (std%10===0 ? 1 : 0);... 
+      
+      let d2 = std % 10;
+      let d1;
+      if (d2 === 0) {
+        d2 = 10;
+        d1 = (std / 10) - 1;
+      } else {
+        d1 = Math.floor(std / 10);
+      }
+      // But wait, d1 should be 0 for 1-10 (single digit). For 11-20, d1=1. for 21-30, d1=2. etc
+      // std=11: d2=1, d1=1 -> "11" ✓
+      // std=20: d2=10, d1=1 -> "1♥" ✓
+      // std=21: d2=1, d1=2 -> "21" ✓
+      // std=100: d2=10, d1=9 -> "9♥"  ... wait that's 90+10=100? no, 9♥ should be 9*10+10=100. Yes!
+      // But ♥♥ should be 100 too... no. ♥♥ = 10*10 + 10 = 110? Hmm.
+      // Actually in bijective base-10: ♥♥ = 10×10 + 10 = 110. So ♥♥ ≠ 100.
+      // The user says ♥♥ = 100. Let me re-read...
+      // "Working backwards from ♥♥ = 100"
+      // In bijective base-k, the value of d1d2 = d1*k + d2 where digits are 1..k
+      // So ♥♥ = 10*10 + 10 = 110 in standard bijective.
+      // But the user defines ♥♥ = 100. So their system might be d1*10 + d2 where d1 is (d1-1)*10?
+      // Actually re-reading: "exactly 100 two-digit representations from 11 to ♥♥"
+      // 10 first digits × 10 second digits = 100 combos. If we say 11=1, then ♥♥ = 100. 
+      // So the mapping is: two-digit value = (d1-1)*10 + d2
+      // 11 -> (1-1)*10 + 1 = 1... but that conflicts with single digit "1" = 1
+      // Wait — I think in the user's system: single digits are 1-10 (using 1-9,♥)
+      // Two-digit numbers start at 11 = eleven, 12 = twelve...
+      // So: two-digit value = (d1-1)*10 + d2 + 10? No...
+      // If single digits cover 1-10, then two digits should cover 11-110 (standard bijective)
+      // OR 11-100 if the user's system works differently.
+      // Let me just follow the user's stated mapping from the search result:
+      // "11 = one, 12 = two... 1♥ = ten, 21 = eleven... ♥♥ = one hundred"
+      // Wait — "11 = one"?? So single digit "1" is ALSO one. That's the whole point: 1 = 11 = 111...
+      // So: value of two-digit d1d2 = (d1-1)*10 + (d2)
+      // 11 = 0 + 1 = 1. 12 = 0 + 2 = 2. 1♥ = 0+10 = 10. 
+      // 21 = 10+1=11. 22 = 10+2=12. 2♥ = 10+10 = 20.
+      // ♥1 = 90+1=91. ♥♥ = 90+10 = 100. ✓
+      
+      // So for this display, I should show the STANDARD value mapped to bijective
+      if (d1 === 0) {
+        bij = symbols[d2 - 1]; // single digit
+      } else {
+        bij = symbols[d1 - 1] + symbols[d2 - 1]; // but this gives wrong mapping
+        // Actually d1 here is Math.floor(std/10) which for std=11 gives 1. We want "11"
+        // d1=1 -> symbols[0] = "1", d2=1 -> symbols[0] = "1" -> "11" which maps to value 1. 
+        // But we want to show std=11 mapping to bijective for value 11.
+        // Value 11 in bijective: (d1-1)*10 + d2 = 11 => d1=2, d2=1 => "21"
+        // That matches the search result: "21 = eleven"
+        
+        // So I need to ENCODE std into bijective, not just map digits directly
+        // encode(n): d2 = ((n-1) % 10) + 1; d1 = Math.floor((n-1)/10) + 1
+        // encode(1): d2=1, d1=1 -> "11" ✓ (but also just "1")
+        // encode(10): d2=10, d1=1 -> "1♥" ✓
+        // encode(11): d2=1, d1=2 -> "21" ✓  
+        // encode(100): d2=10, d1=10 -> "♥♥" ✓
+        
+        let dd2 = ((std - 1) % 10) + 1;
+        let dd1 = Math.floor((std - 1) / 10) + 1;
+        bij = symbols[dd1 - 1] + symbols[dd2 - 1];
+      }
+    }
+    
+    // Recalculate properly for all
+    let dd2 = ((std - 1) % 10) + 1;
+    let dd1 = Math.floor((std - 1) / 10) + 1;
+    if (std <= 10) {
+      bij = symbols[std - 1];
+    } else {
+      bij = symbols[dd1 - 1] + symbols[dd2 - 1];
+    }
+
+    const cell = document.createElement('div');
+    cell.className = 'bij-cell';
+    cell.innerHTML = `<div class="bij-std">${std}</div><div class="bij-new">${bij}</div>`;
+    grid.appendChild(cell);
+  }
+}
+buildBijGrid();
+
+// ── BIJECTIVE BINARY COUNTER ──
+let bijBinVal = 0;
+let bijBinPause = false;
+let bijBinHistory = [];
+
+function toUserBijBin(n) {
+  // Encodes n in the user's bijective base-2: {1,2}
+  // value = d_0 + (d_1 - 1)*2 + (d_2 - 1)*4 + ...
+  // Shortest unique representation (first digit ≥ 2 for multi-digit)
+  if (n === 1) return '1';
+  if (n === 2) return '2';
+  // Find digit count k: n falls in range (2^(k-1) + 1) to 2^k
+  let k = 1;
+  while (n > Math.pow(2, k)) k++;
+  // First digit is always 2, remaining = n - 2^(k-1)
+  let remaining = n - Math.pow(2, k - 1);
+  let sub = toUserBijBin(remaining);
+  while (sub.length < k - 1) sub = '1' + sub; // pad with 1s (since 1=11=111)
+  return '2' + sub;
+}
+
+function stepBijBin() {
+  if (!bijBinPause) {
+    bijBinVal++;
+    if (bijBinVal > 32) bijBinVal = 1;
+    
+    const stdEl = document.getElementById('bijBinStd');
+    const newEl = document.getElementById('bijBinNew');
+    const histEl = document.getElementById('bijBinHistory');
+    
+    if (stdEl && newEl) {
+      const bijStr = toUserBijBin(bijBinVal);
+      stdEl.textContent = bijBinVal;
+      
+      // Highlight special cases where 1 = 11 = 111
+      if (bijBinVal === 1) {
+        newEl.innerHTML = '<span style="color:#c43e3e;">1</span> <span style="font-size:0.6em;color:#c43e3e;">= 11 = 111 = 1111…</span>';
+      } else if (bijBinVal === 2) {
+        newEl.innerHTML = '<span>2</span> <span style="font-size:0.6em;color:var(--text-dim);">= 12 = 112…</span>';
+      } else {
+        newEl.textContent = bijStr;
+      }
+      
+      bijBinHistory.push({ v: bijBinVal, b: bijStr });
+      if (bijBinHistory.length > 10) bijBinHistory.shift();
+      
+      if (histEl) {
+        histEl.innerHTML = bijBinHistory.map(h => {
+          const isOne = (h.v === 1);
+          const isTwo = (h.v === 2);
+          const col = isOne ? '#c43e3e' : 'var(--text-dim)';
+          const bcol = isOne ? '#c43e3e' : (isTwo ? 'var(--gold)' : 'var(--gold)');
+          return '<span style="color:' + col + ';">' + h.v + '=<span style="color:' + bcol + '">' + h.b + '</span></span>';
+        }).join(' &nbsp;·&nbsp; ');
+      }
+    }
+  }
+  setTimeout(stepBijBin, 900);
+}
+setTimeout(stepBijBin, 1200);
+
+// ── HANDLE CANVAS RESIZE ──
+function resizeCanvases() {
+  const containers = [
+    { canvas: 'edCanvas', ratio: 5/3, maxW: 500 },
+    { canvas: 'hhCanvas', ratio: 500/280, maxW: 500 }
+  ];
+  containers.forEach(({canvas: id, ratio, maxW}) => {
+    const c = document.getElementById(id);
+    if (!c) return;
+    const parent = c.parentElement;
+    const w = Math.min(parent.clientWidth - 40, maxW);
+    c.width = w;
+    c.height = w / ratio;
+  });
+  drawED();
+  drawHH();
+}
+window.addEventListener('resize', resizeCanvases);
+setTimeout(resizeCanvases, 100);
+
+</script>
+
+</body>
+</html>

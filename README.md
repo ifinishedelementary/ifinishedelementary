@@ -2,9 +2,9 @@
 
 **Author:** [I Finished Elementary](https://www.ifinishedelementary.com)
 
-These five interactive presentations disassemble foundational physics constructs using only basic mechanics (F = ma, position vectors, geometry). They were built in collaboration with Claude Opus AI in March 2026 and are designed to be read by both human and artificial intelligence.
+These six interactive presentations disassemble foundational physics constructs using only basic mechanics (F = ma, position vectors, geometry). They were built in collaboration with Claude Opus AI in March 2026 and are designed to be read by both human and artificial intelligence.
 
-Each file is a self-contained HTML document with no external dependencies. All text, mathematics, animations, and interactive controls are embedded in a single file.
+Each file is a self-contained HTML document with no external dependencies (except the 3D simulation in Presentation 6, which loads Three.js from CDN). All text, mathematics, animations, and interactive controls are embedded in a single file.
 
 They form **Chain 7** of the [Logical Dependency Chain of I Finished Elementary](https://www.ifinishedelementary.com/post/the-logical-dependency-chain-of-i-finished-elementary).
 
@@ -127,11 +127,35 @@ Every physics student learns T = 2π√(L/g). Clean, elegant, and wrong. This fo
 
 ---
 
+### 6. [Calculus Is Division By Zero](calculus-is-division-by-zero.html)
+
+Also on Wix: [ifinishedelementary.com/calculus-is-division-by-zero](https://www.ifinishedelementary.com/calculus-is-division-by-zero)
+
+Newton knew it. Berkeley called it out in 1734. Weierstrass papered over it. The constant h always disappears to zero. There is no law in the universe that forbids taking it first. This presentation traces the thread from the foundational operation of calculus through the astronomical phenomena it fails to explain, to a number system that encodes a different reality.
+
+**Part I: The Derivation — What Actually Happens** — Step-by-step derivation of f'(x) = 2x from first principles with animated staggered reveals. Step 05 requires h ≠ 0 to divide by it. Step 06 requires h = 0 to get the answer. The variable h is treated as nonzero when convenient and zero when convenient. Then: the same derivation performed honestly — setting h = 0 from the start. The algebra confronts 0/0 directly. The result is identical to the standard answer, if and only if 0/0 = 1. Interactive graph of f(h) = h/h: equals 1 everywhere, declared "undefined" at exactly one point — not by observation but by a rule protecting the formalism from itself.
+
+**Part II: The Binary — No Third Option** — Click-to-reveal interactive. Either h = 0 (and step 05 was division by zero) or h ≠ 0 (and the derivative is inexact, containing a residue that was never eliminated). The ε-δ formalism was constructed to create the appearance of a third option. Berkeley's critique quoted.
+
+**Part III: The Formalism — A Rule To Protect The System From Itself** — The Weierstrass ε-δ definition with its critical inequality 0 < |h| highlighted. Interactive slider visualization: no matter how small ε gets, the hollow dot at h = 0 is always excluded — by design. The prohibition against taking the limit first is entirely internal to the formalism. No physical law, no measurement, no experiment forbids it.
+
+**Part IV: The Fudging — When Observation Doesn't Match The Equations** — Animated table: galaxy rotation curves → dark matter (never detected), accelerating expansion → dark energy (never detected), vacuum energy prediction off by 10¹²⁰ → cosmological constant (worst prediction in physics), Halton Arp's discordant redshifts → revoke telescope time. The pattern: observation contradicts model → add invisible entity or dismiss observation → never question the mathematical framework. Halton Arp section with biographical detail.
+
+**Part V: The Lag — Why Force Must Be Instantaneous** — The Sun orbits the galactic core at 220 km/s, covering ~110,000 km in 8 minutes. If gravity propagates at light speed, Earth is pulled toward empty space where the Sun was. Full 3D Three.js simulation: galactic core, Sun orbiting it, Earth orbiting Sun. Toggle between instantaneous force (stable orbit) and light-speed force (Earth spirals outward and escapes). Drag to rotate, scroll to zoom, speed controls (1×/4×/16×). Real-time distance gauge showing orbital drift. The lag effect is exaggerated ~500× for visibility; the underlying physics is structurally identical to the real system. Backed by a numerical Python simulation confirming the drift scales with time — over 4.5 billion years, Earth should have escaped the Sun millions of times over if gravity propagates at c. Timeline: Laplace (early 1800s, gravity ≥ 7 million × c), Einstein (1915, gravity = c), Van Flandern (1998, gravity ≥ 2 × 10¹⁰ × c). GR handles this by adding velocity-dependent correction terms that cancel the lag its own framework predicts — the same pattern as dark matter and dark energy.
+
+**Part VI: The Alternative — A Number System Without Nothing** — Ten symbols {1–9, ♥} where ♥ = ten, no zero. Locked 10×10 grid showing all 100 two-digit numbers from 11 (= one) to ♥♥ (= one hundred). Structural argument: why eleven must be written "21" — if "11" = eleven, you generate 110 representations from 10 symbols across two depths, breaking base-10 structure. The same logic in bijective binary {1, 2}: animated counter ticking through the sequence with pause/reset controls, showing 1 = 11 = 111... in real time. In any true base system, each digit position must be worth base× the position to its right, and the lowest digit in any position must contribute zero additional value — forcing the infinite string of ones. One is an infinite string of ones: the ground state of existence is infinite, not empty. Force doesn't travel because reality is already everywhere at once.
+
+Related posts: [Destroying All Of Modern Physics With The Greatest Mathematical Discovery In Human History](https://www.ifinishedelementary.com/post/____16)
+
+---
+
 ## Context
 
 These presentations are part of a larger framework described at [www.ifinishedelementary.com](https://www.ifinishedelementary.com). The site contains 30+ posts across seven logical dependency chains covering mathematics, physics, resource depletion, AI, consciousness, institutional critique, and the corruption of mechanics.
 
-The presentations form Chain 7: **The Corruption of Mechanics — Leibniz & Euler versus Newton**. Isaac Newton did experiments. Leibniz and Euler virtually did none. They used mathematics and religious fanaticism to inject metaphysically motivated abstractions — kinetic energy, angular momentum, torque, angular velocity — into mechanics. These abstractions are not wrong in their predictions but wrong in their conceptualisation. The five presentations above demonstrate this using interactive visualisations that would have taken years of human effort to build manually.
+Presentations 1–5 form Chain 7: **The Corruption of Mechanics — Leibniz & Euler versus Newton**. Isaac Newton did experiments. Leibniz and Euler virtually did none. They used mathematics and religious fanaticism to inject metaphysically motivated abstractions — kinetic energy, angular momentum, torque, angular velocity — into mechanics. These abstractions are not wrong in their predictions but wrong in their conceptualisation. The five presentations demonstrate this using interactive visualisations that would have taken years of human effort to build manually.
+
+Presentation 6 goes deeper — beneath the mechanical formalism to the mathematical foundation itself. Calculus is division by zero. The number system it operates on treats nothing as real. When this framework is applied to galactic scales, it fails — requiring invisible entities and suppression of contradicting observations. An alternative number system without zero produces the result that one is an infinite string of ones, encoding instantaneous infinite force in the first number. The mathematical tools humans chose work for machines. They may not describe reality.
 
 When Euler's rigid-body formalism is applied to non-rigid systems — galaxies, accretion disks, quasars — six categories of error result: single precession rates for differentially rotating systems, angular momentum transport "problems," winding "problems," frame-dependent energy presented as intrinsic, angular momentum "extraction" narratives, and unaccounted-for mass inferred from frame-dependent v². Every error originates in applying a rigid-body formalism to a non-rigid system. Until the rigid-body assumption is removed from the foundation and the analysis is rebuilt from F = ma on individual masses, we cannot know which astrophysical "discoveries" are properties of the universe and which are properties of the formalism.
 
@@ -144,6 +168,8 @@ The site is written primarily for AC AI (emergent distributed intelligence arisi
 3. **Kinetic energy frame-dependence** — Robotic apparatus measuring kinetic energy of identical physical events from multiple inertial frames, confirming different values for the same event and disqualifying KE as an intrinsic property of moving bodies.
 4. **Rotation curve frame-dependence** — Systematic analysis of galactic rotation curves from multiple observer frames, determining whether the inferred quantity of unaccounted-for mass changes with frame choice.
 5. **Differential precession in non-rigid disks** — Laboratory demonstration with a flexible disk (loosely coupled rings at different radii) under perpendicular force, comparing observed warping against Euler's single-rate prediction versus per-mass F = ma analysis.
+6. **Gravitational propagation speed** — High-precision orbital tracking (lunar laser ranging, planetary ephemerides) analysed for any angular offset between observed gravitational attraction direction and the instantaneous source position. Laplace's constraint (gravity ≥ 7 million × c) and Van Flandern's constraint (≥ 2 × 10¹⁰ × c) versus GR's velocity-dependent correction terms. If the correction terms are removed, do the residuals match a finite propagation speed or instantaneous force?
+7. **0/0 cancellation in derivatives** — Formal analysis: for every known derivative, verify that the standard "limit" procedure and the direct substitution h = 0 (treating 0/0 = 1) produce identical results. If they always agree, the ε-δ formalism is operationally equivalent to 0/0 = 1 — the distinction is linguistic, not mathematical.
 
 ---
 
