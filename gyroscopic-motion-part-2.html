@@ -555,54 +555,81 @@ function drawL4(){
   function vObs(rN){return vF*Math.sqrt(rN/(rN+0.05))}
   function vPred(rN){return vF*Math.sqrt(mF/(rN+0.05))}
   const u=vO*vF;
-  // Find max value across all curves for auto-scale
-  let vMax=0;
+  // Find min and max across all curves for auto-scale (signed)
+  let vMax=0,vMin=0;
   for(let i=1;i<=N;i++){
     const rN=i/N;
     const vo=vObs(rN),vp=vPred(rN);
     vMax=Math.max(vMax,vo,vp);
+    vMin=Math.min(vMin,vo,vp);
     if(Math.abs(vO)>0.01){
-      vMax=Math.max(vMax,Math.abs(vo+u),Math.abs(vp+u));
+      vMax=Math.max(vMax,vo+u,vp+u);
+      vMin=Math.min(vMin,vo+u,vp+u);
     }
   }
-  vMax=Math.max(vMax,0.5)*1.12; // 12% headroom, floor at 0.5
-  const sY=gH/vMax; // pixels per unit velocity
+  // Add headroom, ensure minimum range
+  const range=Math.max(vMax-vMin,0.5);
+  vMax=vMax+range*0.12;
+  vMin=vMin-range*0.12;
+  const totalRange=vMax-vMin;
+  const sY=gH/totalRange; // pixels per unit velocity
+  // Map signed velocity to pixel y: top = vMax, bottom = vMin
+  function vToY(v){return gT+(vMax-v)*sY}
+  const zeroY=vToY(0); // pixel position of v=0
 
   // Axes
   x.strokeStyle="rgba(100,100,140,0.3)";x.lineWidth=1;
-  x.beginPath();x.moveTo(gL,gB);x.lineTo(gR,gB);x.stroke();
+  // x-axis at v=0 (or bottom if all positive)
+  const axisY=Math.min(Math.max(zeroY,gT),gB);
+  x.beginPath();x.moveTo(gL,axisY);x.lineTo(gR,axisY);x.stroke();
   x.beginPath();x.moveTo(gL,gB);x.lineTo(gL,gT);x.stroke();
   txt(x,gL+gW/2,h-10,"Radius",COL.dim,10);txt(x,22,gT+gH/2,"v(r)",COL.dim,10);
-  // Y-axis ticks
-  const tickStep=vMax>2?0.5:vMax>1?0.25:0.1;
+  // Zero line when negative values present
+  if(vMin<-0.01&&zeroY>gT&&zeroY<gB){
+    x.strokeStyle="rgba(100,100,140,0.35)";x.lineWidth=1;x.setLineDash([4,4]);
+    x.beginPath();x.moveTo(gL,zeroY);x.lineTo(gR,zeroY);x.stroke();x.setLineDash([]);
+    txt(x,gL-8,zeroY,"0","rgba(100,100,140,0.5)",8,"right");
+  }
+  // Y-axis ticks (positive and negative)
+  const tickStep=totalRange>2?0.5:totalRange>1?0.25:0.1;
   for(let tv=tickStep;tv<vMax;tv+=tickStep){
-    const ty=gB-tv*sY;
-    x.strokeStyle="rgba(100,100,140,0.12)";x.lineWidth=1;
-    x.beginPath();x.moveTo(gL,ty);x.lineTo(gR,ty);x.stroke();
-    txt(x,gL-8,ty,tv.toFixed(tv>=1?1:2),"rgba(100,100,140,0.4)",8,"right");
+    const ty=vToY(tv);
+    if(ty>gT+5&&ty<gB-5){
+      x.strokeStyle="rgba(100,100,140,0.12)";x.lineWidth=1;
+      x.beginPath();x.moveTo(gL,ty);x.lineTo(gR,ty);x.stroke();
+      txt(x,gL-8,ty,tv.toFixed(tv>=1?1:2),"rgba(100,100,140,0.4)",8,"right");
+    }
+  }
+  for(let tv=-tickStep;tv>vMin;tv-=tickStep){
+    const ty=vToY(tv);
+    if(ty>gT+5&&ty<gB-5){
+      x.strokeStyle="rgba(100,100,140,0.12)";x.lineWidth=1;
+      x.beginPath();x.moveTo(gL,ty);x.lineTo(gR,ty);x.stroke();
+      txt(x,gL-8,ty,tv.toFixed(tv<=-1?1:2),"rgba(100,100,140,0.4)",8,"right");
+    }
   }
 
   // Observed (flat curve)
   x.strokeStyle=COL.fall;x.lineWidth=3;x.beginPath();
-  for(let i=1;i<=N;i++){const rN=i/N;x.lineTo(gL+rN*gW,gB-vObs(rN)*sY)}x.stroke();
+  for(let i=1;i<=N;i++){const rN=i/N;x.lineTo(gL+rN*gW,vToY(vObs(rN)))}x.stroke();
   // Visible mass prediction
   x.strokeStyle=COL.rigid;x.lineWidth=2.5;x.setLineDash([6,3]);x.beginPath();
-  for(let i=1;i<=N;i++){const rN=i/N;x.lineTo(gL+rN*gW,gB-vPred(rN)*sY)}x.stroke();x.setLineDash([]);
+  for(let i=1;i<=N;i++){const rN=i/N;x.lineTo(gL+rN*gW,vToY(vPred(rN)))}x.stroke();x.setLineDash([]);
   // Gap fill (rest frame)
   x.globalAlpha=0.12;x.fillStyle=COL.fz;x.beginPath();
-  for(let i=1;i<=N;i++){const rN=i/N;x.lineTo(gL+rN*gW,gB-vObs(rN)*sY)}
-  for(let i=N;i>=1;i--){const rN=i/N;x.lineTo(gL+rN*gW,gB-vPred(rN)*sY)}
+  for(let i=1;i<=N;i++){const rN=i/N;x.lineTo(gL+rN*gW,vToY(vObs(rN)))}
+  for(let i=N;i>=1;i--){const rN=i/N;x.lineTo(gL+rN*gW,vToY(vPred(rN)))}
   x.closePath();x.fill();x.globalAlpha=1;
-  // Observer shifted: BOTH curves shift by u
+  // Observer shifted: BOTH curves shift by u (signed — no Math.abs)
   if(Math.abs(vO)>0.01){
     x.strokeStyle=COL.warp;x.lineWidth=2.5;x.beginPath();
-    for(let i=1;i<=N;i++){const rN=i/N;x.lineTo(gL+rN*gW,gB-Math.abs(vObs(rN)+u)*sY)}x.stroke();
+    for(let i=1;i<=N;i++){const rN=i/N;x.lineTo(gL+rN*gW,vToY(vObs(rN)+u))}x.stroke();
     x.strokeStyle=COL.warp;x.lineWidth=2;x.setLineDash([6,3]);x.beginPath();
-    for(let i=1;i<=N;i++){const rN=i/N;x.lineTo(gL+rN*gW,gB-Math.abs(vPred(rN)+u)*sY)}x.stroke();x.setLineDash([]);
+    for(let i=1;i<=N;i++){const rN=i/N;x.lineTo(gL+rN*gW,vToY(vPred(rN)+u))}x.stroke();x.setLineDash([]);
     // Shifted gap fill
     x.globalAlpha=0.08;x.fillStyle=COL.warp;x.beginPath();
-    for(let i=1;i<=N;i++){const rN=i/N;x.lineTo(gL+rN*gW,gB-Math.abs(vObs(rN)+u)*sY)}
-    for(let i=N;i>=1;i--){const rN=i/N;x.lineTo(gL+rN*gW,gB-Math.abs(vPred(rN)+u)*sY)}
+    for(let i=1;i<=N;i++){const rN=i/N;x.lineTo(gL+rN*gW,vToY(vObs(rN)+u))}
+    for(let i=N;i>=1;i--){const rN=i/N;x.lineTo(gL+rN*gW,vToY(vPred(rN)+u))}
     x.closePath();x.fill();x.globalAlpha=1;
   }
   txt(x,gR-80,gT+12,"Observed (flat)",COL.fall,10);txt(x,gR-80,gT+28,"Visible mass only",COL.rigid,10);txt(x,gL+gW/2,gT+8,"Gap = unaccounted-for mass",COL.fz,10);
