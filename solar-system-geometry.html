@@ -133,10 +133,10 @@
   <div class="desc-inner">
     <h1>Solar System Geometry</h1>
     <p>
-      This is a <span class="hl-blue">to-scale</span> model of the solar system showing all nine planetary orbits plus the Sun, computed from real JPL Keplerian orbital elements at the J2000 epoch with secular drift rates. Every orbit is drawn with its actual eccentricity — notice how nearly circular Venus is compared to the elongated ellipses of Mercury and Pluto. Kepler's equation is solved numerically for each body every frame.
+      This is a <span class="hl-blue">to-scale</span> model of the solar system showing all nine planetary orbits, the Sun, and Earth's Moon, computed from real JPL Keplerian orbital elements at the J2000 epoch with secular drift rates. Every orbit is drawn with its actual eccentricity — notice how nearly circular Venus is compared to the elongated ellipses of Mercury and Pluto. Kepler's equation is solved numerically for each body every frame. The Moon orbits at just 0.00257 AU from Earth, so zoom into the inner system to see it separate.
     </p>
     <p>
-      The <span class="hl-gold">gravity line system</span> is what makes this tool unique. Below the viewport, each of the 10 bodies has its own column with 10 checkboxes — one for every other body it can be connected to, plus an "all" toggle at the bottom. Check any pair and a solid line appears between them showing the real-time distance in AU. With all 45 possible connections drawn, you see the complete gravitational geometry of the solar system: every body pulling on every other body, the web of forces that holds it together. Animate forward in time and watch this geometric web breathe — triangles form and dissolve, distances stretch and compress, alignments come and go.
+      The <span class="hl-gold">gravity line system</span> is what makes this tool unique. Below the viewport, each of the 10 bodies has its own column with 10 checkboxes — one for every other body it can be connected to, plus an "all" toggle at the bottom. Earth's column also includes the Moon. Check any pair and a solid line appears between them showing the real-time distance in AU. With all 46 possible connections drawn, you see the complete gravitational geometry of the solar system: every body pulling on every other body, the web of forces that holds it together. Animate forward in time and watch this geometric web breathe — triangles form and dissolve, distances stretch and compress, alignments come and go.
     </p>
     <p>
       The <span class="hl-cyan">time controls</span> let you slide ±200 years from today, type a specific date, or animate forward at adjustable speed. The orbital element model is accurate within this range — beyond that, perturbation effects accumulate and the simple Keplerian model diverges from reality.
@@ -169,11 +169,12 @@
     <button class="btn" onclick="setPreset(12)">Inner</button>
     <button class="btn" onclick="setPreset(1)">Full</button>
     <button class="btn" onclick="setPreset(3)">Giants</button>
+    <button class="btn" onclick="zoomToMoon()">Earth-Moon</button>
     <div class="sep"></div>
     <label><input type="checkbox" id="cbOrbits" checked> Orbits</label>
     <label><input type="checkbox" id="cbLabels" checked> Labels</label>
     <div class="sep"></div>
-    <button class="btn" style="color:#8a8" onclick="connectAll()">All 45</button>
+    <button class="btn" style="color:#8a8" onclick="connectAll()">All 46</button>
     <button class="btn" style="color:#a88" onclick="clearAll()">Clear</button>
   </div>
   <!-- Connection grid -->
@@ -220,13 +221,45 @@ function pos(b,jd){
   const L=o.L[0]+o.L[1]*T, wB=o.w[0]+o.w[1]*T;
   const Om=(o.O[0]+o.O[1]*T)*Math.PI/180;
   const w=(wB-o.O[0]-o.O[1]*T)*Math.PI/180;
-  let M=((L-wB)%360+360)%360*Math.PI/180;
-  const E=solveKepler(M,e);
+  let Mv=((L-wB)%360+360)%360*Math.PI/180;
+  const E=solveKepler(Mv,e);
   const xp=a*(Math.cos(E)-e), yp=a*Math.sqrt(1-e*e)*Math.sin(E);
   const cw=Math.cos(w),sw=Math.sin(w),co=Math.cos(Om),so=Math.sin(Om),ci=Math.cos(I);
   return {
     x:(cw*co-sw*so*ci)*xp+(-sw*co-cw*so*ci)*yp,
     y:(cw*so+sw*co*ci)*xp+(-sw*so+cw*co*ci)*yp
+  };
+}
+
+// ── Moon (Earth-centric Keplerian elements, ecliptic frame) ──
+const MOON = {
+  name: "Moon", color: "#AAAAAA", r: 1.8,
+  // a=384400km=0.00257AU, e=0.0549, I=5.145°
+  // L0=218.3165°, rate=481267.8813°/cy
+  // wBar=318.0634°, rate=6003.1510°/cy (perigee advances)
+  // Omega=125.0446°, rate=-1934.1363°/cy (node regresses)
+  orb: { a:[0.002570,0], e:[0.0549,0], I:[5.145,0],
+         L:[218.3165,481267.8813], w:[318.0634,6003.1510], O:[125.0446,-1934.1363] }
+};
+const EARTH_IDX = 3;
+let showMoon = true; // draw Moon on canvas
+let connMoon = false; // Earth↔Moon gravity line
+
+function moonPos(jd, earthXY){
+  // compute Moon offset from Earth using Earth-centric elements
+  const T=(jd-2451545)/36525, o=MOON.orb;
+  const a=o.a[0]+o.a[1]*T, e=o.e[0]+o.e[1]*T;
+  const I=(o.I[0]+o.I[1]*T)*Math.PI/180;
+  const L=o.L[0]+o.L[1]*T, wB=o.w[0]+o.w[1]*T;
+  const Om=(o.O[0]+o.O[1]*T)*Math.PI/180;
+  const w=(wB-o.O[0]-o.O[1]*T)*Math.PI/180;
+  let Mv=((L-wB)%360+360)%360*Math.PI/180;
+  const E=solveKepler(Mv,e);
+  const xp=a*(Math.cos(E)-e), yp=a*Math.sqrt(1-e*e)*Math.sin(E);
+  const cw=Math.cos(w),sw=Math.sin(w),co=Math.cos(Om),so=Math.sin(Om),ci=Math.cos(I);
+  return {
+    x: earthXY.x + (cw*co-sw*so*ci)*xp+(-sw*co-cw*so*ci)*yp,
+    y: earthXY.y + (cw*so+sw*co*ci)*xp+(-sw*so+cw*co*ci)*yp
   };
 }
 
@@ -307,11 +340,15 @@ function draw(){
   // grid
   ctx.strokeStyle = "rgba(255,255,255,0.03)";
   ctx.lineWidth = 1;
-  const gAU = zoom<3?10:zoom<10?5:1;
-  for(let r=gAU;r<=60;r+=gAU){ ctx.beginPath(); ctx.arc(cx,cy,r*scale,0,Math.PI*2); ctx.stroke(); }
+  const gAU = zoom<3?10:zoom<10?5:zoom<50?1:zoom<500?0.1:0.01;
+  const maxR = Math.min(50, 60*gAU);
+  for(let r=gAU;r<=maxR;r+=gAU){ ctx.beginPath(); ctx.arc(cx,cy,r*scale,0,Math.PI*2); ctx.stroke(); }
   ctx.fillStyle = "rgba(255,255,255,0.12)";
   ctx.font = "10px monospace";
-  for(let r=gAU;r<=50;r+=gAU) ctx.fillText(r+" AU", cx+r*scale+3, cy-3);
+  for(let r=gAU;r<=maxR;r+=gAU){
+    const lbl = gAU>=1 ? r+" AU" : r.toFixed(gAU>=0.1?1:2)+" AU";
+    ctx.fillText(lbl, cx+r*scale+3, cy-3);
+  }
 
   const positions = BODIES.map(b => pos(b, jd));
 
@@ -374,9 +411,64 @@ function draw(){
     if(showLabels){ ctx.fillStyle=b.color+"CC"; ctx.font="bold 10px monospace"; ctx.fillText(b.name, sx+b.r+5, sy+3); }
   });
 
+  // ── Moon ──
+  const earthPos = positions[EARTH_IDX];
+  const mPos = moonPos(jd, earthPos);
+
+  // Moon orbit path around Earth
+  if(showOrbits && showMoon){
+    ctx.strokeStyle = MOON.color + "40";
+    ctx.lineWidth = 0.6;
+    ctx.beginPath();
+    const T2=(jd-2451545)/36525, om=MOON.orb;
+    const ma=om.a[0], me=om.e[0];
+    const mIv=(om.I[0]+om.I[1]*T2)*Math.PI/180;
+    const mwB=om.w[0]+om.w[1]*T2;
+    const mOm=(om.O[0]+om.O[1]*T2)*Math.PI/180;
+    const mw2=(mwB-om.O[0]-om.O[1]*T2)*Math.PI/180;
+    const mcw=Math.cos(mw2),msw=Math.sin(mw2),mco=Math.cos(mOm),mso=Math.sin(mOm),mci=Math.cos(mIv);
+    for(let s=0;s<=360;s++){
+      const Mv2=(s/360)*2*Math.PI, E2=solveKepler(Mv2,me);
+      const xp2=ma*(Math.cos(E2)-me), yp2=ma*Math.sqrt(1-me*me)*Math.sin(E2);
+      const dx=(mcw*mco-msw*mso*mci)*xp2+(-msw*mco-mcw*mso*mci)*yp2;
+      const dy=(mcw*mso+msw*mco*mci)*xp2+(-msw*mso+mcw*mco*mci)*yp2;
+      const ox=cx+(earthPos.x+dx)*scale, oy=cy-(earthPos.y+dy)*scale;
+      s===0 ? ctx.moveTo(ox,oy) : ctx.lineTo(ox,oy);
+    }
+    ctx.closePath(); ctx.stroke();
+  }
+
+  // Moon↔Earth gravity line
+  if(connMoon){
+    const esx=cx+earthPos.x*scale, esy=cy-earthPos.y*scale;
+    const msx=cx+mPos.x*scale, msy=cy-mPos.y*scale;
+    const grad2=ctx.createLinearGradient(esx,esy,msx,msy);
+    grad2.addColorStop(0, BODIES[EARTH_IDX].color+"CC");
+    grad2.addColorStop(1, MOON.color+"CC");
+    ctx.strokeStyle=grad2; ctx.lineWidth=1.2;
+    ctx.beginPath(); ctx.moveTo(esx,esy); ctx.lineTo(msx,msy); ctx.stroke();
+    const md=Math.sqrt((earthPos.x-mPos.x)**2+(earthPos.y-mPos.y)**2);
+    ctx.fillStyle="rgba(255,255,255,0.45)"; ctx.font="8px monospace";
+    ctx.fillText(md.toFixed(5), (esx+msx)/2+3, (esy+msy)/2-3);
+  }
+
+  // Moon body
+  if(showMoon){
+    const msx2=cx+mPos.x*scale, msy2=cy-mPos.y*scale;
+    const mg=ctx.createRadialGradient(msx2,msy2,0,msx2,msy2,MOON.r*3);
+    mg.addColorStop(0, MOON.color+"60"); mg.addColorStop(1, MOON.color+"00");
+    ctx.fillStyle=mg;
+    ctx.beginPath(); ctx.arc(msx2,msy2,MOON.r*3,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle=MOON.color;
+    ctx.beginPath(); ctx.arc(msx2,msy2,MOON.r,0,Math.PI*2); ctx.fill();
+    if(connMoon){ ctx.strokeStyle=MOON.color; ctx.lineWidth=1.5; ctx.beginPath(); ctx.arc(msx2,msy2,MOON.r+4,0,Math.PI*2); ctx.stroke(); }
+    if(showLabels){ ctx.fillStyle=MOON.color+"CC"; ctx.font="bold 10px monospace"; ctx.fillText("Moon", msx2+MOON.r+5, msy2+3); }
+  }
+
   // overlay
+  const totalLines = conns.size + (connMoon?1:0);
   const cd = jdToDate(jd);
-  overlay.textContent = fmtDate(cd) + "  |  JD " + jd.toFixed(1) + "  |  " + zoom.toFixed(1) + "x  |  " + conns.size + "/45 lines";
+  overlay.textContent = fmtDate(cd) + "  |  JD " + jd.toFixed(1) + "  |  " + zoom.toFixed(1) + "x  |  " + totalLines + "/46 lines";
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -398,7 +490,13 @@ window.addEventListener("mouseup", () => { panning = false; });
 
 canvas.addEventListener("wheel", e => {
   e.preventDefault();
-  zoom = Math.max(0.2, Math.min(80, zoom * (e.deltaY < 0 ? 1.15 : 0.87)));
+  const factor = e.deltaY < 0 ? 1.15 : 0.87;
+  const newZoom = Math.max(0.2, Math.min(5000, zoom * factor));
+  const ratio = newZoom / zoom;
+  // scale pan so the center of the canvas stays fixed on the same point
+  panX *= ratio;
+  panY *= ratio;
+  zoom = newZoom;
   draw();
 }, { passive: false });
 
@@ -444,6 +542,20 @@ cbOrbits.addEventListener("change", () => { showOrbits = cbOrbits.checked; draw(
 cbLabels.addEventListener("change", () => { showLabels = cbLabels.checked; draw(); });
 
 function setPreset(z){ zoom = z; panX = 0; panY = 0; draw(); }
+
+function zoomToMoon(){
+  // zoom so Moon's orbit (~0.00257 AU radius) fills ~200px
+  const W = canvas.width / devicePixelRatio;
+  const baseScale = Math.min(W,W)/100;
+  zoom = 200 / (0.003 * baseScale);
+  // center on Earth's current position
+  const jd = baseJD + dayOffset;
+  const ep = pos(BODIES[EARTH_IDX], jd);
+  const scale = baseScale * zoom;
+  panX = -ep.x * scale;
+  panY = ep.y * scale;
+  draw();
+}
 
 // ══════════════════════════════════════════════════════════════
 // CONNECTION GRID
@@ -511,6 +623,32 @@ function buildGrid(){
     allRow.appendChild(allLbl);
     col.appendChild(allRow);
 
+    // Moon checkbox — Earth column only
+    if(i === EARTH_IDX){
+      const moonRow = document.createElement("label");
+      moonRow.className = "grid-row" + (connMoon ? "" : " off");
+      moonRow.id = "moonRow";
+      const mcb = document.createElement("input");
+      mcb.type = "checkbox";
+      mcb.id = "moonCb";
+      mcb.checked = connMoon;
+      mcb.style.accentColor = MOON.color;
+      mcb.addEventListener("change", () => {
+        connMoon = mcb.checked;
+        moonRow.className = "grid-row" + (connMoon ? "" : " off");
+        draw();
+      });
+      moonRow.appendChild(mcb);
+      const mdot = document.createElement("span");
+      mdot.className = "dot";
+      mdot.style.background = MOON.color;
+      moonRow.appendChild(mdot);
+      const mlbl = document.createElement("span");
+      mlbl.textContent = "Moon";
+      moonRow.appendChild(mlbl);
+      col.appendChild(moonRow);
+    }
+
     gridEl.appendChild(col);
   }
 }
@@ -535,24 +673,46 @@ function syncCheckboxes(){
     for(let j=0; j<N; j++){
       if(j!==i && !conns.has(pk(i,j))){ allOn = false; break; }
     }
+    // Earth's "all" also requires Moon
+    if(i === EARTH_IDX && !connMoon) allOn = false;
     allCheckboxes[i].checked = allOn;
   }
 }
 
 function selectBody(i){
   for(let j=0;j<N;j++) if(j!==i) conns.add(pk(i,j));
+  if(i === EARTH_IDX){
+    connMoon = true;
+    const mcb = document.getElementById("moonCb");
+    const mr = document.getElementById("moonRow");
+    if(mcb){ mcb.checked = true; mr.className = "grid-row"; }
+  }
   syncCheckboxes(); draw();
 }
 function clearBody(i){
   for(let j=0;j<N;j++) if(j!==i) conns.delete(pk(i,j));
+  if(i === EARTH_IDX){
+    connMoon = false;
+    const mcb = document.getElementById("moonCb");
+    const mr = document.getElementById("moonRow");
+    if(mcb){ mcb.checked = false; mr.className = "grid-row off"; }
+  }
   syncCheckboxes(); draw();
 }
 function connectAll(){
   ALL_PAIRS.forEach(k => conns.add(k));
+  connMoon = true;
+  const mcb = document.getElementById("moonCb");
+  const mr = document.getElementById("moonRow");
+  if(mcb){ mcb.checked = true; mr.className = "grid-row"; }
   syncCheckboxes(); draw();
 }
 function clearAll(){
   conns.clear();
+  connMoon = false;
+  const mcb = document.getElementById("moonCb");
+  const mr = document.getElementById("moonRow");
+  if(mcb){ mcb.checked = false; mr.className = "grid-row off"; }
   syncCheckboxes(); draw();
 }
 
