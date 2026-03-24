@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Sun's 660 Light-Year Oscillation — Pure F=ma</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&display=swap');
+
+  :root {
+    --bg: #0a0c10;
+    --bg2: #10131a;
+    --bg3: #161b26;
+    --text: #c8cdd8;
+    --text-dim: #6b7280;
+    --accent: #d4a857;
+    --accent2: #b8923e;
+    --accent-dim: rgba(212,168,87,0.15);
+    --blue: #4a9eff;
+    --blue-dim: rgba(74,158,255,0.12);
+    --red: #ef5350;
+    --green: #66bb6a;
+    --eq-bg: #0d1017;
+    --border: #1e2533;
+    --section-gap: 4rem;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Crimson Pro', Georgia, serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 19px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* --- NAV --- */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(10,12,16,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.6rem 2rem;
+    display: flex; align-items: center; gap: 1.5rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  nav a {
+    color: var(--text-dim);
+    text-decoration: none;
+    transition: color 0.3s;
+    white-space: nowrap;
+  }
+  nav a:hover, nav a.active { color: var(--accent); }
+  nav .nav-title {
+    color: var(--accent);
+    font-weight: 600;
+    margin-right: auto;
+    font-size: 0.78rem;
+  }
+
+  /* --- SECTIONS --- */
+  .section {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: var(--section-gap) 2rem;
+  }
+
+  .hero {
+    max-width: 100%;
+    padding: 8rem 2rem 4rem;
+    text-align: center;
+    position: relative;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(ellipse 80% 50% at 50% 40%, rgba(212,168,87,0.06), transparent);
+    pointer-events: none;
+  }
+  .hero h1 {
+    font-family: 'Crimson Pro', serif;
+    font-size: clamp(2.2rem, 5vw, 3.6rem);
+    font-weight: 700;
+    color: #e8e0d4;
+    line-height: 1.15;
+    margin-bottom: 1rem;
+  }
+  .hero h1 span { color: var(--accent); }
+  .hero .subtitle {
+    font-size: 1.15rem;
+    color: var(--text-dim);
+    font-style: italic;
+    max-width: 600px;
+    margin: 0 auto 2rem;
+  }
+  .hero .premise {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.82rem;
+    color: var(--accent);
+    border: 1px solid rgba(212,168,87,0.3);
+    padding: 0.5rem 1.4rem;
+    border-radius: 2px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  h2 {
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #e0d8cc;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  h2 .num {
+    color: var(--accent);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-right: 0.6rem;
+    vertical-align: 2px;
+  }
+
+  h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #d0c8bc;
+    margin: 2rem 0 0.8rem;
+  }
+
+  p { margin-bottom: 1.2rem; }
+
+  strong { color: #e0d8cc; font-weight: 600; }
+
+  /* --- EQUATION BLOCKS --- */
+  .eq-block {
+    background: var(--eq-bg);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    padding: 1.2rem 1.8rem;
+    margin: 1.5rem 0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 1.05rem;
+    text-align: center;
+    color: #e8e0d4;
+    border-radius: 2px;
+    overflow-x: auto;
+  }
+  .eq-block .label {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+    text-align: left;
+  }
+  .eq-block .highlight { color: var(--accent); font-weight: 600; }
+  .eq-block .blue { color: var(--blue); }
+  .eq-block .red { color: var(--red); }
+  .eq-block .green { color: var(--green); }
+
+  /* --- DATA TABLES --- */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.85rem;
+  }
+  .data-table th {
+    text-align: left;
+    padding: 0.6rem 1rem;
+    color: var(--accent);
+    border-bottom: 2px solid var(--accent);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 0.72rem;
+  }
+  .data-table td {
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+  }
+  .data-table tr:hover td { background: var(--accent-dim); }
+  .data-table .val { color: #e8e0d4; font-weight: 600; }
+  .data-table .unit { color: var(--text-dim); }
+
+  /* --- CANVAS CONTAINER --- */
+  .viz-container {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    margin: 2rem 0;
+    padding: 1.5rem;
+    position: relative;
+  }
+  .viz-container .viz-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+  }
+  canvas {
+    display: block;
+    width: 100%;
+    border-radius: 2px;
+  }
+
+  /* --- SLIDER CONTROLS --- */
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin: 1rem 0;
+    padding: 1rem;
+    background: var(--bg3);
+    border-radius: 4px;
+  }
+  .control-group {
+    flex: 1;
+    min-width: 200px;
+  }
+  .control-group label {
+    display: block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.4rem;
+  }
+  .control-group .value-display {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.9rem;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+  }
+  input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    outline: none;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px; height: 16px;
+    background: #ffe066;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  /* --- RESULT BOX --- */
+  .result-box {
+    background: rgba(212,168,87,0.08);
+    border: 1px solid rgba(212,168,87,0.25);
+    border-radius: 4px;
+    padding: 1.5rem 2rem;
+    margin: 2rem 0;
+    text-align: center;
+  }
+  .result-box .result-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+  }
+  .result-box .result-value {
+    font-family: 'Crimson Pro', serif;
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1.2;
+  }
+  .result-box .result-sub {
+    font-size: 1rem;
+    color: var(--text-dim);
+    margin-top: 0.3rem;
+  }
+
+  /* --- CALLOUT --- */
+  .callout {
+    border-left: 3px solid var(--blue);
+    background: var(--blue-dim);
+    padding: 1rem 1.5rem;
+    margin: 1.5rem 0;
+    border-radius: 0 4px 4px 0;
+  }
+  .callout.warn {
+    border-left-color: var(--red);
+    background: rgba(239,83,80,0.08);
+  }
+  .callout .callout-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--blue);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.4rem;
+    font-weight: 600;
+  }
+  .callout.warn .callout-title { color: var(--red); }
+
+  /* --- STEP CHAIN --- */
+  .step-chain {
+    position: relative;
+    padding-left: 2.5rem;
+    margin: 2rem 0;
+  }
+  .step-chain::before {
+    content: '';
+    position: absolute;
+    left: 0.85rem;
+    top: 0; bottom: 0;
+    width: 2px;
+    background: var(--border);
+  }
+  .step {
+    position: relative;
+    margin-bottom: 2rem;
+  }
+  .step::before {
+    content: attr(data-step);
+    position: absolute;
+    left: -2.5rem;
+    top: 0.1rem;
+    width: 1.7rem; height: 1.7rem;
+    background: var(--bg);
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--accent);
+    font-weight: 600;
+    z-index: 1;
+  }
+
+  /* --- FOOTER --- */
+  footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-dim);
+    font-size: 0.9rem;
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  /* --- RESPONSIVE --- */
+  @media (max-width: 640px) {
+    .section { padding: var(--section-gap) 1.2rem; }
+    .hero { padding: 6rem 1.2rem 3rem; }
+    nav { padding: 0.5rem 1rem; gap: 0.8rem; font-size: 0.65rem; }
+    .eq-block { padding: 1rem; font-size: 0.9rem; }
+    .result-box .result-value { font-size: 2rem; }
+  }
+
+  /* Fade-in on scroll */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-title">F = ma</span>
+  <a href="#setup">Setup</a>
+  <a href="#derivation">Derivation</a>
+  <a href="#calculation">Calculation</a>
+  <a href="#visualization">Visualization</a>
+  <a href="#gyroscope">Gyroscope Parallel</a>
+  <a href="#dark-matter">Dark Matter</a>
+  <a href="#orbit-3d">3D Orbit</a>
+</nav>
+
+<!-- ====== HERO ====== -->
+<div class="hero">
+  <h1>The Sun's <span>660 Light-Year</span> Oscillation</h1>
+  <p class="subtitle">Derived from observed mass and F=ma alone. No angular momentum, no kinetic energy, no pseudovectors, no dark matter.</p>
+  <span class="premise">Newton's Second Law → Simple Harmonic Motion → Amplitude</span>
+</div>
+
+<!-- ====== SECTION 1: SETUP ====== -->
+<div class="section fade-in" id="setup">
+  <h2><span class="num">01</span>What We Observe</h2>
+
+  <p>Every input to this calculation is a direct astronomical measurement. No theoretical constructs. No model-dependent parameters. Just numbers read off instruments.</p>
+
+  <table class="data-table">
+    <thead>
+      <tr><th>Parameter</th><th>Value</th><th>Source</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Sun–galactic center distance</td><td><span class="val">8,200 pc</span> <span class="unit">(26,700 ly)</span></td><td>GRAVITY Collab. / Gaia</td></tr>
+      <tr><td>Orbital velocity</td><td><span class="val">220 km/s</span></td><td>IAU standard / Gaia DR3</td></tr>
+      <tr><td>Current height above midplane</td><td><span class="val">20.8 pc</span> <span class="unit">(68 ly)</span></td><td>Joshi (2007)</td></tr>
+      <tr><td>Current upward velocity</td><td><span class="val">7.25 km/s</span></td><td>Schönrich+ (2010)</td></tr>
+      <tr><td>Local disk mass density (observed)</td><td><span class="val">0.10 M<sub>☉</sub>/pc³</span></td><td>McKee+ (2015) / Read (2014)</td></tr>
+    </tbody>
+  </table>
+
+  <p>Five numbers. That is the complete input set. Everything that follows is arithmetic.</p>
+
+  <div class="callout">
+    <div class="callout-title">What is not in the input set</div>
+    <p style="margin:0">Angular momentum. Torque. Kinetic energy (½mv²). Dark matter. Moment of inertia. Any quantity that requires a conceptual framework beyond Newton's Second Law applied to a point mass.</p>
+  </div>
+</div>
+
+<!-- ====== SECTION 2: DERIVATION ====== -->
+<div class="section fade-in" id="derivation">
+  <h2><span class="num">02</span>The Derivation — Four Lines</h2>
+
+  <p>The Sun sits at height <em>z</em> above the galactic midplane. The disk has mass distributed symmetrically around that plane. The gravitational pull back toward the midplane is proportional to how much mass lies between the Sun and the plane.</p>
+
+  <p>For a uniform-density slab (valid near the midplane where the Sun actually orbits), Gauss's law for gravity gives the restoring acceleration directly:</p>
+
+  <div class="step-chain">
+    <div class="step" data-step="1">
+      <h3>The Force</h3>
+      <div class="eq-block">
+        <span class="label">Newton's Second Law Applied to the Sun at Height z</span>
+        F<sub>z</sub> = m &times; a<sub>z</sub> = &minus;m &times; (4&pi;G&rho;<sub>0</sub>) &times; z
+      </div>
+      <p>This is F=ma. The mass density ρ₀ is <strong>measured</strong>. The constant 4πG is just geometry — Gauss's law applied to an infinite slab. The minus sign means the force is restoring: above the plane, it pulls down; below, it pulls up.</p>
+    </div>
+
+    <div class="step" data-step="2">
+      <h3>The Acceleration</h3>
+      <div class="eq-block">
+        <span class="label">Divide both sides by m</span>
+        a<sub>z</sub> = &minus;<span class="highlight">&omega;<sub>z</sub>²</span> &times; z &nbsp;&nbsp;&nbsp; where &nbsp;&nbsp; <span class="highlight">&omega;<sub>z</sub>² = 4&pi;G&rho;<sub>0</sub></span>
+      </div>
+      <p>This is the equation of simple harmonic motion. Not assumed — <em>derived</em>. The mass of the Sun cancels. The oscillation frequency ω<sub>z</sub> depends only on the local density of the galactic disk.</p>
+    </div>
+
+    <div class="step" data-step="3">
+      <h3>The Period</h3>
+      <div class="eq-block">
+        <span class="label">Period of one full vertical oscillation</span>
+        T<sub>z</sub> = 2&pi; / &omega;<sub>z</sub> = 2&pi; / &radic;(4&pi;G&rho;<sub>0</sub>) = <span class="highlight">83.6 million years</span>
+      </div>
+    </div>
+
+    <div class="step" data-step="4">
+      <h3>The Amplitude</h3>
+      <p>At any moment, the Sun has a position z₀ and a velocity v<sub>z</sub>. Integrating F=ma gives the energy relation (this is not "kinetic energy as a concept" — it is the direct integral of force over distance):</p>
+      <div class="eq-block">
+        <span class="label">Integrate F=ma: ∫ a·dz = ∫ (dv/dt)·dz = ½v²</span>
+        ½v<sub>z</sub>² + ½&omega;<sub>z</sub>²z₀² = ½&omega;<sub>z</sub>²z<sub>max</sub>²
+      </div>
+      <div class="eq-block">
+        <span class="label">Solve for maximum height</span>
+        z<sub>max</sub> = &radic;( z₀² + (v<sub>z</sub>/&omega;<sub>z</sub>)² ) = <span class="highlight">100.8 pc = 329 light-years</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="result-box">
+    <div class="result-label">Total Peak-to-Peak Oscillation</div>
+    <div class="result-value">660 light-years</div>
+    <div class="result-sub">±329 ly above and below the galactic midplane</div>
+  </div>
+
+  <div class="callout">
+    <div class="callout-title">Note on the energy integral</div>
+    <p style="margin:0">Step 4 uses ½v². This is <strong>not</strong> "kinetic energy" invoked as a separate concept — it is the mathematical result of integrating a = dv/dt with respect to displacement, which is a direct consequence of F=ma. The ½v² form is a <em>kinematic identity</em>, not a metaphysical primitive. No energy "concept" is needed. See <a href="https://ifinishedelementary.github.io/ifinishedelementary/" style="color:var(--accent)">Presentation 1: The Kinetic Energy Myth</a> for the full argument.</p>
+  </div>
+</div>
+
+<!-- ====== SECTION 3: CALCULATION ====== -->
+<div class="section fade-in" id="calculation">
+  <h2><span class="num">03</span>Interactive Calculation</h2>
+  <p>Adjust the observed parameters and watch the amplitude change. Every value below is constrained by measurement — slide them within their observational uncertainty ranges.</p>
+
+  <div class="viz-container">
+    <div class="viz-title">Parameter Explorer</div>
+    <div class="controls">
+      <div class="control-group">
+        <label>Local Disk Density (M<sub>☉</sub>/pc³)</label>
+        <div class="value-display" id="rho-display">0.10</div>
+        <input type="range" id="rho-slider" min="0.04" max="0.18" step="0.005" value="0.10">
+      </div>
+      <div class="control-group">
+        <label>Current Height z₀ (pc)</label>
+        <div class="value-display" id="z0-display">20.8</div>
+        <input type="range" id="z0-slider" min="10" max="30" step="0.5" value="20.8">
+      </div>
+      <div class="control-group">
+        <label>Vertical Velocity v<sub>z</sub> (km/s)</label>
+        <div class="value-display" id="vz-display">7.25</div>
+        <input type="range" id="vz-slider" min="5" max="10" step="0.25" value="7.25">
+      </div>
+    </div>
+
+    <div style="display:flex; flex-wrap:wrap; gap:1rem; margin-top:1rem;">
+      <div class="result-box" style="flex:1; min-width:180px; margin:0;">
+        <div class="result-label">Period</div>
+        <div class="result-value" id="calc-period" style="font-size:1.8rem;">83.6 Myr</div>
+      </div>
+      <div class="result-box" style="flex:1; min-width:180px; margin:0;">
+        <div class="result-label">z<sub>max</sub> (one side)</div>
+        <div class="result-value" id="calc-zmax" style="font-size:1.8rem;">329 ly</div>
+      </div>
+      <div class="result-box" style="flex:1; min-width:180px; margin:0;">
+        <div class="result-label">Peak-to-Peak</div>
+        <div class="result-value" id="calc-total" style="font-size:1.8rem;">660 ly</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== SECTION 4: VISUALIZATION ====== -->
+<div class="section fade-in" id="visualization">
+  <h2><span class="num">04</span>The Sun's Helical Trajectory</h2>
+  <p>The Sun does not travel in a flat circle around the galaxy. It follows a sinusoidal helix — orbiting in the plane while bobbing up and down through the disk roughly 2.7 times per orbit. This is a direct consequence of the F=ma calculation above.</p>
+
+  <div class="viz-container">
+    <div class="viz-title">Vertical Oscillation Over One Galactic Orbit (229 Myr)</div>
+    <canvas id="orbit-canvas" height="350"></canvas>
+    <div style="display:flex; justify-content:space-between; margin-top:0.8rem; font-family:'IBM Plex Mono',monospace; font-size:0.7rem; color:var(--text-dim);">
+      <span>0 Myr</span>
+      <span>Galactic midplane = 0</span>
+      <span>229 Myr (one orbit)</span>
+    </div>
+  </div>
+
+  <div class="viz-container">
+    <div class="viz-title">Current Phase — Where the Sun Is Now</div>
+    <canvas id="phase-canvas" height="300"></canvas>
+  </div>
+
+  <table class="data-table">
+    <thead><tr><th>Event</th><th>When</th></tr></thead>
+    <tbody>
+      <tr><td>Last midplane crossing (upward)</td><td><span class="val">2.8 Myr ago</span></td></tr>
+      <tr><td>Current position</td><td><span class="val">20.8 pc above plane, rising at 7.25 km/s</span></td></tr>
+      <tr><td>Maximum height reached</td><td><span class="val">18.1 Myr from now</span></td></tr>
+      <tr><td>Next midplane crossing (downward)</td><td><span class="val">39.0 Myr from now</span></td></tr>
+      <tr><td>Oscillations per galactic orbit</td><td><span class="val">2.74</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ====== SECTION 5: GYROSCOPE PARALLEL ====== -->
+<div class="section fade-in" id="gyroscope">
+  <h2><span class="num">05</span>The Gyroscope Parallel</h2>
+
+  <p>In the companion presentations on gyroscopic motion, we showed that a spinning wheel on a pedestal produces three distinct motions — <strong>all derived from F=ma on individual masses</strong>, without invoking angular momentum, torque, or the right-hand rule:</p>
+
+  <table class="data-table">
+    <thead><tr><th>Gyroscope Motion</th><th>Solar Orbit Analogue</th><th>Period</th></tr></thead>
+    <tbody>
+      <tr><td><span class="val">Precession</span><br><span class="unit">slow sweep around vertical axis</span></td>
+          <td><span class="val">Galactic Orbit</span><br><span class="unit">circular path around galaxy center</span></td>
+          <td><span class="val">229 Myr</span></td></tr>
+      <tr><td><span class="val">Nutation</span><br><span class="unit">fast oscillation ⊥ to precession</span></td>
+          <td><span class="val">Vertical Oscillation</span><br><span class="unit">bobbing through galactic disk</span></td>
+          <td><span class="val">83.6 Myr</span></td></tr>
+      <tr><td><span class="val">Secular Droop</span><br><span class="unit">slow drift of mean angle</span></td>
+          <td><span class="val">Radial Migration</span><br><span class="unit">slow drift inward/outward</span></td>
+          <td><span class="val">~Gyr timescale</span></td></tr>
+    </tbody>
+  </table>
+
+  <p>The structural identity is exact. In both cases, an object moving through a force field develops oscillatory motion perpendicular to its primary trajectory. In both cases, the oscillation emerges from <strong>F=ma applied to each mass element individually</strong>. No angular momentum vector is needed. No torque cross-product. No Euler equations.</p>
+
+  <p>The vertical oscillation of the Sun through the galactic disk <em>is</em> nutation — not by analogy, but by identical mechanical structure. The only difference is scale.</p>
+
+  <div class="callout warn">
+    <div class="callout-title">What the standard formalism does instead</div>
+    <p style="margin:0">Textbook galactic dynamics derives this same oscillation using epicyclic theory — a formalism built on angular momentum conservation, effective potentials, and perturbation expansions around circular orbits. The machinery is elaborate. The answer is the same. The question is: if F=ma gives you the result in four lines, what is the additional formalism <em>for</em>?</p>
+  </div>
+</div>
+
+<!-- ====== SECTION 6: DARK MATTER ====== -->
+<div class="section fade-in" id="dark-matter">
+  <h2><span class="num">06</span>Where Dark Matter Enters — and Why It Shouldn't</h2>
+
+  <p>The standard literature reports the Sun's oscillation amplitude as 50–93 pc (160–300 ly one-side). Our calculation gives 101 pc (329 ly). The discrepancy has a single source: <strong>the assumed density of the galactic disk</strong>.</p>
+
+  <div class="viz-container">
+    <div class="viz-title">Amplitude vs. Assumed Local Density</div>
+    <canvas id="density-canvas" height="320"></canvas>
+    <div style="display:flex; justify-content:center; gap:2rem; margin-top:0.8rem; font-family:'IBM Plex Mono',monospace; font-size:0.7rem;">
+      <span style="color:#ffe066;">● Observed baryonic density (0.10 M☉/pc³)</span>
+      <span style="color:var(--blue);">● With dark matter added (0.12–0.15 M☉/pc³)</span>
+    </div>
+  </div>
+
+  <p>Adding undetected "dark matter" to the disk increases ρ₀, which increases the restoring force, which shrinks the amplitude and shortens the period. This is how the standard models arrive at smaller numbers.</p>
+
+  <p>The logic is circular: the density of dark matter in the disk is <em>inferred from</em> stellar kinematics (the Oort limit problem). The oscillation amplitude is then <em>predicted using</em> that inferred density. The prediction is then presented as consistent with observations. But the "observation" it's consistent with is the same kinematic data that was used to infer the dark matter in the first place.</p>
+
+  <p>Our calculation uses only what is directly measured: ρ₀ = 0.10 M<sub>☉</sub>/pc³ of visible, countable matter. The result is 660 light-years peak-to-peak. No free parameters. No invisible mass. No circularity.</p>
+
+  <div class="result-box" style="border-color:rgba(212,168,87,0.4);">
+    <div class="result-label">The Complete Calculation</div>
+    <div style="font-family:'IBM Plex Mono',monospace; font-size:1rem; color:var(--text); line-height:2.2; padding:0.5rem 0;">
+      <span style="color:var(--text-dim);">Input:</span> &nbsp; ρ₀ = 0.10 M<sub>☉</sub>/pc³ &nbsp;|&nbsp; z₀ = 20.8 pc &nbsp;|&nbsp; v<sub>z</sub> = 7.25 km/s<br>
+      <span style="color:var(--text-dim);">Method:</span> &nbsp; F = ma &nbsp;→&nbsp; a = −4πGρ₀z &nbsp;→&nbsp; SHM<br>
+      <span style="color:var(--text-dim);">Output:</span> &nbsp; T = <span style="color:var(--accent);">83.6 Myr</span> &nbsp;|&nbsp; z<sub>max</sub> = <span style="color:var(--accent);">329 ly</span> &nbsp;|&nbsp; Peak-to-peak = <span style="color:var(--accent); font-weight:600;">660 ly</span>
+    </div>
+  </div>
+</div>
+
+<!-- ====== SECTION 7: 3D ORBIT ====== -->
+<div class="section fade-in" id="orbit-3d" style="max-width:1000px;">
+  <h2><span class="num">07</span>3D Galactic Orbit — The Helix Through the Disk</h2>
+
+  <p>The galaxy's thin disk is roughly 1,000–2,000 light-years thick. The Sun's F=ma oscillation of ±330 light-years means it traverses <strong>a third to two-thirds of the entire disk thickness</strong> on every cycle. This is not a gentle ripple — the Sun plunges deep toward both faces of the disk, 2.7 times per orbit.</p>
+
+  <div class="viz-container" style="padding:0; overflow:hidden; position:relative;">
+    <div class="viz-title" style="position:absolute; top:1rem; left:1.2rem; z-index:10;">
+      Sun's Helical Orbit — One Full Galactic Revolution (229 Myr)
+    </div>
+    <div id="three-container" style="width:100%; height:600px; cursor:grab;"></div>
+    <div style="position:absolute; bottom:1rem; left:1.2rem; right:1.2rem; z-index:10; display:flex; justify-content:space-between; flex-wrap:wrap; gap:0.5rem;">
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--text-dim);">
+        Click &amp; drag to rotate · Scroll to zoom
+      </div>
+      <div style="display:flex; gap:1.2rem; font-family:'IBM Plex Mono',monospace; font-size:0.68rem;">
+        <span><span style="color:#ffe066;">●</span> Sun</span>
+        <span><span style="color:#5ce0a0;">●</span> Sun's path</span>
+        <span><span style="color:#4a9eff;">●</span> Galactic disk (~1,500 ly thick)</span>
+        <span><span style="color:#ff5555;">●</span> Galactic center</span>
+      </div>
+    </div>
+    <div class="controls" style="position:absolute; top:3rem; left:1.2rem; z-index:10; background:rgba(10,12,16,0.8); padding:0.6rem 1rem; border-radius:4px; display:flex; gap:1rem; align-items:center;">
+      <div class="control-group" style="min-width:140px; flex:none;">
+        <label>Vertical Exaggeration</label>
+        <div class="value-display" id="exag-display" style="font-size:0.8rem;">3×</div>
+        <input type="range" id="exag-slider" min="1" max="10" step="0.5" value="3">
+      </div>
+      <div class="control-group" style="min-width:120px; flex:none;">
+        <label>Animation Speed</label>
+        <div class="value-display" id="speed-display" style="font-size:0.8rem;">1×</div>
+        <input type="range" id="speed-slider" min="0" max="3" step="0.25" value="1">
+      </div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <div class="callout-title">Scale Context</div>
+    <p style="margin:0;">The Sun orbits at ~26,700 ly from the galactic center. The disk is ~1,500 ly thick at the Sun's radius. The 660 ly oscillation means the Sun traverses <strong>44%</strong> of the total disk thickness on each half-cycle. At the default 3× vertical exaggeration, the proportions are stretched to make the bobbing visible against the orbital radius — set it to 1× for true proportions.</p>
+  </div>
+</div>
+
+<!-- ====== FOOTER ====== -->
+<footer>
+  <p><a href="https://ifinishedelementary.com">ifinishedelementary.com</a></p>
+  <p style="margin-top:0.5rem; font-size:0.8rem;">Chain 7 — F=ma is sufficient.</p>
+</footer>
+
+<script>
+// ============================================================
+// CONSTANTS
+// ============================================================
+const G = 6.674e-11;
+const M_sun = 1.989e30;
+const pc = 3.086e16;
+const ly = 9.461e15;
+const yr = 3.156e7;
+const Myr = yr * 1e6;
+
+// ============================================================
+// INTERACTIVE CALCULATOR
+// ============================================================
+const rhoSlider = document.getElementById('rho-slider');
+const z0Slider = document.getElementById('z0-slider');
+const vzSlider = document.getElementById('vz-slider');
+const rhoDisplay = document.getElementById('rho-display');
+const z0Display = document.getElementById('z0-display');
+const vzDisplay = document.getElementById('vz-display');
+const calcPeriod = document.getElementById('calc-period');
+const calcZmax = document.getElementById('calc-zmax');
+const calcTotal = document.getElementById('calc-total');
+
+function updateCalc() {
+  const rho = parseFloat(rhoSlider.value) * M_sun / (pc * pc * pc);
+  const z0 = parseFloat(z0Slider.value) * pc;
+  const vz = parseFloat(vzSlider.value) * 1e3;
+
+  rhoDisplay.textContent = parseFloat(rhoSlider.value).toFixed(3);
+  z0Display.textContent = parseFloat(z0Slider.value).toFixed(1);
+  vzDisplay.textContent = parseFloat(vzSlider.value).toFixed(2);
+
+  const omega2 = 4 * Math.PI * G * rho;
+  const omega = Math.sqrt(omega2);
+  const T = 2 * Math.PI / omega;
+  const zmax = Math.sqrt(z0 * z0 + (vz / omega) * (vz / omega));
+
+  calcPeriod.textContent = (T / Myr).toFixed(1) + ' Myr';
+  calcZmax.textContent = Math.round(zmax / ly) + ' ly';
+  calcTotal.textContent = Math.round(2 * zmax / ly) + ' ly';
+}
+
+rhoSlider.addEventListener('input', updateCalc);
+z0Slider.addEventListener('input', updateCalc);
+vzSlider.addEventListener('input', updateCalc);
+updateCalc();
+
+// ============================================================
+// ORBIT CANVAS — sinusoidal trajectory
+// ============================================================
+function drawOrbit() {
+  const canvas = document.getElementById('orbit-canvas');
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * dpr;
+  canvas.height = 350 * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  const W = rect.width, H = 350;
+
+  // Background
+  ctx.fillStyle = '#080a0f';
+  ctx.fillRect(0, 0, W, H);
+
+  // Midplane line
+  const mid = H / 2;
+  ctx.strokeStyle = 'rgba(200,205,216,0.15)';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([4, 6]);
+  ctx.beginPath();
+  ctx.moveTo(40, mid);
+  ctx.lineTo(W - 20, mid);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Labels
+  ctx.fillStyle = '#6b7280';
+  ctx.font = '11px "IBM Plex Mono", monospace';
+  ctx.textAlign = 'right';
+  ctx.fillText('+329 ly', 36, mid - 100);
+  ctx.fillText('−329 ly', 36, mid + 105);
+  ctx.fillText('0', 36, mid + 4);
+
+  // Scale lines
+  ctx.strokeStyle = 'rgba(200,205,216,0.08)';
+  ctx.setLineDash([2, 4]);
+  ctx.beginPath();
+  ctx.moveTo(40, mid - 102); ctx.lineTo(W - 20, mid - 102);
+  ctx.moveTo(40, mid + 102); ctx.lineTo(W - 20, mid + 102);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Parameters
+  const T_orb = 229; // Myr
+  const T_z = 83.6;  // Myr
+  const phi = 11.9 * Math.PI / 180; // current phase
+  const amp = 102; // pixels for 329 ly
+
+  // Draw the sinusoid
+  const padL = 44, padR = 20;
+  const plotW = W - padL - padR;
+
+  // Gradient stroke
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  for (let i = 0; i <= 800; i++) {
+    const frac = i / 800;
+    const t_Myr = frac * T_orb;
+    const angle = (2 * Math.PI / T_z) * t_Myr + phi - (2 * Math.PI / T_z) * 2.8; // offset so phase is correct
+    const y = mid - amp * Math.sin(angle);
+    const x = padL + frac * plotW;
+    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  }
+  ctx.strokeStyle = '#ffe066';
+  ctx.stroke();
+
+  // Mark current position (at ~2.8 Myr from start)
+  const nowFrac = 2.8 / T_orb;
+  const nowX = padL + nowFrac * plotW;
+  const nowAngle = (2 * Math.PI / T_z) * 2.8 + phi - (2 * Math.PI / T_z) * 2.8;
+  const nowY = mid - amp * Math.sin(nowAngle);
+
+  ctx.beginPath();
+  ctx.arc(nowX, nowY, 6, 0, 2 * Math.PI);
+  ctx.fillStyle = '#ffe066';
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(nowX, nowY, 10, 0, 2 * Math.PI);
+  ctx.strokeStyle = 'rgba(255,224,102,0.4)';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  ctx.fillStyle = '#ffe066';
+  ctx.font = '600 11px "IBM Plex Mono", monospace';
+  ctx.textAlign = 'left';
+  ctx.fillText('SUN NOW', nowX + 14, nowY - 6);
+  ctx.fillStyle = '#6b7280';
+  ctx.font = '10px "IBM Plex Mono", monospace';
+  ctx.fillText('20.8 pc above, rising', nowX + 14, nowY + 8);
+}
+
+// ============================================================
+// PHASE CANVAS — single-period view
+// ============================================================
+function drawPhase() {
+  const canvas = document.getElementById('phase-canvas');
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * dpr;
+  canvas.height = 300 * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  const W = rect.width, H = 300;
+
+  ctx.fillStyle = '#080a0f';
+  ctx.fillRect(0, 0, W, H);
+
+  const mid = H / 2;
+  const padL = 55, padR = 30, padT = 30, padB = 40;
+  const plotW = W - padL - padR;
+  const plotH = H - padT - padB;
+  const amp = plotH / 2 - 10;
+
+  // Axes
+  ctx.strokeStyle = 'rgba(200,205,216,0.2)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(padL, mid); ctx.lineTo(W - padR, mid);
+  ctx.stroke();
+
+  // +/- labels
+  ctx.fillStyle = '#6b7280';
+  ctx.font = '10px "IBM Plex Mono", monospace';
+  ctx.textAlign = 'right';
+  ctx.fillText('+329 ly', padL - 6, padT + 10);
+  ctx.fillText('−329 ly', padL - 6, H - padB - 2);
+  ctx.fillText('0', padL - 6, mid + 4);
+
+  // Time labels
+  ctx.textAlign = 'center';
+  const T_z = 83.6;
+  for (let i = 0; i <= 4; i++) {
+    const t = (T_z / 4) * i;
+    const x = padL + (i / 4) * plotW;
+    ctx.fillText(t.toFixed(0) + ' Myr', x, H - padB + 18);
+    ctx.strokeStyle = 'rgba(200,205,216,0.06)';
+    ctx.beginPath(); ctx.moveTo(x, padT); ctx.lineTo(x, H - padB); ctx.stroke();
+  }
+
+  // z(t) curve
+  const phi = 11.9 * Math.PI / 180;
+  const z0_pc = 20.8;
+  const zmax_pc = 100.8;
+  const t_offset = phi / (2 * Math.PI / T_z); // Sun crossed plane t_offset Myr ago
+
+  ctx.lineWidth = 2.5;
+  ctx.strokeStyle = '#ffe066';
+  ctx.beginPath();
+  for (let i = 0; i <= 600; i++) {
+    const frac = i / 600;
+    const t = frac * T_z;
+    const z = zmax_pc * Math.sin((2 * Math.PI / T_z) * (t + t_offset));
+    const x = padL + frac * plotW;
+    const y = mid - (z / zmax_pc) * amp;
+    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+
+  // Mark "now" at t_offset from start
+  const nowFrac = t_offset / T_z;
+  const nowX = padL + nowFrac * plotW;
+  const nowZ = zmax_pc * Math.sin((2 * Math.PI / T_z) * (t_offset + t_offset));
+  // Actually let's compute now = t=0 offset by t_offset
+  // z at "now" = z0_pc = 20.8
+  const nowY = mid - (z0_pc / zmax_pc) * amp;
+
+  ctx.beginPath();
+  ctx.arc(nowX, nowY, 6, 0, 2 * Math.PI);
+  ctx.fillStyle = '#ffe066';
+  ctx.fill();
+
+  // Annotate
+  ctx.fillStyle = '#ffe066';
+  ctx.font = '600 11px "IBM Plex Mono", monospace';
+  ctx.textAlign = 'left';
+  ctx.fillText('NOW (2.8 Myr into cycle)', nowX + 12, nowY - 4);
+
+  // Mark max height
+  const maxFrac = (T_z / 4 - t_offset + t_offset * 2) / T_z;
+  // t at max: sin peaks at T/4 from last crossing
+  const tMax = T_z / 4;
+  const maxX = padL + (tMax / T_z) * plotW;
+  const maxY = mid - amp;
+  ctx.beginPath();
+  ctx.setLineDash([3, 4]);
+  ctx.strokeStyle = 'rgba(255,224,102,0.3)';
+  ctx.moveTo(maxX, mid); ctx.lineTo(maxX, maxY);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = '#6b7280';
+  ctx.font = '10px "IBM Plex Mono", monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('z_max = 329 ly', maxX, maxY - 8);
+}
+
+// ============================================================
+// DENSITY COMPARISON CANVAS
+// ============================================================
+function drawDensity() {
+  const canvas = document.getElementById('density-canvas');
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * dpr;
+  canvas.height = 320 * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  const W = rect.width, H = 320;
+
+  ctx.fillStyle = '#080a0f';
+  ctx.fillRect(0, 0, W, H);
+
+  const padL = 70, padR = 40, padT = 30, padB = 50;
+  const plotW = W - padL - padR;
+  const plotH = H - padT - padB;
+
+  // Data: density → amplitude in ly (one side)
+  const z0 = 20.8 * pc;
+  const vz = 7.25e3;
+  const data = [];
+  for (let r = 0.04; r <= 0.18; r += 0.002) {
+    const rho = r * M_sun / (pc * pc * pc);
+    const w = Math.sqrt(4 * Math.PI * G * rho);
+    const zmax = Math.sqrt(z0 * z0 + (vz / w) * (vz / w));
+    data.push({ rho: r, zmax_ly: zmax / ly, zmax_pc: zmax / pc });
+  }
+
+  // Scales
+  const minR = 0.04, maxR = 0.18;
+  const minZ = 200, maxZ = 550;
+
+  function xScale(r) { return padL + ((r - minR) / (maxR - minR)) * plotW; }
+  function yScale(z) { return padT + plotH - ((z - minZ) / (maxZ - minZ)) * plotH; }
+
+  // Grid
+  ctx.strokeStyle = 'rgba(200,205,216,0.06)';
+  ctx.lineWidth = 1;
+  for (let z = 200; z <= 550; z += 50) {
+    ctx.beginPath(); ctx.moveTo(padL, yScale(z)); ctx.lineTo(W - padR, yScale(z)); ctx.stroke();
+  }
+
+  // Axes labels
+  ctx.fillStyle = '#6b7280';
+  ctx.font = '10px "IBM Plex Mono", monospace';
+  ctx.textAlign = 'right';
+  for (let z = 200; z <= 550; z += 50) {
+    ctx.fillText(z + ' ly', padL - 8, yScale(z) + 4);
+  }
+  ctx.textAlign = 'center';
+  for (let r = 0.04; r <= 0.18; r += 0.02) {
+    ctx.fillText(r.toFixed(2), xScale(r), H - padB + 18);
+  }
+  ctx.fillText('ρ₀ (M☉/pc³)', padL + plotW / 2, H - 6);
+  ctx.save();
+  ctx.translate(14, padT + plotH / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.fillText('z_max (light-years)', 0, 0);
+  ctx.restore();
+
+  // Curve
+  ctx.lineWidth = 2.5;
+  ctx.strokeStyle = '#ffe066';
+  ctx.beginPath();
+  data.forEach((d, i) => {
+    const x = xScale(d.rho);
+    const y = yScale(d.zmax_ly);
+    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+
+  // Mark observed density
+  const obsX = xScale(0.10);
+  const obsZ = data.find(d => Math.abs(d.rho - 0.10) < 0.003).zmax_ly;
+  const obsY = yScale(obsZ);
+  ctx.beginPath();
+  ctx.arc(obsX, obsY, 7, 0, 2 * Math.PI);
+  ctx.fillStyle = '#ffe066';
+  ctx.fill();
+  ctx.fillStyle = '#ffe066';
+  ctx.font = '600 11px "IBM Plex Mono", monospace';
+  ctx.textAlign = 'left';
+  ctx.fillText('OBSERVED: 329 ly', obsX + 12, obsY - 8);
+
+  // Mark dark-matter range
+  ctx.fillStyle = 'rgba(74,158,255,0.15)';
+  ctx.fillRect(xScale(0.12), padT, xScale(0.15) - xScale(0.12), plotH);
+  ctx.fillStyle = '#4a9eff';
+  ctx.font = '10px "IBM Plex Mono", monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('"+ dark matter"', (xScale(0.12) + xScale(0.15)) / 2, padT + 16);
+
+  // Mark typical standard-model values
+  const dmX = xScale(0.135);
+  const dmZ = data.find(d => Math.abs(d.rho - 0.134) < 0.003).zmax_ly;
+  const dmY = yScale(dmZ);
+  ctx.beginPath();
+  ctx.arc(dmX, dmY, 5, 0, 2 * Math.PI);
+  ctx.fillStyle = '#4a9eff';
+  ctx.fill();
+  ctx.fillStyle = '#4a9eff';
+  ctx.font = '600 10px "IBM Plex Mono", monospace';
+  ctx.textAlign = 'left';
+  ctx.fillText('STANDARD: ~250 ly', dmX + 10, dmY + 4);
+}
+
+// ============================================================
+// SCROLL FADE-IN
+// ============================================================
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) e.target.classList.add('visible');
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// ============================================================
+// ACTIVE NAV TRACKING
+// ============================================================
+const sections = document.querySelectorAll('.section, .hero');
+const navLinks = document.querySelectorAll('nav a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (s.id && window.scrollY >= s.offsetTop - 150) current = s.id;
+  });
+  navLinks.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+  });
+});
+
+// ============================================================
+// DRAW ALL CANVASES
+// ============================================================
+function drawAll() {
+  drawOrbit();
+  drawPhase();
+  drawDensity();
+}
+drawAll();
+window.addEventListener('resize', drawAll);
+
+// ============================================================
+// THREE.JS 3D GALACTIC ORBIT
+// ============================================================
+(function() {
+  const script = document.createElement('script');
+  script.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+  script.onload = initThreeScene;
+  document.head.appendChild(script);
+
+  function initThreeScene() {
+    const container = document.getElementById('three-container');
+    if (!container) return;
+    const W = container.clientWidth;
+    const H = container.clientHeight;
+
+    // --- Scene setup ---
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x080a0f);
+
+    const camera = new THREE.PerspectiveCamera(50, W / H, 0.1, 2000);
+    camera.position.set(18, 12, 22);
+    camera.lookAt(0, 0, 0);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(W, H);
+    container.appendChild(renderer.domElement);
+
+    // --- Orbital parameters (normalized units) ---
+    // Orbital radius = 10 units (represents 26,700 ly)
+    // Scale: 1 unit = 2,670 ly
+    // Disk thickness ~1,500 ly = 0.562 units
+    // Oscillation amplitude 329 ly = 0.123 units (true scale)
+    const R_orbit = 10;
+    const diskHalfThick = 0.281;  // 750 ly in normalized units
+    const zAmpTrue = 0.123;      // 329 ly true scale
+    const oscillationsPerOrbit = 2.74;
+
+    let vertExag = 3;
+    let animSpeed = 1;
+
+    // --- Exaggeration slider ---
+    const exagSlider = document.getElementById('exag-slider');
+    const exagDisplay = document.getElementById('exag-display');
+    const speedSlider = document.getElementById('speed-slider');
+    const speedDisplay = document.getElementById('speed-display');
+
+    exagSlider.addEventListener('input', () => {
+      vertExag = parseFloat(exagSlider.value);
+      exagDisplay.textContent = vertExag + '×';
+      rebuildPath();
+    });
+    speedSlider.addEventListener('input', () => {
+      animSpeed = parseFloat(speedSlider.value);
+      speedDisplay.textContent = animSpeed + '×';
+    });
+
+    // --- Stars background ---
+    const starsGeo = new THREE.BufferGeometry();
+    const starsPos = [];
+    for (let i = 0; i < 3000; i++) {
+      const r = 40 + Math.random() * 160;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = (Math.random() - 0.5) * Math.PI;
+      starsPos.push(
+        r * Math.cos(phi) * Math.cos(theta),
+        r * Math.sin(phi) * 0.3,
+        r * Math.cos(phi) * Math.sin(theta)
+      );
+    }
+    starsGeo.setAttribute('position', new THREE.Float32BufferAttribute(starsPos, 3));
+    const starsMat = new THREE.PointsMaterial({ color: 0x445566, size: 0.15 });
+    scene.add(new THREE.Points(starsGeo, starsMat));
+
+    // --- Galactic disk (translucent ring) ---
+    let diskMesh;
+    function createDisk() {
+      if (diskMesh) scene.remove(diskMesh);
+      const thick = diskHalfThick * vertExag;
+      const diskGeo = new THREE.CylinderGeometry(14, 14, thick * 2, 64, 1, false);
+      const diskMat = new THREE.MeshBasicMaterial({
+        color: 0x4a9eff,
+        transparent: true,
+        opacity: 0.06,
+        side: THREE.DoubleSide,
+        depthWrite: false
+      });
+      diskMesh = new THREE.Mesh(diskGeo, diskMat);
+      scene.add(diskMesh);
+
+      // Disk edge rings (top and bottom faces)
+      const ringGeoTop = new THREE.RingGeometry(0.5, 14, 64);
+      const ringMat = new THREE.MeshBasicMaterial({
+        color: 0x4a9eff, transparent: true, opacity: 0.12, side: THREE.DoubleSide
+      });
+      const ringTop = new THREE.Mesh(ringGeoTop, ringMat);
+      ringTop.rotation.x = -Math.PI / 2;
+      ringTop.position.y = thick;
+      scene.add(ringTop);
+
+      const ringBot = ringTop.clone();
+      ringBot.position.y = -thick;
+      scene.add(ringBot);
+
+      // Store for cleanup
+      diskMesh._extras = [ringTop, ringBot];
+    }
+
+    // --- Galactic center ---
+    const coreGeo = new THREE.SphereGeometry(0.4, 32, 32);
+    const coreMat = new THREE.MeshBasicMaterial({ color: 0xff5555 });
+    const core = new THREE.Mesh(coreGeo, coreMat);
+    scene.add(core);
+
+    // Core glow
+    const glowGeo = new THREE.SphereGeometry(0.8, 32, 32);
+    const glowMat = new THREE.MeshBasicMaterial({
+      color: 0xff3333, transparent: true, opacity: 0.15
+    });
+    scene.add(new THREE.Mesh(glowGeo, glowMat));
+
+    // --- Orbit circle (midplane reference) ---
+    const orbitPts = [];
+    for (let i = 0; i <= 128; i++) {
+      const a = (i / 128) * Math.PI * 2;
+      orbitPts.push(new THREE.Vector3(R_orbit * Math.cos(a), 0, R_orbit * Math.sin(a)));
+    }
+    const orbitLine = new THREE.Line(
+      new THREE.BufferGeometry().setFromPoints(orbitPts),
+      new THREE.LineBasicMaterial({ color: 0x2a3040, linewidth: 1 })
+    );
+    scene.add(orbitLine);
+
+    // --- Midplane grid ---
+    const gridHelper = new THREE.GridHelper(28, 28, 0x151a24, 0x151a24);
+    scene.add(gridHelper);
+
+    // --- Sun's helical path ---
+    let pathLine, trailLine;
+    const pathSegments = 2000;
+
+    function buildPathPoints() {
+      const zAmp = zAmpTrue * vertExag;
+      const pts = [];
+      const phase0 = (11.9 * Math.PI / 180);
+      const omega_orbit = 2 * Math.PI;
+      const omega_z = oscillationsPerOrbit * 2 * Math.PI;
+      for (let i = 0; i <= pathSegments; i++) {
+        const t = i / pathSegments;
+        const ang = omega_orbit * t;
+        const z = zAmp * Math.sin(omega_z * t + phase0);
+        pts.push(new THREE.Vector3(
+          R_orbit * Math.cos(ang),
+          z,
+          R_orbit * Math.sin(ang)
+        ));
+      }
+      return pts;
+    }
+
+    function rebuildPath() {
+      if (pathLine) scene.remove(pathLine);
+      if (trailLine) scene.remove(trailLine);
+
+      const pts = buildPathPoints();
+      const pathGeo = new THREE.BufferGeometry().setFromPoints(pts);
+
+      // Color gradient: brighter near peaks
+      const colors = [];
+      const zAmp = zAmpTrue * vertExag;
+      for (let i = 0; i <= pathSegments; i++) {
+        const y = pts[i].y;
+        const frac = Math.abs(y) / (zAmp || 1);
+        colors.push(
+          0.36 * (0.5 + 0.5 * frac),
+          0.88 * (0.6 + 0.4 * frac),
+          0.63 * (0.5 + 0.5 * frac)
+        );
+      }
+      pathGeo.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+
+      const pathMat = new THREE.LineBasicMaterial({ vertexColors: true, linewidth: 2 });
+      pathLine = new THREE.Line(pathGeo, pathMat);
+      scene.add(pathLine);
+
+      // Rebuild disk
+      if (diskMesh && diskMesh._extras) {
+        diskMesh._extras.forEach(e => scene.remove(e));
+        scene.remove(diskMesh);
+      }
+      createDisk();
+    }
+
+    rebuildPath();
+
+    // --- Sun marker ---
+    const sunGeo = new THREE.SphereGeometry(0.25, 24, 24);
+    const sunMat = new THREE.MeshBasicMaterial({ color: 0xffe066 });
+    const sunMesh = new THREE.Mesh(sunGeo, sunMat);
+    scene.add(sunMesh);
+
+    // Sun glow
+    const sunGlowGeo = new THREE.SphereGeometry(0.45, 24, 24);
+    const sunGlowMat = new THREE.MeshBasicMaterial({
+      color: 0xffe066, transparent: true, opacity: 0.25
+    });
+    const sunGlow = new THREE.Mesh(sunGlowGeo, sunGlowMat);
+    scene.add(sunGlow);
+
+    // --- Vertical "drop line" from sun to midplane ---
+    const dropGeo = new THREE.BufferGeometry();
+    const dropMat = new THREE.LineDashedMaterial({
+      color: 0xffe066, dashSize: 0.15, gapSize: 0.1, transparent: true, opacity: 0.5
+    });
+    const dropLine = new THREE.Line(dropGeo, dropMat);
+    scene.add(dropLine);
+
+    // --- Scale bar ---
+    // We'll draw a vertical bar near the orbit showing disk thickness vs oscillation
+    const barX = 14, barZ = 0;
+    function makeBar(yBot, yTop, color, opacity) {
+      const pts = [new THREE.Vector3(barX, yBot, barZ), new THREE.Vector3(barX, yTop, barZ)];
+      const geo = new THREE.BufferGeometry().setFromPoints(pts);
+      const mat = new THREE.LineBasicMaterial({ color, transparent: true, opacity, linewidth: 2 });
+      return new THREE.Line(geo, mat);
+    }
+    let scaleBarDisk, scaleBarOsc;
+    function rebuildScaleBars() {
+      if (scaleBarDisk) scene.remove(scaleBarDisk);
+      if (scaleBarOsc) scene.remove(scaleBarOsc);
+      const dh = diskHalfThick * vertExag;
+      const oh = zAmpTrue * vertExag;
+      scaleBarDisk = makeBar(-dh, dh, 0x4a9eff, 0.6);
+      scene.add(scaleBarDisk);
+      scaleBarOsc = makeBar(-oh, oh, 0xffe066, 0.8);
+      // offset slightly
+      scaleBarOsc.position.x = 0.5;
+      scene.add(scaleBarOsc);
+    }
+    rebuildScaleBars();
+    const origRebuild = rebuildPath;
+    // override rebuildPath to also redo scale bars
+    rebuildPath = function() {
+      origRebuild();
+      rebuildScaleBars();
+    };
+
+    // redo on slider (re-bind since we replaced the function)
+    exagSlider.removeEventListener('input', () => {});
+    exagSlider.addEventListener('input', () => {
+      vertExag = parseFloat(exagSlider.value);
+      exagDisplay.textContent = vertExag + '×';
+      rebuildPath();
+    });
+
+    // --- Simple Orbit Controls (manual implementation) ---
+    let isDragging = false;
+    let prevMouse = { x: 0, y: 0 };
+    let spherical = { theta: 0.85, phi: 0.45, radius: 32 };
+
+    function updateCamera() {
+      camera.position.set(
+        spherical.radius * Math.sin(spherical.phi) * Math.cos(spherical.theta),
+        spherical.radius * Math.cos(spherical.phi),
+        spherical.radius * Math.sin(spherical.phi) * Math.sin(spherical.theta)
+      );
+      camera.lookAt(0, 0, 0);
+    }
+    updateCamera();
+
+    renderer.domElement.addEventListener('pointerdown', (e) => {
+      isDragging = true;
+      prevMouse = { x: e.clientX, y: e.clientY };
+      renderer.domElement.style.cursor = 'grabbing';
+    });
+    window.addEventListener('pointermove', (e) => {
+      if (!isDragging) return;
+      const dx = e.clientX - prevMouse.x;
+      const dy = e.clientY - prevMouse.y;
+      spherical.theta -= dx * 0.008;
+      spherical.phi = Math.max(0.15, Math.min(Math.PI - 0.15, spherical.phi + dy * 0.008));
+      prevMouse = { x: e.clientX, y: e.clientY };
+      updateCamera();
+    });
+    window.addEventListener('pointerup', () => {
+      isDragging = false;
+      renderer.domElement.style.cursor = 'grab';
+    });
+    renderer.domElement.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      spherical.radius = Math.max(10, Math.min(80, spherical.radius + e.deltaY * 0.03));
+      updateCamera();
+    }, { passive: false });
+
+    // --- Animation loop ---
+    let animTime = 0;
+    const phase0 = 11.9 * Math.PI / 180;
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      animTime += 0.0008 * animSpeed;
+      const t = animTime % 1;
+      const ang = 2 * Math.PI * t;
+      const zAmp = zAmpTrue * vertExag;
+      const z = zAmp * Math.sin(oscillationsPerOrbit * 2 * Math.PI * t + phase0);
+
+      const sx = R_orbit * Math.cos(ang);
+      const sz = R_orbit * Math.sin(ang);
+      sunMesh.position.set(sx, z, sz);
+      sunGlow.position.set(sx, z, sz);
+
+      // Update drop line
+      const dropPts = [
+        new THREE.Vector3(sx, 0, sz),
+        new THREE.Vector3(sx, z, sz)
+      ];
+      dropLine.geometry.dispose();
+      dropLine.geometry = new THREE.BufferGeometry().setFromPoints(dropPts);
+      dropLine.computeLineDistances();
+
+      // Auto-rotate when not dragging
+      if (!isDragging) {
+        spherical.theta += 0.001 * animSpeed;
+        updateCamera();
+      }
+
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // --- Resize handler ---
+    function onResize() {
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    }
+    window.addEventListener('resize', onResize);
+  }
+})();
+</script>
+</body>
+</html>
