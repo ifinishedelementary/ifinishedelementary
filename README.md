@@ -137,13 +137,13 @@ Newton knew it. Berkeley called it out in 1734. Weierstrass papered over it. The
 
 ### 7. [Solar System Geometry](solar-system-geometry.html)
 
-Also on Wix: [ifinishedelementary.com/Solar System Geometry](https://www.ifinishedelementary.com/solar-system-geometry.html) — To-scale interactive model of the solar system with real JPL orbital elements. Draw gravity lines between any pair of the 10 bodies (45 possible connections) to visualize the complete gravitational geometry. Animate ±200 years.
+Also on Wix: [ifinishedelementary.com/Solar System Geometry](https://www.ifinishedelementary.com/solar-system-geometry) — To-scale interactive model of the solar system with real JPL orbital elements. Draw gravity lines between any pair of the 10 bodies (45 possible connections) to visualize the complete gravitational geometry. Animate ±200 years.
 
 ---
 
 ### 8. [Sun Galactic Oscillation](sun-galactic-oscillation.html)
 
-Also on Wix: [ifinishedelementary.com/Sun Galactic Oscillation](https://www.ifinishedelementary.com/sun-galactic-oscillation.html)
+Also on Wix: [ifinishedelementary.com/Sun Galactic Oscillation](https://www.ifinishedelementary.com/sun-galactic-oscillation)
 
 ---
 
