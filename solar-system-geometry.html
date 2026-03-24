@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solar System Geometry — I Finished Elementary</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0a0a0f; color: #c8c8d0;
+    font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Consolas', monospace;
+    overflow-x: hidden;
+  }
+
+  /* ── Description ── */
+  .desc {
+    background: #0d0d15; border-bottom: 1px solid #1a1a2e;
+    padding: 20px 28px;
+  }
+  .desc-inner { max-width: 960px; margin: 0 auto; }
+  .desc h1 {
+    font-size: 18px; font-weight: 700; color: #e0e0e8;
+    letter-spacing: 1.5px; margin-bottom: 12px; text-transform: uppercase;
+  }
+  .desc p {
+    font-size: 12px; line-height: 1.75; color: #a0a0b0; margin-bottom: 8px;
+  }
+  .desc p:last-child { margin-bottom: 0; color: #666; font-size: 10px; line-height: 1.5; }
+  .hl-blue { color: #6B93D6; }
+  .hl-gold { color: #FDB813; }
+  .hl-cyan { color: #73C2C6; }
+
+  /* ── Canvas wrapper ── */
+  .canvas-wrap {
+    position: relative; width: 100%;
+    border-bottom: 1px solid #1a1a2e;
+  }
+  .canvas-wrap canvas {
+    display: block; width: 100%; height: 100%;
+    cursor: grab;
+  }
+  .canvas-wrap canvas:active { cursor: grabbing; }
+  .canvas-overlay {
+    position: absolute; top: 8px; right: 12px;
+    background: rgba(10,10,15,0.85); border: 1px solid #1a1a2e;
+    border-radius: 4px; padding: 5px 10px; font-size: 10px; color: #888;
+    pointer-events: none;
+  }
+
+  /* ── Bottom panel ── */
+  .panel {
+    background: #101018; border-top: 1px solid #1a1a2e;
+    padding: 5px 8px 8px;
+  }
+
+  /* Controls row */
+  .controls {
+    display: flex; gap: 6px; align-items: center;
+    margin-bottom: 5px; flex-wrap: nowrap; font-size: 9px;
+  }
+  .controls input[type="date"],
+  .controls input[type="number"] {
+    background: #14141f; color: #e0e0e8; border: 1px solid #2a2a3e;
+    border-radius: 3px; padding: 2px 4px; font-size: 9px; font-family: inherit;
+  }
+  .controls input[type="date"] { width: 105px; }
+  .controls input[type="number"] { width: 38px; }
+  .controls input[type="range"] { width: 180px; accent-color: #6B93D6; }
+  .controls .sep { width: 1px; height: 14px; background: #2a2a3e; flex-shrink: 0; }
+  .controls .lbl { font-size: 8px; color: #666; white-space: nowrap; }
+  .controls label { display: flex; align-items: center; gap: 2px; cursor: pointer; font-size: 8px; color: #888; }
+  .controls label input { width: 10px; height: 10px; }
+
+  .btn {
+    background: #1a1a2e; color: #aaa; border: 1px solid #2a2a3e;
+    border-radius: 3px; padding: 1px 5px; cursor: pointer; font-size: 8px;
+    font-family: inherit;
+  }
+  .btn:hover { background: #22223a; }
+  .btn-play {
+    background: #1a1a2e; color: #e0e0e8; border: 1px solid #2a2a3e;
+    border-radius: 3px; padding: 2px 7px; cursor: pointer; font-size: 9px;
+    font-family: inherit;
+  }
+  .btn-play.active { background: #6B93D6; }
+
+  /* ── Connection grid ── */
+  .grid { display: flex; gap: 0; }
+  .grid-col {
+    flex: 1 1 0; min-width: 0; padding: 0 3px;
+    border-right: 1px solid #1a1a2e;
+  }
+  .grid-col:last-child { border-right: none; }
+  .grid-col-head {
+    display: flex; align-items: center; gap: 2px;
+    margin-bottom: 2px; padding-bottom: 2px;
+  }
+  .grid-col-head .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .grid-col-head .name {
+    font-size: 8px; font-weight: 700; overflow: hidden;
+    text-overflow: ellipsis; white-space: nowrap;
+  }
+  .grid-col-head .btns { margin-left: auto; display: flex; gap: 1px; }
+  .grid-col-head .btns button {
+    background: #1a1a2e; color: #aaa; border: 1px solid #2a2a3e;
+    border-radius: 3px; padding: 0 2px; cursor: pointer; font-size: 7px;
+    line-height: 11px; font-family: inherit;
+  }
+  .grid-row {
+    display: flex; align-items: center; gap: 2px;
+    padding: 0.5px 0; cursor: pointer; font-size: 8px; line-height: 13px;
+  }
+  .grid-row.off { opacity: 0.35; }
+  .grid-row input { width: 9px; height: 9px; margin: 0; flex-shrink: 0; }
+  .grid-row .dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+  .grid-row span { white-space: nowrap; }
+  .grid-row-all {
+    display: flex; align-items: center; gap: 2px;
+    padding: 2px 0 0; cursor: pointer; font-size: 7px; line-height: 12px;
+    border-top: 1px solid #1a1a2e22; margin-top: 1px; color: #666;
+  }
+  .grid-row-all input { width: 9px; height: 9px; margin: 0; flex-shrink: 0; }
+</style>
+</head>
+<body>
+
+<!-- Description -->
+<div class="desc">
+  <div class="desc-inner">
+    <h1>Solar System Geometry</h1>
+    <p>
+      This is a <span class="hl-blue">to-scale</span> model of the solar system showing all nine planetary orbits plus the Sun, computed from real JPL Keplerian orbital elements at the J2000 epoch with secular drift rates. Every orbit is drawn with its actual eccentricity — notice how nearly circular Venus is compared to the elongated ellipses of Mercury and Pluto. Kepler's equation is solved numerically for each body every frame.
+    </p>
+    <p>
+      The <span class="hl-gold">gravity line system</span> is what makes this tool unique. Below the viewport, each of the 10 bodies has its own column with 9 checkboxes — one for every other body it can be connected to. Check any pair and a solid line appears between them showing the real-time distance in AU. With all 45 possible connections drawn, you see the complete gravitational geometry of the solar system: every body pulling on every other body, the web of forces that holds it together. Animate forward in time and watch this geometric web breathe — triangles form and dissolve, distances stretch and compress, alignments come and go.
+    </p>
+    <p>
+      The <span class="hl-cyan">time controls</span> let you slide ±200 years from today, type a specific date, or animate forward at adjustable speed. The orbital element model is accurate within this range — beyond that, perturbation effects accumulate and the simple Keplerian model diverges from reality.
+    </p>
+    <p>
+      Scroll to zoom · Drag to pan · Use the view presets to jump between inner system, gas giant, and full system scales. Built for widescreen displays.
+    </p>
+  </div>
+</div>
+
+<!-- Canvas -->
+<div class="canvas-wrap" id="canvasWrap">
+  <canvas id="canvas"></canvas>
+  <div class="canvas-overlay" id="overlay"></div>
+</div>
+
+<!-- Bottom Panel -->
+<div class="panel">
+  <!-- Controls row -->
+  <div class="controls" id="controls">
+    <span class="lbl">DATE</span>
+    <input type="date" id="dateInput">
+    <input type="range" id="slider" min="-73050" max="73050" value="0">
+    <span class="lbl">±200yr</span>
+    <div class="sep"></div>
+    <button class="btn-play" id="playBtn">▶ Play</button>
+    <input type="number" id="speedInput" value="1" min="0.1" max="365" step="0.5">
+    <span class="lbl">d/f</span>
+    <div class="sep"></div>
+    <button class="btn" onclick="setPreset(12)">Inner</button>
+    <button class="btn" onclick="setPreset(1)">Full</button>
+    <button class="btn" onclick="setPreset(3)">Giants</button>
+    <div class="sep"></div>
+    <label><input type="checkbox" id="cbOrbits" checked> Orbits</label>
+    <label><input type="checkbox" id="cbLabels" checked> Labels</label>
+    <div class="sep"></div>
+    <button class="btn" style="color:#8a8" onclick="connectAll()">All 45</button>
+    <button class="btn" style="color:#a88" onclick="clearAll()">Clear</button>
+  </div>
+  <!-- Connection grid -->
+  <div class="grid" id="grid"></div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════════════════════════
+const BODIES = [
+  { name: "Sun", color: "#FDB813", r: 5, orb: null },
+  { name: "Mercury", color: "#B5B5B5", r: 2.5, orb: { a:[.38709927,.00000037], e:[.20563593,.00001906], I:[7.00497902,-.00594749], L:[252.2503235,149472.67411175], w:[77.45779628,.16047689], O:[48.33076593,-.12534081] }},
+  { name: "Venus", color: "#E8CDA0", r: 3, orb: { a:[.72333566,.0000039], e:[.00677672,-.00004107], I:[3.39467605,-.0007889], L:[181.9790995,58517.81538729], w:[131.60246718,.00268329], O:[76.67984255,-.27769418] }},
+  { name: "Earth", color: "#6B93D6", r: 3, orb: { a:[1.00000261,.00000562], e:[.01671123,-.00004392], I:[-.00001531,-.01294668], L:[100.46457166,35999.37244981], w:[102.93768193,.32327364], O:[0,0] }},
+  { name: "Mars", color: "#C1440E", r: 2.8, orb: { a:[1.52371034,.00001847], e:[.0933941,.00007882], I:[1.84969142,-.00813131], L:[355.44656895,19140.30268499], w:[336.05637041,.44441088], O:[49.55953891,-.29257343] }},
+  { name: "Jupiter", color: "#C88B3A", r: 4, orb: { a:[5.202887,-.00011607], e:[.04838624,-.00013253], I:[1.30439695,-.00183714], L:[34.39644051,3034.74612775], w:[14.72847983,.21252668], O:[100.47390909,.20469106] }},
+  { name: "Saturn", color: "#EAD6B8", r: 3.8, orb: { a:[9.53667594,-.0012506], e:[.05386179,-.00050991], I:[2.48599187,.00193609], L:[49.95424423,1222.49362201], w:[92.59887831,-.41897216], O:[113.66242448,-.28867794] }},
+  { name: "Uranus", color: "#73C2C6", r: 3.4, orb: { a:[19.18916464,-.00196176], e:[.04725744,-.00004397], I:[.77263783,-.00242939], L:[313.23810451,428.48202785], w:[170.9542763,.40805281], O:[74.01692503,.04240589] }},
+  { name: "Neptune", color: "#3F54BA", r: 3.4, orb: { a:[30.06992276,.00026291], e:[.00859048,.00005105], I:[1.77004347,.00035372], L:[304.87997031,218.45945325], w:[44.96476227,-.32241464], O:[131.78422574,-.00508664] }},
+  { name: "Pluto", color: "#D2B48C", r: 2.2, orb: { a:[39.48211675,-.00031596], e:[.2488273,.0000517], I:[17.14001206,.00004818], L:[238.92903833,145.20780515], w:[224.06891629,-.04062942], O:[110.30393684,-.01183482] }}
+];
+const N = BODIES.length;
+const SHORT = ["Sun","Mer","Ven","Ear","Mar","Jup","Sat","Ura","Nep","Plu"];
+
+function pk(i,j){ return i<j ? i+"-"+j : j+"-"+i; }
+const ALL_PAIRS = [];
+for(let i=0;i<N;i++) for(let j=i+1;j<N;j++) ALL_PAIRS.push(pk(i,j));
+
+// ══════════════════════════════════════════════════════════════
+// ORBITAL MECHANICS
+// ══════════════════════════════════════════════════════════════
+function solveKepler(M,e){
+  let E=M;
+  for(let i=0;i<50;i++){const d=(E-e*Math.sin(E)-M)/(1-e*Math.cos(E));E-=d;if(Math.abs(d)<1e-10)break;}
+  return E;
+}
+
+function pos(b,jd){
+  if(!b.orb) return {x:0,y:0};
+  const T=(jd-2451545)/36525, o=b.orb;
+  const a=o.a[0]+o.a[1]*T, e=o.e[0]+o.e[1]*T;
+  const I=(o.I[0]+o.I[1]*T)*Math.PI/180;
+  const L=o.L[0]+o.L[1]*T, wB=o.w[0]+o.w[1]*T;
+  const Om=(o.O[0]+o.O[1]*T)*Math.PI/180;
+  const w=(wB-o.O[0]-o.O[1]*T)*Math.PI/180;
+  let M=((L-wB)%360+360)%360*Math.PI/180;
+  const E=solveKepler(M,e);
+  const xp=a*(Math.cos(E)-e), yp=a*Math.sqrt(1-e*e)*Math.sin(E);
+  const cw=Math.cos(w),sw=Math.sin(w),co=Math.cos(Om),so=Math.sin(Om),ci=Math.cos(I);
+  return {
+    x:(cw*co-sw*so*ci)*xp+(-sw*co-cw*so*ci)*yp,
+    y:(cw*so+sw*co*ci)*xp+(-sw*so+cw*co*ci)*yp
+  };
+}
+
+function dateToJD(d){
+  let y=d.getUTCFullYear(),m=d.getUTCMonth()+1;
+  const dd=d.getUTCDate()+d.getUTCHours()/24;
+  if(m<=2){y--;m+=12;}
+  const A=Math.floor(y/100);
+  return Math.floor(365.25*(y+4716))+Math.floor(30.6001*(m+1))+dd+2-A+Math.floor(A/4)-1524.5;
+}
+
+function jdToDate(jd){
+  const z=Math.floor(jd+.5),f=jd+.5-z;
+  let A=z;
+  if(z>=2299161){const al=Math.floor((z-1867216.25)/36524.25);A=z+1+al-Math.floor(al/4);}
+  const B=A+1524,C=Math.floor((B-122.1)/365.25),D=Math.floor(365.25*C),E=Math.floor((B-D)/30.6001);
+  const day=B-D-Math.floor(30.6001*E)+f;
+  const month=E<14?E-1:E-13;
+  const year=month>2?C-4716:C-4715;
+  return new Date(Date.UTC(year,month-1,Math.floor(day)));
+}
+
+function fmtDate(d){ return d.toISOString().split("T")[0]; }
+
+// ══════════════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════════════
+const now = new Date();
+const baseJD = dateToJD(now);
+let dayOffset = 0;
+let zoom = 1;
+let panX = 0, panY = 0;
+let showOrbits = true, showLabels = true;
+let animating = false, animSpeed = 1, animId = null;
+const conns = new Set();  // set of pair keys
+
+// DOM refs
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+const wrap = document.getElementById("canvasWrap");
+const overlay = document.getElementById("overlay");
+const dateInput = document.getElementById("dateInput");
+const slider = document.getElementById("slider");
+const playBtn = document.getElementById("playBtn");
+const speedInput = document.getElementById("speedInput");
+const cbOrbits = document.getElementById("cbOrbits");
+const cbLabels = document.getElementById("cbLabels");
+
+dateInput.value = fmtDate(now);
+
+// ══════════════════════════════════════════════════════════════
+// CANVAS SIZING — square (width = height)
+// ══════════════════════════════════════════════════════════════
+function resize(){
+  const w = wrap.clientWidth;
+  const h = w; // square
+  wrap.style.height = h + "px";
+  canvas.width = w * devicePixelRatio;
+  canvas.height = h * devicePixelRatio;
+  ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+  draw();
+}
+window.addEventListener("resize", resize);
+
+// ══════════════════════════════════════════════════════════════
+// DRAWING
+// ══════════════════════════════════════════════════════════════
+function draw(){
+  const W = canvas.width / devicePixelRatio;
+  const H = canvas.height / devicePixelRatio;
+  const cx = W/2 + panX, cy = H/2 + panY;
+  const scale = Math.min(W,H)/100 * zoom;
+  const jd = baseJD + dayOffset;
+
+  ctx.fillStyle = "#0a0a0f";
+  ctx.fillRect(0,0,W,H);
+
+  // grid
+  ctx.strokeStyle = "rgba(255,255,255,0.03)";
+  ctx.lineWidth = 1;
+  const gAU = zoom<3?10:zoom<10?5:1;
+  for(let r=gAU;r<=60;r+=gAU){ ctx.beginPath(); ctx.arc(cx,cy,r*scale,0,Math.PI*2); ctx.stroke(); }
+  ctx.fillStyle = "rgba(255,255,255,0.12)";
+  ctx.font = "10px monospace";
+  for(let r=gAU;r<=50;r+=gAU) ctx.fillText(r+" AU", cx+r*scale+3, cy-3);
+
+  const positions = BODIES.map(b => pos(b, jd));
+
+  // orbit paths
+  if(showOrbits){
+    BODIES.forEach(b => {
+      if(!b.orb) return;
+      ctx.strokeStyle = b.color + "40";
+      ctx.lineWidth = 0.8;
+      ctx.beginPath();
+      const T=(jd-2451545)/36525, o=b.orb;
+      const a=o.a[0]+o.a[1]*T, e=o.e[0]+o.e[1]*T;
+      const Iv=(o.I[0]+o.I[1]*T)*Math.PI/180;
+      const wB=o.w[0]+o.w[1]*T;
+      const Om=(o.O[0]+o.O[1]*T)*Math.PI/180;
+      const w2=(wB-o.O[0]-o.O[1]*T)*Math.PI/180;
+      const cw=Math.cos(w2),sw=Math.sin(w2),co=Math.cos(Om),so=Math.sin(Om),ci=Math.cos(Iv);
+      for(let s=0;s<=360;s++){
+        const Mv=(s/360)*2*Math.PI, E=solveKepler(Mv,e);
+        const xp=a*(Math.cos(E)-e), yp=a*Math.sqrt(1-e*e)*Math.sin(E);
+        const x=(cw*co-sw*so*ci)*xp+(-sw*co-cw*so*ci)*yp;
+        const y=(cw*so+sw*co*ci)*xp+(-sw*so+cw*co*ci)*yp;
+        s===0 ? ctx.moveTo(cx+x*scale, cy-y*scale) : ctx.lineTo(cx+x*scale, cy-y*scale);
+      }
+      ctx.closePath(); ctx.stroke();
+    });
+  }
+
+  // gravity lines
+  conns.forEach(key => {
+    const p = key.split("-").map(Number);
+    const pa=positions[p[0]], pb=positions[p[1]];
+    const ax=cx+pa.x*scale, ay=cy-pa.y*scale;
+    const bx=cx+pb.x*scale, by=cy-pb.y*scale;
+    const grad=ctx.createLinearGradient(ax,ay,bx,by);
+    grad.addColorStop(0, BODIES[p[0]].color+"CC");
+    grad.addColorStop(1, BODIES[p[1]].color+"CC");
+    ctx.strokeStyle = grad;
+    ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.moveTo(ax,ay); ctx.lineTo(bx,by); ctx.stroke();
+    const dist = Math.sqrt((pa.x-pb.x)**2 + (pa.y-pb.y)**2);
+    ctx.fillStyle = "rgba(255,255,255,0.45)";
+    ctx.font = "8px monospace";
+    ctx.fillText(dist.toFixed(2), (ax+bx)/2+3, (ay+by)/2-3);
+  });
+
+  // bodies
+  BODIES.forEach((b,i) => {
+    const p = positions[i];
+    const sx=cx+p.x*scale, sy=cy-p.y*scale;
+    const grad=ctx.createRadialGradient(sx,sy,0,sx,sy,b.r*3);
+    grad.addColorStop(0, b.color+"60"); grad.addColorStop(1, b.color+"00");
+    ctx.fillStyle=grad;
+    ctx.beginPath(); ctx.arc(sx,sy,b.r*3,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle=b.color;
+    ctx.beginPath(); ctx.arc(sx,sy,b.r,0,Math.PI*2); ctx.fill();
+    let has=false;
+    for(let j=0;j<N;j++){if(j!==i && conns.has(pk(i,j))){has=true;break;}}
+    if(has){ ctx.strokeStyle=b.color; ctx.lineWidth=1.5; ctx.beginPath(); ctx.arc(sx,sy,b.r+4,0,Math.PI*2); ctx.stroke(); }
+    if(showLabels){ ctx.fillStyle=b.color+"CC"; ctx.font="bold 10px monospace"; ctx.fillText(b.name, sx+b.r+5, sy+3); }
+  });
+
+  // overlay
+  const cd = jdToDate(jd);
+  overlay.textContent = fmtDate(cd) + "  |  JD " + jd.toFixed(1) + "  |  " + zoom.toFixed(1) + "x  |  " + conns.size + "/45 lines";
+}
+
+// ══════════════════════════════════════════════════════════════
+// MOUSE / WHEEL
+// ══════════════════════════════════════════════════════════════
+let panning = false, mx = 0, my = 0;
+
+canvas.addEventListener("mousedown", e => {
+  panning = true; mx = e.clientX; my = e.clientY;
+  e.preventDefault();
+});
+window.addEventListener("mousemove", e => {
+  if(!panning) return;
+  panX += e.clientX - mx; panY += e.clientY - my;
+  mx = e.clientX; my = e.clientY;
+  draw();
+});
+window.addEventListener("mouseup", () => { panning = false; });
+
+canvas.addEventListener("wheel", e => {
+  e.preventDefault();
+  zoom = Math.max(0.2, Math.min(80, zoom * (e.deltaY < 0 ? 1.15 : 0.87)));
+  draw();
+}, { passive: false });
+
+// ══════════════════════════════════════════════════════════════
+// CONTROLS
+// ══════════════════════════════════════════════════════════════
+function syncDate(){
+  const cd = jdToDate(baseJD + dayOffset);
+  dateInput.value = fmtDate(cd);
+  slider.value = dayOffset;
+  draw();
+}
+
+slider.addEventListener("input", () => {
+  dayOffset = Number(slider.value);
+  syncDate();
+});
+
+dateInput.addEventListener("change", () => {
+  const d = new Date(dateInput.value + "T12:00:00Z");
+  if(!isNaN(d.getTime())){ dayOffset = dateToJD(d) - baseJD; slider.value = dayOffset; draw(); }
+});
+
+playBtn.addEventListener("click", () => {
+  animating = !animating;
+  playBtn.textContent = animating ? "■ Stop" : "▶ Play";
+  playBtn.classList.toggle("active", animating);
+  if(animating) animate();
+  else if(animId){ cancelAnimationFrame(animId); animId=null; }
+});
+
+function animate(){
+  if(!animating) return;
+  dayOffset += animSpeed;
+  slider.value = dayOffset;
+  syncDate();
+  animId = requestAnimationFrame(animate);
+}
+
+speedInput.addEventListener("change", () => { animSpeed = parseFloat(speedInput.value) || 1; });
+
+cbOrbits.addEventListener("change", () => { showOrbits = cbOrbits.checked; draw(); });
+cbLabels.addEventListener("change", () => { showLabels = cbLabels.checked; draw(); });
+
+function setPreset(z){ zoom = z; panX = 0; panY = 0; draw(); }
+
+// ══════════════════════════════════════════════════════════════
+// CONNECTION GRID
+// ══════════════════════════════════════════════════════════════
+const gridEl = document.getElementById("grid");
+const checkboxes = {}; // key -> checkbox element
+const allCheckboxes = {}; // bodyIdx -> "all" checkbox
+
+function buildGrid(){
+  gridEl.innerHTML = "";
+  for(let i=0; i<N; i++){
+    const col = document.createElement("div");
+    col.className = "grid-col";
+
+    // header
+    const head = document.createElement("div");
+    head.className = "grid-col-head";
+    head.style.borderBottom = "2px solid " + BODIES[i].color + "55";
+    head.innerHTML =
+      '<span class="dot" style="background:'+BODIES[i].color+'"></span>' +
+      '<span class="name" style="color:'+BODIES[i].color+'">'+BODIES[i].name+'</span>' +
+      '<span class="btns">' +
+        '<button onclick="selectBody('+i+')">+</button>' +
+        '<button onclick="clearBody('+i+')">−</button>' +
+      '</span>';
+    col.appendChild(head);
+
+    // 9 rows
+    for(let j=0; j<N; j++){
+      if(j===i) continue;
+      const key = pk(i,j);
+      const row = document.createElement("label");
+      row.className = "grid-row off";
+      const cb = document.createElement("input");
+      cb.type = "checkbox";
+      cb.style.accentColor = BODIES[j].color;
+      cb.addEventListener("change", () => toggleConn(key));
+      if(!checkboxes[key]) checkboxes[key] = [];
+      checkboxes[key].push(cb);
+      row.appendChild(cb);
+      const dot = document.createElement("span");
+      dot.className = "dot";
+      dot.style.background = BODIES[j].color;
+      row.appendChild(dot);
+      const lbl = document.createElement("span");
+      lbl.textContent = BODIES[j].name;
+      row.appendChild(lbl);
+      col.appendChild(row);
+    }
+
+    // "all" checkbox row
+    const allRow = document.createElement("label");
+    allRow.className = "grid-row-all";
+    const allCb = document.createElement("input");
+    allCb.type = "checkbox";
+    allCb.style.accentColor = BODIES[i].color;
+    allCb.addEventListener("change", () => {
+      if(allCb.checked) selectBody(i); else clearBody(i);
+    });
+    allCheckboxes[i] = allCb;
+    allRow.appendChild(allCb);
+    const allLbl = document.createElement("span");
+    allLbl.textContent = "all";
+    allLbl.style.color = BODIES[i].color + "99";
+    allRow.appendChild(allLbl);
+    col.appendChild(allRow);
+
+    gridEl.appendChild(col);
+  }
+}
+
+function toggleConn(key){
+  if(conns.has(key)) conns.delete(key); else conns.add(key);
+  syncCheckboxes();
+  draw();
+}
+
+function syncCheckboxes(){
+  for(const key in checkboxes){
+    const on = conns.has(key);
+    checkboxes[key].forEach(cb => {
+      cb.checked = on;
+      cb.parentElement.className = "grid-row" + (on ? "" : " off");
+    });
+  }
+  // sync "all" checkboxes
+  for(let i=0; i<N; i++){
+    let allOn = true;
+    for(let j=0; j<N; j++){
+      if(j!==i && !conns.has(pk(i,j))){ allOn = false; break; }
+    }
+    allCheckboxes[i].checked = allOn;
+  }
+}
+
+function selectBody(i){
+  for(let j=0;j<N;j++) if(j!==i) conns.add(pk(i,j));
+  syncCheckboxes(); draw();
+}
+function clearBody(i){
+  for(let j=0;j<N;j++) if(j!==i) conns.delete(pk(i,j));
+  syncCheckboxes(); draw();
+}
+function connectAll(){
+  ALL_PAIRS.forEach(k => conns.add(k));
+  syncCheckboxes(); draw();
+}
+function clearAll(){
+  conns.clear();
+  syncCheckboxes(); draw();
+}
+
+// ══════════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════════
+buildGrid();
+resize();
+</script>
+</body>
+</html>
