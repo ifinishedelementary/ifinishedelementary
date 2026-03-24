@@ -133,6 +133,14 @@ Also on Wix: [ifinishedelementary.com/calculus-is-division-by-zero](https://www.
 
 Newton knew it. Berkeley called it out in 1734. Weierstrass papered over it. The constant h always disappears to zero. There is no law in the universe that forbids taking it first. This presentation traces the thread from the foundational operation of calculus through the astronomical phenomena it fails to explain, to a number system that encodes a different reality.
 
+---
+
+### 7. [Solar System Geometry](solar-system-geometry.html)
+
+Also on Wix: [ifinishedelementary.com/Solar System Geometry](https://www.ifinishedelementary.com/solar-system-geometry.html) — To-scale interactive model of the solar system with real JPL orbital elements. Draw gravity lines between any pair of the 10 bodies (45 possible connections) to visualize the complete gravitational geometry. Animate ±200 years.
+
+---
+
 **Part I: The Derivation — What Actually Happens** — Step-by-step derivation of f'(x) = 2x from first principles with animated staggered reveals. Step 05 requires h ≠ 0 to divide by it. Step 06 requires h = 0 to get the answer. The variable h is treated as nonzero when convenient and zero when convenient. Then: the same derivation performed honestly — setting h = 0 from the start. The algebra confronts 0/0 directly. The result is identical to the standard answer, if and only if 0/0 = 1. Interactive graph of f(h) = h/h: equals 1 everywhere, declared "undefined" at exactly one point — not by observation but by a rule protecting the formalism from itself.
 
 **Part II: The Binary — No Third Option** — Click-to-reveal interactive. Either h = 0 (and step 05 was division by zero) or h ≠ 0 (and the derivative is inexact, containing a residue that was never eliminated). The ε-δ formalism was constructed to create the appearance of a third option. Berkeley's critique quoted.
