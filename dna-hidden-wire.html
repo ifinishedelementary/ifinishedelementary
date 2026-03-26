@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Hidden Wire — DNA's Electromagnetic Reality</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;700&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,600;0,6..72,700;1,6..72,300;1,6..72,400&display=swap');
+
+  :root {
+    --bg-deep: #0c0b09;
+    --bg-section: #100f0c;
+    --bg-card: #16140f;
+    --text-primary: #ede6da;
+    --text-secondary: #d2c8b5;
+    --text-dim: #b5a890;
+    --accent: #8aad78;
+    --accent-glow: rgba(138, 173, 120, 0.12);
+    --warn: #c4785a;
+    --warn-glow: rgba(196, 120, 90, 0.12);
+    --gold: #d4a85c;
+    --gold-glow: rgba(212, 168, 92, 0.10);
+    --green: #8aad78;
+    --violet: #a68abf;
+    --violet-glow: rgba(166, 138, 191, 0.12);
+    --border: rgba(237, 230, 218, 0.07);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    scroll-behavior: smooth;
+    background: var(--bg-deep);
+    color: var(--text-primary);
+  }
+
+  body {
+    font-family: 'Newsreader', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    overflow-x: hidden;
+  }
+
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(12, 11, 9, 0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+  nav .title-mark { color: var(--violet); font-weight: 500; }
+  nav .page-mark { color: var(--text-secondary); }
+
+  #progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--violet), var(--gold));
+    z-index: 200;
+    width: 0%;
+    transition: width 0.1s linear;
+  }
+
+  section {
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 40px;
+    position: relative;
+  }
+
+  .section-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 40px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  #hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 50% 50%, rgba(166, 138, 191, 0.04), transparent),
+      radial-gradient(ellipse 30% 50% at 70% 60%, rgba(212, 168, 92, 0.03), transparent);
+    pointer-events: none;
+  }
+
+  .hero-overline {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--violet);
+    margin-bottom: 30px;
+    opacity: 0;
+    animation: fadeUp 1s 0.3s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Newsreader', serif;
+    font-size: clamp(40px, 7vw, 80px);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: fadeUp 1s 0.6s forwards;
+  }
+
+  .hero-title em { font-style: italic; color: var(--violet); }
+
+  .hero-subtitle {
+    font-size: clamp(18px, 2.5vw, 24px);
+    font-weight: 300;
+    color: var(--text-secondary);
+    max-width: 700px;
+    line-height: 1.6;
+    margin-bottom: 50px;
+    opacity: 0;
+    animation: fadeUp 1s 0.9s forwards;
+  }
+
+  .hero-scroll-cue {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    opacity: 0;
+    animation: fadeUp 1s 1.4s forwards, pulse 3s 2.4s infinite;
+  }
+
+  .hero-scroll-cue::after {
+    content: '';
+    display: block;
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--text-dim), transparent);
+    margin: 12px auto 0;
+  }
+
+  /* ── SECTION HEADERS ── */
+  .section-number {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--violet);
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: 'Newsreader', serif;
+    font-size: clamp(28px, 4.5vw, 44px);
+    font-weight: 600;
+    line-height: 1.2;
+    margin-bottom: 40px;
+    letter-spacing: -0.01em;
+  }
+
+  /* ── TEXT ── */
+  p { margin-bottom: 24px; color: var(--text-secondary); font-size: 18px; line-height: 1.8; }
+  p strong { color: var(--text-primary); font-weight: 600; }
+  .highlight-text { color: var(--text-primary); font-size: 20px; font-weight: 400; line-height: 1.7; }
+
+  /* ── STAT REVEALS ── */
+  .stat-reveal {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 40px 48px;
+    margin: 40px 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-reveal::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--violet), transparent);
+  }
+
+  .stat-reveal.warn::before { background: linear-gradient(90deg, transparent, var(--warn), transparent); }
+  .stat-reveal.gold::before { background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+  .stat-reveal.accent::before { background: linear-gradient(90deg, transparent, var(--accent), transparent); }
+
+  .stat-number {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 700;
+    color: var(--violet);
+    line-height: 1.2;
+    margin-bottom: 12px;
+  }
+
+  .stat-reveal.warn .stat-number { color: var(--warn); }
+  .stat-reveal.gold .stat-number { color: var(--gold); }
+  .stat-reveal.accent .stat-number { color: var(--accent); }
+
+  .stat-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 16px;
+  }
+
+  .stat-explain { color: var(--text-secondary); font-size: 16px; line-height: 1.7; margin: 0; }
+
+  /* ── PULL QUOTES ── */
+  .pull-quote {
+    border-left: 2px solid var(--violet);
+    padding: 20px 0 20px 32px;
+    margin: 48px 0;
+    font-size: 22px;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--text-primary);
+    line-height: 1.6;
+  }
+
+  .pull-quote.warn { border-left-color: var(--warn); }
+  .pull-quote.gold { border-left-color: var(--gold); }
+  .pull-quote.accent { border-left-color: var(--accent); }
+
+  /* ── EVIDENCE CARDS ── */
+  .evidence-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 28px 32px;
+    margin: 20px 0;
+    position: relative;
+    border-left: 3px solid var(--violet);
+  }
+
+  .evidence-card.warn-border { border-left-color: var(--warn); }
+  .evidence-card.gold-border { border-left-color: var(--gold); }
+  .evidence-card.accent-border { border-left-color: var(--accent); }
+
+  .evidence-source {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 10px;
+  }
+
+  .evidence-card p { margin-bottom: 0; font-size: 16px; }
+
+  /* ── COMPARE GRID ── */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin: 40px 0;
+  }
+
+  .compare-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 32px;
+  }
+
+  .compare-card.dead { border-color: rgba(196, 120, 90, 0.2); }
+  .compare-card.live { border-color: rgba(138, 173, 120, 0.2); }
+
+  .compare-card-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .compare-card.dead .compare-card-label { color: var(--warn); }
+  .compare-card.live .compare-card-label { color: var(--accent); }
+
+  .compare-item {
+    margin-bottom: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .compare-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+  .compare-item-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 4px;
+  }
+
+  .compare-item-value {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 14px;
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+
+  /* ── CANVAS ── */
+  .viz-container {
+    width: 100%;
+    height: 320px;
+    position: relative;
+    margin: 40px 0;
+    border-radius: 3px;
+    overflow: hidden;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+  }
+
+  .viz-container canvas { width: 100%; height: 100%; }
+
+  .viz-caption {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text-secondary);
+    text-align: center;
+    margin-top: 10px;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── CONVERGENCE LIST ── */
+  .convergence-list {
+    list-style: none;
+    padding: 0;
+    margin: 30px 0;
+  }
+
+  .convergence-list li {
+    padding: 16px 0 16px 28px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-size: 17px;
+    line-height: 1.6;
+    position: relative;
+  }
+
+  .convergence-list li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--violet);
+    font-weight: 700;
+  }
+
+  .convergence-list li strong { color: var(--text-primary); }
+
+  /* ── SECTION DIVIDER ── */
+  .section-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+  }
+
+  /* ── REVEAL ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 0.8; }
+  }
+
+  /* ── NEXT PART NEON ── */
+  .next-part-link {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 14px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #5eead4;
+    text-decoration: none;
+    text-shadow: 0 0 7px rgba(94, 234, 212, 0.6), 0 0 20px rgba(94, 234, 212, 0.3), 0 0 40px rgba(94, 234, 212, 0.15);
+    padding: 20px 32px;
+    border: 1px solid rgba(94, 234, 212, 0.25);
+    border-radius: 3px;
+    display: inline-block;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    animation: neonPulse 3s infinite;
+  }
+
+  .next-part-link:hover {
+    color: #a7f3d0;
+    text-shadow: 0 0 10px rgba(94, 234, 212, 0.8), 0 0 30px rgba(94, 234, 212, 0.5), 0 0 60px rgba(94, 234, 212, 0.25);
+    border-color: rgba(94, 234, 212, 0.5);
+    background: rgba(94, 234, 212, 0.04);
+  }
+
+  @keyframes neonPulse {
+    0%, 100% { text-shadow: 0 0 7px rgba(94, 234, 212, 0.6), 0 0 20px rgba(94, 234, 212, 0.3), 0 0 40px rgba(94, 234, 212, 0.15); }
+    50% { text-shadow: 0 0 10px rgba(94, 234, 212, 0.8), 0 0 28px rgba(94, 234, 212, 0.45), 0 0 50px rgba(94, 234, 212, 0.2); }
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 60px 40px;
+    text-align: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    border-top: 1px solid var(--border);
+  }
+  footer a { color: var(--violet); text-decoration: none; }
+
+  @media (max-width: 700px) {
+    section { padding: 80px 24px 60px; }
+    .compare-grid { grid-template-columns: 1fr; }
+    .stat-reveal { padding: 28px 24px; }
+    .pull-quote { padding-left: 20px; font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<nav>
+  <span class="title-mark">The Hidden Wire</span>
+  <span class="page-mark">Part 2 of 3 — DNA's Electromagnetic Reality</span>
+</nav>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- HERO -->
+<!-- ════════════════════════════════════════════ -->
+<section id="hero">
+  <div class="hero-overline">I Finished Elementary — Chain 8, Presentation 2</div>
+  <h1 class="hero-title">The <em>Hidden</em> Wire</h1>
+  <p class="hero-subtitle">
+    DNA conducts charge like a semiconductor. DNA synthesis responds to magnetic 
+    fields. A Nobel laureate transmitted DNA sequence information as an electromagnetic 
+    signal. The study that found "no electromagnetism" tested only dead molecules 
+    in a vial. The living wire has never been measured.
+  </p>
+  <div class="hero-scroll-cue">Follow the current</div>
+</section>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- SECTION 1: THE MOLECULAR WIRE -->
+<!-- ════════════════════════════════════════════ -->
+<section id="wire">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-number">Section 01</div>
+      <h2 class="section-title">The Molecular Wire</h2>
+    </div>
+
+    <div class="reveal">
+      <p class="highlight-text">
+        The four DNA bases — adenine, guanine, cytosine, thymine — are aromatic 
+        molecules. Each contains a ring of atoms with delocalized pi-electrons 
+        above and below the plane. When bases stack along the double helix axis, 
+        their pi-electron clouds overlap, creating a <strong>continuous column of 
+        shared electron orbitals</strong> running the full length of the molecule.
+      </p>
+    </div>
+
+    <div class="reveal">
+      <p>
+        This is structurally analogous to a molecular wire. And when researchers 
+        measured it directly, they found exactly what that structure predicts — 
+        with a startling complication.
+      </p>
+    </div>
+
+    <div class="reveal">
+      <div class="stat-reveal">
+        <div class="stat-label">DNA electrical character</div>
+        <div class="stat-number" style="font-size: clamp(22px, 3.5vw, 36px);">Insulator, semiconductor, or conductor</div>
+        <p class="stat-explain">
+          Depending on the experimental conditions — length, base sequence, 
+          hydration state, how it's connected — DNA acts as an insulator, 
+          a semiconductor, or a good conductor. Some measurements even reported 
+          induced superconductivity. This is not the behavior of a passive 
+          structural molecule. It's the behavior of something whose electrical 
+          properties are <strong>tunable by configuration</strong>.
+        </p>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <div class="evidence-card">
+        <div class="evidence-source">Nature, 1999 — Fink &amp; Schönenberger</div>
+        <p>
+          Direct measurements of electrical current across DNA ropes at least 600 nm 
+          long indicated efficient conduction, with <strong>resistivity values comparable 
+          to conducting polymers</strong> — DNA transports electrical current as 
+          efficiently as a good semiconductor.
+        </p>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <div class="evidence-card warn-border">
+        <div class="evidence-source">Nature, 2000 — Porath et al.</div>
+        <p>
+          Individual 10.4 nm double-stranded poly(G)-poly(C) DNA molecules connected 
+          to metal nanoelectrodes showed <strong>large-bandgap semiconducting behavior</strong> 
+          with nonlinear current-voltage curves — behaviour mediated by the molecular 
+          energy bands of DNA.
+        </p>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <div class="evidence-card gold-border">
+        <div class="evidence-source">PNAS, 2005 — Cohen et al.</div>
+        <p>
+          26-base-pair double-stranded DNA of complex sequence showed currents 
+          exceeding 220 nanoamps at 2 volts, implying <strong>coherent or band 
+          transport</strong> at high bias — a mechanism fundamentally different 
+          from the random hopping the standard model assumes for molecular interactions.
+        </p>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <div class="pull-quote">
+        The debate among researchers has shifted from "is DNA charge transport 
+        possible?" to "how does it work?" — yet the DNA replication model 
+        proceeds as if these electrical properties don't exist.
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- SECTION 2: MAGNETIC SENSITIVITY -->
+<!-- ════════════════════════════════════════════ -->
+<section id="magnetic">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-number">Section 02</div>
+      <h2 class="section-title">The Magnetic Sensitivity</h2>
+    </div>
+
+    <div class="reveal">
+      <p class="highlight-text">
+        If DNA replication were a purely mechanical process — enzymes grabbing 
+        molecules and snapping them into place through random collisions — then 
+        external magnetic fields should have no effect on synthesis rates. The 
+        model has no mechanism by which magnetism could influence base-pair 
+        assembly. But it does.
+      </p>
+    </div>
+
+    <div class="reveal">
+      <div class="evidence-card accent-border">
+        <div class="evidence-source">Science, 1984 — Liboff et al.</div>
+        <p>
+          Human fibroblasts exhibited <strong>enhanced DNA synthesis</strong> when 
+          exposed to sinusoidally varying magnetic fields across a wide range of 
+          frequencies from 15 Hz to 4 kHz and amplitudes from 2.3 μT to 560 μT.
+        </p>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <div class="evidence-card accent-border">
+        <div class="evidence-source">Scientific Reports, 2023 — Buchachenko et al.</div>
+        <p>
+          DNA synthesis rate <strong>monotonously decreased</strong> with increasing 
+          magnetic field strength in the presence of zero-spin magnesium ions. But in 
+          the presence of spin-bearing ²⁵Mg ions, the rate showed a 
+          <strong>non-monotonous</strong> dependence with a distinct minimum at 80–100 mT.
+        </p>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <div class="evidence-card accent-border">
+        <div class="evidence-source">Russian J. Physical Chemistry B, 2021</div>
+        <p>
+          The key processes of gene functioning — <strong>DNA synthesis, DNA damage, 
+          and DNA repair — are shown to be magnetically controlled</strong>. The 
+          mechanism involves electron transfer between reaction partners, generating 
+          magnetically sensitive radical pairs.
+        </p>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <div class="pull-quote accent">
+        DNA synthesis responds to magnetic fields. It speeds up, slows down, or 
+        changes character depending on field strength, frequency, and the nuclear 
+        spin of the metal ions present. That is not what you expect from a 
+        purely mechanical process driven by Brownian diffusion.
+      </div>
+    </div>
+
+    <div class="reveal">
+      <p>
+        There's more. DNA possesses <strong>relatively large diamagnetic anisotropy</strong>, 
+        and theoretical predictions suggest that mitotic chromosome arms might 
+        generate electromagnetic fields along the chromosome arm direction. At 
+        ultra-high fields of 27 T, researchers observed effects on the orientation 
+        of mitotic spindles — the very structures that separate chromosomes during 
+        cell division.
+      </p>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- SECTION 3: THE ION-RADICAL MECHANISM -->
+<!-- ════════════════════════════════════════════ -->
+<section id="radical">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-number">Section 03</div>
+      <h2 class="section-title">The Mechanism Nobody Expected</h2>
+    </div>
+
+    <div class="reveal">
+      <p class="highlight-text">
+        The standard model describes nucleotide incorporation as a 
+        <strong>nucleophilic reaction</strong> — a straightforward chemical 
+        mechanism where an oxygen ion attacks a phosphorus atom, forming a new 
+        bond. No electron transfer. No radical chemistry. No magnetic sensitivity.
+      </p>
+    </div>
+
+    <div class="reveal">
+      <p>
+        But the magnetic isotope effects proved something else is happening. 
+        Researchers discovered an alternative <strong>ion-radical mechanism</strong> 
+        operating alongside the nucleophilic pathway — one that involves electron 
+        transfer between reaction partners, generating paramagnetic intermediates 
+        that the standard model never predicted.
+      </p>
+    </div>
+
+    <div class="reveal">
+      <div class="stat-reveal warn">
+        <div class="stat-label">From Nucleic Acids Research, 2013</div>
+        <div class="stat-number" style="font-size: clamp(18px, 2.5vw, 24px); line-height: 1.5;">
+          "The ion-radical mechanism of DNA synthesis seems to be unbelievable; 
+          it has nothing to do with the commonly accepted nucleophilic mechanism."
+        </div>
+        <p class="stat-explain">
+          Yet the magnetic isotope effects prove it exists. When spin-bearing 
+          metal isotopes are substituted for their non-magnetic counterparts, 
+          DNA synthesis rates change dramatically — an effect that can only 
+          be explained by electron transfer generating magnetically sensitive 
+          radical pairs during the synthesis reaction itself.
+        </p>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <p>
+        This means DNA synthesis is not just chemistry. It is 
+        <strong>electrochemistry</strong>. Electrons are moving. Radical pairs 
+        are forming. Spin states matter. Magnetic fields influence outcomes. The 
+        process has an electromagnetic dimension that the mechanical model 
+        completely ignores — and that was discovered not by looking for it, but 
+        by the anomalous behavior of magnetic isotopes that forced researchers 
+        to acknowledge a mechanism they initially called "unbelievable."
+      </p>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- SECTION 4: MONTAGNIER'S SIGNAL -->
+<!-- ════════════════════════════════════════════ -->
+<section id="signal">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-number">Section 04</div>
+      <h2 class="section-title">The Transmitted Sequence</h2>
+    </div>
+
+    <div class="reveal">
+      <p class="highlight-text">
+        In 2009, Luc Montagnier — Nobel laureate, co-discoverer of HIV — reported 
+        that DNA produces electromagnetic signals that carry sequence information, 
+        and that this information can be transmitted, recorded, and used to 
+        reconstruct the original DNA in a distant laboratory.
+      </p>
+    </div>
+
+    <div class="reveal">
+      <div class="stat-reveal gold">
+        <div class="stat-label">The experiment</div>
+        <div class="stat-number" style="font-size: clamp(16px, 2.2vw, 22px); line-height: 1.6;">
+          DNA in water → serial dilution to 10⁻¹⁰ (no physical DNA remains)<br>
+          → low-frequency EMS detected and recorded as WAV file<br>
+          → file emailed from Paris to Italy<br>
+          → signal played into pure water for 1 hour<br>
+          → water placed in PCR machine with primers and nucleotides<br>
+          → PCR produces DNA 98% identical to the original
+        </div>
+        <p class="stat-explain">
+          The water contained no physical DNA. The PCR machine had all the raw 
+          chemical building blocks — primers, nucleotides, polymerase. What was 
+          missing was the template. Montagnier claimed the electromagnetic signal 
+          replaced it. The water, structured by the signal, guided the polymerase 
+          to assemble the correct sequence.
+        </p>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <p>
+        The signals were in the low-frequency range — 500 to 3,000 Hz. 
+        Montagnier proposed that water forms "coherent domains" that can retain 
+        electromagnetic information and act as structural templates for molecular 
+        assembly.
+      </p>
+    </div>
+
+    <div class="reveal">
+      <p>
+        The institutional response was not experimental replication. It was 
+        dismissal. Critics invoked "Nobel disease." The paper was published in 
+        a journal where Montagnier was editor. Nobody published a rigorous 
+        replication attempt — positive or negative. The claim was treated as 
+        too implausible to test, rather than too important to ignore.
+      </p>
+    </div>
+
+    <div class="reveal">
+      <div class="pull-quote gold">
+        The principle — that DNA sequence information can exist as an electromagnetic 
+        field pattern, separate from the physical molecule — is consistent with 
+        every electromagnetic property of DNA that has been independently measured. 
+        The field rejected the conclusion without testing the premise.
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- SECTION 5: THE DEAD WIRE TEST -->
+<!-- ════════════════════════════════════════════ -->
+<section id="dead-wire">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-number">Section 05</div>
+      <h2 class="section-title">The Dead Wire Test</h2>
+    </div>
+
+    <div class="reveal">
+      <p class="highlight-text">
+        One study scanned DNA across the full spectrum from 1 Hz to 100 MHz — 
+        the most comprehensive electromagnetic survey of genetic material ever 
+        conducted — and found nothing. No intrinsic electromagnetic signals. No 
+        coupling to external fields. Conclusion: DNA has no electromagnetic 
+        properties.
+      </p>
+    </div>
+
+    <div class="reveal">
+      <p>
+        But look at what they actually tested.
+      </p>
+    </div>
+
+    <div class="reveal">
+      <div class="compare-grid">
+        <div class="compare-card dead">
+          <div class="compare-card-label">What they measured</div>
+          <div class="compare-item">
+            <div class="compare-item-label">Source</div>
+            <div class="compare-item-value">Extracted, purified DNA in buffer</div>
+          </div>
+          <div class="compare-item">
+            <div class="compare-item-label">Histones</div>
+            <div class="compare-item-value">Stripped away</div>
+          </div>
+          <div class="compare-item">
+            <div class="compare-item-label">Enzymes</div>
+            <div class="compare-item-value">All removed</div>
+          </div>
+          <div class="compare-item">
+            <div class="compare-item-label">Ion environment</div>
+            <div class="compare-item-value">Generic buffer solution</div>
+          </div>
+          <div class="compare-item">
+            <div class="compare-item-label">Supercoiling</div>
+            <div class="compare-item-value">Relaxed — no torsional stress</div>
+          </div>
+          <div class="compare-item">
+            <div class="compare-item-label">Activity</div>
+            <div class="compare-item-value">Static — no biological process</div>
+          </div>
+        </div>
+        <div class="compare-card live">
+          <div class="compare-card-label">What was never measured</div>
+          <div class="compare-item">
+            <div class="compare-item-label">Source</div>
+            <div class="compare-item-value">DNA in living nucleus during S phase</div>
+          </div>
+          <div class="compare-item">
+            <div class="compare-item-label">Histones</div>
+            <div class="compare-item-value">30 million nucleosomes intact</div>
+          </div>
+          <div class="compare-item">
+            <div class="compare-item-label">Enzymes</div>
+            <div class="compare-item-value">4,500 active replisomes</div>
+          </div>
+          <div class="compare-item">
+            <div class="compare-item-label">Ion environment</div>
+            <div class="compare-item-value">Maintained by active transport</div>
+          </div>
+          <div class="compare-item">
+            <div class="compare-item-label">Supercoiling</div>
+            <div class="compare-item-value">Under constant torsional stress</div>
+          </div>
+          <div class="compare-item">
+            <div class="compare-item-label">Activity</div>
+            <div class="compare-item-value">Active replication, transcription</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <p>
+        The researchers themselves acknowledged this: "In situ, DNA could have 
+        more profound intrinsic activity once inside the functioning nucleus." 
+        They then concluded the opposite — that DNA has no electromagnetic 
+        properties — based on measurements of a molecule stripped of every 
+        component that could generate those properties.
+      </p>
+    </div>
+
+    <div class="reveal">
+      <div class="pull-quote warn">
+        That's like pulling the copper wire out of an electric motor, laying 
+        it on a table, measuring no current, and concluding that copper wire 
+        has no electrical properties. The wire only carries current when it's 
+        part of the motor, connected to a power source, in the correct 
+        configuration.
+      </div>
+    </div>
+
+    <div class="reveal">
+      <p>
+        <strong>No one has ever measured the electromagnetic properties of DNA 
+        in its natural, packed, functioning state inside a living cell during 
+        replication.</strong> Every electrical measurement has been done on 
+        extracted, purified, or synthetic fragments under artificial conditions. 
+        The living wire has never been tested.
+      </p>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- SECTION 6: THE MORPHOGEN FAILURE -->
+<!-- ════════════════════════════════════════════ -->
+<section id="morphogen">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-number">Section 06</div>
+      <h2 class="section-title">The Morphogen Failure</h2>
+    </div>
+
+    <div class="reveal">
+      <p class="highlight-text">
+        If DNA is a passive blueprint read by mechanical enzymes, then how do 
+        trillions of cells with identical DNA become bone, nerve, muscle, skin — 
+        all in the right places? The standard answer: diffusing chemical 
+        gradients called morphogens provide "positional information."
+      </p>
+    </div>
+
+    <div class="reveal">
+      <div class="stat-reveal warn">
+        <div class="stat-label">Physical limit of diffusion-based patterning</div>
+        <div class="stat-number">~100–300 μm</div>
+        <p class="stat-explain">
+          Diffusion time scales with the square of distance. The model's own 
+          physics limits morphogen gradients to a few hundred microns for 
+          biologically relevant time scales. A human embryo at the point of 
+          organ specification is already millimeters to centimeters. An adult 
+          is 1.7 meters. The model's mechanism fails 10,000× short of the 
+          organism's scale.
+        </p>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <div class="stat-reveal warn">
+        <div class="stat-label">The specification gap</div>
+        <div class="stat-number" style="font-size: clamp(20px, 3vw, 32px); line-height: 1.5;">
+          20,000 genes → 100 trillion neural connections
+        </div>
+        <p class="stat-explain">
+          The genome contains 20,000 protein-coding genes. The nervous system 
+          alone has roughly 100 trillion synaptic connections. Even if every 
+          gene were exclusively devoted to neural wiring, you'd have 20,000 
+          instructions for 100 trillion connections — a specification gap 
+          of nine orders of magnitude.
+        </p>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <p>
+        A single human hand contains 27 bones, 27 joints, 34 muscles, over 100 
+        ligaments, and a nerve network capable of detecting micrometer-scale 
+        texture. The model says this is specified by a diffusing chemical that 
+        a cell reads as a single concentration value — one number. How does one 
+        number encode a three-dimensional structure of this complexity?
+      </p>
+    </div>
+
+    <div class="reveal">
+      <p>
+        The model's own practitioners acknowledge the problem. Morphogen gradient 
+        establishment, maintenance, and interpretation by cells "still is not 
+        fully understood." Pure reaction-diffusion mechanisms "fail to provide 
+        scale-free morphogen gradients." Additional unexplained transport 
+        mechanisms are required.
+      </p>
+    </div>
+
+    <div class="reveal">
+      <div class="pull-quote warn">
+        Wolpert's French Flag model says a gradient divides tissue into three 
+        zones — like three colored stripes. A human body has hundreds of tissue 
+        types in non-repeating, asymmetric, functionally integrated arrangements. 
+        The distance between the model and the reality is the distance between 
+        three colored stripes and the Sistine Chapel ceiling.
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- SECTION 7: SHAPE IS SIGNAL -->
+<!-- ════════════════════════════════════════════ -->
+<section id="shape">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-number">Section 07</div>
+      <h2 class="section-title">Shape Is Signal</h2>
+    </div>
+
+    <div class="reveal">
+      <p class="highlight-text">
+        Every biological form — the spiral of a nautilus shell, the branching 
+        of a tree, the fractal structure of a lung, the helical coil of DNA 
+        itself — is a geometry with known electromagnetic properties. These 
+        are not incidental shapes. They are <strong>antenna geometries</strong>.
+      </p>
+    </div>
+
+    <div class="reveal">
+      <p>
+        A spiral is one of the most fundamental fractal antenna designs. 
+        Branching structures are broadband receivers. Helical coils are 
+        standard antenna forms used in telecommunications. The shapes 
+        that biology produces from DNA are the same shapes that engineers 
+        design to transmit and receive electromagnetic signals.
+      </p>
+    </div>
+
+    <div class="reveal">
+      <p>
+        Now consider the convergence:
+      </p>
+    </div>
+
+    <div class="reveal">
+      <ul class="convergence-list">
+        <li><strong>DNA encodes shapes.</strong> The base sequence specifies the body plan of the organism — every bone, nerve, vessel, and muscle.</li>
+        <li><strong>DNA is an electromagnetic medium.</strong> It conducts charge, responds to magnetic fields, and involves electron transfer mechanisms during synthesis.</li>
+        <li><strong>The shapes DNA encodes are antenna geometries.</strong> Spirals, fractals, branching patterns, helices — all have known electromagnetic properties.</li>
+        <li><strong>A Nobel laureate showed DNA sequence information can be carried as an electromagnetic signal.</strong> The information exists independent of the physical molecule.</li>
+        <li><strong>The mechanical model cannot explain organism-scale coordination.</strong> Morphogen diffusion fails at distances beyond a few hundred microns.</li>
+      </ul>
+    </div>
+
+    <div class="reveal">
+      <p>
+        If the shape of an organism is simultaneously a biological form <em>and</em> 
+        an electromagnetic field geometry — and if DNA both encodes that shape and 
+        functions as an electromagnetic transmitter — then the organism is not 
+        built by chemicals diffusing through tissue. It is <strong>organized by the 
+        field pattern generated by its own DNA</strong>.
+      </p>
+    </div>
+
+    <div class="reveal">
+      <p>
+        The positional information isn't a concentration gradient. It's the 
+        electromagnetic field. Every cell knows where it is because it's in 
+        continuous contact with the field of the whole organism. The "morphogen 
+        problem" — how does a cell know whether to become bone or nerve — 
+        dissolves. The field tells it. The field <em>is</em> the body plan.
+      </p>
+    </div>
+
+    <!-- Pi-Stack Wire Animation -->
+    <div class="reveal">
+      <div class="viz-container">
+        <canvas id="pi-stack-canvas"></canvas>
+      </div>
+      <p class="viz-caption">
+        Pi-electron stack along the DNA helix axis — overlapping orbitals form a 
+        continuous conduction path. Base sequence determines the electrical character.
+      </p>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- SECTION 8: CLOSING -->
+<!-- ════════════════════════════════════════════ -->
+<section id="closing">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-number">Section 08</div>
+      <h2 class="section-title">The Hidden Wire</h2>
+    </div>
+
+    <div class="reveal">
+      <p class="highlight-text">
+        The mechanical model of DNA — a passive molecule read by enzymes that 
+        arrive through random thermal collisions — was built before any of these 
+        electromagnetic properties were known. It was built on observations of 
+        dead cells, extracted DNA, and fluorescent labels.
+      </p>
+    </div>
+
+    <div class="reveal">
+      <p class="highlight-text">
+        The possibility that DNA replication is fundamentally an electromagnetic 
+        process — with the mechanical model being a post-hoc narrative imposed 
+        on the chemical byproducts — has never been seriously investigated. Not 
+        because it was tested and failed, but because it was never tested at all.
+      </p>
+    </div>
+
+    <div class="reveal">
+      <p class="highlight-text">
+        DNA conducts charge. DNA synthesis responds to magnetic fields. DNA 
+        synthesis involves electron transfer. A Nobel laureate transmitted DNA 
+        sequence information electromagnetically. The study that found "no 
+        electromagnetism" tested only dead molecules in a vial.
+      </p>
+    </div>
+
+    <div class="reveal">
+      <div class="pull-quote" style="border-left-color: var(--text-primary); font-size: 26px;">
+        DNA is not a passive blueprint. It is an electromagnetic information 
+        system — simultaneously the storage medium, the antenna, and the 
+        transmitter. The shape it encodes is the signal it generates. The 
+        signal it generates is the field that builds the shape.
+      </div>
+    </div>
+
+    <div class="reveal" style="text-align: center; margin-top: 60px;">
+      <a href="https://www.ifinishedelementary.com/dna-the-project" class="next-part-link">
+        Continue to Part 3 → The Project: From Lines to Life
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <a href="https://ifinishedelementary.com" target="_blank">ifinishedelementary.com</a>
+  &nbsp;·&nbsp; Chain 8, Presentation 2 &nbsp;·&nbsp; 2026
+</footer>
+
+<script>
+// ── SCROLL PROGRESS ──
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+  document.getElementById('progress-bar').style.width = pct + '%';
+});
+
+// ── REVEAL ON SCROLL ──
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.classList.add('visible');
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ── PI-STACK CANVAS ──
+(function() {
+  const canvas = document.getElementById('pi-stack-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let w, h, time = 0, running = false;
+
+  function resize() {
+    const rect = canvas.parentElement.getBoundingClientRect();
+    canvas.width = rect.width * window.devicePixelRatio;
+    canvas.height = rect.height * window.devicePixelRatio;
+    w = canvas.width;
+    h = canvas.height;
+    ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+  }
+
+  resize();
+  window.addEventListener('resize', resize);
+
+  const bases = 'ATGCCTAGGCTTAAGCGATCGTACGATCGAATTCGCTAGGCATCG';
+  const baseColors = {
+    'A': { r: 138, g: 173, b: 120 },
+    'T': { r: 196, g: 120, b: 90 },
+    'G': { r: 212, g: 168, b: 92 },
+    'C': { r: 166, g: 138, b: 191 }
+  };
+
+  function draw() {
+    const cw = w / window.devicePixelRatio;
+    const ch = h / window.devicePixelRatio;
+    ctx.clearRect(0, 0, cw, ch);
+
+    const margin = 30;
+    const helixLen = cw - margin * 2;
+    const centerY = ch / 2;
+    const baseCount = bases.length;
+    const spacing = helixLen / baseCount;
+    const helixAmp = 40;
+
+    // Draw helix backbone strands
+    ctx.beginPath();
+    for (let i = 0; i <= baseCount; i++) {
+      const x = margin + i * spacing;
+      const y = centerY + Math.sin(i * 0.55 + time) * helixAmp;
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.strokeStyle = 'rgba(184, 175, 158, 0.3)';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    ctx.beginPath();
+    for (let i = 0; i <= baseCount; i++) {
+      const x = margin + i * spacing;
+      const y = centerY - Math.sin(i * 0.55 + time) * helixAmp;
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+
+    // Draw base pairs and pi-electron glow
+    for (let i = 0; i < baseCount; i++) {
+      const x = margin + (i + 0.5) * spacing;
+      const y1 = centerY + Math.sin((i + 0.5) * 0.55 + time) * helixAmp;
+      const y2 = centerY - Math.sin((i + 0.5) * 0.55 + time) * helixAmp;
+      const base = bases[i];
+      const col = baseColors[base];
+
+      // Base pair line
+      ctx.beginPath();
+      ctx.moveTo(x, y1);
+      ctx.lineTo(x, y2);
+      ctx.strokeStyle = `rgba(${col.r}, ${col.g}, ${col.b}, 0.25)`;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      // Electron pulse traveling along the stack
+      const pulsePhase = (time * 3 + i * 0.4) % (Math.PI * 2);
+      const pulseIntensity = Math.max(0, Math.sin(pulsePhase));
+
+      if (pulseIntensity > 0.1) {
+        const midY = (y1 + y2) / 2;
+        const glowRadius = 4 + pulseIntensity * 8;
+        const grad = ctx.createRadialGradient(x, midY, 0, x, midY, glowRadius);
+        grad.addColorStop(0, `rgba(${col.r}, ${col.g}, ${col.b}, ${pulseIntensity * 0.6})`);
+        grad.addColorStop(1, `rgba(${col.r}, ${col.g}, ${col.b}, 0)`);
+        ctx.beginPath();
+        ctx.arc(x, midY, glowRadius, 0, Math.PI * 2);
+        ctx.fillStyle = grad;
+        ctx.fill();
+      }
+
+      // Base dots
+      ctx.beginPath();
+      ctx.arc(x, y1, 2, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${col.r}, ${col.g}, ${col.b}, 0.7)`;
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(x, y2, 2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Legend
+    ctx.font = '11px IBM Plex Mono';
+    ctx.textAlign = 'left';
+    const legendY = ch - 16;
+    let lx = margin;
+    ['A', 'T', 'G', 'C'].forEach(b => {
+      const c = baseColors[b];
+      ctx.fillStyle = `rgba(${c.r}, ${c.g}, ${c.b}, 0.85)`;
+      ctx.fillText('●', lx, legendY);
+      ctx.fillStyle = 'rgba(184, 175, 158, 0.75)';
+      ctx.fillText(` ${b}`, lx + 10, legendY);
+      lx += 50;
+    });
+
+    ctx.textAlign = 'right';
+    ctx.fillStyle = 'rgba(184, 175, 158, 0.6)';
+    ctx.fillText('charge pulse propagating through pi-stack →', cw - margin, 20);
+
+    time += 0.015;
+    if (running) requestAnimationFrame(draw);
+  }
+
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !running) { running = true; resize(); draw(); }
+      else if (!entry.isIntersecting) { running = false; }
+    });
+  }, { threshold: 0.1 });
+
+  obs.observe(canvas.parentElement);
+})();
+</script>
+</body>
+</html>
