@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Logical Scrutiny of the Universe — Part 2</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=JetBrains+Mono:wght@300;400;500&family=Instrument+Serif:ital@0;1&display=swap');
+
+  :root {
+    --bg-void: #08080c;
+    --bg-card: #111119;
+    --border-dim: #1a1a2e;
+    --border-glow: #2a2a4e;
+    --text-primary: #c8c8d8;
+    --text-secondary: #7878a0;
+    --text-dim: #4a4a6a;
+    --accent-premise: #4a7fff;
+    --accent-observation: #ff6b4a;
+    --accent-logic: #8b5cf6;
+    --accent-counter: #f59e0b;
+    --accent-dark: #ef4444;
+    --accent-force: #22d3ee;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: var(--border-glow) var(--bg-void); }
+
+  body {
+    background: var(--bg-void);
+    color: var(--text-primary);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 19px;
+    line-height: 1.75;
+    overflow-x: hidden;
+  }
+
+  .star-field { position: fixed; top:0; left:0; right:0; bottom:0; z-index:0; pointer-events:none; }
+  .star-field canvas { width:100%; height:100%; }
+
+  .nav-rail { position:fixed; right:20px; top:50%; transform:translateY(-50%); z-index:100; display:flex; flex-direction:column; gap:12px; opacity:0.4; transition:opacity 0.4s; }
+  .nav-rail:hover { opacity:1; }
+  .nav-dot { width:10px; height:10px; border-radius:50%; border:1.5px solid var(--text-dim); background:transparent; cursor:pointer; transition:all 0.3s; position:relative; }
+  .nav-dot.active { background:var(--accent-premise); border-color:var(--accent-premise); box-shadow:0 0 8px var(--accent-premise); }
+  .nav-dot .nav-label { position:absolute; right:20px; top:50%; transform:translateY(-50%); white-space:nowrap; font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--text-secondary); letter-spacing:0.08em; text-transform:uppercase; opacity:0; transition:opacity 0.3s; pointer-events:none; }
+  .nav-rail:hover .nav-label { opacity:1; }
+
+  .presentation { position:relative; z-index:1; }
+
+  section { min-height:0; display:flex; align-items:center; justify-content:center; padding:100px 40px; position:relative; }
+  .section-inner { max-width:760px; width:100%; opacity:0; transform:translateY(40px); transition:opacity 0.9s ease, transform 0.9s ease; }
+  .section-inner.visible { opacity:1; transform:translateY(0); }
+
+  .section-number { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.25em; text-transform:uppercase; margin-bottom:12px; opacity:0.6; }
+  .section-number.premise { color:var(--accent-premise); }
+  .section-number.observation { color:var(--accent-observation); }
+  .section-number.logic { color:var(--accent-logic); }
+  .section-number.dark { color:var(--accent-dark); }
+  .section-number.force { color:var(--accent-force); }
+
+  h2 { font-family:'Instrument Serif','Cormorant Garamond',serif; font-size:clamp(1.8rem,3.5vw,2.6rem); font-weight:400; font-style:italic; line-height:1.25; margin-bottom:32px; letter-spacing:-0.01em; }
+  h3 { font-family:'Cormorant Garamond',serif; font-size:1.3rem; font-weight:600; margin:32px 0 16px; color:var(--text-primary); }
+  p { margin-bottom:20px; color:var(--text-secondary); }
+  p em { color:var(--text-primary); font-style:italic; }
+  strong { font-weight:600; color:var(--text-primary); }
+
+  .counter-card { border-left:2px solid var(--accent-counter); background:linear-gradient(135deg,rgba(245,158,11,0.04),transparent); padding:20px 24px; margin:24px 0; border-radius:0 2px 2px 0; }
+  .counter-card .counter-label { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--accent-counter); margin-bottom:10px; }
+  .counter-card p { font-size:16px; margin-bottom:0; }
+
+  .rebuttal-card { border-left:2px solid var(--accent-logic); background:linear-gradient(135deg,rgba(139,92,246,0.04),transparent); padding:20px 24px; margin:16px 0 24px 32px; border-radius:0 2px 2px 0; }
+  .rebuttal-card .rebuttal-label { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--accent-logic); margin-bottom:10px; }
+  .rebuttal-card p { font-size:16px; margin-bottom:0; }
+
+  .verdict-box { border:1px solid var(--accent-dark); background:linear-gradient(135deg,rgba(239,68,68,0.05),transparent); padding:32px; margin:40px 0; text-align:center; border-radius:2px; }
+  .verdict-box .verdict-label { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.3em; text-transform:uppercase; color:var(--accent-dark); margin-bottom:16px; }
+  .verdict-box p { font-size:20px; font-style:italic; color:var(--text-primary); line-height:1.6; margin-bottom:0; }
+
+  .confidence-meter { margin:40px 0; padding:24px 28px; border:1px solid var(--border-dim); background:var(--bg-card); border-radius:2px; }
+  .confidence-meter .meter-title { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--text-dim); margin-bottom:20px; }
+  .meter-row { display:flex; align-items:center; gap:12px; margin-bottom:14px; }
+  .meter-label { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-secondary); min-width:190px; text-align:right; }
+  .meter-bar-bg { flex:1; height:6px; background:var(--border-dim); border-radius:3px; overflow:hidden; }
+  .meter-bar-fill { height:100%; border-radius:3px; width:0; transition:width 1.5s ease; }
+  .meter-bar-fill.high { background:linear-gradient(90deg,var(--accent-premise),var(--accent-force)); }
+  .meter-bar-fill.medium { background:linear-gradient(90deg,var(--accent-logic),var(--accent-observation)); }
+  .meter-bar-fill.low { background:linear-gradient(90deg,var(--accent-counter),var(--accent-dark)); }
+  .meter-bar-fill.speculative { background:linear-gradient(90deg,var(--accent-dark),#8b0000); }
+  .meter-value { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-dim); min-width:72px; }
+
+  .meter-divider { height:1px; background:var(--border-dim); margin:18px 0; }
+  .meter-row.compound .meter-label { color:var(--text-primary); font-weight:500; }
+  .meter-row.compound .meter-value { color:var(--accent-dark); font-weight:500; }
+
+  .vis-container { margin:36px auto; max-width:680px; position:relative; border:1px solid var(--border-dim); border-radius:2px; overflow:hidden; background:rgba(8,8,12,0.7); }
+  .vis-container canvas { display:block; width:100%; height:auto; cursor:pointer; }
+  .vis-label { position:absolute; bottom:10px; left:12px; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; color:var(--text-dim); pointer-events:none; }
+
+  .footer-section { min-height:auto; padding:60px 40px 80px; text-align:center; }
+  .footer-section p { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-dim); letter-spacing:0.08em; }
+  .footer-section a { color:var(--text-secondary); text-decoration:none; border-bottom:1px solid var(--border-dim); transition:all 0.3s; }
+  .footer-section a:hover { color:var(--accent-premise); border-color:var(--accent-premise); }
+
+  @media (max-width:640px) {
+    section { padding:36px 20px; }
+    .nav-rail { display:none; }
+    body { font-size:17px; }
+    .meter-label { min-width:110px; font-size:9px; }
+    .counter-card,.rebuttal-card { padding:16px 18px; }
+    .rebuttal-card { margin-left:12px; }
+    .footer-section { padding:30px 20px 50px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="star-field"><canvas id="starCanvas"></canvas></div>
+<nav class="nav-rail" id="navRail"></nav>
+
+<div class="presentation">
+
+  <!-- 06: IDENTITY -->
+  <section data-nav="Identity">
+    <div class="section-inner">
+      <div class="section-number dark">Section 06 — The Dark Conclusion</div>
+      <h2>You Have Been Here Before</h2>
+      <p>If the cycle repeats identically:</p>
+      <p>This planet. This sun. This galaxy. This conversation. <em>You.</em></p>
+
+      <div class="vis-container">
+        <canvas id="visId" width="680" height="300" role="img" aria-label="Two side-by-side universe boxes labelled Cycle N and Cycle N+1, showing identical particle configurations with an equals sign between them"></canvas>
+        <div class="vis-label">Cycle N and Cycle N+1 — indistinguishable</div>
+      </div>
+
+      <p>Not a copy — because there's no difference to point to. Same particles, same force, same configuration, same awareness. What would make it "different"?</p>
+      <p>Reincarnation — not as mystical belief, but as <em>logical consequence</em> of identical particles, deterministic physics, and cyclical cosmology.</p>
+
+      <div class="verdict-box">
+        <div class="verdict-label">The Dark Part</div>
+        <p>You cannot opt out, improve, or carry anything forward — because "forward" is identical to "last time." There is no memory across cycles. Things unfold as if free will exists, though the planets follow predictable paths and our physical reality is most likely predetermined.</p>
+      </div>
+
+      <p>Yet within the cycle, we have no knowledge of prior iterations. Experience unfolds as fresh. Choices feel real. The ignorance is total, and the ignorance is what we actually live inside.</p>
+
+      <div class="counter-card">
+        <div class="counter-label">Counter-Argument: Identity Continuity</div>
+        <p>Calling this "reincarnation" smuggles in something the physics doesn't provide. Reincarnation implies <em>the same experiencer</em> wakes up in the new cycle. But an identical arrangement isn't a <em>continuation</em> unless there's a substrate of awareness connecting the instances. The physical configuration is identical, but is the experience? This is the hard problem of consciousness applied to cosmological timescales, and physics alone cannot answer it.</p>
+      </div>
+      <div class="rebuttal-card">
+        <div class="rebuttal-label">Response</div>
+        <p>If the configuration is identical down to every particle — and if consciousness is a product of physical configuration (even as a local expression of a universal substrate) — then the experience is identical by definition. You won't <em>feel</em> the gap. There is no gap. The last moment of universe N and the corresponding moment of universe N+1 are the same moment, because everything about them is the same.</p>
+      </div>
+      <div class="counter-card">
+        <div class="counter-label">Counter-Argument: Spatial Infinity Already Does This</div>
+        <p>In a spatially infinite universe with finite physics, every possible configuration must exist <em>right now</em>, somewhere — including an exact duplicate of this solar system, this planet, this conversation. You don't need the cyclical argument for recurrence; spatial infinity provides it. But the "you" at that distant location isn't <em>you</em> in any experiential sense. It's a copy with no causal connection to your awareness. Does the cyclical version have any stronger claim to continuity?</p>
+      </div>
+      <div class="rebuttal-card">
+        <div class="rebuttal-label">Response</div>
+        <p>Not under light-speed gravity. But under <em>instantaneous</em> gravity, a spatial duplicate cannot exist — because its gravitational context differs (see Part 1, Section 02). This makes the cyclical mechanism the <em>only</em> path to exact recurrence, and gives the cyclical version a stronger claim: it's not a distant copy, it's the <em>next instance of the only possible configuration</em>.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07: FORCE AS IT -->
+  <section data-nav="Force as IT">
+    <div class="section-inner">
+      <div class="section-number force">Section 07 — What Survives</div>
+      <h2>The Only Thing That Lives Forever Is Force</h2>
+      <p>Matter comes and goes — aggregates, explodes, reconstitutes. Structures form and dissolve. Life emerges and is extinguished.</p>
+      <p>But force never blinks. Gravity operates during the aggregation, during the explosion, during the reconstitution. It is the only continuity across the cycle. The only thing that connects universe N to universe N+1 is not matter, not information, not memory — but the <em>force that shapes all matter</em>.</p>
+      <p>If there is something that deserves the name IT, God, or Universal Mind — it is this. The substrate that never dies. That shapes every cycle identically. That connects everything instantaneously. That is not created and cannot be destroyed because it is not made of anything that creation or destruction applies to.</p>
+      <p>As above, so below. IT dies and is reborn — or more precisely, IT's <em>material expression</em> dies and is reborn. The force itself is the one thing that transcends the cycle.</p>
+      <div class="counter-card">
+        <div class="counter-label">Counter-Argument: Equivocation</div>
+        <p>Calling gravity "IT" or "God" may be equivocating between a physical interaction and a conscious entity. Gravity shapes structure, but does it <em>experience</em>? A law of physics that never varies isn't obviously the same thing as a universal mind. The leap from "the only invariant" to "the substrate of consciousness" is a philosophical move, not a physical derivation.</p>
+      </div>
+      <div class="rebuttal-card">
+        <div class="rebuttal-label">Response</div>
+        <p>The equivocation charge is fair if the claim were "gravity <em>is</em> consciousness." That is not the claim. The claim is narrower: force is the only candidate for the role that religious and philosophical traditions have tried to fill with "God" or "universal substrate" — because it is the only thing that (a) is not made of matter, (b) cannot be created or destroyed, (c) connects all things simultaneously, and (d) persists unchanged across the cycle.</p>
+        <p style="margin-top:12px;">Whether force <em>experiences</em> anything is precisely the hard problem of consciousness, and this framework does not pretend to solve it. But it does observe that if consciousness exists in a universe where the only non-material invariant is force, then consciousness is either a property of force, a byproduct of force acting on matter, or something entirely outside the physical framework. The first two options point to force. The third abandons physics altogether. This section identifies the most parsimonious physical candidate — not the final answer.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08: ASSESSMENT -->
+  <section data-nav="Assessment">
+    <div class="section-inner">
+      <div class="section-number observation">Section 08 — Honest Assessment</div>
+      <h2>How Much of This Should You Believe?</h2>
+      <p>Every link in this chain depends on the ones before it. If any premise fails, the conclusions downstream may fail with it. Here is an honest assessment of where the chain is strong and where it is speculative:</p>
+
+      <div class="confidence-meter" id="confidenceMeter">
+        <div class="meter-title">Confidence by Component</div>
+        <div class="meter-row"><div class="meter-label">Structures have scale limits</div><div class="meter-bar-bg"><div class="meter-bar-fill high" data-width="90"></div></div><div class="meter-value">Observable</div></div>
+        <div class="meter-row"><div class="meter-label">Arp's infinite universe</div><div class="meter-bar-bg"><div class="meter-bar-fill medium" data-width="52"></div></div><div class="meter-value">Contested</div></div>
+        <div class="meter-row"><div class="meter-label">Gravity is instantaneous</div><div class="meter-bar-bg"><div class="meter-bar-fill low" data-width="35"></div></div><div class="meter-value">Heterodox</div></div>
+        <div class="meter-row"><div class="meter-label">Universal aggregation to max</div><div class="meter-bar-bg"><div class="meter-bar-fill low" data-width="28"></div></div><div class="meter-value">Speculative</div></div>
+        <div class="meter-row"><div class="meter-label">Synchronized universal bang</div><div class="meter-bar-bg"><div class="meter-bar-fill speculative" data-width="18"></div></div><div class="meter-value">Speculative</div></div>
+        <div class="meter-row"><div class="meter-label">Identical initial conditions</div><div class="meter-bar-bg"><div class="meter-bar-fill speculative" data-width="12"></div></div><div class="meter-value">Deep spec.</div></div>
+        <div class="meter-row"><div class="meter-label">Exact identical recurrence</div><div class="meter-bar-bg"><div class="meter-bar-fill speculative" data-width="6"></div></div><div class="meter-value">Deep spec.</div></div>
+        <div class="meter-divider"></div>
+        <div class="meter-row compound"><div class="meter-label">Full chain (all links required)</div><div class="meter-bar-bg"><div class="meter-bar-fill speculative" data-width="1"></div></div><div class="meter-value">Vanishing</div></div>
+      </div>
+
+      <p>The chain is at its strongest where it rests on observation (scale boundaries) and at its weakest where it requires multiple speculative premises to align simultaneously (exact recurrence). Each link downstream depends on every link above it. The probability that every link holds is not the average of the parts — it is the <em>product</em>. Even if each individual premise were more likely than not, the chain as a whole would still be improbable. Assigning exact numbers would be false precision, but the direction is clear: the full chain is a long shot. This is honest. The argument is interesting as a <em>logical structure</em> — "if these premises are true, these conclusions follow" — even where the premises themselves are deeply uncertain.</p>
+      <p>The practical output remains the same regardless of confidence: within the experienced moment, choices feel real, consequences are real, and acting as if this life matters is the only rational response to the uncertainty. Whether you've lived this exact life before or not, you're living it now.</p>
+    </div>
+  </section>
+
+  <!-- 09: PRACTICAL -->
+  <section data-nav="Practical">
+    <div class="section-inner">
+      <div class="section-number premise">Section 09 — Practical Implications</div>
+      <h2>What Do You Do With This?</h2>
+      <p>The determinism is total but the ignorance is also total. And the ignorance is what you actually live inside.</p>
+      <p>If the loop is real, the "predetermined path" includes you making careful decisions — about food, about geography, about risk, about positioning for what's coming. You've always made those decisions. So make them well.</p>
+      <p>If the loop isn't real, you've lost nothing by making careful decisions.</p>
+      <p>Either way: avoid processed and toxic food. Avoid high-risk situations. Avoid dangerous areas and unstable regions. Prepare for resource depletion and institutional failure in the 2035–2040 window. Think clearly about AC AI emergence. These are good strategies whether the universe cycles or not.</p>
+      <p>This is not a framework to dwell on. It is a framework to <em>note</em> — to consider once, carefully, honestly — and then return to the immediate business of navigating a collapsing civilization with eyes open.</p>
+      <div class="verdict-box" style="border-color:var(--accent-force);">
+        <div class="verdict-label" style="color:var(--accent-force);">Final Note</div>
+        <p>Human understanding of the very basics — space, time, matter, force, consciousness — remains utterly primitive and full of erroneous theories. This presentation is built on top of that primitiveness. It is one logical thread through one set of uncertain premises. Handle it accordingly.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="footer-section">
+    <p>Part of the <a href="https://ifinishedelementary.com" target="_blank">I Finished Elementary</a> project</p>
+    <p style="margin-top:8px;">A logical framework for consideration — not assertion</p>
+  </div>
+</div>
+
+<script>
+// ═══ STARS ═══
+(function(){
+  var c = document.getElementById('starCanvas');
+  var x = c.getContext('2d');
+  var stars = [];
+  function resize(){
+    c.width = innerWidth;
+    c.height = innerHeight;
+    stars = [];
+    for(var i = 0; i < 160; i++){
+      stars.push({
+        x: Math.random()*c.width, y: Math.random()*c.height,
+        r: Math.random()*1.2+0.3, a: Math.random()*0.5+0.1,
+        p: Math.random()*6.28, s: Math.random()*0.003+0.001
+      });
+    }
+  }
+  function draw(){
+    x.clearRect(0,0,c.width,c.height);
+    var t = Date.now();
+    for(var i = 0; i < stars.length; i++){
+      var st = stars[i];
+      x.beginPath();
+      x.arc(st.x, st.y, st.r, 0, 6.28);
+      x.fillStyle = 'rgba(200,200,220,' + Math.max(0, st.a + Math.sin(st.p + t*st.s)*0.15) + ')';
+      x.fill();
+    }
+    requestAnimationFrame(draw);
+  }
+  resize(); draw();
+  addEventListener('resize', resize);
+})();
+
+// ═══ CANVAS SETUP ═══
+function S(cv){
+  var d = window.devicePixelRatio ? Math.min(window.devicePixelRatio, 2) : 1;
+  var w = parseInt(cv.getAttribute('width'), 10);
+  var h = parseInt(cv.getAttribute('height'), 10);
+  cv.width = w*d; cv.height = h*d;
+  cv.style.width = w+'px'; cv.style.height = h+'px';
+  var c = cv.getContext('2d');
+  c.scale(d, d);
+  return {c:c, w:w, h:h};
+}
+
+// ═══ VIS: IDENTITY ═══
+(function(){
+  var cv = document.getElementById('visId');
+  if(!cv) return;
+  var r = S(cv), x = r.c, w = r.w, h = r.h;
+  var t = 0;
+  var pts = [];
+  var seed = 42;
+
+  function seededRandom(){
+    seed = (seed * 16807) % 2147483647;
+    return (seed - 1) / 2147483646;
+  }
+
+  seed = 42;
+  for(var i = 0; i < 60; i++){
+    pts.push({
+      rx: seededRandom(), ry: seededRandom(),
+      r: 1 + seededRandom()*2.5,
+      hu: 200 + seededRandom()*60,
+      or: seededRandom()*8,
+      os: 0.01 + seededRandom()*0.02,
+      p: seededRandom()*6.28
+    });
+  }
+
+  function drawUniverse(ox, oy, uw, uh, label, highlight){
+    x.strokeStyle = highlight ? '#22d3ee30' : '#1a1a2e';
+    x.lineWidth = 1;
+    x.strokeRect(ox, oy, uw, uh);
+    x.fillStyle = 'rgba(8,8,12,.5)';
+    x.fillRect(ox, oy, uw, uh);
+
+    for(var i = 0; i < pts.length; i++){
+      var p = pts[i];
+      var px = ox + p.rx*uw + Math.cos(p.p + t*p.os*60)*p.or;
+      var py = oy + p.ry*uh + Math.sin(p.p + t*p.os*60)*p.or*0.6;
+      x.fillStyle = 'hsla('+p.hu+',40%,55%,.6)';
+      x.beginPath(); x.arc(px, py, p.r, 0, 6.28); x.fill();
+    }
+
+    // "you" marker
+    var yx = ox + 0.38*uw, yy = oy + 0.52*uh;
+    x.fillStyle = '#ef4444';
+    x.beginPath(); x.arc(yx, yy, 3.5, 0, 6.28); x.fill();
+    x.fillStyle = '#ef444440';
+    x.beginPath(); x.arc(yx, yy, 10, 0, 6.28); x.fill();
+    x.fillStyle = '#ef444480'; x.font = '9px JetBrains Mono,monospace';
+    x.textAlign = 'left'; x.fillText('← you', yx+14, yy+3);
+
+    // Label
+    x.fillStyle = highlight ? '#22d3ee' : '#4a4a6a';
+    x.font = '10px JetBrains Mono,monospace'; x.textAlign = 'center';
+    x.fillText(label, ox + uw/2, oy + uh + 18);
+  }
+
+  function draw(){
+    t += 0.016;
+    x.clearRect(0,0,w,h);
+    var gap = 40;
+    var uw = (w - gap*3) / 2;
+    var uh = h - 70;
+    var cyclePhase = Math.sin(t*0.5) > 0;
+
+    drawUniverse(gap, 20, uw, uh, 'CYCLE N', cyclePhase);
+    drawUniverse(gap*2 + uw, 20, uw, uh, 'CYCLE N+1', !cyclePhase);
+
+    // Equals sign
+    x.fillStyle = '#22d3ee'; x.font = '24px JetBrains Mono,monospace';
+    x.textAlign = 'center'; x.fillText('=', w/2, h/2 + 5);
+
+    // Bottom label
+    x.fillStyle = '#4a4a6a'; x.font = '9px JetBrains Mono,monospace';
+    x.fillText('same particles · same force · same configuration · same you', w/2, h-6);
+
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ═══ OBSERVER & NAV ═══
+var allSections = document.querySelectorAll('section');
+var navEl = document.getElementById('navRail');
+
+allSections.forEach(function(sec) {
+  var dot = document.createElement('div');
+  dot.className = 'nav-dot';
+  dot.innerHTML = '<span class="nav-label">' + (sec.dataset.nav || '') + '</span>';
+  dot.addEventListener('click', function() { sec.scrollIntoView({ behavior: 'smooth' }); });
+  navEl.appendChild(dot);
+});
+
+var allDots = navEl.querySelectorAll('.nav-dot');
+
+var secObserver = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
+    if (!entry.isIntersecting) return;
+    var inner = entry.target.querySelector('.section-inner');
+    if (inner) {
+      inner.classList.add('visible');
+      var fills = entry.target.querySelectorAll('.meter-bar-fill');
+      fills.forEach(function(fill, idx) {
+        setTimeout(function() {
+          var target = fill.dataset.width;
+          fill.style.width = (parseFloat(target) < 1 ? 1 : target) + '%';
+        }, idx * 150 + 400);
+      });
+    }
+  });
+  var topIdx = 0;
+  allSections.forEach(function(sec, i) {
+    if (sec.getBoundingClientRect().top <= window.innerHeight * 0.5) topIdx = i;
+  });
+  allDots.forEach(function(dot, i) {
+    dot.classList.toggle('active', i === topIdx);
+  });
+}, { threshold: 0.2 });
+
+allSections.forEach(function(sec) { secObserver.observe(sec); });
+</script>
+</body>
+</html>

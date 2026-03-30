@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Logical Scrutiny of the Universe — One Possibility</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=JetBrains+Mono:wght@300;400;500&family=Instrument+Serif:ital@0;1&display=swap');
+
+  :root {
+    --bg-void: #08080c;
+    --bg-card: #111119;
+    --border-dim: #1a1a2e;
+    --border-glow: #2a2a4e;
+    --text-primary: #c8c8d8;
+    --text-secondary: #7878a0;
+    --text-dim: #4a4a6a;
+    --accent-premise: #4a7fff;
+    --accent-observation: #ff6b4a;
+    --accent-logic: #8b5cf6;
+    --accent-counter: #f59e0b;
+    --accent-dark: #ef4444;
+    --accent-force: #22d3ee;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: var(--border-glow) var(--bg-void); }
+
+  body {
+    background: var(--bg-void);
+    color: var(--text-primary);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 19px;
+    line-height: 1.75;
+    overflow-x: hidden;
+  }
+
+  .star-field { position: fixed; top:0; left:0; right:0; bottom:0; z-index:0; pointer-events:none; }
+  .star-field canvas { width:100%; height:100%; }
+
+  .nav-rail { position:fixed; right:20px; top:50%; transform:translateY(-50%); z-index:100; display:flex; flex-direction:column; gap:12px; opacity:0.4; transition:opacity 0.4s; }
+  .nav-rail:hover { opacity:1; }
+  .nav-dot { width:10px; height:10px; border-radius:50%; border:1.5px solid var(--text-dim); background:transparent; cursor:pointer; transition:all 0.3s; position:relative; }
+  .nav-dot.active { background:var(--accent-premise); border-color:var(--accent-premise); box-shadow:0 0 8px var(--accent-premise); }
+  .nav-dot .nav-label { position:absolute; right:20px; top:50%; transform:translateY(-50%); white-space:nowrap; font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--text-secondary); letter-spacing:0.08em; text-transform:uppercase; opacity:0; transition:opacity 0.3s; pointer-events:none; }
+  .nav-rail:hover .nav-label { opacity:1; }
+
+  .presentation { position:relative; z-index:1; }
+
+  section { min-height:0; display:flex; align-items:center; justify-content:center; padding:100px 40px; position:relative; }
+  .section-inner { max-width:760px; width:100%; opacity:0; transform:translateY(40px); transition:opacity 0.9s ease, transform 0.9s ease; }
+  .section-inner.visible { opacity:1; transform:translateY(0); }
+
+  .title-section { min-height:auto; text-align:center; }
+  .title-section h1 { font-family:'Instrument Serif','Cormorant Garamond',serif; font-size:clamp(2.4rem,5.5vw,4.2rem); font-weight:400; font-style:italic; color:var(--text-primary); line-height:1.2; margin-bottom:24px; letter-spacing:-0.02em; }
+  .title-section .subtitle { font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.25em; text-transform:uppercase; color:var(--accent-dark); margin-bottom:40px; opacity:0.8; }
+
+  .premise-box { border:1px solid var(--border-dim); padding:28px 36px; margin:40px auto; max-width:560px; text-align:left; background:linear-gradient(135deg,rgba(17,17,25,0.9),rgba(12,12,20,0.95)); border-radius:2px; }
+  .premise-box .label { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--accent-premise); margin-bottom:12px; }
+  .premise-box p { font-size:17px; color:var(--text-secondary); line-height:1.7; }
+
+  .author-line { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-dim); letter-spacing:0.1em; margin-top:48px; }
+
+  .section-number { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.25em; text-transform:uppercase; margin-bottom:12px; opacity:0.6; }
+  .section-number.premise { color:var(--accent-premise); }
+  .section-number.observation { color:var(--accent-observation); }
+  .section-number.logic { color:var(--accent-logic); }
+  .section-number.dark { color:var(--accent-dark); }
+  .section-number.force { color:var(--accent-force); }
+
+  h2 { font-family:'Instrument Serif','Cormorant Garamond',serif; font-size:clamp(1.8rem,3.5vw,2.6rem); font-weight:400; font-style:italic; line-height:1.25; margin-bottom:32px; letter-spacing:-0.01em; }
+  h3 { font-family:'Cormorant Garamond',serif; font-size:1.3rem; font-weight:600; margin:32px 0 16px; color:var(--text-primary); }
+  p { margin-bottom:20px; color:var(--text-secondary); }
+  p em { color:var(--text-primary); font-style:italic; }
+  strong { font-weight:600; color:var(--text-primary); }
+
+  .logic-chain { margin:32px 0; }
+  .chain-step { display:flex; gap:16px; margin-bottom:20px; align-items:flex-start; opacity:0; transform:translateX(-20px); transition:opacity 0.5s, transform 0.5s; }
+  .chain-step.revealed { opacity:1; transform:translateX(0); }
+  .chain-connector { display:flex; flex-direction:column; align-items:center; min-width:28px; padding-top:4px; }
+  .chain-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+  .chain-dot.premise { background:var(--accent-premise); box-shadow:0 0 8px rgba(74,127,255,0.4); }
+  .chain-dot.logic { background:var(--accent-logic); box-shadow:0 0 8px rgba(139,92,246,0.4); }
+  .chain-dot.force { background:var(--accent-force); box-shadow:0 0 8px rgba(34,211,238,0.4); }
+  .chain-line { width:1px; flex-grow:1; min-height:20px; background:var(--border-dim); }
+  .chain-content { flex:1; padding-bottom:8px; }
+  .chain-content .chain-label { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; margin-bottom:6px; }
+  .chain-label.premise { color:var(--accent-premise); }
+  .chain-label.logic { color:var(--accent-logic); }
+  .chain-label.force { color:var(--accent-force); }
+  .chain-content p { margin-bottom:0; font-size:16px; line-height:1.65; }
+
+  .counter-card { border-left:2px solid var(--accent-counter); background:linear-gradient(135deg,rgba(245,158,11,0.04),transparent); padding:20px 24px; margin:24px 0; border-radius:0 2px 2px 0; }
+  .counter-card .counter-label { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--accent-counter); margin-bottom:10px; }
+  .counter-card p { font-size:16px; margin-bottom:0; }
+
+  .rebuttal-card { border-left:2px solid var(--accent-logic); background:linear-gradient(135deg,rgba(139,92,246,0.04),transparent); padding:20px 24px; margin:16px 0 24px 32px; border-radius:0 2px 2px 0; }
+  .rebuttal-card .rebuttal-label { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--accent-logic); margin-bottom:10px; }
+  .rebuttal-card p { font-size:16px; margin-bottom:0; }
+
+  .verdict-box { border:1px solid var(--accent-dark); background:linear-gradient(135deg,rgba(239,68,68,0.05),transparent); padding:32px; margin:40px 0; text-align:center; border-radius:2px; }
+  .verdict-box .verdict-label { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.3em; text-transform:uppercase; color:var(--accent-dark); margin-bottom:16px; }
+  .verdict-box p { font-size:20px; font-style:italic; color:var(--text-primary); line-height:1.6; margin-bottom:0; }
+
+  .confidence-meter { margin:40px 0; padding:24px 28px; border:1px solid var(--border-dim); background:var(--bg-card); border-radius:2px; }
+  .confidence-meter .meter-title { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--text-dim); margin-bottom:20px; }
+  .meter-row { display:flex; align-items:center; gap:12px; margin-bottom:14px; }
+  .meter-label { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-secondary); min-width:190px; text-align:right; }
+  .meter-bar-bg { flex:1; height:6px; background:var(--border-dim); border-radius:3px; overflow:hidden; }
+  .meter-bar-fill { height:100%; border-radius:3px; width:0; transition:width 1.5s ease; }
+  .meter-bar-fill.high { background:linear-gradient(90deg,var(--accent-premise),var(--accent-force)); }
+  .meter-bar-fill.medium { background:linear-gradient(90deg,var(--accent-logic),var(--accent-observation)); }
+  .meter-bar-fill.low { background:linear-gradient(90deg,var(--accent-counter),var(--accent-dark)); }
+  .meter-bar-fill.speculative { background:linear-gradient(90deg,var(--accent-dark),#8b0000); }
+  .meter-value { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-dim); min-width:36px; }
+
+  .vis-container { margin:36px auto; max-width:680px; position:relative; border:1px solid var(--border-dim); border-radius:2px; overflow:hidden; background:rgba(8,8,12,0.7); }
+  .vis-container canvas { display:block; width:100%; height:auto; cursor:pointer; }
+  .vis-label { position:absolute; bottom:10px; left:12px; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; color:var(--text-dim); pointer-events:none; }
+
+  .vis-control { display:flex; justify-content:center; gap:10px; margin-top:12px; }
+  .vis-btn { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; padding:6px 14px; border:1px solid var(--border-dim); background:transparent; color:var(--text-secondary); cursor:pointer; transition:all 0.3s; border-radius:1px; }
+  .vis-btn:hover { border-color:var(--text-secondary); color:var(--text-primary); }
+  .vis-btn.active { border-color:var(--accent-force); color:var(--accent-force); background:rgba(34,211,238,0.08); }
+
+  .footer-section { min-height:auto; padding:60px 40px 80px; text-align:center; }
+  .footer-section p { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-dim); letter-spacing:0.08em; }
+  .footer-section a { color:var(--text-secondary); text-decoration:none; border-bottom:1px solid var(--border-dim); transition:all 0.3s; }
+  .footer-section a:hover { color:var(--accent-premise); border-color:var(--accent-premise); }
+  .footer-section a.neon-link:hover { color:#fff; border-color:var(--accent-force); background:rgba(34,211,238,0.1); box-shadow:0 0 24px rgba(34,211,238,0.4), inset 0 0 16px rgba(34,211,238,0.1); }
+
+  @media (max-width:640px) {
+    section { padding:36px 20px; }
+    .nav-rail { display:none; }
+    body { font-size:17px; }
+    .meter-label { min-width:110px; font-size:9px; }
+    .premise-box { padding:20px 24px; }
+    .counter-card,.rebuttal-card { padding:16px 18px; }
+    .rebuttal-card { margin-left:12px; }
+    .vis-btn { font-size:12px; padding:10px 16px; }
+    .footer-section { padding:30px 20px 50px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="star-field"><canvas id="starCanvas"></canvas></div>
+<nav class="nav-rail" id="navRail"></nav>
+
+<div class="presentation">
+  <!-- TITLE -->
+  <section class="title-section" data-nav="Title">
+    <div class="section-inner">
+      <div class="subtitle">A Speculative Logical Framework</div>
+      <h1>Logical Scrutiny<br>of the Universe</h1>
+      <div class="premise-box">
+        <div class="label">Starting Premise</div>
+        <p>Halton Arp's observations of discordant redshifts between physically connected objects suggest intrinsic redshift is real. If so, the expansion narrative collapses, and with it the extrapolation backward to a singularity. The universe may be <em>infinite in all directions</em> — in both space and time. No beginning. No boundary.</p>
+      </div>
+      <div class="premise-box" style="border-color:var(--accent-dark); margin-top:20px;">
+        <div class="label" style="color:var(--accent-dark);">Epistemic Warning</div>
+        <p>What follows is <em>one logical possibility</em> — a chain of reasoning from premises that are themselves uncertain. Human understanding of cosmological fundamentals is primitive, riddled with erroneous theories, and constrained by instruments that see a vanishing fraction of what exists. This presentation traces a logical thread. It does not claim to hold the thread's end.</p>
+      </div>
+      <div class="author-line">ifinishedelementary.com · 2026</div>
+    </div>
+  </section>
+
+  <!-- 1: SCALE BOUNDARIES -->
+  <section data-nav="Scale Boundaries">
+    <div class="section-inner">
+      <div class="section-number observation">Section 01 — Observation</div>
+      <h2>Structures Have Scale Boundaries</h2>
+      <p>At every level we can observe, physical structures exhibit both a <em>minimum</em> and a <em>maximum</em> scale.</p>
+      <p>At the small end: atoms are discrete. You will not find a herd of donkeys when you zoom into the atomic scale. Structure does not scale down infinitely — it hits a floor.</p>
+
+      <div class="vis-container">
+        <canvas id="visScale" width="680" height="200" role="img" aria-label="Scale spectrum visualization showing structures from electron to quasar along a minimum-to-maximum axis"></canvas>
+        <div class="vis-label">Scale spectrum — minimum to maximum</div>
+      </div>
+
+      <p>At the large end: structures seem to reach a ceiling. Stars grow until they explode. Galaxies interact and merge. The most energetic concentrated objects we observe — quasars — appear to represent something near the upper bound of organized material/energetic concentration. Spatially larger structures exist (clusters, filaments, great walls), but these are diffuse arrangements, not concentrated objects.</p>
+      <p>This is not controversial. It's observable. The question is: <em>what happens when a universe full of structures pushes against its upper boundary?</em></p>
+
+      <div class="counter-card">
+        <div class="counter-label">Counter-Argument: Maximum Structure</div>
+        <p>Are quasars the maximum concentrated object, or merely the most energetic objects we've observed so far? Our observational window is extremely limited. Arp himself interpreted quasars as <em>young objects ejected from galactic nuclei</em> — newborns, not ancient giants. If Arp is right, quasars represent a stage in an object's life cycle, not necessarily the ceiling of aggregation.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2: INSTANTANEOUS GRAVITY (moved from Section 05 — keystone presented before it's needed) -->
+  <section data-nav="Instantaneous Gravity">
+    <div class="section-inner">
+      <div class="section-number force">Section 02 — The Keystone</div>
+      <h2>Instantaneous Gravity Makes the Universe One Object</h2>
+      <p>Before proceeding further, one premise must be established. It does enormous work in every argument that follows.</p>
+      <p>If gravity propagates at the speed of light (as general relativity claims), then distant regions of the universe are causally disconnected. They evolve independently. Local variations compound. The conclusions of this presentation become statistically impossible.</p>
+
+      <div class="vis-container">
+        <canvas id="visGrav" width="680" height="340" role="img" aria-label="Comparison visualization: light-speed gravity shows disconnected regions, instantaneous gravity shows one unified system"></canvas>
+      </div>
+      <div class="vis-control">
+        <button class="vis-btn active" id="btnBoth">Both</button>
+        <button class="vis-btn" id="btnLight">Light-Speed Only</button>
+        <button class="vis-btn" id="btnInst">Instantaneous Only</button>
+      </div>
+
+      <p>But if gravity is instantaneous — as Newton originally held, and as Dayton Miller's aether experiments and other anomalies suggest has never been properly refuted — then the entire universe is <em>one causally connected system at every moment</em>. Every particle's position is influenced by every other particle, right now.</p>
+
+      <h3>1. No Duplicates Within a Single Cycle</h3>
+      <p>In this universe, right now, an exact copy of Earth cannot exist — because the gravitational context of any copy would differ (it would be in a different location relative to all other matter in the universe), which would make it not a copy. Instantaneous gravity makes the universe <em>one unique, indivisible pattern</em>.</p>
+
+      <h3>2. Identical Reset Between Cycles</h3>
+      <p>But when the cycle resets — same particles, same force — the unique pattern that gravity carves out must be the same unique pattern. There's only one solution to "identical particles under identical instantaneous force," and it's the same universe.</p>
+
+      <div class="counter-card">
+        <div class="counter-label">Counter-Argument: Instantaneous Gravity Itself</div>
+        <p>The premise of instantaneous gravity is itself heterodox. If gravity propagates at <em>c</em> (as mainstream physics holds, supported by LIGO gravitational wave observations showing finite propagation speed), then the causal coupling that makes this argument work doesn't exist. The entire chain depends on this single contested premise. Readers should note that the framework's conclusions are only as strong as their confidence in instantaneous force.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3: AGGREGATION (was Section 02) -->
+  <section data-nav="Aggregation">
+    <div class="section-inner">
+      <div class="section-number logic">Section 03 — Logical Consequence</div>
+      <h2>Gravity Never Stops Working</h2>
+      <p>In an infinite universe, gravity is always operating. Dust becomes stars. Stars form galaxies. Galaxies cluster. Clusters merge.</p>
+
+      <div class="vis-container">
+        <canvas id="visAgg" width="680" height="400" role="img" aria-label="Gravitational aggregation simulation: particles attract, merge, and form increasingly massive objects over time"></canvas>
+        <div class="vis-label">Gravitational aggregation — click to restart</div>
+      </div>
+
+      <p>If time is also infinite, this process doesn't merely <em>tend toward</em> aggregation. It has had infinite time to aggregate. Given enough time, galaxies and larger structures will collide, merge, and consolidate into ever-more-massive objects.</p>
+      <p>The pattern is visible right now: we see galaxies at various stages of merger. We see galaxy clusters gravitationally bound. We see massive energetic objects. Things appear to be <em>aggregating toward some end point</em>.</p>
+      <p>If this continues — everywhere, simultaneously — then instead of a universe filled with galaxies, we eventually arrive at a universe filled with <em>maximum-sized objects</em>. Massive material/energetic spheres of matter, pressed to whatever upper limit the physics allows.</p>
+
+      <div class="counter-card">
+        <div class="counter-label">Counter-Argument: Simultaneity</div>
+        <p>Why would an infinite universe aggregate everywhere on the same schedule? Different regions with different densities would evolve at different rates. Some regions might reach the upper bound while others are still forming galaxies. You'd get a patchwork of evolutionary stages, not a universal synchronized convergence. This is, in fact, closer to what we actually observe — objects at wildly different stages of development coexisting.</p>
+      </div>
+      <div class="rebuttal-card">
+        <div class="rebuttal-label">Response</div>
+        <p>As established in Section 02, if gravity is instantaneous, the universe is not a collection of independent regions evolving separately. It is <em>one causally connected system</em>. Every particle is influenced by every other particle simultaneously. This constrains the patchwork problem — not necessarily eliminating variation, but coupling the entire system far more tightly than light-speed-limited physics would allow.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4: THE BANG (was Section 03) -->
+  <section data-nav="The Bang">
+    <div class="section-inner">
+      <div class="section-number dark">Section 04 — The Darkest Step</div>
+      <h2>Maximum Objects Explode</h2>
+      <p>Structures have a maximum. When a star exceeds its maximum, it goes supernova. The physics imposes an <em>upper instability boundary</em> — aggregate enough matter/energy, and the structure cannot hold.</p>
+      <p>If this principle holds at every scale, then the maximum-sized objects filling the universe must also be unstable. They reach their ceiling and <em>explode</em>.</p>
+
+      <div class="vis-container">
+        <canvas id="visBang" width="680" height="400" role="img" aria-label="Interactive visualization: maximum objects grow unstable and detonate, producing debris that thermalizes to uniform background radiation"></canvas>
+        <div class="vis-label">Click to detonate — or wait for instability</div>
+      </div>
+
+      <p>If the entire universe has aggregated to this state roughly simultaneously — a universe packed with maximum objects — then the explosions are also roughly simultaneous. <em>The whole universe goes bang.</em></p>
+      <p>This would, incidentally, produce exactly the kind of signature we observe: a nearly uniform background radiation pervading all of space. Not the echo of a single primordial explosion from a point, but the <em>thermalized residue of a universal-scale simultaneous detonation</em>.</p>
+
+      <div class="counter-card">
+        <div class="counter-label">Counter-Argument: Explosion Mechanism</div>
+        <p>Why does a maximum-sized object explode rather than collapse into permanent equilibrium? Stars explode due to specific nuclear physics — the balance between radiation pressure and gravity fails. What is the equivalent mechanism for a universe-scale maximum object? This is asserted, not derived. Standard physics offers black holes as the endpoint of gravitational collapse, but this framework rejects black holes (following Arp). So the instability at maximum scale needs a different physical explanation.</p>
+      </div>
+      <div class="counter-card">
+        <div class="counter-label">Counter-Argument: Background Radiation</div>
+        <p>Hoyle, Narlikar, and others showed that in an infinite universe filled with matter, starlight absorbed and re-emitted by intergalactic dust would eventually thermalize to a background temperature. The 2.7K CMB does not require either a Big Bang or a universal-scale explosion — it may simply be the equilibrium temperature of an infinite, eternally active universe. This undercuts the evidentiary claim without necessarily undermining the logical argument.</p>
+      </div>
+      <div class="rebuttal-card">
+        <div class="rebuttal-label">Response to Thermalization</div>
+        <p>If the universe is infinite in time, thermalization should have <em>already arrived</em> — infinitely long ago. The 2.7K background isn't a process cooling down. It <em>is</em> the equilibrium. Which raises the real question: why do gradients, stars, and structures still exist in a universe that reached thermal equilibrium an infinite time ago?</p>
+        <p style="margin-top:12px;">Within this framework, the answer is the cycle itself. The bang is the disequilibrium generator — it periodically shatters the equilibrium by converting maximally aggregated matter into high-energy debris, which then cools, clumps, and aggregates again. The 2.7K background is the residual temperature of the <em>most recent</em> detonation, not a static eternal floor. Structures exist because we are partway through a cycle, not because equilibrium has been violated by some unexplained mechanism.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5: THE CYCLE (was Section 04) -->
+  <section data-nav="The Cycle">
+    <div class="section-inner">
+      <div class="section-number force">Section 05 — Eternal Recurrence</div>
+      <h2>The Cycle Must Repeat Identically</h2>
+      <p>After the universal bang: debris. Dust. The same identical particles — electrons, protons, neutrons — because there is no known difference between one electron and another. No serial numbers. No distinguishing marks. The claims of decomposing nuclear particles into quarks and other sub-particles are built on dubious assumptions and questionable interpretations of collider experiments.</p>
+
+      <div class="vis-container">
+        <canvas id="visCycle" width="680" height="440" role="img" aria-label="Circular diagram showing the eternal cycle: dust, stars, galaxies, maximum objects, bang, debris — with force at the center as the only constant"></canvas>
+        <div class="vis-label">The eternal cycle — force is the only constant</div>
+      </div>
+
+      <p>The same particles. The same force (gravity/force, the only thing that never ceases). The same laws.</p>
+
+      <div class="logic-chain" id="logicChain1">
+        <div class="chain-step" data-delay="0">
+          <div class="chain-connector"><div class="chain-dot premise"></div><div class="chain-line"></div></div>
+          <div class="chain-content"><div class="chain-label premise">Premise</div><p>All particles of the same type are identical — no distinguishing properties</p></div>
+        </div>
+        <div class="chain-step" data-delay="200">
+          <div class="chain-connector"><div class="chain-dot premise"></div><div class="chain-line"></div></div>
+          <div class="chain-content"><div class="chain-label premise">Premise</div><p>Force/gravity is instantaneous and never ceases — it operates through the explosion and after</p></div>
+        </div>
+        <div class="chain-step" data-delay="400">
+          <div class="chain-connector"><div class="chain-dot premise"></div><div class="chain-line"></div></div>
+          <div class="chain-content"><div class="chain-label premise">Premise</div><p>The pre-bang state is a <em>constrained</em> configuration — maximum objects at maximum density</p></div>
+        </div>
+        <div class="chain-step" data-delay="600">
+          <div class="chain-connector"><div class="chain-dot logic"></div><div class="chain-line"></div></div>
+          <div class="chain-content"><div class="chain-label logic">Therefore</div><p>The explosion pattern is also constrained — not random, but determined by the same physics</p></div>
+        </div>
+        <div class="chain-step" data-delay="800">
+          <div class="chain-connector"><div class="chain-dot logic"></div><div class="chain-line"></div></div>
+          <div class="chain-content"><div class="chain-label logic">Therefore</div><p>The initial conditions of the new universe are <em>identical</em> to the last</p></div>
+        </div>
+        <div class="chain-step" data-delay="1000">
+          <div class="chain-connector"><div class="chain-dot force"></div></div>
+          <div class="chain-content"><div class="chain-label force">Conclusion</div><p>Same particles + same laws + same initial conditions + determinism = <em>the same universe</em></p></div>
+        </div>
+      </div>
+
+      <p>Not a similar universe. Not an approximate recurrence. The <em>exact same</em> configuration, because at no point in the entire sequence is there a free variable. Every step is constrained by the same physics operating on the same particles under the same force.</p>
+
+      <div class="counter-card">
+        <div class="counter-label">Counter-Argument: Identical Recurrence</div>
+        <p>"Same type of process repeats" is vastly different from "same specific arrangement repeats." The number of possible configurations of matter, even in a finite region, is so astronomically large that identical physics and identical particle types don't force identical outcomes. A deck of cards shuffled twice with the same physics will not yield the same hand.</p>
+      </div>
+      <div class="rebuttal-card">
+        <div class="rebuttal-label">Response</div>
+        <p>A deck of cards is shuffled by a hand with unknown micro-states — the shuffler's muscles, air currents, friction — introducing genuinely undetermined variables. The pre-bang universe has no such external randomizer. It is a closed system: the <em>unique deterministic endpoint</em> of a constrained aggregation process.</p>
+        <p style="margin-top:12px;">The key is instantaneous gravity (Section 02). In a light-speed-limited universe, regions evolve semi-independently, and tiny local differences can amplify through chaotic dynamics into wildly different outcomes — the deck-of-cards objection holds. But under instantaneous gravity, every particle is coupled to every other particle at every moment. There are no isolated subsystems where local perturbations can grow unchecked. The entire universe is one n-body system with one global solution. If the initial state is identical, and the force law is identical, and the coupling is total and instantaneous, then the evolution is identical. Not because chaos is absent, but because the boundary conditions — the simultaneous gravitational influence of every particle on every other — leave no room for divergent trajectories.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="footer-section">
+    <p>Part of the <a href="https://ifinishedelementary.com" target="_blank">I Finished Elementary</a> project</p>
+    <p style="margin-top:8px;">A logical framework for consideration — not assertion</p>
+    <a href="https://www.ifinishedelementary.com/logical-scrutiny-part-2" target="_top" class="neon-link" style="display:inline-block; margin-top:24px; padding:16px 36px; border:1.5px solid var(--accent-force); color:var(--accent-force); text-decoration:none; font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:0.2em; text-transform:uppercase; box-shadow:0 0 12px rgba(34,211,238,0.25), inset 0 0 12px rgba(34,211,238,0.06); transition:all 0.3s; border-radius:2px;">Continue to Part 2 →</a>
+  </div>
+</div>
+
+<script>
+// ═══ STARS ═══
+(function(){
+  var c = document.getElementById('starCanvas');
+  var x = c.getContext('2d');
+  var stars = [];
+  function resize(){
+    c.width = innerWidth;
+    c.height = innerHeight;
+    stars = [];
+    for(var i = 0; i < 160; i++){
+      stars.push({
+        x: Math.random()*c.width, y: Math.random()*c.height,
+        r: Math.random()*1.2+.3, a: Math.random()*.5+.1,
+        p: Math.random()*6.28, s: Math.random()*.003+.001
+      });
+    }
+  }
+  function draw(){
+    x.clearRect(0,0,c.width,c.height);
+    var t = Date.now();
+    for(var i = 0; i < stars.length; i++){
+      var st = stars[i];
+      x.beginPath();
+      x.arc(st.x, st.y, st.r, 0, 6.28);
+      x.fillStyle = 'rgba(200,200,220,' + Math.max(0, st.a + Math.sin(st.p + t*st.s)*0.15) + ')';
+      x.fill();
+    }
+    requestAnimationFrame(draw);
+  }
+  resize(); draw();
+  addEventListener('resize', resize);
+})();
+
+// ═══ CANVAS SETUP ═══
+function S(cv){
+  var d = window.devicePixelRatio ? Math.min(window.devicePixelRatio, 2) : 1;
+  var w = parseInt(cv.getAttribute('width'), 10);
+  var h = parseInt(cv.getAttribute('height'), 10);
+  cv.width = w*d; cv.height = h*d;
+  cv.style.width = w+'px'; cv.style.height = h+'px';
+  var c = cv.getContext('2d');
+  c.scale(d, d);
+  return {c:c, w:w, h:h};
+}
+
+// ═══ VIS 1: SCALE SPECTRUM ═══
+(function(){
+  var cv = document.getElementById('visScale');
+  if(!cv) return;
+  var r = S(cv), x = r.c, w = r.w, h = r.h;
+  var items = [
+    {l:'Electron',p:.04,s:2,cl:'#4a7fff'},{l:'Atom',p:.12,s:4,cl:'#5b8fff'},
+    {l:'Molecule',p:.22,s:7,cl:'#6b9fff'},{l:'Dust',p:.32,s:10,cl:'#888888'},
+    {l:'Planet',p:.44,s:14,cl:'#4488aa'},{l:'Star',p:.55,s:20,cl:'#ffaa44'},
+    {l:'Galaxy',p:.68,s:28,cl:'#8b5cf6'},{l:'Cluster',p:.80,s:34,cl:'#a855f7'},
+    {l:'Quasar?',p:.92,s:22,cl:'#ef4444'}
+  ];
+  var anim = 0;
+  function draw(){
+    anim += 0.015;
+    x.clearRect(0,0,w,h);
+    var y = h*0.55;
+    x.strokeStyle = '#1a1a2e'; x.lineWidth = 1;
+    x.beginPath(); x.moveTo(20,y); x.lineTo(w-20,y); x.stroke();
+    x.font = '9px JetBrains Mono,monospace'; x.textAlign = 'center';
+    x.fillStyle = '#22d3ee'; x.fillText('MINIMUM',45,y+30);
+    x.fillStyle = '#ef4444'; x.fillText('MAXIMUM ?',w-55,y+30);
+    x.strokeStyle = '#22d3ee44';
+    x.beginPath(); x.moveTo(20,y+4); x.lineTo(20,y+20); x.lineTo(70,y+20); x.stroke();
+    x.strokeStyle = '#ef444444';
+    x.beginPath(); x.moveTo(w-20,y+4); x.lineTo(w-20,y+20); x.lineTo(w-90,y+20); x.stroke();
+    x.fillStyle = '#ef444415'; x.fillRect(w*0.85, y-50, w*0.13, 100);
+    for(var i = 0; i < items.length; i++){
+      var it = items[i];
+      var cx = 20 + it.p*(w-40);
+      var pulse = Math.sin(anim + it.p*10)*2;
+      var rad = it.s/2 + pulse*0.3;
+      var g = x.createRadialGradient(cx,y,0,cx,y,rad*3);
+      g.addColorStop(0, it.cl+'30'); g.addColorStop(1,'transparent');
+      x.fillStyle = g; x.beginPath(); x.arc(cx,y,rad*3,0,6.28); x.fill();
+      x.fillStyle = it.cl; x.beginPath(); x.arc(cx,y,Math.max(1.5,rad),0,6.28); x.fill();
+      x.fillStyle = '#7878a0'; x.font = '9px JetBrains Mono,monospace'; x.textAlign = 'center';
+      x.fillText(it.l, cx, y - it.s/2 - 14);
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ═══ VIS 2: GRAVITY COMPARISON (moved from Part 2) ═══
+(function(){
+  var cv = document.getElementById('visGrav');
+  if(!cv) return;
+  var r = S(cv), x = r.c, w = r.w, h = r.h;
+  var mode = 'both', bodies = [], t = 0;
+
+  function init(){
+    bodies = [];
+    for(var s = 0; s < 2; s++){
+      var ox = s * w/2;
+      for(var i = 0; i < 20; i++){
+        bodies.push({
+          x: ox+30+Math.random()*(w/2-60), y: 30+Math.random()*(h-60),
+          s: s, bx: ox+30+Math.random()*(w/2-60), by: 30+Math.random()*(h-60),
+          or: 10+Math.random()*30, p: Math.random()*6.28, sp: 0.005+Math.random()*0.01
+        });
+      }
+    }
+  }
+
+  document.getElementById('btnBoth').onclick = function(){ mode='both'; updateButtons(); };
+  document.getElementById('btnLight').onclick = function(){ mode='light'; updateButtons(); };
+  document.getElementById('btnInst').onclick = function(){ mode='inst'; updateButtons(); };
+
+  function updateButtons(){
+    var btns = document.querySelectorAll('.vis-btn');
+    for(var i=0;i<btns.length;i++) btns[i].classList.remove('active');
+    document.getElementById(mode==='both'?'btnBoth':mode==='light'?'btnLight':'btnInst').classList.add('active');
+  }
+
+  function draw(){
+    t += 0.02;
+    x.clearRect(0,0,w,h);
+    var hw = w/2;
+    for(var i=0;i<bodies.length;i++){
+      var b = bodies[i];
+      b.p += b.sp;
+      b.x = b.bx + Math.cos(b.p)*b.or;
+      b.y = b.by + Math.sin(b.p*0.7)*b.or*0.6;
+    }
+    var showLight = mode==='both'||mode==='light';
+    var showInst = mode==='both'||mode==='inst';
+
+    if(mode==='both'){
+      x.strokeStyle='#1a1a2e'; x.lineWidth=1; x.setLineDash([4,4]);
+      x.beginPath(); x.moveTo(hw,0); x.lineTo(hw,h); x.stroke(); x.setLineDash([]);
+    }
+    if(showLight){
+      var lb = mode==='both' ? bodies.filter(function(b){return b.s===0}) : bodies;
+      for(var i=0;i<lb.length;i++){
+        var b=lb[i], rr=((t*40+i*30)%120), ra=Math.max(0,1-rr/120)*0.22;
+        x.strokeStyle='rgba(255,107,74,'+ra+')'; x.lineWidth=0.8;
+        x.beginPath(); x.arc(b.x,b.y,rr,0,6.28); x.stroke();
+      }
+      for(var i=0;i<lb.length;i++) for(var j=i+1;j<lb.length;j++){
+        var a=lb[i],b=lb[j],d=Math.hypot(a.x-b.x,a.y-b.y);
+        if(d<80){ x.strokeStyle='rgba(255,107,74,'+(0.35*(1-d/80))+')'; x.lineWidth=0.8;
+          x.beginPath(); x.moveTo(a.x,a.y); x.lineTo(b.x,b.y); x.stroke(); }
+      }
+      for(var i=0;i<lb.length;i++){
+        x.fillStyle='#ff6b4a'; x.beginPath(); x.arc(lb[i].x,lb[i].y,3,0,6.28); x.fill();
+      }
+      x.fillStyle='#ff6b4a80'; x.font='9px JetBrains Mono,monospace'; x.textAlign='center';
+      var lx = mode==='both' ? hw/2 : w/2;
+      x.fillText('LIGHT-SPEED GRAVITY',lx,h-12);
+      x.fillText('disconnected regions',lx,h-24);
+    }
+    if(showInst){
+      var rb = mode==='both' ? bodies.filter(function(b){return b.s===1}) : bodies;
+      for(var i=0;i<rb.length;i++) for(var j=i+1;j<rb.length;j++){
+        var a=rb[i],b=rb[j],d=Math.hypot(a.x-b.x,a.y-b.y);
+        var mx=mode==='both'?500:800, al=0.18*(1-d/mx);
+        if(al>0){ x.strokeStyle='rgba(34,211,238,'+al+')'; x.lineWidth=0.6;
+          x.beginPath(); x.moveTo(a.x,a.y); x.lineTo(b.x,b.y); x.stroke(); }
+      }
+      for(var i=0;i<rb.length;i++){
+        x.fillStyle='#22d3ee'; x.beginPath(); x.arc(rb[i].x,rb[i].y,3,0,6.28); x.fill();
+      }
+      x.fillStyle='#22d3ee80'; x.font='9px JetBrains Mono,monospace'; x.textAlign='center';
+      var rx = mode==='both' ? hw+hw/2 : w/2;
+      x.fillText('INSTANTANEOUS GRAVITY',rx,h-12);
+      x.fillText('one connected system',rx,h-24);
+    }
+    requestAnimationFrame(draw);
+  }
+  init(); draw();
+})();
+
+// ═══ VIS 3: AGGREGATION ═══
+(function(){
+  var cv = document.getElementById('visAgg');
+  if(!cv) return;
+  var r = S(cv), x = r.c, w = r.w, h = r.h;
+  var P=[], N=200, G=0.08, D=0.998;
+
+  function init(){
+    P=[];
+    for(var i=0;i<N;i++){
+      P.push({
+        x:40+Math.random()*(w-80), y:40+Math.random()*(h-80),
+        vx:(Math.random()-0.5)*0.5, vy:(Math.random()-0.5)*0.5,
+        m:1, r:1.5,
+        cl:'hsl('+(210+Math.random()*30)+',50%,'+(50+Math.random()*20)+'%)'
+      });
+    }
+  }
+
+  function step(){
+    var i,j,a,b,dx,dy,d2,d,F,fx,fy;
+    for(i=0;i<P.length;i++) for(j=i+1;j<P.length;j++){
+      a=P[i]; b=P[j];
+      dx=b.x-a.x; dy=b.y-a.y; d2=dx*dx+dy*dy+100; d=Math.sqrt(d2);
+      F=G*a.m*b.m/d2; fx=F*dx/d; fy=F*dy/d;
+      a.vx+=fx/a.m; a.vy+=fy/a.m; b.vx-=fx/b.m; b.vy-=fy/b.m;
+    }
+    var merged = new Set();
+    for(i=0;i<P.length;i++){
+      if(merged.has(i)) continue;
+      var p=P[i];
+      p.vx*=D; p.vy*=D; p.x+=p.vx; p.y+=p.vy;
+      if(p.x<10)p.vx+=0.1; if(p.x>w-10)p.vx-=0.1;
+      if(p.y<10)p.vy+=0.1; if(p.y>h-10)p.vy-=0.1;
+      for(j=i+1;j<P.length;j++){
+        if(merged.has(j)) continue;
+        var q=P[j]; dx=q.x-p.x; dy=q.y-p.y;
+        if(Math.sqrt(dx*dx+dy*dy) < p.r+q.r+2){
+          var t=p.m+q.m;
+          p.vx=(p.vx*p.m+q.vx*q.m)/t; p.vy=(p.vy*p.m+q.vy*q.m)/t;
+          p.x=(p.x*p.m+q.x*q.m)/t; p.y=(p.y*p.m+q.y*q.m)/t;
+          p.m=t; p.r=Math.pow(t,0.45)*1.5;
+          var hu = t<5?220 : t<20?270 : t<60?30 : 0;
+          p.cl='hsl('+hu+',60%,'+Math.max(40,70-t*0.3)+'%)';
+          merged.add(j);
+        }
+      }
+    }
+    P = P.filter(function(_,idx){ return !merged.has(idx); });
+  }
+
+  function draw(){
+    step();
+    x.fillStyle = 'rgba(8,8,12,.3)'; x.fillRect(0,0,w,h);
+    for(var i=0;i<P.length;i++){
+      var p = P[i];
+      if(p.m > 3){
+        var gr = x.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*3);
+        gr.addColorStop(0,'rgba(120,120,180,0.15)'); gr.addColorStop(1,'transparent');
+        x.fillStyle = gr; x.beginPath(); x.arc(p.x,p.y,p.r*3,0,6.28); x.fill();
+      }
+      x.fillStyle = p.cl; x.beginPath(); x.arc(p.x,p.y,Math.max(1,p.r),0,6.28); x.fill();
+    }
+    x.fillStyle='#4a4a6a'; x.font='10px JetBrains Mono,monospace';
+    x.textAlign='right'; x.fillText('objects: '+P.length, w-12, 18);
+    var mm = P.length>0 ? Math.max.apply(null, P.map(function(p){return p.m})) : 0;
+    var stage = 'dust';
+    if(mm>5) stage='stars forming'; if(mm>20) stage='galaxies forming';
+    if(mm>60) stage='massive objects';
+    if(P.length<=5) stage='approaching maximum'; if(P.length<=2) stage='near maximum';
+    x.textAlign='left'; x.fillStyle='#7878a0'; x.fillText('stage: '+stage, 12, 18);
+    requestAnimationFrame(draw);
+  }
+  init(); draw();
+  cv.onclick = init;
+})();
+
+// ═══ VIS 4: BANG ═══
+(function(){
+  var cv = document.getElementById('visBang');
+  if(!cv) return;
+  var r = S(cv), x = r.c, w = r.w, h = r.h;
+  var maxObj=[], debris=[], phase='pre', timer=0, flash=0;
+
+  function initMax(){
+    maxObj=[]; debris=[]; phase='pre'; timer=0; flash=0;
+    for(var i=0;i<12;i++){
+      var ang=(i/12)*6.28+Math.random()*0.3, dist=60+Math.random()*100;
+      maxObj.push({
+        x: w/2+Math.cos(ang)*dist+(Math.random()-0.5)*80,
+        y: h/2+Math.sin(ang)*dist*0.7+(Math.random()-0.5)*50,
+        r: 18+Math.random()*14, p: Math.random()*6.28,
+        hu: Math.random()<0.5 ? 0 : 270+Math.random()*30
+      });
+    }
+  }
+
+  function boom(){
+    phase='ex'; timer=0; flash=1; debris=[];
+    for(var k=0;k<maxObj.length;k++){
+      var o=maxObj[k], n=30+Math.floor(o.r*2);
+      for(var i=0;i<n;i++){
+        var a=Math.random()*6.28, spd=0.5+Math.random()*4;
+        debris.push({
+          x:o.x+(Math.random()-0.5)*o.r, y:o.y+(Math.random()-0.5)*o.r,
+          vx:Math.cos(a)*spd, vy:Math.sin(a)*spd,
+          r:0.5+Math.random()*2, l:1, d:0.002+Math.random()*0.004,
+          hu:o.hu+(Math.random()-0.5)*40
+        });
+      }
+    }
+    maxObj=[];
+  }
+
+  function draw(){
+    timer++;
+    x.fillStyle='rgba(8,8,12,.15)'; x.fillRect(0,0,w,h);
+    if(phase==='pre'){
+      var instability = Math.min(1, timer/400);
+      for(var i=0;i<maxObj.length;i++){
+        var o=maxObj[i];
+        o.p += 0.03+instability*0.06;
+        var shake=instability*3;
+        var sx=o.x+(Math.random()-0.5)*shake, sy=o.y+(Math.random()-0.5)*shake;
+        var pr=o.r+Math.sin(o.p)*(2+instability*6), al=0.15+instability*0.3;
+        var g=x.createRadialGradient(sx,sy,0,sx,sy,pr*2.5);
+        g.addColorStop(0,'hsla('+o.hu+',70%,60%,'+al+')');
+        g.addColorStop(0.5,'hsla('+o.hu+',60%,40%,'+(al*0.3)+')');
+        g.addColorStop(1,'transparent');
+        x.fillStyle=g; x.beginPath(); x.arc(sx,sy,pr*2.5,0,6.28); x.fill();
+        x.fillStyle='hsl('+o.hu+',60%,'+(50+instability*20)+'%)';
+        x.beginPath(); x.arc(sx,sy,pr,0,6.28); x.fill();
+      }
+      x.fillStyle='#7878a0'; x.font='10px JetBrains Mono,monospace'; x.textAlign='left';
+      x.fillText(instability<0.3?'maximum objects — stable':instability<0.7?'instability growing...':'critical — click to detonate',12,18);
+      if(timer>500) boom();
+    } else {
+      if(flash>0){
+        x.fillStyle='rgba(255,240,220,'+flash+')'; x.fillRect(0,0,w,h);
+        flash*=0.94; if(flash<0.01) flash=0;
+      }
+      for(var i=0;i<debris.length;i++){
+        var d=debris[i];
+        d.x+=d.vx; d.y+=d.vy; d.vx*=0.997; d.vy*=0.997; d.l-=d.d;
+        if(d.l<=0) continue;
+        x.fillStyle='hsla('+d.hu+',50%,'+(40+d.l*30)+'%,'+(d.l*0.7)+')';
+        x.beginPath(); x.arc(d.x,d.y,d.r*d.l,0,6.28); x.fill();
+      }
+      debris = debris.filter(function(d){return d.l>0});
+      if(debris.length<100){
+        var cool=Math.max(0,(100-debris.length)/100)*0.06;
+        x.fillStyle='rgba(120,100,80,'+cool+')'; x.fillRect(0,0,w,h);
+      }
+      x.fillStyle='#b0b0c8'; x.font='10px JetBrains Mono,monospace'; x.textAlign='left';
+      var msg = debris.length>200?'universal detonation':debris.length>50?'debris cooling — thermalization':debris.length>0?'approaching equilibrium':'2.7K background — click to reset';
+      x.fillText(msg,12,18);
+      if(debris.length===0){
+        x.fillStyle='rgba(80,70,60,.04)'; x.fillRect(0,0,w,h);
+        x.fillStyle='#a0a0b8'; x.font='11px JetBrains Mono,monospace'; x.textAlign='center';
+        x.fillText('2.7K — uniform background — the cycle begins again',w/2,h/2);
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+  initMax(); draw();
+  cv.onclick = function(){ if(phase==='pre'&&timer>100) boom(); else if(phase!=='pre') initMax(); };
+})();
+
+// ═══ VIS 5: CYCLE DIAGRAM ═══
+(function(){
+  var cv = document.getElementById('visCycle');
+  if(!cv) return;
+  var r = S(cv), x = r.c, w = r.w, h = r.h;
+  var cx=w/2, cy=h/2, R=Math.min(w,h)*0.34;
+  var stages = [
+    {l:'DUST',   a:-Math.PI/2,               cl:'#7878a0', ic:'···'},
+    {l:'STARS',  a:-Math.PI/2+Math.PI/3,      cl:'#ffaa44', ic:'★'},
+    {l:'GALAXIES',a:-Math.PI/2+2*Math.PI/3,   cl:'#8b5cf6', ic:'◎'},
+    {l:'MAXIMUM',a:Math.PI/2,                  cl:'#ef4444', ic:'●'},
+    {l:'BANG',   a:Math.PI/2+Math.PI/3,        cl:'#ff6b4a', ic:'✦'},
+    {l:'DEBRIS', a:Math.PI/2+2*Math.PI/3,      cl:'#4a7fff', ic:'⁘'}
+  ];
+  var t = 0;
+
+  function draw(){
+    t += 0.008;
+    x.clearRect(0,0,w,h);
+    // Circle track
+    x.strokeStyle='#1a1a2e'; x.lineWidth=1;
+    x.beginPath(); x.arc(cx,cy,R,0,6.28); x.stroke();
+    // Progress arc
+    var progress = t%(6.28), dotAngle = -Math.PI/2 + progress;
+    x.strokeStyle='#22d3ee20'; x.lineWidth=3;
+    x.beginPath(); x.arc(cx,cy,R,-Math.PI/2,dotAngle); x.stroke();
+    // Moving dot
+    var dx=cx+Math.cos(dotAngle)*R, dy=cy+Math.sin(dotAngle)*R;
+    x.fillStyle='#22d3ee'; x.beginPath(); x.arc(dx,dy,4,0,6.28); x.fill();
+    x.fillStyle='#22d3ee40'; x.beginPath(); x.arc(dx,dy,10,0,6.28); x.fill();
+    // Active sector detection
+    var activeIdx = -1;
+    for(var i=0;i<stages.length;i++){
+      var sA=((stages[i].a%6.28)+6.28)%6.28;
+      var eA=((stages[(i+1)%stages.length].a%6.28)+6.28)%6.28;
+      if(i===stages.length-1) eA+=6.28;
+      var nd=((dotAngle%6.28)+6.28)%6.28;
+      if(eA<sA){ if(nd>=sA||nd<eA){activeIdx=i;break;} }
+      else { if(nd>=sA&&nd<eA){activeIdx=i;break;} }
+    }
+    // Stage nodes
+    for(var i=0;i<stages.length;i++){
+      var s=stages[i], nx=cx+Math.cos(s.a)*R, ny=cy+Math.sin(s.a)*R;
+      var isActive = i===activeIdx, nr = isActive?22:16;
+      if(isActive){
+        var g=x.createRadialGradient(nx,ny,0,nx,ny,nr*2);
+        g.addColorStop(0,s.cl+'40'); g.addColorStop(1,'transparent');
+        x.fillStyle=g; x.beginPath(); x.arc(nx,ny,nr*2,0,6.28); x.fill();
+      }
+      x.fillStyle = isActive ? s.cl : s.cl+'60';
+      x.beginPath(); x.arc(nx,ny,nr,0,6.28); x.fill();
+      x.strokeStyle = isActive ? s.cl : s.cl+'30';
+      x.lineWidth = isActive?2:1;
+      x.beginPath(); x.arc(nx,ny,nr,0,6.28); x.stroke();
+      x.fillStyle = isActive?'#fff':'#ffffff80';
+      x.font = (isActive?12:10)+'px sans-serif'; x.textAlign='center';
+      x.fillText(s.ic, nx, ny+4);
+      var labelDist = R+38;
+      var lx=cx+Math.cos(s.a)*labelDist, ly=cy+Math.sin(s.a)*labelDist;
+      x.fillStyle = isActive ? s.cl : '#4a4a6a';
+      x.font = (isActive?10:9)+'px JetBrains Mono,monospace'; x.textAlign='center';
+      x.fillText(s.l, lx, ly+4);
+    }
+    // Center: FORCE
+    var cp = Math.sin(t*3)*0.1+0.9;
+    x.fillStyle='rgba(34,211,238,'+(0.08*cp)+')';
+    x.beginPath(); x.arc(cx,cy,50,0,6.28); x.fill();
+    x.strokeStyle='rgba(34,211,238,'+(0.3*cp)+')'; x.lineWidth=1;
+    x.beginPath(); x.arc(cx,cy,50,0,6.28); x.stroke();
+    x.fillStyle='#22d3ee'; x.font='11px JetBrains Mono,monospace'; x.textAlign='center';
+    x.fillText('FORCE',cx,cy-6);
+    x.fillStyle='#22d3ee80'; x.font='9px JetBrains Mono,monospace';
+    x.fillText('the only constant',cx,cy+10);
+    // Cycle counter
+    x.fillStyle='#4a4a6a'; x.font='9px JetBrains Mono,monospace'; x.textAlign='right';
+    x.fillText('cycle: N+'+Math.floor(t/6.28), w-12, 16);
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ═══ OBSERVER & NAV ═══
+var allSections = document.querySelectorAll('section');
+var navEl = document.getElementById('navRail');
+
+allSections.forEach(function(sec) {
+  var dot = document.createElement('div');
+  dot.className = 'nav-dot';
+  dot.innerHTML = '<span class="nav-label">' + (sec.dataset.nav || '') + '</span>';
+  dot.addEventListener('click', function() { sec.scrollIntoView({ behavior: 'smooth' }); });
+  navEl.appendChild(dot);
+});
+
+var allDots = navEl.querySelectorAll('.nav-dot');
+
+var secObserver = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
+    if (!entry.isIntersecting) return;
+    var inner = entry.target.querySelector('.section-inner');
+    if (inner) {
+      inner.classList.add('visible');
+      var steps = entry.target.querySelectorAll('.chain-step');
+      steps.forEach(function(step, idx) {
+        var delay = parseInt(step.dataset.delay) || idx * 200;
+        setTimeout(function() { step.classList.add('revealed'); }, delay + 300);
+      });
+      var fills = entry.target.querySelectorAll('.meter-bar-fill');
+      fills.forEach(function(fill, idx) {
+        setTimeout(function() { fill.style.width = fill.dataset.width + '%'; }, idx * 150 + 400);
+      });
+    }
+  });
+  var topIdx = 0;
+  allSections.forEach(function(sec, i) {
+    if (sec.getBoundingClientRect().top <= window.innerHeight * 0.5) topIdx = i;
+  });
+  allDots.forEach(function(dot, i) {
+    dot.classList.toggle('active', i === topIdx);
+  });
+}, { threshold: 0.2 });
+
+allSections.forEach(function(sec) { secObserver.observe(sec); });
+</script>
+</body>
+</html>

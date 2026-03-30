@@ -6,7 +6,7 @@ These interactive presentations disassemble foundational physics and biology con
 
 Each file is a self-contained HTML document with no external dependencies (except the 3D simulation in Presentation 6, which loads Three.js from CDN). All text, mathematics, animations, and interactive controls are embedded in a single file.
 
-Presentations 1–8 form **Chain 7** of the [Logical Dependency Chain of I Finished Elementary](https://www.ifinishedelementary.com/post/the-logical-dependency-chain-of-i-finished-elementary). Presentations 9–11 form **Chain 8: DNA — The Impossible Machine**.
+Presentations 1–8 form **Chain 7** of the [Logical Dependency Chain of I Finished Elementary](https://www.ifinishedelementary.com/post/the-logical-dependency-chain-of-i-finished-elementary). Presentations 9–11 form **Chain 8: DNA — The Impossible Machine**. Presentation 12 covers Ampère's electrodynamics. Presentation 13 is a standalone speculative cosmological framework.
 
 ---
 
@@ -232,6 +232,18 @@ What if the lines were not drawn for us to see? What if the pyramids were not bu
 ### 12. [Wrong Wire](wrong-wire.html)
 
 Also on Wix: [ifinishedelementary.com/wrong-wire](https://www.ifinishedelementary.com/wrong-wire)
+
+---
+
+### 13. Logical Scrutiny of the Universe — One Possibility (Two Parts)
+
+**Part 1:** [Sections 01–05](logical-scrutiny-part-1.html) · Also on Wix: [ifinishedelementary.com/logical-scrutiny-part-1](https://www.ifinishedelementary.com/logical-scrutiny-part-1)
+
+**Part 2:** [Sections 06–09](logical-scrutiny-part-2.html) · Also on Wix: [ifinishedelementary.com/logical-scrutiny-part-2](https://www.ifinishedelementary.com/logical-scrutiny-part-2)
+
+A speculative cosmological framework built as a logical chain from uncertain premises. Starting point: Halton Arp's discordant redshift observations imply an infinite universe with no beginning and no boundary. If structures have scale limits (observable), and gravity never stops working (logical consequence), and aggregation proceeds to a universal maximum (speculative), then maximum objects must eventually explode — producing a cyclical cosmology. If gravity is instantaneous (heterodox premise, doing the heaviest lifting in the argument), the universe is one causally connected system, spatial duplicates cannot exist, and each cycle must repeat identically — the same particles, same force, same configuration, same you.
+
+The presentation includes interactive canvas visualisations (scale spectrum, gravitational aggregation simulation, universal detonation, eternal cycle diagram, instantaneous vs light-speed gravity comparison, identity across cycles) and a counter-argument/rebuttal structure throughout — every major claim is challenged and answered, including a qualitative confidence meter in Section 08 that makes the cumulative uncertainty of the full chain visible. The chain is strongest at observation (scale boundaries) and weakest where it requires multiple speculative premises to align simultaneously (exact identical recurrence). The compound probability is vanishing. The argument is offered as a logical structure — "if these premises are true, these conclusions follow" — not as assertion.
 
 ---
 
