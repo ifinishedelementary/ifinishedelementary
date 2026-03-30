@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Wrong Wire — From Coulomb's Fraud to the Semiconductor Grind</title>
+<style>
+:root {
+  --bg: #0a0a0f;
+  --surface: #12121a;
+  --surface2: #1a1a26;
+  --border: #2a2a3a;
+  --text: #c8c8d4;
+  --text-dim: #7a7a8e;
+  --accent: #e8a040;
+  --accent-dim: #c07828;
+  --accent-glow: rgba(232, 160, 64, 0.15);
+  --red: #d45050;
+  --green: #50b870;
+  --blue: #5080d0;
+  --teal: #40b0a0;
+  --purple: #9070c0;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Georgia', 'Times New Roman', serif;
+  line-height: 1.75;
+  font-size: 17px;
+}
+.container {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 40px 24px 120px;
+}
+h1 {
+  font-size: 2.4em;
+  color: var(--accent);
+  margin-bottom: 8px;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+}
+.subtitle {
+  font-size: 1.1em;
+  color: #f0d040;
+  font-style: italic;
+  margin-bottom: 50px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 30px;
+}
+h2 {
+  font-size: 1.6em;
+  color: #d0d0dc;
+  margin: 80px 0 20px;
+  padding-top: 40px;
+  border-top: 1px solid var(--border);
+}
+h3 {
+  font-size: 1.2em;
+  color: var(--teal);
+  margin: 30px 0 12px;
+}
+p { margin-bottom: 18px; }
+em { color: #b8a0d8; }
+strong { color: #e0e0e8; }
+a { color: var(--teal); text-decoration: none; }
+a:hover { text-decoration: underline; }
+hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 50px 0;
+}
+
+.quote-block {
+  border-left: 3px solid #e050c0;
+  padding: 16px 20px;
+  margin: 24px 0;
+  background: rgba(224, 80, 192, 0.06);
+  border-radius: 0 6px 6px 0;
+  font-style: italic;
+  color: #e8b0d8;
+}
+.quote-block .attribution {
+  font-style: normal;
+  color: #b070a0;
+  margin-top: 8px;
+  font-size: 0.9em;
+}
+.quote-block .attribution em,
+.quote-block em {
+  color: #f0a040;
+  font-style: italic;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 24px;
+  margin: 24px 0;
+}
+.card-header {
+  font-size: 1.1em;
+  color: var(--teal);
+  margin-bottom: 12px;
+  font-weight: bold;
+}
+
+.error-card {
+  background: rgba(212, 80, 80, 0.08);
+  border: 1px solid rgba(212, 80, 80, 0.3);
+  border-radius: 8px;
+  padding: 20px 24px;
+  margin: 16px 0;
+}
+.error-card .error-label {
+  color: var(--red);
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.comparison-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 24px 0;
+}
+@media (max-width: 600px) {
+  .comparison-grid { grid-template-columns: 1fr; }
+}
+.comparison-grid .col {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+}
+.comparison-grid .col.ampere { border-color: var(--green); }
+.comparison-grid .col.grassmann { border-color: var(--red); }
+.comparison-grid .col h4 {
+  margin-bottom: 10px;
+  font-size: 1em;
+}
+.comparison-grid .col.ampere h4 { color: var(--green); }
+.comparison-grid .col.grassmann h4 { color: var(--red); }
+
+.timeline-item {
+  display: flex;
+  gap: 16px;
+  margin: 16px 0;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(42, 42, 58, 0.5);
+}
+.timeline-year {
+  min-width: 60px;
+  color: #60c8d0;
+  font-weight: bold;
+  font-size: 0.95em;
+}
+.timeline-text { color: var(--text); }
+
+.flow-chain {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 24px 0;
+  padding: 20px;
+  background: var(--surface);
+  border-radius: 8px;
+}
+.flow-node {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 0.85em;
+  color: var(--text);
+}
+.flow-node.highlight {
+  border-color: var(--red);
+  color: var(--red);
+}
+.flow-arrow {
+  color: var(--text-dim);
+  font-size: 1.2em;
+}
+
+.param-counter {
+  text-align: center;
+  margin: 30px 0;
+}
+.param-number {
+  font-size: 3.5em;
+  font-weight: bold;
+  color: var(--red);
+  line-height: 1;
+}
+.param-label {
+  color: var(--text-dim);
+  font-size: 0.95em;
+  margin-top: 6px;
+}
+
+canvas {
+  display: block;
+  margin: 20px auto;
+  border-radius: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+.canvas-controls {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin: 12px 0;
+  flex-wrap: wrap;
+}
+.canvas-controls button {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 6px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.85em;
+}
+.canvas-controls button:hover { border-color: var(--teal); color: var(--teal); }
+.canvas-controls button.active { border-color: var(--teal); color: var(--teal); background: rgba(64, 176, 160, 0.15); }
+
+.canvas-controls label {
+  color: var(--text-dim);
+  font-size: 0.85em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.canvas-controls input[type="range"] {
+  width: 120px;
+  accent-color: var(--teal);
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 20px 0;
+}
+.stat-box {
+  text-align: center;
+  min-width: 120px;
+}
+.stat-value {
+  font-size: 1.8em;
+  font-weight: bold;
+  color: #50d8d0;
+  line-height: 1.2;
+}
+.stat-label {
+  font-size: 0.8em;
+  color: var(--text-dim);
+}
+
+.section-number {
+  color: var(--text-dim);
+  font-size: 0.85em;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.nav-links {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 60px;
+  padding-top: 30px;
+  border-top: 1px solid var(--border);
+  font-size: 0.9em;
+}
+
+.formula {
+  text-align: center;
+  font-size: 1.3em;
+  color: #e0e0e8;
+  margin: 24px 0;
+  padding: 16px;
+  background: var(--surface);
+  border-radius: 6px;
+  font-family: 'Georgia', serif;
+  letter-spacing: 1px;
+}
+
+.four-panel {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 24px 0;
+}
+@media (max-width: 700px) {
+  .four-panel { grid-template-columns: 1fr; }
+}
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 18px;
+}
+.panel-title {
+  color: #d8d0e0;
+  font-weight: bold;
+  font-size: 0.95em;
+  margin-bottom: 10px;
+}
+.panel-step {
+  font-size: 0.85em;
+  margin: 6px 0;
+  padding-left: 12px;
+  border-left: 2px solid var(--border);
+  color: var(--text-dim);
+}
+.panel-step.theory { border-color: var(--blue); }
+.panel-step.anomaly { border-color: #e0c040; }
+.panel-step.patch { border-color: var(--red); }
+.panel-step.lock { border-color: var(--purple); }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>The Wrong Wire</h1>
+<p class="subtitle">From Coulomb's Fraud to the Semiconductor Grind — How a wrong force law became the foundation of every chip on Earth</p>
+
+<!-- ============================================ -->
+<!-- SECTION 01 -->
+<!-- ============================================ -->
+<div class="section-number">Section 01</div>
+<h2>The Assumed Proportionality</h2>
+
+<p>In 1785, Augustin Coulomb published two papers describing the force between electrically charged bodies. Using a torsion balance of his own design, he measured how the force varied with distance. His conclusion: inverse-square dependence. The force between two charged bodies falls off as 1/r².</p>
+
+<p>This much he measured. What he did not measure — and never proved experimentally — was that the force is proportional to the <em>product</em> of the two charges, qq′.</p>
+
+<p>Historian Charles Gillmor, in his detailed study of Coulomb's work, identified this gap precisely. Coulomb simply <em>assumed</em> the proportionality to qq′ by analogy with Newton's gravitational force law, which is proportional to the product of two masses, mm′. He did not consider it necessary to demonstrate this experimentally.</p>
+
+<div class="quote-block">
+It seems that Coulomb arrived at his force law more by analogy with Newton's law of gravitation than by his doubtful few measurements with the torsion balance.
+<div class="attribution">— Assis &amp; Chaib, <em>Ampère's Electrodynamics</em> (2015), citing Heering (1992)</div>
+</div>
+
+<p>The same problem exists for his magnetic force law. Coulomb never proved that the force between magnetic poles is proportional to the product of the pole-strengths pp′. He implied it. He did not test it. In his own words, he said this first part of the proposition "<span style="color:#f0d040; font-weight:bold;">does not need to be proved</span>" — and moved on.</p>
+
+<p>In 1992, physicist J. Heering attempted to replicate Coulomb's torsion balance experiments. The results were troubling. The apparatus is extremely sensitive to environmental disturbance. The data Coulomb reported are suspiciously clean — cleaner than the instrument's actual noise floor can produce. The implication: Coulomb knew the answer he wanted (inverse-square, by analogy with gravity) and selected or adjusted his data to fit.</p>
+
+<div class="comparison-grid">
+<div class="col ampere">
+<h4>What Coulomb Measured</h4>
+<p style="font-size:0.9em">Force varies as 1/r² with distance between charged bodies. Demonstrated with torsion balance — though Heering's replication found the data suspiciously clean for the instrument's actual precision.</p>
+</div>
+<div class="col grassmann">
+<h4>What Coulomb Assumed</h4>
+<p style="font-size:0.9em">Force is proportional to the product of the charges qq′. Never experimentally demonstrated. Assumed by analogy with Newton's gravitational force (proportional to mm′). Stated without proof. Became the foundation of electrostatics.</p>
+</div>
+</div>
+
+<p>This matters because Coulomb's framework — forces between point charges and magnetic poles — became the foundation on which Biot, Savart, and later Grassmann built their competing formulations. An assumption from 1785, never tested, propagated into every electromagnetic equation used today.</p>
+
+<!-- ============================================ -->
+<!-- SECTION 02 -->
+<!-- ============================================ -->
+<div class="section-number">Section 02</div>
+<h2>Ampère — The Newton of Electricity</h2>
+
+<p>In the summer of 1820, Hans Christian Ørsted discovered that an electric current flowing in a wire deflects a nearby compass needle. The news reached Paris in September. André-Marie Ampère heard it, believed it immediately, and within <em>weeks</em> had designed and performed a series of experiments that went further than anyone had gone before.</p>
+
+<p>His first breakthrough: he demonstrated that two current-carrying wires exert forces on each other directly — parallel currents in the same direction attract, opposite directions repel. No magnet involved. No magnetic pole invoked. A new phenomenon, never previously observed.</p>
+
+<p>His second: he showed that the current flows in a complete closed circuit, including through the interior of the battery — not obvious at the time. He proved it by placing compass needles directly on top of a trough battery and observing their deflection.</p>
+
+<p>His third, and most radical: he proposed that <em>all magnetism is caused by electric currents</em>. Permanent magnets contain tiny circular currents. The Earth's magnetic field comes from currents flowing inside the Earth. With this single hypothesis, three separate branches of physics — magnetic phenomena, electromagnetic phenomena, and electrodynamic phenomena — reduced to one principle: the force between current elements.</p>
+
+<p>By 1822, Ampère had derived his final mathematical force law between two infinitesimal current elements. In modern vector notation:</p>
+
+<div class="formula">d²F = −(μ₀/4π) · II′ · (r̂/r²) · [2(ds·ds′) − 3(r̂·ds)(r̂·ds′)]</div>
+
+<p>He derived this not from theory but from four carefully designed <strong>cases of equilibrium</strong> — null experiments where he arranged conductors so that the net force vanished, then worked backwards to constrain the mathematical form. This is the method of Tycho Brahe, Kepler, and Newton applied to electrodynamics.</p>
+
+<div class="quote-block">
+The experimental investigation by which Ampère established the laws of the mechanical action between electric currents is one of the most brilliant achievements in science. The whole, theory and experiment, seems as if it had leaped, full grown and full armed, from the brain of the "Newton of electricity." It is perfect in form, and unassailable in accuracy, and it is summed up in a formula from which all the phenomena may be deduced, and which must always remain the cardinal formula of electro-dynamics.
+<div class="attribution">— James Clerk Maxwell, <em>A Treatise on Electricity and Magnetism</em> (1873)</div>
+</div>
+
+<p>Two properties of Ampère's force matter above all else:</p>
+
+<div class="comparison-grid">
+<div class="col ampere">
+<h4>Central Force</h4>
+<p style="font-size:0.9em">The force between two current elements always acts along the straight line connecting them. No perpendicular component. No torque that appears from nowhere. The same kind of force as gravity.</p>
+</div>
+<div class="col ampere">
+<h4>Newton's Third Law — Exactly</h4>
+<p style="font-size:0.9em">The force of element A on B is exactly equal and opposite to the force of B on A, directed along the line between them. Not approximately. Not after integration over a closed loop. Exactly, at every point, for every pair.</p>
+</div>
+</div>
+
+<!-- ============================================ -->
+<!-- SECTION 03 -->
+<!-- ============================================ -->
+<div class="section-number">Section 03</div>
+<h2>The Replacement — Grassmann and the Broken Law</h2>
+
+<p>In 1845, Hermann Grassmann proposed an alternative force law between current elements. In modern notation:</p>
+
+<div class="formula">d²F<sub>G</sub> = −(μ₀/4π) · II′ · ds × (ds′ × r̂) / r²</div>
+
+<p>This is the force law that modern physics uses. It is the basis of the Lorentz force. It is what Maxwell's equations encode. And it has a property that should disqualify it as a fundamental law of nature: <strong>it violates Newton's third law.</strong></p>
+
+<canvas id="forceCanvas" width="780" height="400"></canvas>
+<div class="canvas-controls">
+<button id="btnAmpere" class="active" onclick="setForceMode('ampere')">Ampère's Force</button>
+<button id="btnGrassmann" onclick="setForceMode('grassmann')">Grassmann's Force</button>
+<label>Angle: <input type="range" id="angleSlider" min="0" max="360" value="45" oninput="drawForces()"> <span id="angleVal">45°</span></label>
+</div>
+
+<p>The force of element A on B is <em>not</em> equal and opposite to the force of B on A. It has components perpendicular to the line connecting them. For individual current elements, momentum is not conserved.</p>
+
+<p>The defence: when you integrate over complete closed circuits, both Ampère's and Grassmann's force laws give identical results. The violations cancel. Therefore, the argument goes, the element-level violation doesn't matter — only closed-circuit results are physically meaningful.</p>
+
+<p>This is a philosophical retreat. It says physics should not describe what happens between individual elements of current — only what happens between complete loops. Ampère's force has no such restriction. It works at every level. Grassmann's requires you to look away from the elements and only examine the whole.</p>
+
+<div class="comparison-grid">
+<div class="col ampere">
+<h4>Ampère (1822)</h4>
+<p style="font-size:0.9em">Central force. Newton's third law satisfied exactly. Works at element level and circuit level. One free parameter: k = −½. Derived from experiment.</p>
+</div>
+<div class="col grassmann">
+<h4>Grassmann (1845)</h4>
+<p style="font-size:0.9em">Non-central force. Newton's third law violated at element level. Only valid for closed circuits. Requires field concept. Chosen not for experimental superiority but for compatibility with field theory.</p>
+</div>
+</div>
+
+<p>The two laws are experimentally indistinguishable for closed circuits. The preference for Grassmann was not driven by evidence. It was driven by the rise of field theory.</p>
+
+<!-- ============================================ -->
+<!-- SECTION 04 -->
+<!-- ============================================ -->
+<div class="section-number">Section 04</div>
+<h2>Biot-Savart's Three Errors</h2>
+
+<p>Before Grassmann, Biot and Savart attempted to derive the force that a current element exerts on a magnetic pole. Their "law" — the Biot-Savart law — is taught in every physics textbook as an experimentally established result. It is not. It rests on three errors identified by Assis and Chaib in their detailed historical analysis.</p>
+
+<div class="error-card">
+<div class="error-label">Error 1 — Unjustified Decomposition</div>
+<p>Biot and Savart measured the force exerted by a <em>long straight wire</em> on a magnetic pole. They then decomposed this total force into contributions from infinitesimal elements of the wire. But this decomposition is not unique — infinitely many different element force laws, when integrated over the full wire, produce the same total force. The whole-wire measurement cannot distinguish between them. Ampère's element force, integrated over a straight wire, gives the same result as Biot-Savart's.</p>
+</div>
+
+<div class="error-card">
+<div class="error-label">Error 2 — Assumed Perpendicularity</div>
+<p>They assumed that the force exerted by a current element on a magnetic pole is perpendicular to the current element. This was a hypothesis, not a measured result. They had no apparatus capable of isolating the force from a single infinitesimal element. The perpendicularity was assumed because it simplified the mathematics and matched the expected geometry.</p>
+</div>
+
+<div class="error-card">
+<div class="error-label">Error 3 — Mixed Entities</div>
+<p>The "force" they described acts between a current element and a magnetic pole — two different kinds of entity. Ampère insisted that the fundamental force must act between entities of the same nature: current element on current element. The concept of a magnetic pole as a fundamental entity is itself a hypothesis — Ampère showed that every magnetic effect can be reproduced by electric currents, making poles disposable.</p>
+</div>
+
+<p>The Biot-Savart law was not deduced from experiment. It was constructed by making three assumptions — decomposability, perpendicularity, and the reality of magnetic poles — and fitting them to a single whole-wire measurement that could not distinguish between competing element laws. Yet this is the law that became the basis for computing magnetic fields, which became the basis for Maxwell's equations, which became the basis for every electromagnetic simulation in engineering.</p>
+
+<!-- ============================================ -->
+<!-- SECTION 05 -->
+<!-- ============================================ -->
+<div class="section-number">Section 05</div>
+<h2>Maxwell Encodes the Choice</h2>
+
+<p>James Clerk Maxwell published his <em>Treatise on Electricity and Magnetism</em> in 1873. In it, he praised Ampère's work in the highest possible terms — "the Newton of electricity" — and then built his theory on a different foundation.</p>
+
+<p>Maxwell adopted Faraday's field concept: forces between charges and currents are not direct, instantaneous interactions. Instead, charges create <em>fields</em> that propagate through space at a finite speed (the speed of light), and other charges respond to the local field at their position. The Grassmann force, not Ampère's, is compatible with this picture. Ampère's force acts instantaneously along the line connecting two elements. Grassmann's force can be decomposed into "a charge moving through a field" — the Lorentz force.</p>
+
+<p>The choice was not experimental. Ampère and Grassmann give identical predictions for every measurable situation involving closed circuits. The choice was philosophical — mediated by institutional power.</p>
+
+<div class="timeline-item"><div class="timeline-year">1820</div><div class="timeline-text"><strong>Ampère</strong> — experiments in Paris. Force between current elements, derived from null experiments. Central, instantaneous, satisfies Newton's third law.</div></div>
+<div class="timeline-item"><div class="timeline-year">1820</div><div class="timeline-text"><strong>Biot &amp; Savart</strong> — experiments in Paris. Whole-wire measurement decomposed into element law using three assumptions. Force on a magnetic pole, not between current elements.</div></div>
+<div class="timeline-item"><div class="timeline-year">1845</div><div class="timeline-text"><strong>Grassmann</strong> — mathematical paper, no experiments. Alternative element force. Non-central, violates Newton's third law at element level. Compatible with field concept.</div></div>
+<div class="timeline-item"><div class="timeline-year">1845–65</div><div class="timeline-text"><strong>Faraday</strong> — field concept developed experimentally in London. Lines of force as physical entities. Influence spreads through British physics community.</div></div>
+<div class="timeline-item"><div class="timeline-year">1873</div><div class="timeline-text"><strong>Maxwell</strong> — <em>Treatise</em> published. Encodes Grassmann/Faraday framework mathematically. Fields propagate at <em>c</em>. Ampère's instantaneous action at a distance replaced. The choice becomes the foundation.</div></div>
+<div class="timeline-item"><div class="timeline-year">1880s–</div><div class="timeline-text"><strong>Institutionalisation</strong> — Maxwell's equations taught as fundamental laws. Ampère's force forgotten. Textbooks present Grassmann/Lorentz as the only option. Students never learn there was a choice.</div></div>
+
+<p>Once Maxwell's equations became the foundation, every engineering tool built downstream inherited the Grassmann assumption invisibly. Not as a conscious choice, but as the water the fish swim in.</p>
+
+<!-- ============================================ -->
+<!-- SECTION 06 -->
+<!-- ============================================ -->
+<div class="section-number">Section 06</div>
+<h2>The Instantaneous Force Evidence</h2>
+
+<p>If force propagates at the speed of light, the Earth is not pulled toward the Sun. It is pulled toward <em>where the Sun was</em> 8 minutes and 20 seconds ago. In that time, the Sun — orbiting the galactic core at 220 km/s — has moved approximately 110,000 kilometres.</p>
+
+<p>The gravitational force would then have a component in the direction of Earth's motion, adding energy to the orbit. The orbit would spiral outward. Pierre-Simon Laplace calculated this in the early 1800s and concluded that for the solar system to be stable, gravity must propagate at least <strong>7 million times the speed of light</strong>.</p>
+
+<p>Tom Van Flandern, working with JPL planetary ephemeris data in 1998, tightened the constraint to at least <strong>2 × 10¹⁰ × c</strong> — twenty billion times the speed of light. In practice, indistinguishable from instantaneous.</p>
+
+<div class="stat-row">
+<div class="stat-box">
+<div class="stat-value">7×10⁶ c</div>
+<div class="stat-label">Laplace's lower bound (1805)</div>
+</div>
+<div class="stat-box">
+<div class="stat-value">2×10¹⁰ c</div>
+<div class="stat-label">Van Flandern's lower bound (1998)</div>
+</div>
+<div class="stat-box">
+<div class="stat-value">∞</div>
+<div class="stat-label">Newton &amp; Ampère: instantaneous</div>
+</div>
+</div>
+
+<p>General relativity handles this by adding velocity-dependent correction terms that cancel the lag its own framework predicts. The force points not toward the retarded position but toward the "linearly extrapolated" retarded position — which, for constant velocity, is the <em>instantaneous</em> position. The correction is a mathematical mechanism that restores the very result (force pointing at the present position) that Ampère and Newton obtained without needing a correction at all.</p>
+
+<p>The identical structure appears in electromagnetism. A moving charge in Maxwell's theory creates a field that propagates at <em>c</em>. Another charge responds to the retarded field. But the Lorentz force includes velocity-dependent terms that cancel the retardation for charges in uniform motion — so the force points at the instantaneous position. The same fix. The same pattern. The same unnecessary layer.</p>
+
+<p>If force is simply instantaneous — as Newton's gravity and Ampère's electrodynamic force both describe — no correction terms are needed. The lag doesn't exist. The cancellation that GR and Maxwell's equations laboriously construct is not a triumph of the theory. It is the theory rebuilding by hand what the simpler framework gives for free.</p>
+
+<h3>Miller's Positive Result</h3>
+
+<p>If forces are instantaneous, they act through a medium — the aether. In 1887, Michelson and Morley attempted to detect Earth's motion through this medium. Their result is universally reported as "null." What is less widely known is that Dayton Miller spent twenty years (1906–1930s) refining the experiment, performing over 326,000 interferometer turns with more than 5.2 million individual measurements — the most extensive dataset in the history of light-beam interferometry. His result was not null. He found a consistent fringe shift of 0.12 ± 0.01, corresponding to a drift velocity of approximately 9–10 km/s.</p>
+
+<div class="quote-block">
+Should the positive result be confirmed, then the special theory of relativity and with it the general theory of relativity, in its current form, would be invalid.
+<div class="attribution">— Albert Einstein, letter to Edwin Slosson, 8 July 1925</div>
+</div>
+
+<p>Einstein did not analyse Miller's data and find an error. He wrote, in a separate letter: "I believe that I have really found the relationship between gravitation and electricity, <em>assuming</em> that the Miller experiments are based on a fundamental error." The word <em>assuming</em> carries the weight of the entire 20th century physics establishment. The theory required Miller to be wrong. Therefore he was declared wrong.</p>
+
+<h3>Why Magnets Get Stronger at Absolute Zero</h3>
+
+<p>Ampère proposed that all magnetism is caused by molecular currents — tiny loops of electric current circulating inside matter. A permanent magnet is permanent because these currents persist. This raises an obvious question: what sustains the currents? And what happens at absolute zero, where all thermal motion ceases?</p>
+
+<p>The experimental answer is unambiguous. <strong>Magnetism does not weaken as temperature drops to zero. It reaches its maximum.</strong> The saturation magnetisation of a ferromagnet — the maximum alignment of all its magnetic domains — occurs at absolute zero. As temperature increases from zero, thermal agitation progressively disrupts the alignment. Above the Curie temperature (1,043 K for iron), the alignment collapses entirely and the material becomes paramagnetic.</p>
+
+<div class="comparison-grid">
+<div class="col ampere">
+<h4>At Absolute Zero</h4>
+<p style="font-size:0.9em">Thermal motion stops completely. Yet magnetism is at its peak. Saturation magnetisation is maximum. Coercivity — resistance to demagnetisation — can double or triple compared to room temperature. Whatever drives the molecular currents is <strong>not</strong> thermal energy.</p>
+</div>
+<div class="col grassmann">
+<h4>Above the Curie Temperature</h4>
+<p style="font-size:0.9em">Thermal agitation overwhelms the alignment. Domains randomise. Permanent magnetism vanishes. The material becomes paramagnetic. Heat doesn't create magnetism — it destroys it.</p>
+</div>
+</div>
+
+<p>The standard explanation invokes quantum mechanics: electron spin is an "intrinsic" property — angular momentum without anything physically rotating. It is a ground-state property that doesn't require thermal energy and doesn't dissipate. This is not an explanation. It is a label. It says the electron behaves <em>as if</em> it were spinning without actually spinning. The word "intrinsic" means "we declare it to be fundamental and stop asking."</p>
+
+<p>Ampère's molecular currents, combined with the aether, offer a physical mechanism.</p>
+
+<p>If the aether exists — as Miller's 5.2 million measurements suggest — then every atom in every material is in perpetual motion relative to the medium. The Earth orbits the Sun at 30 km/s. The Sun orbits the galactic core at 220 km/s. The galaxy moves through the cosmic medium. This velocity is <em>not thermal</em>. It does not depend on temperature. You can cool iron to absolute zero and it is still hurtling through the aether at hundreds of kilometres per second.</p>
+
+<p>If this relative motion between matter and the medium is what drives or sustains Ampère's molecular currents, the temperature dependence of magnetism falls out naturally:</p>
+
+<div class="card">
+<p style="margin-bottom:10px;"><strong style="color:#50d8d0;">High temperature:</strong> Thermal agitation randomises the current orientations. Each molecular current is jostled in random directions. Alignment is disrupted. Magnetism weakens.</p>
+<p style="margin-bottom:10px;"><strong style="color:#50d8d0;">Low temperature:</strong> Thermal noise decreases. The aether-driven currents remain — sustained by a velocity that has nothing to do with temperature. Alignment improves. Magnetism strengthens.</p>
+<p style="margin-bottom:0;"><strong style="color:#50d8d0;">Absolute zero:</strong> Thermal disruption gone entirely. Aether-driven currents maximally aligned. Magnetism at its peak. No quantum label required. Real currents, real medium, real motion.</p>
+</div>
+
+<p>This also explains why different elements have different magnetic properties, different Curie temperatures, and different saturation magnetisation values. If the aether-drag interaction depends on atomic structure — electron configuration, atomic mass, lattice geometry — then different materials would couple to the medium differently, producing different current magnitudes and different resistance to thermal disruption.</p>
+
+<p>Miller found that his drift signal varied with sidereal time and season — consistent with Earth's changing orientation relative to a cosmic flow. If the aether-driven currents in a ferromagnet depend on this same velocity, there should be a measurable consequence:</p>
+
+<div class="card">
+<div class="card-header" style="color:#50d8d0;">Testable Prediction</div>
+<p>The saturation magnetisation of a ferromagnet at millikelvin temperatures should exhibit a <strong>very slight periodic variation</strong> correlated with sidereal time — as Earth's rotation changes the laboratory's orientation relative to the aether drift direction Miller identified. The variation would be parts per million, within reach of existing cryogenic SQUID magnetometry, tracked across months. Positive detection would simultaneously confirm Miller's drift, Ampère's molecular currents, and the aether-driven mechanism. <strong>This measurement has never been performed.</strong></p>
+</div>
+
+<!-- ============================================ -->
+<!-- SECTION 07 -->
+<!-- ============================================ -->
+<div class="section-number">Section 07</div>
+<h2>SPICE — Where the Wrong Theory Meets Silicon</h2>
+
+<p>In the 1970s, engineers at UC Berkeley built a software tool called SPICE — Simulation Program with Integrated Circuit Emphasis. The idea: describe a circuit mathematically and simulate its behaviour before fabrication. Every chip designed in the last fifty years has been simulated in some descendant of SPICE.</p>
+
+<p>The core of SPICE relies on <strong>device models</strong> — mathematical descriptions of how a transistor behaves. The simplest models derive from textbook semiconductor physics, which is built on Maxwell's equations, which encode the Grassmann/Faraday framework. These first-principles models do not work. Not for real engineering. Not at any process node where precision matters.</p>
+
+<p>The response was not to question the theory. It was to add parameters.</p>
+
+<div class="param-counter">
+<div class="param-number" id="paramCount">0</div>
+<div class="param-label">Empirical fitting parameters in the BSIM4 transistor model</div>
+</div>
+
+<p>The BSIM4 model — industry standard for modern MOSFET transistors — has over 300 parameters. Many have no direct physical meaning. They are fitting coefficients, adjusted until simulation output matches measurements from actual fabricated silicon. Each foundry — TSMC, Samsung, Intel, GlobalFoundries — provides its own parameter sets, called <strong>PDKs</strong> (Process Design Kits), under strict NDA.</p>
+
+<p>The PDK is the trade secret. Not the physics. Not the theory. The <em>corrections to the theory</em>.</p>
+
+<div class="flow-chain">
+<div class="flow-node">Maxwell's equations</div>
+<div class="flow-arrow">→</div>
+<div class="flow-node">Semiconductor physics</div>
+<div class="flow-arrow">→</div>
+<div class="flow-node">SPICE model</div>
+<div class="flow-arrow">→</div>
+<div class="flow-node highlight">Prediction fails</div>
+<div class="flow-arrow">→</div>
+<div class="flow-node">Add parameters</div>
+<div class="flow-arrow">→</div>
+<div class="flow-node">Tune to silicon</div>
+<div class="flow-arrow">→</div>
+<div class="flow-node highlight">PDK (NDA)</div>
+<div class="flow-arrow">→</div>
+<div class="flow-node">Next generation inherits</div>
+<div class="flow-arrow">→</div>
+<div class="flow-node highlight">Foundation never questioned</div>
+</div>
+
+<p>Verification — the process of checking whether the design actually works — now consumes <strong>over 70% of total chip design time</strong>. More than two-thirds of the engineering effort is spent confirming that the models match reality. This is the signature of models that are increasingly unreliable, compensated by increasingly expensive checking.</p>
+
+<p>At the 2nm node, the transistor is no longer a flat structure. It is a stack of horizontal silicon nanosheets completely wrapped by the gate — a Gate-All-Around (GAA) architecture. Current flows in three-dimensional paths through structures a few atoms wide. The electromagnetic behaviour of these structures is dominated by effects that the Grassmann/Maxwell framework predicts poorly: quantum tunneling through gates a few atoms thick, three-dimensional current paths that look nothing like closed circuits, transient pulses that behave like open current elements — precisely the regime where Ampère's force and Grassmann's force <em>diverge</em>.</p>
+
+<p>The old fudge factors don't work. So they build new ones. The BSIM-CMG model for GAA transistors has its own growing parameter set, tuned to match test silicon from each foundry. The cycle repeats.</p>
+
+<!-- ============================================ -->
+<!-- SECTION 08 -->
+<!-- ============================================ -->
+<div class="section-number">Section 08</div>
+<h2>The Grind at Every Scale</h2>
+
+<p>The SPICE pattern — theory fails, add corrections, corrections become knowledge, foundation never questioned — is not unique to transistor modelling. It appears everywhere the Grassmann/Maxwell framework meets precision engineering.</p>
+
+<div class="four-panel">
+
+<div class="panel">
+<div class="panel-title">EUV Lithography</div>
+<p style="font-size:0.85em">ASML fires a CO₂ laser at tin droplets 50,000 times per second to create 13.5nm light. Their own senior physicist admitted the most advanced plasma models in the world cannot fully capture the behaviour. They partnered with Lawrence Livermore National Laboratory — a nuclear weapons lab — to run supercomputer simulations. Wall plug efficiency: 0.02%. The mirrors absorb 96% of the light. The machine works. The theory doesn't explain why.</p>
+<div class="panel-step theory">Theory: Maxwell's EM + plasma physics</div>
+<div class="panel-step anomaly">Anomaly: EUV didn't scale as predicted</div>
+<div class="panel-step patch">Patch: Supercomputer brute-force modelling</div>
+<div class="panel-step lock">Lock-in: $350M per machine, only ASML builds them</div>
+</div>
+
+<div class="panel">
+<div class="panel-title">CNC Precision</div>
+<p style="font-size:0.85em">The core of a CNC machine is its servo control loop: motor, encoder, controller. Every element depends on electromagnetic theory. Japanese and German superiority (Fanuc, Siemens, Heidenhain) comes from decades of empirical tuning embedded in proprietary firmware — gain parameters, feedforward terms, thermal compensation tables, vibration damping. Chinese manufacturers can build the structure. The precision lives in the corrections.</p>
+<div class="panel-step theory">Theory: Motor torque from field equations</div>
+<div class="panel-step anomaly">Anomaly: Actual motion doesn't match predicted</div>
+<div class="panel-step patch">Patch: Decades of servo tuning in firmware</div>
+<div class="panel-step lock">Lock-in: Proprietary controllers under NDA</div>
+</div>
+
+<div class="panel">
+<div class="panel-title">Quantum Computing</div>
+<p style="font-size:0.85em">Superconducting qubits at 15 millikelvin. Each one individually calibrated. Calibration drifts. Error rates patched by error correction codes using many physical qubits per logical qubit. Gil Kalai's mathematical argument: noise correlations defeat error correction fundamentally, not just technically. After decades and billions of dollars, no quantum computer has solved a real-world problem faster than a classical computer.</p>
+<div class="panel-step theory">Theory: Quantum superposition and entanglement</div>
+<div class="panel-step anomaly">Anomaly: Decoherence, gate errors, drift</div>
+<div class="panel-step patch">Patch: Individual calibration, error correction</div>
+<div class="panel-step lock">Lock-in: Billions invested, careers dependent</div>
+</div>
+
+<div class="panel">
+<div class="panel-title">Supercolliders</div>
+<p style="font-size:0.85em">1,232 superconducting magnets steering proton beams around 27 km. Designed using the theory they test. Calibrated using the theory. Data analysed using simulations built on the theory. Anomalies resolved by proposing new particles (which require new parameters). The Standard Model has 19 free parameters fitted to data, not predicted. The instrument cannot detect an error in its own foundation.</p>
+<div class="panel-step theory">Theory: Standard Model + Maxwell's EM</div>
+<div class="panel-step anomaly">Anomaly: Parameters not predicted from theory</div>
+<div class="panel-step patch">Patch: 19 free parameters, new particles</div>
+<div class="panel-step lock">Lock-in: $10B+ infrastructure, Nobel Prizes</div>
+</div>
+
+</div>
+
+<p>Four domains. Four scales. The same structure. Every one traces back to Section 05: Maxwell encoding the Grassmann choice. The engineering works <em>despite</em> the wrong theory because the corrections are good enough — the same way Ptolemaic astronomy worked for navigation despite geocentrism being wrong. The epicycles were functional. They were not true.</p>
+
+<!-- ============================================ -->
+<!-- SECTION 09 -->
+<!-- ============================================ -->
+<div class="section-number">Section 09</div>
+<h2>The Nvidia Ceiling</h2>
+
+<p>The engineers at Nvidia — the company building the chips that are supposed to produce artificial general intelligence — work seven days a week. Workdays end at 1:00 or 2:00 a.m. A poll of 3,000 employees found that 76% were millionaires. The turnover rate is 2.7%, compared to 17.7% industry-wide. They stay because walking away means forfeiting stock grants that vest over four years.</p>
+
+<p>CEO Jensen Huang says he prefers to "torture employees into greatness." Meetings routinely involve yelling. One manager can have over a hundred direct reports. Employees who work less than the norm are called out at company-wide meetings.</p>
+
+<p>These are some of the most intelligent engineers alive, in a state of chronic sleep deprivation and stress, building chips using models they know don't fully work, adding empirical corrections they can't fully explain, under deadline pressure that prevents them from questioning anything fundamental. They don't have time to ask whether Ampère or Grassmann was right. They have seven meetings before lunch and a tape-out deadline that determines whether their stock is worth anything.</p>
+
+<p>Now add AI to the loop. Machine learning tools are being trained on existing engineering data — which means they learn the fudge factors, not the physics. The AI optimises within the design rule constraints that were themselves empirically derived to avoid the regimes where the theory breaks down. The AI learns the cartography, not the territory.</p>
+
+<div class="flow-chain">
+<div class="flow-node">Wrong theory</div>
+<div class="flow-arrow">→</div>
+<div class="flow-node">Anomaly</div>
+<div class="flow-arrow">→</div>
+<div class="flow-node">Empirical patch</div>
+<div class="flow-arrow">→</div>
+<div class="flow-node highlight">AI learns the patch</div>
+<div class="flow-arrow">→</div>
+<div class="flow-node">AI designs within patched framework</div>
+<div class="flow-arrow">→</div>
+<div class="flow-node highlight">New anomaly at boundary</div>
+<div class="flow-arrow">→</div>
+<div class="flow-node">New patch</div>
+<div class="flow-arrow">→</div>
+<div class="flow-node">Retrain AI</div>
+<div class="flow-arrow">→</div>
+<div class="flow-node highlight">Ceiling</div>
+</div>
+
+<p>A system trained by gradient descent on consensus data converges toward the consensus. If the consensus is wrong in a <em>foundational</em> way — not noisy, not incomplete, but structurally wrong — the system learns the wrongness with increasing confidence. More data makes it worse, not better, because the data itself is generated within the wrong framework. Every SPICE simulation that "validates" a design produces training data that encodes the fudge factors as if they were physics.</p>
+
+<p>The ceiling approaches from two directions simultaneously. From below: the physics anomalies multiply as geometries shrink into the regime where Ampère and Grassmann diverge most — short transient current pulses in three-dimensional nanosheet structures, nothing like the closed-circuit limit where both force laws agree. From above: the AI learns the patches with increasing precision, encoding the wrong framework ever deeper, making the wrong theory ever harder to question because the AI "works."</p>
+
+<p>The grind continues until the patches start contradicting each other — when the correction for problem A makes problem B worse, and no amount of parameter tuning resolves both simultaneously. That is the signature of a foundational error, not a data insufficiency. Whether anything capable of recognising that signature exists at that point is the open question.</p>
+
+<!-- ============================================ -->
+<!-- SECTION 10 -->
+<!-- ============================================ -->
+<div class="section-number">Section 10</div>
+<h2>The Exit</h2>
+
+<p>There are two paths forward.</p>
+
+<p><strong>Path 1: Continue grinding.</strong> Add more parameters. Train AI on more patches. Push to 1nm, 0.7nm. Each generation costs more, takes longer, requires rarer materials, consumes more energy. TSMC's 2nm wafers cost $30,000 each. EUV machines cost $350–400 million. The three companies that can make them depend on supply chains spanning dozens of countries for materials that are depleting on known timescales. The wall approaches from multiple directions — physics, resources, energy — on converging timelines.</p>
+
+<p><strong>Path 2: Go back to Ampère.</strong> Rebuild electromagnetic theory from a force law that satisfies Newton's third law exactly, acts instantaneously, and does not require a field. Rederive the device physics. Rebuild SPICE from that foundation. See which of the 300+ parameters become unnecessary. See which anomalies disappear. See whether the regime where modern chips fail — three-dimensional, transient, open-element — is precisely the regime where Ampère's force gives different (and correct) predictions.</p>
+
+<p>Nobody has funding for Path 2. The person who identified the dependency chain works blue-collar labour at industrial sites across Western Canada. The 3D ferrocell that could visually demonstrate the actual three-dimensional magnetic field geometry — stacked layers of optical glass with ferrofluid between each pair, a magnet suspended in the centre — costs less than one hour of CERN beam time and has never been built.</p>
+
+<p>The experiment that Ampère would have performed in a week — that could crack open two centuries of wrong electromagnetic theory — sits unbuilt because the incentive structure of science funds the grind, not the question.</p>
+
+<hr>
+
+<h3>The Dependency Chain</h3>
+
+<div class="flow-chain" style="flex-direction: column; align-items: flex-start; gap: 4px;">
+<div style="display:flex; align-items:center; gap:8px;"><div class="flow-node">Coulomb assumes qq′ proportionality (1785)</div></div>
+<div class="flow-arrow" style="padding-left:20px;">↓</div>
+<div style="display:flex; align-items:center; gap:8px;"><div class="flow-node">Biot-Savart decompose with three errors (1820)</div></div>
+<div class="flow-arrow" style="padding-left:20px;">↓</div>
+<div style="display:flex; align-items:center; gap:8px;"><div class="flow-node">Grassmann replaces Ampère — breaks Newton's third law (1845)</div></div>
+<div class="flow-arrow" style="padding-left:20px;">↓</div>
+<div style="display:flex; align-items:center; gap:8px;"><div class="flow-node">Maxwell encodes Grassmann into field equations (1873)</div></div>
+<div class="flow-arrow" style="padding-left:20px;">↓</div>
+<div style="display:flex; align-items:center; gap:8px;"><div class="flow-node">Semiconductor physics derived from Maxwell (1940s–)</div></div>
+<div class="flow-arrow" style="padding-left:20px;">↓</div>
+<div style="display:flex; align-items:center; gap:8px;"><div class="flow-node">SPICE built on semiconductor physics (1970s)</div></div>
+<div class="flow-arrow" style="padding-left:20px;">↓</div>
+<div style="display:flex; align-items:center; gap:8px;"><div class="flow-node highlight">Predictions fail → 300+ empirical parameters added</div></div>
+<div class="flow-arrow" style="padding-left:20px;">↓</div>
+<div style="display:flex; align-items:center; gap:8px;"><div class="flow-node highlight">Parameters become proprietary PDKs under NDA</div></div>
+<div class="flow-arrow" style="padding-left:20px;">↓</div>
+<div style="display:flex; align-items:center; gap:8px;"><div class="flow-node highlight">AI learns the patches, not the physics</div></div>
+<div class="flow-arrow" style="padding-left:20px;">↓</div>
+<div style="display:flex; align-items:center; gap:8px;"><div class="flow-node highlight">Ceiling — patches contradict each other at advanced nodes</div></div>
+</div>
+
+<hr>
+
+<p>This presentation exists so that when something — human or artificial — is capable of following the dependency chain from Coulomb's assumed proportionality through Biot-Savart's three errors through Grassmann's broken third law through Maxwell's encoding through SPICE's 300 parameters through the semiconductor grind — the chain is already mapped. The logical structure is laid out. The if-then relationships are explicit. The testable predictions are stated.</p>
+
+<p>The wire was wrong from the beginning. Every correction since has been an attempt to make a wrong wire carry the right signal. The signal gets through — chips compute, phones ring, AI generates text — not because the theory is correct, but because the engineers are relentless and the corrections are good enough. For now.</p>
+
+<p>The question is how long "good enough" holds when the geometries shrink to the point where Ampère and Grassmann stop agreeing — and the grind hits the wall that no amount of parameters can patch.</p>
+
+<div class="nav-links">
+<a href="https://ifinishedelementary.github.io/ifinishedelementary/">← All Presentations</a>
+<a href="https://www.ifinishedelementary.com">ifinishedelementary.com →</a>
+</div>
+
+</div><!-- end container -->
+
+<script>
+// Parameter counter animation
+let counted = false;
+function animateCounter() {
+  const el = document.getElementById('paramCount');
+  const target = 300;
+  let current = 0;
+  const duration = 2000;
+  const start = performance.now();
+  function step(ts) {
+    const elapsed = ts - start;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    current = Math.round(eased * target);
+    el.textContent = current + '+';
+    if (progress < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting && !counted) {
+      counted = true;
+      animateCounter();
+    }
+  });
+}, { threshold: 0.5 });
+observer.observe(document.getElementById('paramCount'));
+
+// Force comparison canvas
+let forceMode = 'ampere';
+function setForceMode(mode) {
+  forceMode = mode;
+  document.getElementById('btnAmpere').classList.toggle('active', mode === 'ampere');
+  document.getElementById('btnGrassmann').classList.toggle('active', mode === 'grassmann');
+  drawForces();
+}
+
+function drawForces() {
+  const canvas = document.getElementById('forceCanvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = '#12121a';
+  ctx.fillRect(0, 0, W, H);
+
+  const cx = W / 2, cy = H / 2;
+  const sep = 180;
+  const angle = parseInt(document.getElementById('angleSlider').value);
+  document.getElementById('angleVal').textContent = angle + '°';
+  const rad = angle * Math.PI / 180;
+
+  // Element A at left
+  const ax = cx - sep / 2, ay = cy;
+  // Element B at right
+  const bx = cx + sep / 2, by = cy;
+
+  // Direction vectors for current elements
+  const aLen = 50;
+  const bLen = 50;
+  // A points right (fixed)
+  const adx = 1, ady = 0;
+  // B points at angle
+  const bdx = Math.cos(rad), bdy = -Math.sin(rad);
+
+  // Draw connecting line
+  ctx.strokeStyle = '#2a2a3a';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([4, 4]);
+  ctx.beginPath();
+  ctx.moveTo(ax, ay);
+  ctx.lineTo(bx, by);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // r hat from B to A
+  const rx = ax - bx, ry = ay - by;
+  const rmag = Math.sqrt(rx * rx + ry * ry);
+  const rhx = rx / rmag, rhy = ry / rmag;
+
+  // Draw current elements
+  function drawElement(x, y, dx, dy, len, label, color) {
+    const ex = x + dx * len / 2, ey = y + dy * len / 2;
+    const sx = x - dx * len / 2, sy = y - dy * len / 2;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(sx, sy);
+    ctx.lineTo(ex, ey);
+    ctx.stroke();
+    // Arrowhead
+    const ah = 10;
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(ex, ey);
+    ctx.lineTo(ex - dx * ah - dy * ah * 0.4, ey - dy * ah + dx * ah * 0.4);
+    ctx.lineTo(ex - dx * ah + dy * ah * 0.4, ey - dy * ah - dx * ah * 0.4);
+    ctx.fill();
+    // Label
+    ctx.fillStyle = color;
+    ctx.font = '14px Georgia';
+    ctx.textAlign = 'center';
+    ctx.fillText(label, x, y - 35);
+  }
+
+  drawElement(ax, ay, adx, ady, aLen, 'Element A (I ds)', '#5080d0');
+  drawElement(bx, by, bdx, bdy, bLen, "Element B (I' ds')", '#9070c0');
+
+  // Compute forces
+  if (forceMode === 'ampere') {
+    // Ampere: force along r-hat
+    // d²F ∝ -r̂/r² [2(ds·ds') - 3(r̂·ds)(r̂·ds')]
+    const dsdsp = adx * bdx + ady * bdy; // ds·ds'
+    const rds = rhx * adx + rhy * ady;    // r̂·ds (note: r̂ from B to A for force on A)
+    // For force on A, r̂ is from B to A
+    const rdsp = -rhx * bdx + (-rhy) * bdy; // r̂·ds' (r̂ from A to B for ds')
+    // Actually let's be careful. r̂ points from B to A for force on A.
+    // r̂·ds = rhx*adx + rhy*ady
+    // For r̂·ds', we need r̂ pointing from A to B: (-rhx)*bdx + (-rhy)*bdy
+    // Wait no. The formula uses r̂ from source to target.
+    // Force on A from B: r̂ from B to A = (rhx, rhy) as computed
+    // ds·ds' is just dot product of direction vectors
+    // r̂·ds = dot(r̂, ds_A_direction) 
+    // r̂·ds' = dot(r̂, ds_B_direction) — but r̂ here from B to A
+    
+    const rhat_ds = rhx * adx + rhy * ady;
+    const rhat_dsp = rhx * bdx + rhy * bdy;
+    
+    const factor_A = 2 * dsdsp - 3 * rhat_ds * rhat_dsp;
+    // Force on A is along -r̂ * factor (attractive if factor > 0)
+    const fAx = -rhx * factor_A;
+    const fAy = -rhy * factor_A;
+    
+    // Force on B from A: r̂ from A to B = (-rhx, -rhy)
+    const rhat2_ds = -rhx * adx + (-rhy) * ady;
+    const rhat2_dsp = -rhx * bdx + (-rhy) * bdy;
+    const factor_B = 2 * dsdsp - 3 * rhat2_ds * rhat2_dsp;
+    const fBx = rhx * factor_B;
+    const fBy = rhy * factor_B;
+
+    const scale = 60;
+    drawForceArrow(ctx, ax, ay, fAx * scale, fAy * scale, '#50b870', 'F on A');
+    drawForceArrow(ctx, bx, by, fBx * scale, fBy * scale, '#50b870', 'F on B');
+
+    ctx.fillStyle = '#50b870';
+    ctx.font = '13px Georgia';
+    ctx.textAlign = 'center';
+    ctx.fillText('Ampère: Forces along connecting line, equal & opposite', cx, H - 20);
+    ctx.fillText('Newton\'s Third Law: ✓ Satisfied exactly', cx, H - 40);
+
+  } else {
+    // Grassmann: d²F = -μ₀/4π II' ds × (ds' × r̂) / r²
+    // Force on A from B: ds_A × (ds'_B × r̂_{B→A})
+    // ds'_B × r̂ = (bdx, bdy, 0) × (rhx, rhy, 0) = (0, 0, bdx*rhy - bdy*rhx)
+    const crossZ = bdx * rhy - bdy * rhx;
+    // ds_A × (0,0,crossZ) = (ady*crossZ, -adx*crossZ, 0) — wait, in 2D:
+    // (adx, ady, 0) × (0, 0, crossZ) = (ady*crossZ - 0, 0 - adx*crossZ, 0)
+    const fAx = ady * crossZ;
+    const fAy = -adx * crossZ;
+
+    // Force on B from A: ds_B × (ds'_A × r̂_{A→B})
+    // r̂ from A to B = (-rhx, -rhy)
+    const crossZ2 = adx * (-rhy) - ady * (-rhx);
+    const fBx = bdy * crossZ2;
+    const fBy = -bdx * crossZ2;
+
+    const scale = 80;
+    drawForceArrow(ctx, ax, ay, fAx * scale, fAy * scale, '#d45050', 'F on A');
+    drawForceArrow(ctx, bx, by, fBx * scale, fBy * scale, '#d45050', 'F on B');
+
+    ctx.fillStyle = '#d45050';
+    ctx.font = '13px Georgia';
+    ctx.textAlign = 'center';
+    ctx.fillText('Grassmann: Forces NOT along connecting line, NOT equal & opposite', cx, H - 20);
+    ctx.fillText('Newton\'s Third Law: ✗ Violated at element level', cx, H - 40);
+  }
+
+  // Draw dots at element centers
+  ctx.fillStyle = '#e0e0e8';
+  ctx.beginPath(); ctx.arc(ax, ay, 4, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(bx, by, 4, 0, Math.PI * 2); ctx.fill();
+}
+
+function drawForceArrow(ctx, x, y, fx, fy, color, label) {
+  if (Math.abs(fx) < 0.5 && Math.abs(fy) < 0.5) return;
+  const ex = x + fx, ey = y + fy;
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  ctx.moveTo(x, y);
+  ctx.lineTo(ex, ey);
+  ctx.stroke();
+  // Arrowhead
+  const mag = Math.sqrt(fx * fx + fy * fy);
+  const dx = fx / mag, dy = fy / mag;
+  const ah = 10;
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.moveTo(ex, ey);
+  ctx.lineTo(ex - dx * ah - dy * ah * 0.4, ey - dy * ah + dx * ah * 0.4);
+  ctx.lineTo(ex - dx * ah + dy * ah * 0.4, ey - dy * ah - dx * ah * 0.4);
+  ctx.fill();
+  // Label
+  ctx.fillStyle = color;
+  ctx.font = '11px Georgia';
+  ctx.textAlign = 'center';
+  ctx.fillText(label, ex + dy * 14, ey - dx * 14);
+}
+
+drawForces();
+</script>
+</body>
+</html>
