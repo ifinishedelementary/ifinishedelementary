@@ -1056,25 +1056,29 @@ function startLeibnizAnim(){
   const phaseEl=document.getElementById("leibnizPhaseText");
   const W=760,H=320;
   let t=0;
-  const dur=14000; // 14 seconds total
+  const dur=21000;
 
   // Two-lane layout: each ball gets its own block
-  // Lane 1 (top): 1kg ball, lane 2 (bottom): 4kg ball
-  const lane1Y=130, lane2Y=265; // ground lines
-  const laneH=110; // vertical space per lane
+  const lane1Y=130, lane2Y=265;
   const ballStartX=100, blockStartX=480;
   const blockW=36, blockH=44;
-  const r1=14, r2=24; // radii proportional to mass
+  const r1=14, r2=24;
+  const dropH1=100, dropH2=55;
+
+  // Color constants
+  const vvCol="#e8a030";       // vis viva — warm amber
+  const vvFill="rgba(232,160,48,0.2)";
+  const vvStroke="rgba(232,160,48,0.4)";
+  const momCol="#58c4dd";      // momentum — cool cyan
+  const momFill="rgba(88,196,221,0.2)";
+  const momStroke="rgba(88,196,221,0.4)";
 
   // Correct elastic collision physics:
-  // 1kg at v=2 vs 2kg at rest: v1'=(1-2)/(1+2)*2 = -2/3, v2'=2*1*2/(1+2) = 4/3
-  // 4kg at v=1 vs 2kg at rest: v1'=(4-2)/(4+2)*1 = 1/3,  v2'=2*4*1/(4+2) = 4/3
-  // Both blocks get v = 4/3 m/s — identical!
+  // 1kg at v=2 vs 2kg at rest: v1'=-2/3, v2'=4/3
+  // 4kg at v=1 vs 2kg at rest: v1'=+1/3, v2'=4/3
+  // Both blocks get v = 4/3 m/s
 
-  // Drop heights scaled: 4m→100px, 1m→25px
-  const dropH1=100, dropH2=25;
-
-  // Phase timing (ms): drop 0-2500, landed 2500-4500, slide 4500-7000, result 7000-14000
+  // Phases (ms): drop 0-2500, visviva 2500-6000, momentum 6000-10500, slide 10500-13000, result 13000-21000
   function frame(ts){
     if(!t)t=ts;
     const elapsed=ts-t;
@@ -1083,36 +1087,34 @@ function startLeibnizAnim(){
     clearSVG(el);
     const svg=mkSVG(W,H);
 
-    // Phase calculations
     let phase,phaseT;
     if(elapsed<2500){phase="drop";phaseT=elapsed/2500;}
-    else if(elapsed<4500){phase="landed";phaseT=(elapsed-2500)/2000;}
-    else if(elapsed<7000){phase="slide";phaseT=(elapsed-4500)/2500;}
-    else{phase="result";phaseT=(elapsed-7000)/7000;}
+    else if(elapsed<6000){phase="visviva";phaseT=(elapsed-2500)/3500;}
+    else if(elapsed<10500){phase="momentum";phaseT=(elapsed-6000)/4500;}
+    else if(elapsed<13000){phase="slide";phaseT=(elapsed-10500)/2500;}
+    else{phase="result";phaseT=(elapsed-13000)/8000;}
 
-    // Ground lines for each lane
+    // Ground lines
     addLine(svg,30,lane1Y,W-30,lane1Y,"#1c1c2c",1);
     addLine(svg,30,lane2Y,W-30,lane2Y,"#1c1c2c",1);
-
     // Divider
     addLine(svg,30,(lane1Y+lane2Y)/2,W-30,(lane1Y+lane2Y)/2,"#1c1c2c",0.5,"8,6");
 
-    // Lane labels
-    addText(svg,36,lane1Y-laneH+20,"#6888a8",11,"start","1 kg  ·  v = 2  ·  mv² = 4");
-    addText(svg,36,lane2Y-laneH+20,"#c45c5c",11,"start","4 kg  ·  v = 1  ·  mv² = 4");
+    // Lane labels (static)
+    addText(svg,36,lane1Y-100,"#6888a8",11,"start","1 kg  dropped from 4 m  \u2192  lands at v = 2");
+    addText(svg,36,lane2Y-100,"#c45c5c",11,"start","4 kg  dropped from 1 m  \u2192  lands at v = 1");
 
     // ── Ball positions ──
     let bx1=ballStartX, by1=lane1Y-r1;
     let bx2=ballStartX, by2=lane2Y-r2;
 
-    // Drop phase — balls fall in their lanes
+    // ── DROP (2.5s) ──
     if(phase==="drop"){
-      const prog=phaseT*phaseT; // ease-in quadratic (accelerating)
+      const prog=phaseT*phaseT;
       by1=lane1Y-dropH1+(dropH1-r1)*prog;
       by2=lane2Y-dropH2+(dropH2-r2)*prog;
-      phaseEl.textContent="1 kg drops from 4 m — 4 kg drops from 1 m";
+      phaseEl.textContent="1 kg drops from 4 m \u2014 4 kg drops from 1 m";
 
-      // Height indicators
       addLine(svg,ballStartX-25,lane1Y,ballStartX-25,lane1Y-dropH1,"#6a6458",1,"3,3");
       addLine(svg,ballStartX-30,lane1Y,ballStartX-20,lane1Y,"#6a6458",1);
       addLine(svg,ballStartX-30,lane1Y-dropH1,ballStartX-20,lane1Y-dropH1,"#6a6458",1);
@@ -1124,89 +1126,87 @@ function startLeibnizAnim(){
       addText(svg,ballStartX-34,(lane2Y+lane2Y-dropH2)/2,"#6a6458",9,"end","1 m");
     }
 
-    if(phase==="landed"){
-      phaseEl.innerHTML="Both land. mv² = 4 for each. Equal <em style=\"color:#d4a843\">vis viva</em>.";
+    // ── VIS VIVA (3.5s) ──
+    if(phase==="visviva"){
+      phaseEl.innerHTML="Both land. <em style=\"color:"+vvCol+"\">mv\u00b2 = 4</em> for each. Equal <em style=\"color:"+vvCol+"\">vis viva</em>.";
+    }
+
+    // ── MOMENTUM REVEAL (4.5s — two captions ~2.25s each) ──
+    if(phase==="momentum"){
+      if(phaseT<0.5){
+        phaseEl.innerHTML="But <em style=\"color:"+momCol+"\">momentum</em> differs: 1\u00d72 = <em style=\"color:"+momCol+"\">2</em>  vs  4\u00d71 = <em style=\"color:"+momCol+"\">4</em>";
+      } else {
+        phaseEl.innerHTML="Each now hits a 2 kg block at rest. Watch what <em style=\"color:"+momCol+"\">momentum</em> does.";
+      }
     }
 
     // ── Block positions ──
     let block1X=blockStartX, block2X=blockStartX;
 
-    // Slide phase — balls move toward their blocks
+    // ── SLIDE (2.5s) ──
     if(phase==="slide"){
-      const ease=phaseT*phaseT*(3-2*phaseT); // smoothstep
+      const ease=phaseT*phaseT*(3-2*phaseT);
       const contactX=blockStartX-blockW/2;
       bx1=ballStartX+(contactX-r1-ballStartX)*ease;
       bx2=ballStartX+(contactX-r2-ballStartX)*ease;
-      phaseEl.textContent="Both slide toward a 2 kg block...";
+      phaseEl.textContent="Both approach a 2 kg block at rest...";
     }
 
-    // Result phase — correct collision physics
+    // ── RESULT (8s — four captions ~2s each) ──
     if(phase==="result"){
       const prog=Math.min(phaseT,1);
-      const ease=prog*prog*(3-2*prog); // smoothstep for smooth motion
+      const ease=prog*prog*(3-2*prog);
 
-      // Block push distance (both blocks get same velocity 4/3 m/s)
       const blockPush=90*ease;
       block1X=blockStartX+blockPush;
       block2X=blockStartX+blockPush;
 
-      // 1kg ball: bounces backward (v1' = -2/3, about 1/3 of original speed)
       const contactX1=blockStartX-blockW/2-r1;
-      bx1=contactX1-60*ease; // bounces back
+      bx1=contactX1-60*ease;
 
-      // 4kg ball: continues forward slowly (v1' = 1/3, about 1/3 of original speed)
-      // Ball continues but slower than block, so it separates
       const contactX2=blockStartX-blockW/2-r2;
-      bx2=contactX2+30*ease; // continues forward slowly
+      bx2=contactX2+30*ease;
 
-      if(phaseT<0.35){
+      if(phaseT<0.25){
         phaseEl.innerHTML="1 kg <em style=\"color:#c45c5c\">bounces back</em>. 4 kg <em style=\"color:#4a9e6e\">continues forward</em>.";
-      } else if(phaseT<0.65){
-        phaseEl.innerHTML="Both blocks receive <em style=\"color:#d4a843\">the same velocity</em>. That's a momentum result.";
+      } else if(phaseT<0.50){
+        phaseEl.innerHTML="Both blocks receive <em style=\"color:"+momCol+"\">the same velocity</em> \u2014 <em style=\"color:"+momCol+"\">momentum</em> determines block speed.";
+      } else if(phaseT<0.75){
+        phaseEl.innerHTML="The ball\u2019s fate \u2014 reverse or continue \u2014 is the <em style=\"color:"+momCol+"\">momentum ratio</em>, not <em style=\"color:"+vvCol+"\">\u201cliving force.\u201d</em>";
       } else {
-        phaseEl.innerHTML="Equal vis viva. Same block speed. Completely different ball outcome.";
+        phaseEl.innerHTML="Equal <em style=\"color:"+vvCol+"\">vis viva</em>. Same block speed. Opposite ball outcomes.";
       }
     }
 
-    // Set final ball positions for non-moving phases
-    if(phase==="landed"){
-      bx1=ballStartX; by1=lane1Y-r1;
-      bx2=ballStartX; by2=lane2Y-r2;
-    }
+    // Fix Y for non-drop phases
     if(phase!=="drop"){
       by1=lane1Y-r1;
       by2=lane2Y-r2;
     }
 
-    // ── Draw blocks (slide and result phases) ──
+    // ── Draw blocks (slide + result) ──
     if(phase==="slide"||phase==="result"){
-      // Lane 1 block
       const blk1=document.createElementNS(ns,"rect");
       blk1.setAttribute("x",block1X-blockW/2);blk1.setAttribute("y",lane1Y-blockH);
       blk1.setAttribute("width",blockW);blk1.setAttribute("height",blockH);
       blk1.setAttribute("fill","#3a3a4a");blk1.setAttribute("rx","3");
-      if(phase==="result"){blk1.setAttribute("stroke","#d4a843");blk1.setAttribute("stroke-width","1");}
+      if(phase==="result"){blk1.setAttribute("stroke",momCol);blk1.setAttribute("stroke-width","1");}
       svg.appendChild(blk1);
       addText(svg,block1X,lane1Y-blockH/2+4,"#8a8a9a",9,"middle","2kg");
 
-      // Lane 2 block
       const blk2=document.createElementNS(ns,"rect");
       blk2.setAttribute("x",block2X-blockW/2);blk2.setAttribute("y",lane2Y-blockH);
       blk2.setAttribute("width",blockW);blk2.setAttribute("height",blockH);
       blk2.setAttribute("fill","#3a3a4a");blk2.setAttribute("rx","3");
-      if(phase==="result"){blk2.setAttribute("stroke","#d4a843");blk2.setAttribute("stroke-width","1");}
+      if(phase==="result"){blk2.setAttribute("stroke",momCol);blk2.setAttribute("stroke-width","1");}
       svg.appendChild(blk2);
       addText(svg,block2X,lane2Y-blockH/2+4,"#8a8a9a",9,"middle","2kg");
 
-      // Result annotations
-      if(phase==="result"&&phaseT<0.85){
-        // Bounce arrow for ball 1
-        addText(svg,bx1-8,by1-20,"#c45c5c",10,"middle","← reversed");
-        // Continue arrow for ball 2
-        addText(svg,bx2+r2+8,by2,"#4a9e6e",10,"start","continues →");
-        // Block push indicators (same for both)
-        addText(svg,block1X+blockW/2+6,lane1Y-blockH/2,"#d4a843",9,"start","v = 4/3");
-        addText(svg,block2X+blockW/2+6,lane2Y-blockH/2,"#d4a843",9,"start","v = 4/3");
+      if(phase==="result"&&phaseT<0.9){
+        addText(svg,bx1-8,by1-20,"#c45c5c",10,"middle","\u2190 reversed");
+        addText(svg,bx2+r2+8,by2,"#4a9e6e",10,"start","continues \u2192");
+        addText(svg,block1X+blockW/2+6,lane1Y-blockH/2,momCol,9,"start","block v = 4/3");
+        addText(svg,block2X+blockW/2+6,lane2Y-blockH/2,momCol,9,"start","block v = 4/3");
       }
     }
 
@@ -1216,23 +1216,42 @@ function startLeibnizAnim(){
     addCircle(svg,bx2,by2,r2,"#c45c5c");
     addText(svg,bx2,by2+5,"#08080c",12,"middle","4");
 
-    // Vis viva badges during landed and slide phases
-    if(phase==="landed"||phase==="slide"){
-      const badge1=document.createElementNS(ns,"rect");
-      badge1.setAttribute("x",bx1-30);badge1.setAttribute("y",by1-r1-28);
-      badge1.setAttribute("width",60);badge1.setAttribute("height",18);
-      badge1.setAttribute("fill","rgba(232,160,48,0.2)");badge1.setAttribute("rx","3");
-      badge1.setAttribute("stroke","rgba(232,160,48,0.4)");badge1.setAttribute("stroke-width","1");
-      svg.appendChild(badge1);
-      addText(svg,bx1,by1-r1-16,"#e8a030",9,"middle","mv² = 4");
+    // ── Vis viva badges (warm amber) — visviva phase only ──
+    if(phase==="visviva"){
+      var b1=document.createElementNS(ns,"rect");
+      b1.setAttribute("x",bx1-32);b1.setAttribute("y",by1-r1-28);
+      b1.setAttribute("width",64);b1.setAttribute("height",18);
+      b1.setAttribute("fill",vvFill);b1.setAttribute("rx","3");
+      b1.setAttribute("stroke",vvStroke);b1.setAttribute("stroke-width","1");
+      svg.appendChild(b1);
+      addText(svg,bx1,by1-r1-16,vvCol,9,"middle","mv\u00b2 = 4");
 
-      const badge2=document.createElementNS(ns,"rect");
-      badge2.setAttribute("x",bx2-30);badge2.setAttribute("y",by2-r2-28);
-      badge2.setAttribute("width",60);badge2.setAttribute("height",18);
-      badge2.setAttribute("fill","rgba(232,160,48,0.2)");badge2.setAttribute("rx","3");
-      badge2.setAttribute("stroke","rgba(232,160,48,0.4)");badge2.setAttribute("stroke-width","1");
-      svg.appendChild(badge2);
-      addText(svg,bx2,by2-r2-16,"#e8a030",9,"middle","mv² = 4");
+      var b2=document.createElementNS(ns,"rect");
+      b2.setAttribute("x",bx2-32);b2.setAttribute("y",by2-r2-28);
+      b2.setAttribute("width",64);b2.setAttribute("height",18);
+      b2.setAttribute("fill",vvFill);b2.setAttribute("rx","3");
+      b2.setAttribute("stroke",vvStroke);b2.setAttribute("stroke-width","1");
+      svg.appendChild(b2);
+      addText(svg,bx2,by2-r2-16,vvCol,9,"middle","mv\u00b2 = 4");
+    }
+
+    // ── Momentum badges (cool cyan, same color both) — momentum + slide phases ──
+    if(phase==="momentum"||phase==="slide"){
+      var m1b=document.createElementNS(ns,"rect");
+      m1b.setAttribute("x",bx1-32);m1b.setAttribute("y",by1-r1-28);
+      m1b.setAttribute("width",64);m1b.setAttribute("height",18);
+      m1b.setAttribute("fill",momFill);m1b.setAttribute("rx","3");
+      m1b.setAttribute("stroke",momStroke);m1b.setAttribute("stroke-width","1");
+      svg.appendChild(m1b);
+      addText(svg,bx1,by1-r1-16,momCol,9,"middle","mv = 2");
+
+      var m2b=document.createElementNS(ns,"rect");
+      m2b.setAttribute("x",bx2-32);m2b.setAttribute("y",by2-r2-28);
+      m2b.setAttribute("width",64);m2b.setAttribute("height",18);
+      m2b.setAttribute("fill",momFill);m2b.setAttribute("rx","3");
+      m2b.setAttribute("stroke",momStroke);m2b.setAttribute("stroke-width","1");
+      svg.appendChild(m2b);
+      addText(svg,bx2,by2-r2-16,momCol,9,"middle","mv = 4");
     }
 
     el.insertBefore(svg,el.firstChild);
