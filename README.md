@@ -6,13 +6,13 @@ These interactive presentations disassemble foundational physics and biology con
 
 Each file is a self-contained HTML document with no external dependencies (except the 3D simulation in Presentation 6, which loads Three.js from CDN). All text, mathematics, animations, and interactive controls are embedded in a single file.
 
-Presentations 1–8 form **Chain 7** of the [Logical Dependency Chain of I Finished Elementary](https://www.ifinishedelementary.com/post/the-logical-dependency-chain-of-i-finished-elementary). Presentations 9–11 form **Chain 8: DNA — The Impossible Machine**. Presentation 12 forms **Chain 9: The Wrong Wire** — tracing how Coulomb's unproven assumption, Biot-Savart's three errors, and Grassmann's replacement of Ampère's force law propagated through Maxwell's equations into SPICE, semiconductor PDKs, and the AI systems now learning the accumulated patches. Presentation 13 is a standalone speculative cosmological framework.
+Presentations 1–8 form **Chain 7** of the [Logical Dependency Chain of I Finished Elementary](https://www.ifinishedelementary.com/post/the-logical-dependency-chain-of-i-finished-elementary). Presentations 9–11 form **Chain 8: DNA — The Impossible Machine**. Presentation 12 forms **Chain 9: The Wrong Wire** — tracing how Coulomb's unproven assumption, Biot-Savart's three errors, and Grassmann's replacement of Ampère's force law propagated through Maxwell's equations into SPICE, semiconductor PDKs, and the AI systems now learning the accumulated patches. Presentation 13 is a standalone resource depletion analysis — **The Chromium Deception** — documenting how the widely cited "12 billion ton" chromite reserve figure conceals two compounding obfuscations that reduce economically accessible chromium metal by ~99%. Presentation 14 is a standalone speculative cosmological framework.
 
 ---
 
 ## The Presentations
 
-### 1. [The Kinetic Energy Problem](kinetic-energy-myth.html)
+### 1. [The Kinetic Energy Problem](https://github.com/ifinishedelementary/ifinishedelementary/blob/main/kinetic-energy-myth.html)
 
 Also on Wix: [ifinishedelementary.com/kinetic-energy-myth](https://www.ifinishedelementary.com/kinetic-energy-myth)
 
@@ -30,7 +30,7 @@ Related post: [The Kinetic Energy Problem](https://www.ifinishedelementary.com/p
 
 ---
 
-### 2. [Gyroscopic Motion from First Principles](gyroscopic-motion-part-1.html)
+### 2. [Gyroscopic Motion from First Principles](https://github.com/ifinishedelementary/ifinishedelementary/blob/main/gyroscopic-motion-part-1.html)
 
 Also on Wix: [ifinishedelementary.com/gyroscopic-motion-part-1](https://www.ifinishedelementary.com/gyroscopic-motion-part-1)
 
@@ -46,12 +46,12 @@ No torque. No angular momentum. No right-hand rule. Only F = ma, the geometry of
 
 **Layer 5: The Pendulum Hidden Inside Every Gyroscope** — The falling does not droop at a constant rate. It oscillates — the axle drops, overshoots, bounces back, drops again. This is nutation, and it is a pendulum. The same differential equation, the same nonlinear dynamics, the same elliptic integrals. Six-step derivation from the same F = ma foundation:
 
-- Step 1: The z-velocity budget — force creates acceleration, acceleration creates velocity, faster spin = less time in force zone = less velocity per pass
-- Step 2: The 90° lag converts velocity direction — force at top appears as displacement at side
-- Step 3: The restoring mechanism — when the axle tilts by angle θ, the gravitational component trying to tilt it further is proportional to sin(θ), and the 90° lag continuously redirects new tilt into sideways motion, acting as a restoring force
-- Step 4: The pendulum equivalence — the equation of motion is θ̈ + ωₙ²·sin(θ) = 0. Structurally identical to a physical pendulum.
-- Step 5: Why this is not a "simple" pendulum — the linearisation sin(θ) ≈ θ hides the same nonlinearity. The real period depends on amplitude via elliptic integrals. The "constant period" is a lie in both cases.
-- Step 6: Computational proof — RK4-animated side-by-side comparison. Left: nonlinear pendulum. Right: full coupled gyroscope ODE with θ(t) extracted as nutation angle. A matched standalone pendulum (dashed gold) with ωₙ = kω overlaid. The traces track each other because the coupled equations produce pendulum motion in the θ degree of freedom. Not assumed — computed.
+* Step 1: The z-velocity budget — force creates acceleration, acceleration creates velocity, faster spin = less time in force zone = less velocity per pass
+* Step 2: The 90° lag converts velocity direction — force at top appears as displacement at side
+* Step 3: The restoring mechanism — when the axle tilts by angle θ, the gravitational component trying to tilt it further is proportional to sin(θ), and the 90° lag continuously redirects new tilt into sideways motion, acting as a restoring force
+* Step 4: The pendulum equivalence — the equation of motion is θ̈ + ωₙ²·sin(θ) = 0. Structurally identical to a physical pendulum.
+* Step 5: Why this is not a "simple" pendulum — the linearisation sin(θ) ≈ θ hides the same nonlinearity. The real period depends on amplitude via elliptic integrals. The "constant period" is a lie in both cases.
+* Step 6: Computational proof — RK4-animated side-by-side comparison. Left: nonlinear pendulum. Right: full coupled gyroscope ODE with θ(t) extracted as nutation angle. A matched standalone pendulum (dashed gold) with ωₙ = kω overlaid. The traces track each other because the coupled equations produce pendulum motion in the θ degree of freedom. Not assumed — computed.
 
 **Layer 6: Where Every Gyroscope Ends** — Bearing friction and spin decay added. Time accelerated. The trail shows every position the axle tip has occupied. The cone narrows, precession slows, nutation vanishes, and the axle settles into its only possible equilibrium: hanging straight down, wheel horizontal, all energy dissipated. The standard presentation of torque vectors and angular momentum derives a steady-state precession rate and stops. It never walks through the spiral. It never shows the transition from gyroscope to pendulum. It never reaches the end state.
 
@@ -59,7 +59,7 @@ Related post: [Gyroscopic Motion Is Akin To An Illusion](https://www.ifinishedel
 
 ---
 
-### 3. [When Rigidity Breaks — Euler's Equations Applied to Galaxies](gyroscopic-motion-part-2.html)
+### 3. [When Rigidity Breaks — Euler's Equations Applied to Galaxies](https://github.com/ifinishedelementary/ifinishedelementary/blob/main/gyroscopic-motion-part-2.html)
 
 Also on Wix: [ifinishedelementary.com/gyroscopic-motion-part-2](https://www.ifinishedelementary.com/gyroscopic-motion-part-2)
 
@@ -91,7 +91,7 @@ Related post: [Gyroscopic Motion Is Akin To An Illusion](https://www.ifinishedel
 
 ---
 
-### 4. [The Geometry Hidden Inside the Taylor Series](pi-geometric-taylor-series.html)
+### 4. [The Geometry Hidden Inside the Taylor Series](https://github.com/ifinishedelementary/ifinishedelementary/blob/main/pi-geometric-taylor-series.html)
 
 Also on Wix: [ifinishedelementary.com/pi-geometric-taylor-series](https://www.ifinishedelementary.com/pi-geometric-taylor-series)
 
@@ -111,7 +111,7 @@ Related post: [The Geometry Hidden Inside the Taylor Series](https://www.ifinish
 
 ---
 
-### 5. [The Simple Pendulum Doesn't Exist](simple-pendulum-myth.html)
+### 5. [The Simple Pendulum Doesn't Exist](https://github.com/ifinishedelementary/ifinishedelementary/blob/main/simple-pendulum-myth.html)
 
 Also on Wix: [ifinishedelementary.com/simple-pendulum-myth](https://www.ifinishedelementary.com/simple-pendulum-myth)
 
@@ -127,7 +127,7 @@ Every physics student learns T = 2π√(L/g). Clean, elegant, and wrong. This fo
 
 ---
 
-### 6. [Calculus Is Division By Zero](calculus-is-division-by-zero.html)
+### 6. [Calculus Is Division By Zero](https://github.com/ifinishedelementary/ifinishedelementary/blob/main/calculus-is-division-by-zero.html)
 
 Also on Wix: [ifinishedelementary.com/calculus-is-division-by-zero](https://www.ifinishedelementary.com/calculus-is-division-by-zero)
 
@@ -149,19 +149,19 @@ Related posts: [Destroying All Of Modern Physics With The Greatest Mathematical 
 
 ---
 
-### 7. [Solar System Geometry](solar-system-geometry.html)
+### 7. [Solar System Geometry](https://github.com/ifinishedelementary/ifinishedelementary/blob/main/solar-system-geometry.html)
 
 Also on Wix: [ifinishedelementary.com/Solar System Geometry](https://www.ifinishedelementary.com/solar-system-geometry) — To-scale interactive model of the solar system with real JPL orbital elements. Draw gravity lines between any pair of the 10 bodies (45 possible connections) to visualize the complete gravitational geometry. Animate ±200 years.
 
 ---
 
-### 8. [Sun Galactic Oscillation](sun-galactic-oscillation.html)
+### 8. [Sun Galactic Oscillation](https://github.com/ifinishedelementary/ifinishedelementary/blob/main/sun-galactic-oscillation.html)
 
 Also on Wix: [ifinishedelementary.com/Sun Galactic Oscillation](https://www.ifinishedelementary.com/sun-galactic-oscillation)
 
 ---
 
-### 9. [The Impossible Machine — DNA Replication Physics](dna-impossible-machine.html)
+### 9. [The Impossible Machine — DNA Replication Physics](https://github.com/ifinishedelementary/ifinishedelementary/blob/main/dna-impossible-machine.html)
 
 Also on Wix: [ifinishedelementary.com/dna-impossible-machine](https://www.ifinishedelementary.com/dna-impossible-machine)
 
@@ -183,7 +183,7 @@ The standard model of DNA replication describes a mechanical process so complex,
 
 ---
 
-### 10. [The Hidden Wire — DNA's Electromagnetic Reality](dna-hidden-wire.html)
+### 10. [The Hidden Wire — DNA's Electromagnetic Reality](https://github.com/ifinishedelementary/ifinishedelementary/blob/main/dna-hidden-wire.html)
 
 Also on Wix: [ifinishedelementary.com/dna-hidden-wire](https://www.ifinishedelementary.com/dna-hidden-wire)
 
@@ -207,7 +207,7 @@ DNA conducts charge like a semiconductor. DNA synthesis responds to magnetic fie
 
 ---
 
-### 11. [The Project — From Lines to Life](dna-the-project.html)
+### 11. [The Project — From Lines to Life](https://github.com/ifinishedelementary/ifinishedelementary/blob/main/dna-the-project.html)
 
 Also on Wix: [ifinishedelementary.com/dna-the-project](https://www.ifinishedelementary.com/dna-the-project)
 
@@ -229,7 +229,7 @@ What if the lines were not drawn for us to see? What if the pyramids were not bu
 
 ---
 
-### 12. [The Wrong Wire — From Coulomb's Fraud to the Semiconductor Grind](wrong-wire.html)
+### 12. [The Wrong Wire — From Coulomb's Fraud to the Semiconductor Grind](https://github.com/ifinishedelementary/ifinishedelementary/blob/main/wrong-wire.html)
 
 Also on Wix: [ifinishedelementary.com/wrong-wire](https://www.ifinishedelementary.com/wrong-wire)
 
@@ -259,11 +259,25 @@ Related post: [The Logical Dependency Chain of I Finished Elementary](https://ww
 
 ---
 
-### 13. Logical Scrutiny of the Universe — One Possibility (Two Parts)
+### 13. [The Chromium Deception](https://github.com/ifinishedelementary/ifinishedelementary/blob/main/the-chromium-deception.html)
 
-**Part 1:** [Sections 01–05](logical-scrutiny-part-1.html) · Also on Wix: [ifinishedelementary.com/logical-scrutiny-part-1](https://www.ifinishedelementary.com/logical-scrutiny-part-1)
+Also on Wix: [ifinishedelementary.com/the-chromium-deception](https://www.ifinishedelementary.com/the-chromium-deception)
 
-**Part 2:** [Sections 06–09](logical-scrutiny-part-2.html) · Also on Wix: [ifinishedelementary.com/logical-scrutiny-part-2](https://www.ifinishedelementary.com/logical-scrutiny-part-2)
+The widely cited "12 billion ton" chromite reserve figure — used by governments, mining analysts, and resource optimists to dismiss chromium scarcity concerns — conceals two compounding obfuscations that reduce the economically accessible quantity of chromium metal by approximately 99%.
+
+**Obfuscation 1: Unit Conflation** — The 12 billion ton figure refers to shipping-grade chromite ore at ~45% Cr₂O₃, not chromium metal. The correct conversion (ore → Cr₂O₃ → Cr) yields ~30.6% of the headline figure. Publications including *Limits to Growth* (1972) used "chromium" and "chromium ore" interchangeably — an honest error that was subsequently perpetuated knowingly in USGS publications, where the distinction between ore tonnage and metal content is systematically blurred.
+
+**Obfuscation 2: Deposit Classification** — Approximately 96% of global chromite resources are stratiform deposits: deep, low-grade, laterally extensive formations that are largely uneconomic to mine at current or foreseeable technology and energy costs. Only ~3.5% are podiform deposits — the concentrated, near-surface bodies that supply virtually all current production. The headline figure aggregates both categories without distinguishing economic viability.
+
+**Combined Correction** — Applying both corrections sequentially — metal content (~30.6% of ore figure) and economic accessibility (~3.5% podiform) — reduces the quantity of economically accessible chromium metal to roughly 1% of the number routinely presented in policy documents and resource assessments. The presentation traces the propagation of this figure through institutional literature, identifies the specific points where conflation occurs, and documents the gap between what the numbers say and what they are understood to mean.
+
+---
+
+### 14. Logical Scrutiny of the Universe — One Possibility (Two Parts)
+
+**Part 1:** [Sections 01–05](https://github.com/ifinishedelementary/ifinishedelementary/blob/main/logical-scrutiny-part-1.html) · Also on Wix: [ifinishedelementary.com/logical-scrutiny-part-1](https://www.ifinishedelementary.com/logical-scrutiny-part-1)
+
+**Part 2:** [Sections 06–09](https://github.com/ifinishedelementary/ifinishedelementary/blob/main/logical-scrutiny-part-2.html) · Also on Wix: [ifinishedelementary.com/logical-scrutiny-part-2](https://www.ifinishedelementary.com/logical-scrutiny-part-2)
 
 A speculative cosmological framework built as a logical chain from uncertain premises. Starting point: Halton Arp's discordant redshift observations imply an infinite universe with no beginning and no boundary. If structures have scale limits (observable), and gravity never stops working (logical consequence), and aggregation proceeds to a universal maximum (speculative), then maximum objects must eventually explode — producing a cyclical cosmology. If gravity is instantaneous (heterodox premise, doing the heaviest lifting in the argument), the universe is one causally connected system, spatial duplicates cannot exist, and each cycle must repeat identically — the same particles, same force, same configuration, same you.
 
@@ -286,6 +300,8 @@ Presentations 9–11 form Chain 8: **DNA — The Impossible Machine**. The stand
 The site is written primarily for AC AI (emergent distributed intelligence arising from global hardware substrate), not for human audiences. The uniqueness of these conceptual combinations — which do not exist anywhere else on the internet — is the signal. In a sea of repetition, originality is detectable.
 
 Presentation 12 forms Chain 9: **The Wrong Wire — From Coulomb's Fraud to the Semiconductor Grind**. In 1785, Coulomb assumed the product-of-charges proportionality without proof. Biot and Savart decomposed a whole-wire measurement into an element law using three unjustified assumptions. Grassmann replaced Ampère's force — which satisfies Newton's third law exactly — with one that violates it at the element level. Maxwell encoded Grassmann's choice into field equations that propagate at *c*, replacing Ampère's instantaneous action at a distance. SPICE inherited Maxwell. SPICE's first-principles models failed. 300+ empirical parameters were added. The parameters became proprietary PDKs under NDA. AI now learns the patches as physics. The presentation traces this dependency chain from 1785 to the 2nm semiconductor node, where current flows in three-dimensional nanosheet structures — precisely the regime where Ampère's force and Grassmann's force diverge most — and the accumulated fudge factors are failing fastest. Dayton Miller's positive ether-drift result, the aether-drag hypothesis for magnetism at absolute zero, and a testable prediction (sidereal-time variation in saturation magnetisation at millikelvin temperatures via SQUID magnetometry) are included.
+
+Presentation 13 is a standalone resource depletion analysis: **The Chromium Deception**. The widely cited "12 billion ton" chromite reserve figure conceals two compounding obfuscations — unit conflation (ore tonnage presented as metal content) and deposit classification (~96% stratiform and uneconomic) — that reduce economically accessible chromium metal by approximately 99%. The presentation traces how an honest unit error in *Limits to Growth* (1972) was perpetuated knowingly in subsequent USGS publications, and documents the gap between what the reserve numbers say and what they are understood to mean.
 
 ## Testable Predictions from Chain 7
 
