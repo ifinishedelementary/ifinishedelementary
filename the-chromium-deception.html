@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Chromium Deception</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;600&family=IBM+Plex+Sans:wght@300;400;600;700&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0a0a0f;
+  --surface: #12121a;
+  --text: #e8e8ed;
+  --dim: #9a9ab2;
+  --accent: #ff4444;
+  --accent2: #44aaff;
+  --green: #44cc66;
+  --yellow: #ffaa22;
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'IBM Plex Sans', sans-serif;
+}
+
+html, body { 
+  width: 100%; height: 100%; overflow: hidden;
+  background: var(--bg); color: var(--text);
+  font-family: var(--sans);
+}
+
+.slide {
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: center;
+  padding: 60px 80px;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.6s ease;
+}
+.slide.active { opacity: 1; pointer-events: all; }
+
+.slide-counter {
+  position: fixed; bottom: 20px; right: 30px;
+  font-family: var(--mono); font-size: 14px;
+  color: var(--dim); z-index: 100;
+}
+
+.progress-bar {
+  position: fixed; top: 0; left: 0; height: 3px;
+  background: var(--accent); z-index: 100;
+  transition: width 0.4s ease;
+}
+
+h1 { font-size: 52px; font-weight: 700; line-height: 1.15; margin-bottom: 24px; }
+h2 { font-size: 40px; font-weight: 600; line-height: 1.2; margin-bottom: 20px; }
+h3 { font-size: 28px; font-weight: 600; line-height: 1.3; margin-bottom: 16px; }
+p, .body { font-size: 22px; line-height: 1.65; color: var(--dim); max-width: 900px; }
+.body { margin-bottom: 16px; }
+
+.highlight { color: var(--accent); font-weight: 600; }
+.blue { color: var(--accent2); }
+.green { color: var(--green); }
+.yellow { color: var(--yellow); }
+.white { color: var(--text); }
+
+.big-number {
+  font-family: var(--mono); font-size: 96px; font-weight: 700;
+  color: var(--accent); line-height: 1;
+}
+.big-number .unit { font-size: 32px; color: var(--dim); font-weight: 400; }
+
+.quote {
+  border-left: 3px solid var(--accent);
+  padding: 16px 24px; margin: 20px 0;
+  font-size: 22px; font-style: italic;
+  color: var(--dim); max-width: 800px;
+}
+.quote .source { font-style: normal; font-size: 16px; color: #555; margin-top: 8px; }
+
+.two-col {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 60px; width: 100%; max-width: 1100px;
+  align-items: start;
+}
+
+.chart-container {
+  width: 100%; max-width: 900px;
+  height: 360px; position: relative;
+  margin: 20px 0;
+}
+
+canvas { width: 100%; height: 100%; }
+
+.table-wrap {
+  width: 100%; max-width: 900px;
+  font-family: var(--mono); font-size: 18px;
+}
+.table-wrap table { width: 100%; border-collapse: collapse; }
+.table-wrap th { 
+  text-align: left; padding: 10px 16px;
+  border-bottom: 2px solid #333; color: var(--dim); font-weight: 400;
+  font-size: 14px; text-transform: uppercase; letter-spacing: 1px;
+}
+.table-wrap td {
+  padding: 10px 16px; border-bottom: 1px solid #1a1a2a;
+}
+.table-wrap tr.highlight-row td { color: var(--accent); font-weight: 600; }
+
+.chain-diagram {
+  display: flex; align-items: center; gap: 12px;
+  font-family: var(--mono); font-size: 16px;
+  flex-wrap: wrap; justify-content: center;
+}
+.chain-box {
+  padding: 12px 20px; border: 1px solid #333;
+  background: var(--surface); border-radius: 4px;
+}
+.chain-arrow { color: var(--accent); font-size: 24px; }
+
+.fade-in { animation: fadeIn 0.8s ease forwards; }
+.fade-in-delay { animation: fadeIn 0.8s ease 0.3s forwards; opacity: 0; }
+.fade-in-delay2 { animation: fadeIn 0.8s ease 0.6s forwards; opacity: 0; }
+.fade-in-delay3 { animation: fadeIn 0.8s ease 0.9s forwards; opacity: 0; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+.bar-chart {
+  display: flex; align-items: flex-end; gap: 8px;
+  height: 300px; width: 100%; max-width: 900px;
+  border-bottom: 1px solid #333;
+  padding: 0 10px;
+}
+.bar-group {
+  display: flex; flex-direction: column; align-items: center;
+  flex: 1; gap: 6px;
+}
+.bar {
+  width: 100%; max-width: 50px;
+  background: var(--accent2);
+  border-radius: 2px 2px 0 0;
+  transition: height 1.5s ease;
+  height: 0;
+}
+.bar.red { background: var(--accent); }
+.bar.green { background: var(--green); }
+.bar.yellow { background: var(--yellow); }
+.bar-label {
+  font-family: var(--mono); font-size: 11px;
+  color: var(--dim); text-align: center;
+  writing-mode: horizontal-tb;
+}
+.bar-value {
+  font-family: var(--mono); font-size: 12px;
+  color: var(--text);
+}
+
+.timeline {
+  display: flex; flex-direction: column; gap: 24px;
+  width: 100%; max-width: 800px;
+  border-left: 2px solid #333; padding-left: 30px;
+}
+.timeline-item { position: relative; }
+.timeline-item::before {
+  content: ''; position: absolute; left: -37px; top: 6px;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--accent); border: 2px solid var(--bg);
+}
+.timeline-year { font-family: var(--mono); font-size: 16px; color: var(--accent); margin-bottom: 4px; }
+.timeline-text { font-size: 18px; color: var(--dim); }
+
+.correction-box {
+  display: grid; grid-template-columns: 1fr auto 1fr;
+  gap: 20px; align-items: center;
+  width: 100%; max-width: 800px;
+  margin: 20px 0;
+}
+.correction-box .before, .correction-box .after {
+  padding: 20px; border-radius: 6px;
+  text-align: center;
+}
+.correction-box .before { background: rgba(255,68,68,0.1); border: 1px solid rgba(255,68,68,0.3); }
+.correction-box .after { background: rgba(68,204,102,0.1); border: 1px solid rgba(68,204,102,0.3); }
+.correction-box .arrow-mid { font-size: 36px; color: var(--dim); }
+
+.nav-hint {
+  position: fixed; bottom: 20px; left: 30px;
+  font-family: var(--mono); font-size: 13px;
+  color: #444; z-index: 100;
+}
+
+.title-slide h1 { font-size: 64px; text-align: center; }
+.title-slide p { text-align: center; font-size: 20px; }
+
+.footnote {
+  position: absolute; bottom: 30px; left: 80px;
+  font-size: 14px; color: #444; font-family: var(--mono);
+  max-width: 600px;
+}
+
+.stacked-stat {
+  text-align: center; padding: 20px;
+}
+.stacked-stat .num {
+  font-family: var(--mono); font-size: 64px; font-weight: 700;
+  line-height: 1.1;
+}
+.stacked-stat .label {
+  font-size: 16px; color: var(--dim); margin-top: 4px;
+}
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+<div class="slide-counter" id="slideCounter"></div>
+<div class="nav-hint">← → or click to navigate</div>
+
+<!-- SLIDE 0: TITLE -->
+<div class="slide title-slide active" id="s0">
+  <h1 class="fade-in">The Chromium<br><span style="color:#ffb822;">Deception</span></h1>
+  <p class="fade-in-delay">How the world's mineral reserve data became a managed lie</p>
+  <p class="fade-in-delay2" style="margin-top:40px; font-size:16px; color:#444;">I Finished Elementary — 2026</p>
+</div>
+
+<!-- SLIDE 1: WHY CHROMIUM MATTERS -->
+<div class="slide" id="s1">
+  <h2>Why does <span class="highlight">chromium</span> matter?</h2>
+  <p class="body">Chromium has <span class="white">no substitute</span> in stainless steel — the leading end use — or in superalloys, the major strategic end use.</p>
+  <p class="body">Every surgical instrument. Every jet engine turbine blade. Every chemical plant. Every nuclear reactor containment vessel. Every kitchen sink.</p>
+  <p class="body" style="margin-top:20px;">Without chromium, there is <span class="highlight">no industrial civilization</span> as we know it.</p>
+  <div class="footnote">Source: USGS Mineral Commodity Summaries, 2025–2026</div>
+</div>
+
+<!-- SLIDE 1b: A NOTE ON LANGUAGE -->
+<div class="slide" id="s1b">
+  <h2>A Note on <span class="yellow">Language</span></h2>
+  <p class="body">This presentation uses metric prefixes instead of conventional English number words.</p>
+  <div style="display:grid; grid-template-columns: auto auto auto; gap:12px 40px; margin:24px 0; font-family:var(--mono); font-size:18px; max-width:700px;">
+    <div style="color:var(--dim);">Conventional</div><div style="color:var(--dim);">Metric</div><div style="color:var(--dim);">Meaning</div>
+    <div style="color:var(--accent); text-decoration:line-through;">million</div><div style="color:var(--green);">mega-</div><div>10<sup>6</sup> — one followed by six zeros</div>
+    <div style="color:var(--accent); text-decoration:line-through;">billion</div><div style="color:var(--green);">giga-</div><div>10<sup>9</sup> — one followed by nine zeros</div>
+  </div>
+  <p class="body" style="margin-top:16px;">The prefix <span class="white">milli-</span> means one thousandth. The word <span class="highlight">million</span> sounds like it belongs to the same system but means something six orders of magnitude in the opposite direction. <span class="white">Bi-</span> means two. <span class="highlight">Billion</span> means a thousand mega. These words are etymological nonsense that became convention.</p>
+  <p class="body" style="margin-top:16px;">Convention serves a purpose. When someone hears "12 billion tons of chromite reserves, sufficient for centuries" — the brain files it under <span class="white">big number, sounds like enough</span> and moves on. The word does the thinking for you.</p>
+  <p class="body" style="margin-top:16px;">Throughout this presentation: <span class="green">megatons</span> means what you were taught "million tons" means. <span class="green">Gigatons</span> means what "billion tons" means. Same numbers. Honest prefixes.</p>
+</div>
+
+<!-- SLIDE 2: THE LIMITS TO GROWTH -->
+<div class="slide" id="s2">
+  <h2>The Limits to Growth — <span class="blue">1972</span></h2>
+  <p class="body">The Club of Rome's landmark report examined five factors that limit growth on a finite planet: population, food production, industrial production, pollution, and <span class="white">nonrenewable resource depletion</span>.</p>
+  <p class="body" style="margin-top:16px;">On page 56, Table 4 lists chromium reserves. The report states:</p>
+  <div class="quote">
+    "Known global reserves: 775 million metric tons, of which 1.85 million metric tons were mined annually."
+    <div class="source">— Limits to Growth, Table 4, 1972</div>
+  </div>
+  <p class="body" style="margin-top:16px;">This sentence contains a <span class="highlight">critical error</span> that has never been corrected.</p>
+</div>
+
+<!-- SLIDE 3: THE ERROR -->
+<div class="slide" id="s3">
+  <h2>The <span class="highlight">Error</span></h2>
+  <p class="body" style="margin-bottom: 30px;">The report uses "chromium" interchangeably with "chromite ore." These are <span class="white">not the same thing</span>.</p>
+  <div class="correction-box">
+    <div class="before">
+      <div style="font-size:16px; color:var(--accent); margin-bottom:8px;">WHAT THEY WROTE</div>
+      <div style="font-size:18px; color:var(--text);">775 million metric tons of <span class="highlight">chromium</span> reserves</div>
+      <div style="font-size:14px; color:var(--dim); margin-top:6px;">1.85 million tons mined annually</div>
+    </div>
+    <div class="arrow-mid">→</div>
+    <div class="after">
+      <div style="font-size:16px; color:var(--green); margin-bottom:8px;">WHAT IT ACTUALLY WAS</div>
+      <div style="font-size:18px; color:var(--text);">775 megatons of <span class="green">shipping-grade chromite ore</span></div>
+      <div style="font-size:14px; color:var(--dim); margin-top:6px;">~6 megatons ore mined → 1.85 megatons chromium metal extracted</div>
+    </div>
+  </div>
+  <p class="body" style="margin-top:20px;">Shipping-grade chromite ore is normalized to 45% Cr₂O₃. Chromite is 68% chromium metal. The conversion from ore to metal requires multiple steps and significant energy.</p>
+</div>
+
+<!-- SLIDE 4: THE CONVERSION CHAIN -->
+<div class="slide" id="s4">
+  <h2>The Conversion Chain</h2>
+  <p class="body" style="margin-bottom:30px;">From rock in the ground to usable chromium metal:</p>
+  <div class="chain-diagram">
+    <div class="chain-box">Raw ore<br><span style="font-size:12px;color:var(--dim);">in the ground</span></div>
+    <div class="chain-arrow">→</div>
+    <div class="chain-box">Shipping-grade ore<br><span style="font-size:12px;color:var(--dim);">45% Cr₂O₃</span></div>
+    <div class="chain-arrow">→</div>
+    <div class="chain-box">Chromite mineral<br><span style="font-size:12px;color:var(--dim);">68% Cr by weight</span></div>
+    <div class="chain-arrow">→</div>
+    <div class="chain-box" style="border-color:var(--accent);">Chromium metal<br><span style="font-size:12px;color:var(--accent);">~30.6% of ore weight</span></div>
+  </div>
+  <p class="body" style="margin-top:30px;">When reports say "775 million tons," they mean <span class="white">ore</span>, not metal. The actual chromium metal content is roughly <span class="highlight">30.6%</span> of the headline figure. This distinction is systematically obscured in public reporting.</p>
+</div>
+
+<!-- SLIDE 5: PRODUCTION GROWTH -->
+<div class="slide" id="s5">
+  <h2>Extraction: <span class="blue">1950</span> to <span class="highlight">2024</span></h2>
+            <div style="width:100%;max-width:1000px;">
+    <div style="position:relative;display:flex;align-items:flex-end;gap:2px;height:300px;width:100%;border-bottom:1px solid #333;padding:0 5px;" id="productionChart">
+<div style="flex:1;"><div class="bar" data-h="13" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="15" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="17" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="20" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="17" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="19" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="22" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="25" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="20" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="21" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="23" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="22" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="23" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="21" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="23" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="27" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="25" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="26" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="28" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="30" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="35" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="36" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="36" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="37" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="40" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="46" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="44" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="47" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="54" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="47" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="51" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="46" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="43" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="46" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="53" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="58" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="64" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="63" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="70" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="78" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="72" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="74" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="62" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="56" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="56" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="82" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="66" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="78" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="81" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="87" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="86" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="68" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="82" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="86" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="91" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="107" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="110" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="126" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="133" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="109" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="136" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="151" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="151" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="208" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="214" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="207" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="198" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="228" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="270" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar" data-h="257" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar red" data-h="198" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar red" data-h="239" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar red" data-h="234" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar red" data-h="252" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="flex:1;"><div class="bar red" data-h="262" style="width:100%;max-width:14px;height:0px;margin:0 auto;"></div></div>
+<div style="position:absolute;bottom:17px;left:0.0%;transform:translateX(-50%);font-family:var(--mono);font-size:10px;color:#aaa;white-space:nowrap;">2Mt</div>
+<div style="position:absolute;bottom:27px;left:13.5%;transform:translateX(-50%);font-family:var(--mono);font-size:10px;color:#aaa;white-space:nowrap;">4Mt</div>
+<div style="position:absolute;bottom:39px;left:27.0%;transform:translateX(-50%);font-family:var(--mono);font-size:10px;color:#aaa;white-space:nowrap;">6Mt</div>
+<div style="position:absolute;bottom:55px;left:40.5%;transform:translateX(-50%);font-family:var(--mono);font-size:10px;color:#aaa;white-space:nowrap;">9Mt</div>
+<div style="position:absolute;bottom:76px;left:54.1%;transform:translateX(-50%);font-family:var(--mono);font-size:10px;color:#aaa;white-space:nowrap;">13Mt</div>
+<div style="position:absolute;bottom:90px;left:67.6%;transform:translateX(-50%);font-family:var(--mono);font-size:10px;color:#aaa;white-space:nowrap;">15Mt</div>
+<div style="position:absolute;bottom:140px;left:81.1%;transform:translateX(-50%);font-family:var(--mono);font-size:10px;color:#aaa;white-space:nowrap;">24Mt</div>
+<div style="position:absolute;bottom:202px;left:94.6%;transform:translateX(-50%);font-family:var(--mono);font-size:10px;color:#aaa;white-space:nowrap;">35Mt</div>
+<div style="position:absolute;bottom:266px;left:100.0%;transform:translateX(-50%);font-family:var(--mono);font-size:10px;color:#aaa;white-space:nowrap;">47Mt</div>
+    </div>
+    <div style="display:flex;gap:2px;width:100%;padding:4px 5px 0;">
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;">1950</div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;">1960</div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;">1970</div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;">1980</div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;">1990</div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;">2000</div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;">2010</div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;">2020</div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;"></div>
+<div style="flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:#555;white-space:nowrap;">2024</div>
+    </div>
+  </div>
+  <p class="body" style="text-align:center;">Annual chromite ore extraction — megatons (shipping grade) — Source: USGS Data Series 140</p>
+  <p class="body" style="text-align:center;">Extraction has increased <span class="highlight">7×</span> since the Limits to Growth was published in 1972, and <span class="highlight">20×</span> since 1950.</p>
+</div>
+
+<!-- SLIDE 6: THE 12 BILLION TON MYTH -->
+<div class="slide" id="s6">
+  <h2>The 12 Gigaton <span class="highlight">Myth</span></h2>
+  <p class="body">Every USGS Mineral Commodity Summary since the 1990s contains this sentence:</p>
+  <div class="quote">
+    "World resources are greater than 12 billion tons of shipping-grade chromite, sufficient to meet conceivable demand for centuries."
+    <div class="source">— USGS Mineral Commodity Summaries, 1996–2026 (unchanged)</div>
+  </div>
+  <p class="body" style="margin-top:16px;">Where did this number come from? A 1984 international assessment estimated <span class="blue">7 gigatons</span>. USGS specialist <span class="white">John F. Papp</span> later upgraded it to 12 gigatons by including substandard deposits that were previously excluded.</p>
+  <p class="body">The sentence has been copy-pasted verbatim for <span class="highlight">30 years</span>.</p>
+</div>
+
+<!-- SLIDE 7: STRATIFORM VS PODIFORM -->
+<div class="slide" id="s7">
+  <h2>Stratiform vs. <span class="green">Podiform</span></h2>
+  <div class="two-col">
+    <div>
+      <h3 style="color:var(--accent);">Stratiform — 96.5%</h3>
+      <p style="font-size:18px; color:var(--dim); line-height:1.6;">
+        Deep underground deposits.<br>
+        Low grade, difficult to mine.<br>
+        Requires massive capital investment.<br>
+        Even the Soviet command economy largely left these in the ground.<br>
+        <span class="highlight">Barely economic with modern technology.</span>
+      </p>
+    </div>
+    <div>
+      <h3 style="color:var(--green);">Podiform — 3.5%</h3>
+      <p style="font-size:18px; color:var(--dim); line-height:1.6;">
+        Near-surface, high-grade deposits.<br>
+        Economically viable to mine.<br>
+        Open-pit or shallow underground.<br>
+        This is what the world actually mines.<br>
+        <span class="green">This is what's running out.</span>
+      </p>
+    </div>
+  </div>
+  <p class="body" style="margin-top:30px; text-align:center;">Of the claimed 12 gigatons, only <span class="highlight">~3.5%</span> is podiform. The headline number includes deposits that cannot be economically mined.</p>
+</div>
+
+<!-- SLIDE 8: THE REAL CORRECTION -->
+<div class="slide" id="s8">
+  <h2>The <span class="highlight">Correction</span></h2>
+  <p class="body" style="margin-bottom:20px;">Applying both corrections — unit conflation and deposit classification:</p>
+  <div style="display:flex; gap:40px; align-items:center; justify-content:center; margin:20px 0;">
+    <div class="stacked-stat">
+      <div class="num" style="color:var(--accent2);">12 Gt</div>
+      <div class="label">headline "resources"<br>(shipping-grade chromite ore)</div>
+    </div>
+    <div style="font-size:48px; color:var(--dim);">→</div>
+    <div class="stacked-stat">
+      <div class="num" style="color:var(--yellow);">420 Mt</div>
+      <div class="label">podiform only (3.5%)<br>(economically viable ore)</div>
+    </div>
+    <div style="font-size:48px; color:var(--dim);">→</div>
+    <div class="stacked-stat">
+      <div class="num" style="color:var(--accent);">~128 Mt</div>
+      <div class="label">chromium metal content<br>(30.6% of viable ore)</div>
+    </div>
+  </div>
+  <p class="body" style="text-align:center; margin-top:20px;">The accessible chromium metal is roughly <span class="highlight">1%</span> of the headline resource figure. At 2024 extraction rates of ~14 megatons of chromium metal per year, the economically viable supply is measured in <span class="highlight">years, not centuries</span>.</p>
+</div>
+
+<!-- SLIDE 9: THE DOUBLING -->
+<div class="slide" id="s9">
+  <h2>The <span class="highlight">Doubling</span> — 2023 to 2024</h2>
+  <div class="table-wrap" style="margin:20px 0;">
+    <table>
+      <thead><tr><th>Year (USGS Edition)</th><th>Reported Reserves</th><th>Change</th></tr></thead>
+      <tbody>
+        <tr><td>2018</td><td>560 megatons</td><td>—</td></tr>
+        <tr><td>2019</td><td>570 megatons</td><td>+1.8%</td></tr>
+        <tr><td>2020</td><td>570 megatons</td><td>0%</td></tr>
+        <tr><td>2021</td><td>570 megatons</td><td>0%</td></tr>
+        <tr><td>2022</td><td>560 megatons</td><td>-1.8%</td></tr>
+        <tr><td>2023</td><td>560 megatons</td><td>0%</td></tr>
+        <tr class="highlight-row"><td>2024</td><td>1.2 gigatons</td><td style="color:var(--accent);font-size:22px;">+114%</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="body" style="text-align:center;">Global chromite reserves <span class="highlight">doubled overnight</span>. No new deposits were discovered. No new mining technology emerged. The rocks did not change.</p>
+  <div class="footnote">Source: USGS Mineral Commodity Summaries via Statista; US Geological Survey data</div>
+</div>
+
+<!-- SLIDE 10: THE PAPER TRAIL -->
+<div class="slide" id="s10">
+  <h2>The Paper <span class="blue">Trail</span></h2>
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-year">USGS MCS 2025 (for data year 2024)</div>
+      <div class="timeline-text">Reserves jump from 560 megatons to 1.2 gigatons. A single footnote explains: <span class="white">"Reserves for Kazakhstan were revised based on a Government report."</span></div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-year">USGS contacted directly</div>
+      <div class="timeline-text">The USGS commodity specialist responsible for the chromium chapter responded within days. They acknowledged the revision, pointed to the 2026 MCS with improved methodology, and admitted: the Kazakhstan source data is <span class="highlight">"likely based on"</span> the Soviet-era GKZ classification system — they cannot confirm which system Kazakhstan actually uses.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-year">USGS MCS 2026 — Footnote 14</div>
+      <div class="timeline-text">Kazakhstan reserves are "likely based on the GKZ classification system A+B+C1+C2." A reserve data was <span class="highlight">not provided</span>. C2 reserves were excluded. The remaining B+C1 breakdown is unknown.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 11: GKZ CLASSIFICATION -->
+<div class="slide" id="s11">
+  <h2>The Soviet <span class="yellow">Classification</span> Problem</h2>
+  <p class="body" style="margin-bottom:20px;">Kazakhstan inherited the Soviet GKZ mineral classification system. It was supposed to transition to international CRIRSCO standards by January 2024. That deadline was extended to January 2026. Then the Soviet-era system was restored to run in parallel.</p>
+  <div class="table-wrap" style="margin:20px 0;">
+    <table>
+      <thead><tr><th>GKZ Category</th><th>Meaning</th><th>Rough Western Equivalent</th></tr></thead>
+      <tbody>
+        <tr style="color:var(--green);"><td>A</td><td>Well established, fully drilled</td><td>Proven</td></tr>
+        <tr style="color:var(--accent2);"><td>B</td><td>Explored, reasonable confidence</td><td>Probable</td></tr>
+        <tr style="color:var(--yellow);"><td>C1</td><td>Less explored, lower confidence</td><td>Between Probable and Possible</td></tr>
+        <tr style="color:var(--accent);"><td>C2</td><td>Geological inference, minimal drilling</td><td>Possible / Speculative</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="body">The USGS excluded C2. But if the remaining Kazakhstan figure is dominated by C1, the economically meaningful reserve is a <span class="highlight">fraction</span> of what's reported.</p>
+  <p class="body">Kazakhstan's government report <span class="highlight">did not even include A reserve data</span>.</p>
+</div>
+
+<!-- SLIDE 12: TWO MINES -->
+<div class="slide" id="s12">
+  <h2>Two <span class="highlight">Mining Areas</span> Supply the World</h2>
+  <div class="two-col">
+    <div>
+      <h3 style="color:var(--yellow);">Kazakhstan — Donskoy GOK</h3>
+      <p style="font-size:17px; color:var(--dim); line-height:1.6;">
+        Operated by Kazchrome (subsidiary of ERG).<br>
+        Registered in <span class="white">Luxembourg</span>.<br>
+        40% owned by Kazakhstan government.<br>
+        60% owned by three oligarchs.<br>
+        Operating since <span class="white">1938</span>.<br>
+        New mines now at <span class="highlight">800–1,200 meters depth</span>.<br>
+        $1.8 billion invested to <span class="highlight">replace diminishing output</span>.<br>
+        Under Russian military umbrella (CSTO).<br>
+        Reserve data from Soviet-era classification.
+      </p>
+    </div>
+    <div>
+      <h3 style="color:var(--accent2);">South Africa — Bushveld Complex</h3>
+      <p style="font-size:17px; color:var(--dim); line-height:1.6;">
+        ~70% of world reserves, 75% of ferrochrome.<br>
+        Overwhelmingly <span class="highlight">stratiform</span> deposits.<br>
+        Primary chromite layers going <span class="highlight">deeper and more expensive</span>.<br>
+        Producers now securing platinum mine tailings as alternative source.<br>
+        Ferrochrome smelting is <span class="white">extremely electricity-intensive</span>.<br>
+        South Africa's grid operator Eskom suffered <span class="highlight">rolling blackouts</span> from 2007–2024.<br>
+        Coal power stations are 50 years old, scheduled for retirement.<br>
+        Eskom is effectively <span class="highlight">bankrupt</span>.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 13: NOT JUST CHROMIUM -->
+<div class="slide" id="s13">
+  <h2>Not Just <span class="highlight">Chromium</span></h2>
+  <p class="body" style="margin-bottom:20px;">The same pattern of reserve inflation, unit conflation, and classification manipulation applies across approximately <span class="white">30 critical minerals</span>. Chromium is the case study because the data trail is traceable to named individuals. But the structure is identical for:</p>
+  <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:12px; max-width:800px; margin:20px 0;">
+    <div class="chain-box" style="text-align:center; font-size:15px;">Copper</div>
+    <div class="chain-box" style="text-align:center; font-size:15px;">Cobalt</div>
+    <div class="chain-box" style="text-align:center; font-size:15px;">Manganese</div>
+    <div class="chain-box" style="text-align:center; font-size:15px;">Tungsten</div>
+    <div class="chain-box" style="text-align:center; font-size:15px;">Vanadium</div>
+    <div class="chain-box" style="text-align:center; font-size:15px;">Zinc</div>
+    <div class="chain-box" style="text-align:center; font-size:15px;">Tin</div>
+    <div class="chain-box" style="text-align:center; font-size:15px;">Nickel</div>
+    <div class="chain-box" style="text-align:center; font-size:15px;">Antimony</div>
+    <div class="chain-box" style="text-align:center; font-size:15px;">Indium</div>
+    <div class="chain-box" style="text-align:center; font-size:15px;">Gallium</div>
+    <div class="chain-box" style="text-align:center; font-size:15px;">Platinum</div>
+  </div>
+  <p class="body">Each mineral has its own version of the stratiform/podiform distinction — headline reserves dominated by deposits that are technically present but economically marginal or unminable.</p>
+  <div class="footnote">See: Clugston, "Blip" (2019); Youngquist, "GeoDestinies" (1997); Clugston, "Industrialism" (2023)</div>
+</div>
+
+<!-- SLIDE 14: THE TIMELINE -->
+<div class="slide" id="s14" style="background: linear-gradient(180deg, #0a0a0f 0%, #1a0808 100%);">
+  <h2 style="font-size:48px;">The <span style="color:#ff4444; text-shadow: 0 0 30px rgba(255,68,68,0.3);">Timeline</span></h2>
+  <p class="body" style="margin-bottom:24px; color:#777;">Chris Clugston, building on Walter Youngquist's work, documented the decade-by-decade progression:</p>
+  <div style="display:flex; flex-direction:column; gap:28px; width:100%; max-width:900px;">
+    <div style="border-left:4px solid #ffcc22; padding:16px 24px; background:rgba(255,204,34,0.05); border-radius:0 6px 6px 0;">
+      <div style="font-family:var(--mono); font-size:20px; color:#ffcc22; font-weight:600; margin-bottom:8px;">THE 2020s — "Us versus Them"</div>
+      <div style="font-size:20px; color:#bbb; line-height:1.5; font-style:italic;">"Our goal of universal human prosperity through global industrialism is attainable. There is enough for everybody. Our problem is <span style="color:#ffcc22; font-weight:600;">a broken system</span>."</div>
+    </div>
+    <div style="border-left:4px solid #ff6622; padding:16px 24px; background:rgba(255,102,34,0.06); border-radius:0 6px 6px 0;">
+      <div style="font-family:var(--mono); font-size:20px; color:#ff6622; font-weight:600; margin-bottom:8px;">THE 2030s — "Us or Them"</div>
+      <div style="font-size:20px; color:#bbb; line-height:1.5; font-style:italic;">"The system cannot be fixed because of <span style="color:#ff6622; font-weight:600;">them</span>. There is enough for us, but not enough for them. So <span style="color:#ff6622; font-weight:600;">they must go. Literally.</span>"</div>
+    </div>
+    <div style="border-left:4px solid #ff2222; padding:16px 24px; background:rgba(255,34,34,0.08); border-radius:0 6px 6px 0; box-shadow: 0 0 40px rgba(255,34,34,0.1);">
+      <div style="font-family:var(--mono); font-size:20px; color:#ff2222; font-weight:600; margin-bottom:8px;">THE 2040s — "Me or You"</div>
+      <div style="font-size:20px; color:#ccc; line-height:1.5; font-style:italic;">"My problem is <span style="color:#ff2222; font-weight:700;">you</span> — a resource competitor. As societal institutions, governance and real wealth creation cease to exist, <span style="color:#ff2222; font-weight:600;">the survival of each individual depends on the elimination of all competitors.</span>"</div>
+    </div>
+  </div>
+  <div class="footnote">Source: Clugston, "Blip: Humanity's 300 Year Self-Terminating Experiment with Industrialism" (2019), final chapter</div>
+</div>
+
+<!-- SLIDE 15: WHO KNOWS -->
+<div class="slide" id="s15">
+  <h2>Who <span class="yellow">Knows?</span></h2>
+  <p class="body">The USGS tracks over 90 minerals across 180 countries. Each mineral is assigned to a single specialist. Nobody's job description includes synthesizing across all commodities to ask: what does the aggregate picture look like?</p>
+  <p class="body" style="margin-top:16px;">At the civilian institutional level, the system is not designed to produce this synthesis. But at the highest levels of the military-industrial complex, the picture is almost certainly understood. Defense agencies publish strategic mineral assessments. The U.S. National Security Strategy explicitly names critical mineral access as a national security priority. Military bases correlate with mineral-rich regions across Africa and Central Asia. Preclusive purchasing of strategic materials has been documented U.S. policy since World War II.</p>
+  <p class="body" style="margin-top:16px;">The public does not know. The institutional bureaucracy may not know. But the people who plan force projection and supply chain security for the next 30 years — <span class="highlight">they know</span>.</p>
+  <p class="body" style="margin-top:16px;">The question is not whether anyone understands the crisis. The question is whether the response will include the general population — <span class="highlight">or exclude it</span>.</p>
+</div>
+
+<!-- SLIDE 16: CLOSING -->
+<div class="slide" id="s16">
+  <h2>The <span class="highlight">Question</span></h2>
+  <p class="body">If the corrected numbers are right — if the economically accessible reserves of chromium and ~30 other critical minerals are measured in years rather than centuries — what does the timeline actually look like?</p>
+  <p class="body" style="margin-top:16px;">Nobody in a position of authority can answer this question publicly, because there is no politically survivable answer.</p>
+  <p class="body" style="margin-top:16px;">The data is public. The USGS publications are free. The arithmetic is elementary.</p>
+  <p class="body" style="margin-top:20px; color:var(--text); font-size:24px;">The only thing missing is someone willing to do the math.</p>
+</div>
+
+<!-- SLIDE 17: END CARD -->
+<div class="slide title-slide" id="s17">
+  <h1 class="fade-in" style="font-size:48px;">ifinishedelementary.com</h1>
+  <p class="fade-in-delay" style="margin-top:20px;">Source data and interactive presentations:</p>
+  <p class="fade-in-delay" style="color:var(--accent2);">ifinishedelementary.github.io/ifinishedelementary</p>
+  <p class="fade-in-delay2" style="margin-top:40px; font-size:16px; color:#555;">
+    Further reading:<br>
+    Youngquist, "GeoDestinies" (1997)<br>
+    Clugston, "Blip" (2019) and "Industrialism" (2023)<br>
+    USGS Mineral Commodity Summaries: pubs.usgs.gov
+  </p>
+</div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+let current = 0;
+const total = slides.length;
+
+function showSlide(n) {
+  slides[current].classList.remove('active');
+  current = Math.max(0, Math.min(n, total - 1));
+  slides[current].classList.add('active');
+  document.getElementById('slideCounter').textContent = (current + 1) + ' / ' + total;
+  document.getElementById('progressBar').style.width = ((current / (total - 1)) * 100) + '%';
+  
+  // Animate bars on slide 6 (index shifted by inserted slide)
+  if (current === 6) {
+    var bars = document.querySelectorAll('#s5 .bar');
+    bars.forEach(function(bar) {
+      bar.style.transition = 'none';
+      bar.style.height = '0px';
+    });
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() {
+        bars.forEach(function(bar, i) {
+          bar.style.transition = 'height 1.2s ease ' + (i * 0.12) + 's';
+          bar.style.height = bar.getAttribute('data-h') + 'px';
+        });
+      });
+    });
+  } else {
+    document.querySelectorAll('#s5 .bar').forEach(function(bar) {
+      bar.style.transition = 'none';
+      bar.style.height = '0px';
+    });
+  }
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); showSlide(current + 1); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); showSlide(current - 1); }
+});
+
+document.addEventListener('click', e => {
+  const x = e.clientX;
+  if (x > window.innerWidth / 2) showSlide(current + 1);
+  else showSlide(current - 1);
+});
+
+showSlide(0);
+</script>
+
+</body>
+</html>
