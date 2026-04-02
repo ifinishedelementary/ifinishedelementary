@@ -519,31 +519,89 @@
     background: var(--gold-dim);
   }
 
+  /* ── BIJECTIVE BINARY GRID ── */
+  .bij-bin-grid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 0.3rem;
+  }
+  .bij-bin-cell {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 4px;
+    padding: 0.25rem 0.1rem;
+    text-align: center;
+    font-family: var(--mono);
+    min-height: 2.6rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition: background 0.3s, border-color 0.3s;
+  }
+  .bij-bin-cell .bbc-std {
+    color: var(--text-dim);
+    font-size: 0.55rem;
+    opacity: 0.5;
+  }
+  .bij-bin-cell .bbc-val {
+    color: transparent;
+    font-size: 0.7rem;
+    font-weight: 700;
+    margin-top: 0.1rem;
+    transition: color 0.3s;
+  }
+  .bij-bin-cell.filled {
+    background: rgba(124,179,66,0.06);
+    border-color: rgba(124,179,66,0.2);
+  }
+  .bij-bin-cell.filled .bbc-std { opacity: 1; }
+  .bij-bin-cell.filled .bbc-val { color: #7cb342; }
+  .bij-bin-cell.active {
+    background: rgba(124,179,66,0.15);
+    border-color: rgba(124,179,66,0.5);
+    box-shadow: 0 0 8px rgba(124,179,66,0.2);
+  }
+  @media (max-width: 600px) {
+    .bij-bin-grid { grid-template-columns: repeat(5, 1fr); }
+  }
+
   .infinite-ones {
     text-align: center;
     margin: 3rem 0;
     font-family: var(--mono);
-    font-size: clamp(1.5rem, 4vw, 2.5rem);
-    color: var(--gold);
+    font-size: clamp(1.4rem, 3.5vw, 2.5rem);
     font-weight: 700;
-    letter-spacing: 0.15em;
     overflow: hidden;
-    height: 4rem;
+    height: 5rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(201,168,76,0.04);
-    border: 1px solid rgba(201,168,76,0.12);
+    gap: 0.4em;
+    background: rgba(92,224,210,0.03);
+    border: 1px solid rgba(92,224,210,0.12);
     border-radius: 10px;
+    white-space: nowrap;
   }
-  .infinite-ones .growing {
-    display: inline-block;
-    animation: growOnes 8s linear infinite;
+  .infinite-ones .ones-growing {
+    color: #5ce0d2;
+    letter-spacing: 0.08em;
+    min-width: 1.5ch;
+    text-shadow: 0 0 12px rgba(92,224,210,0.4);
   }
-  @keyframes growOnes {
-    0% { letter-spacing: 0.15em; }
-    50% { letter-spacing: 0.5em; }
-    100% { letter-spacing: 0.15em; }
+  .infinite-ones .ones-eq {
+    color: rgba(92,224,210,0.35);
+    font-size: 0.85em;
+  }
+  .infinite-ones .ones-result {
+    color: #5ce0d2;
+    text-shadow: 0 0 16px rgba(92,224,210,0.5);
+  }
+  .infinite-ones .ones-new-digit {
+    animation: digitAppear 0.3s ease-out;
+  }
+  @keyframes digitAppear {
+    0% { opacity: 0; transform: translateY(-0.2em); }
+    100% { opacity: 1; transform: translateY(0); }
   }
 
   /* ── QUOTE BLOCK ── */
@@ -1202,25 +1260,25 @@
   </div>
 
   <div class="bijective-demo fade-in" style="text-align: center;">
-    <h4 style="font-family: var(--mono); font-size: 0.75rem; color: var(--gold); margin-bottom: 1rem; letter-spacing: 0.1em;">
+    <h4 style="font-family: var(--mono); font-size: 0.75rem; color: #9ccc65; margin-bottom: 1rem; letter-spacing: 0.1em;">
       BIJECTIVE BINARY COUNTER — WATCH IT COUNT
     </h4>
-    <div id="bijBinaryDisplay" style="font-family: var(--mono); display:flex; align-items:center; justify-content:center; gap: 2rem; flex-wrap: wrap; min-height: 80px;">
-      <div>
+    <div id="bijBinaryDisplay" style="font-family: var(--mono); display:flex; align-items:center; justify-content:center; gap: 2rem; height: 80px;">
+      <div style="width: 80px; text-align: center;">
         <div style="font-size: 0.65rem; color: var(--text-dim); margin-bottom: 0.4rem;">STANDARD VALUE</div>
-        <div id="bijBinStd" style="font-size: 2.2rem; color: var(--text-dim); font-weight: 700;">1</div>
+        <div id="bijBinStd" style="font-size: 2.2rem; color: var(--text-dim); font-weight: 700;">—</div>
       </div>
       <div style="font-size: 1.5rem; color: var(--text-dim);">=</div>
-      <div>
-        <div style="font-size: 0.65rem; color: var(--gold); margin-bottom: 0.4rem;">BIJECTIVE BINARY {1,2}</div>
-        <div id="bijBinNew" style="font-size: 2.2rem; color: var(--gold); font-weight: 700;">1</div>
+      <div style="width: 160px; text-align: center;">
+        <div style="font-size: 0.65rem; color: #9ccc65; margin-bottom: 0.4rem;">BIJECTIVE BINARY {1,2}</div>
+        <div id="bijBinNew" style="font-size: 2.2rem; color: #7cb342; font-weight: 700;">—</div>
       </div>
     </div>
-    <div style="margin-top:1rem; display:flex; gap:0.5rem; justify-content:center; flex-wrap: wrap;">
+    <div style="margin-top:0.8rem; display:flex; gap:0.5rem; justify-content:center; flex-wrap: wrap;">
       <button onclick="bijBinPause = !bijBinPause; this.textContent = bijBinPause ? '▶ Play' : '⏸ Pause'" class="lag-controls-btn" style="font-size:0.7rem;">⏸ Pause</button>
-      <button onclick="bijBinVal = 0; bijBinPause = false;" class="lag-controls-btn" style="font-size:0.7rem;">↺ Reset</button>
+      <button onclick="bijBinReset();" class="lag-controls-btn" style="font-size:0.7rem;">↺ Reset</button>
     </div>
-    <div id="bijBinHistory" style="margin-top:1rem; font-family:var(--mono); font-size:0.7rem; color:var(--text-dim); line-height:1.8; min-height:2.5rem;"></div>
+    <div id="bijBinGrid" class="bij-bin-grid" style="margin-top:1.5rem;"></div>
   </div>
 
   <h3 class="fade-in">The Infinite String of Ones</h3>
@@ -1231,11 +1289,13 @@
   </p>
 
   <div class="infinite-ones fade-in">
-    <span class="growing">1 = 11 = 111 = 1111 = 11111 = 111...∞</span>
+    <span class="ones-growing" id="onesGrow">1</span>
+    <span class="ones-eq">=</span>
+    <span class="ones-result">1</span>
   </div>
 
   <p class="fade-in" style="text-align: center; font-size: 1.1rem;">
-    <strong class="gold">One is an infinite string of ones.</strong>
+    <strong style="color: #5ce0d2;">One is an infinite string of ones.</strong>
   </p>
 
   <p class="fade-in">
@@ -2158,64 +2218,94 @@ function buildBijGrid() {
 }
 buildBijGrid();
 
+// ── INFINITE ONES ANIMATION ──
+let onesCount = 1;
+const onesMax = 18;
+function stepOnes() {
+  const el = document.getElementById('onesGrow');
+  if (!el) { setTimeout(stepOnes, 700); return; }
+  onesCount++;
+  if (onesCount > onesMax) {
+    onesCount = 1;
+    el.textContent = '1';
+    setTimeout(stepOnes, 1200);
+    return;
+  }
+  el.textContent = '1'.repeat(onesCount);
+  setTimeout(stepOnes, onesCount < 4 ? 700 : onesCount < 10 ? 500 : 350);
+}
+setTimeout(stepOnes, 1500);
+
 // ── BIJECTIVE BINARY COUNTER ──
 let bijBinVal = 0;
 let bijBinPause = false;
-let bijBinHistory = [];
 
 function toUserBijBin(n) {
-  // Encodes n in the user's bijective base-2: {1,2}
-  // value = d_0 + (d_1 - 1)*2 + (d_2 - 1)*4 + ...
-  // Shortest unique representation (first digit ≥ 2 for multi-digit)
   if (n === 1) return '1';
   if (n === 2) return '2';
-  // Find digit count k: n falls in range (2^(k-1) + 1) to 2^k
   let k = 1;
   while (n > Math.pow(2, k)) k++;
-  // First digit is always 2, remaining = n - 2^(k-1)
   let remaining = n - Math.pow(2, k - 1);
   let sub = toUserBijBin(remaining);
-  while (sub.length < k - 1) sub = '1' + sub; // pad with 1s (since 1=11=111)
+  while (sub.length < k - 1) sub = '1' + sub;
   return '2' + sub;
+}
+
+function buildBijBinGrid() {
+  const grid = document.getElementById('bijBinGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  for (let i = 1; i <= 100; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'bij-bin-cell';
+    cell.id = 'bbc-' + i;
+    cell.innerHTML = '<div class="bbc-std">' + i + '</div><div class="bbc-val">' + toUserBijBin(i) + '</div>';
+    grid.appendChild(cell);
+  }
+}
+buildBijBinGrid();
+
+function bijBinReset() {
+  bijBinVal = 0;
+  bijBinPause = false;
+  const stdEl = document.getElementById('bijBinStd');
+  const newEl = document.getElementById('bijBinNew');
+  if (stdEl) stdEl.textContent = '—';
+  if (newEl) newEl.textContent = '—';
+  for (let i = 1; i <= 100; i++) {
+    const cell = document.getElementById('bbc-' + i);
+    if (cell) cell.className = 'bij-bin-cell';
+  }
 }
 
 function stepBijBin() {
   if (!bijBinPause) {
+    if (bijBinVal >= 100) {
+      // Pause at 100, then reset after a delay
+      setTimeout(() => { bijBinReset(); setTimeout(stepBijBin, 600); }, 2000);
+      return;
+    }
     bijBinVal++;
-    if (bijBinVal > 32) bijBinVal = 1;
-    
+
     const stdEl = document.getElementById('bijBinStd');
     const newEl = document.getElementById('bijBinNew');
-    const histEl = document.getElementById('bijBinHistory');
-    
+
     if (stdEl && newEl) {
       const bijStr = toUserBijBin(bijBinVal);
       stdEl.textContent = bijBinVal;
-      
-      // Highlight special cases where 1 = 11 = 111
-      if (bijBinVal === 1) {
-        newEl.innerHTML = '<span style="color:#c43e3e;">1</span> <span style="font-size:0.6em;color:#c43e3e;">= 11 = 111 = 1111…</span>';
-      } else if (bijBinVal === 2) {
-        newEl.innerHTML = '<span>2</span> <span style="font-size:0.6em;color:var(--text-dim);">= 12 = 112…</span>';
-      } else {
-        newEl.textContent = bijStr;
+      newEl.textContent = bijStr;
+
+      // Remove active highlight from previous
+      if (bijBinVal > 1) {
+        const prev = document.getElementById('bbc-' + (bijBinVal - 1));
+        if (prev) prev.className = 'bij-bin-cell filled';
       }
-      
-      bijBinHistory.push({ v: bijBinVal, b: bijStr });
-      if (bijBinHistory.length > 10) bijBinHistory.shift();
-      
-      if (histEl) {
-        histEl.innerHTML = bijBinHistory.map(h => {
-          const isOne = (h.v === 1);
-          const isTwo = (h.v === 2);
-          const col = isOne ? '#c43e3e' : 'var(--text-dim)';
-          const bcol = isOne ? '#c43e3e' : (isTwo ? 'var(--gold)' : 'var(--gold)');
-          return '<span style="color:' + col + ';">' + h.v + '=<span style="color:' + bcol + '">' + h.b + '</span></span>';
-        }).join(' &nbsp;·&nbsp; ');
-      }
+      // Highlight current cell
+      const curr = document.getElementById('bbc-' + bijBinVal);
+      if (curr) curr.className = 'bij-bin-cell filled active';
     }
   }
-  setTimeout(stepBijBin, 900);
+  setTimeout(stepBijBin, 500);
 }
 setTimeout(stepBijBin, 1200);
 
