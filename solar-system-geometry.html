@@ -104,8 +104,9 @@ body{background:#0a0a0f;color:#c8c8d0;font-family:'JetBrains Mono','Fira Code','
 <body>
 <div class="desc"><div class="desc-inner">
 <h1>Solar System Geometry — 3D</h1>
-<p>The solar system as it actually exists in galactic space — <span class="hl-r">tilted 60.2° to the galactic plane</span>, not the flat ecliptic-horizontal lie every other simulation shows. 13 bodies, 19 spherical moons, asteroid belt, Kuiper belt. JPL Keplerian orbital elements. The <span style="color:#FFD700">golden axes</span> mark the galactic reference frame: <span style="color:#FF4444">Center</span>, <span style="color:#FF4444">North</span>, and <span style="color:#4488FF;background:#0066FF;padding:0 3px;border-radius:2px;font-weight:700">Solar Motion</span> — the direction the Sun is actually travelling at 230 km/s (with a 1.7° upward tilt as it climbs above the galactic midplane).</p>
+<p>The solar system as it actually exists in galactic space — <span class="hl-r">tilted 60.2° to the galactic plane</span>, not the flat ecliptic-horizontal convention every other simulation defaults to. 13 bodies, 19 spherical moons, asteroid belt, Kuiper belt. JPL Keplerian orbital elements. The <span style="color:#FFD700">golden axes</span> mark the galactic reference frame: <span style="color:#FF4444">Center</span>, <span style="color:#FF4444">North</span>, and <span style="color:#4488FF;background:#0066FF;padding:0 3px;border-radius:2px;font-weight:700">Solar Motion</span> — the direction the Sun is actually travelling at 230 km/s (with a 1.7° upward tilt as it climbs above the galactic midplane).</p>
 <p><span class="hl-g">Gravity lines</span> connect body pairs as 3D cylinders — width encodes force on a log scale. <span class="hl-p">Spiral trails</span> show the helical paths each planet traces through galactic space as the Sun drags the system forward. The trails stream at 1.7° above horizontal — the Sun's true trajectory, not an idealized circular orbit.</p>
+<p>Below the simulation: two novel graph types invented for this presentation. The <span style="color:#FFD700;font-weight:700">Force City</span> — a 13×13 grid of buildings where height = gravitational force between every body pair. The <span style="color:#FFD700;font-weight:700">Radial Matrix Urchin</span> — the same 156 relationships wrapped onto a sphere with radial spines. Neither has ever been built before. Both breathe in real time as the planets move.</p>
 <p><span style="color:#888">Planes</span> shows drop-lines from each body to the galactic plane. <span style="color:#888">Axes</span> shows the galactic coordinate frame. <span style="color:#888">Galactic</span> shows the Sun's orbital vector with its multi-coloured glow. <span style="color:#FFD700;font-weight:700">Drag</span> to orbit · <span style="color:#FFD700;font-weight:700">Scroll</span> to zoom · <span style="color:#FFD700;font-weight:700">Right-drag</span> to pan.</p>
 </div></div>
 <div class="viewport" id="viewport"><div class="label-overlay" id="labelOverlay"></div><div class="overlay-info" id="overlay"></div></div>
@@ -135,7 +136,7 @@ body{background:#0a0a0f;color:#c8c8d0;font-family:'JetBrains Mono','Fira Code','
 <button class="btn" style="color:#8a8" onclick="connectAll()">All</button><button class="btn" style="color:#a88" onclick="clearAll()">Clear</button>
 </div>
 <div class="desc" style="border:none;padding:8px 8px 4px"><div class="desc-inner" style="max-width:100%">
-<p style="color:#888;font-size:9px;line-height:1.6;margin:0">The grid below controls which <span style="color:#aaa;font-weight:700">gravity lines</span> appear in the 3D viewport above. Each column is a body. Check a row to connect that pair. The <span style="color:#8a8">+</span> button connects all lines from one body; <span style="color:#a88">−</span> clears them. <span style="color:#8a8">All</span> and <span style="color:#a88">Clear</span> toggle everything. Moons appear below their parent planet — check them to see gravity lines to individual moons. Every checked pair also feeds the force matrix city and sphere below.</p>
+<p style="color:#888;font-size:9px;line-height:1.6;margin:0">The grid below controls which <span style="color:#aaa;font-weight:700">gravity lines</span> appear in the 3D viewport above. Each column is a body. Check a row to connect that pair. The <span style="color:#8a8">+</span> button connects all lines from one body; <span style="color:#a88">−</span> clears them. <span style="color:#8a8">All</span> and <span style="color:#a88">Clear</span> toggle everything. Every checked pair also feeds the Force City and Radial Matrix Urchin below.</p>
 </div></div>
 <div class="grid" id="grid"></div>
 </div>
@@ -159,11 +160,11 @@ body{background:#0a0a0f;color:#c8c8d0;font-family:'JetBrains Mono','Fira Code','
 </div>
 <div class="fm-panel">
 <div class="desc" style="border:none;padding:10px 14px 0"><div class="desc-inner" style="max-width:100%">
-<p style="color:#b0b0c0;font-size:11px;line-height:1.8;margin:0">A new type of graph — <span style="color:#FFD700;font-weight:700">never built before</span>. A 13×13 city where every building is the gravitational force between two bodies. Row axis (left) = body A. Column axis (front) = body B. The <span style="color:#fff">diagonal</span> — where a body meets itself — runs through the city as a translucent wall with glowing identity spheres. The city is symmetric across this diagonal because F(A,B) = F(B,A). Switch to <span style="color:#FF4444">Real F</span> and watch: one pair — Sun-Jupiter — towers over everything. The entire solar system's gravitational story is a binary relationship with 11 small things caught in the geometry. Every other column is invisible at linear scale. That truth is impossible to show in line widths. Only column heights can display a 10¹⁵ dynamic range.</p>
+<p style="color:#b0b0c0;font-size:11px;line-height:1.8;margin:0">The <span style="color:#FFD700;font-weight:700">Force City</span> — a new type of graph, <span style="color:#FFD700;font-weight:700">never built before</span>. A 13×13 city where every building is the gravitational force between two bodies. Row axis (left) = body A. Column axis (front) = body B. The <span style="color:#fff">diagonal</span> — where a body meets itself — runs through the city as a translucent wall with glowing identity spheres. The city is symmetric across this diagonal because F(A,B) = F(B,A). Switch to <span style="color:#FF4444">Real F</span> and watch: one pair — Sun-Jupiter — towers over everything. The entire solar system's gravitational story is a binary relationship with 11 small things caught in the geometry. Every other building is invisible at linear scale. That truth is impossible to show in line widths. Only building heights can display a 10¹⁵ dynamic range.</p>
 </div></div>
 <div class="fm-header">
-<span class="fm-title">Gravitational Force Matrix — 3D</span>
-<span class="fm-sub">A 13×13 city of force. Every column = one body-pair. Row axis (left) = body A. Column axis (front) = body B. The diagonal shows each body's identity. Drag to orbit, scroll to zoom. Hit Play above — watch the columns breathe as the planets move.</span>
+<span class="fm-title">Force City — 3D</span>
+<span class="fm-sub">The Force City — 156 buildings, one per body-pair. Row axis (left) = body A. Column axis (front) = body B. The diagonal shows each body's identity. Drag to orbit, scroll to zoom. Watch the city breathe as the planets move.</span>
 <div class="fm-ctrls"><span class="lbl">HEIGHT</span>
 <label><input type="radio" name="fmMode" value="thin"> <span class="fm-mode-tag t-thin">Thin</span></label>
 <label><input type="radio" name="fmMode" value="log" checked> <span class="fm-mode-tag t-log">Log F</span></label>
@@ -179,11 +180,11 @@ body{background:#0a0a0f;color:#c8c8d0;font-family:'JetBrains Mono','Fira Code','
 </div>
 <div class="fm-panel">
 <div class="desc" style="border:none;padding:10px 14px 0"><div class="desc-inner" style="max-width:100%">
-<p style="color:#b0b0c0;font-size:11px;line-height:1.8;margin:0">Also <span style="color:#FFD700;font-weight:700">never built before</span>. The same 156 force columns wrapped onto a sphere. Latitude = body A (Sun at south pole, Haumea at north). Longitude = body B (spread around the equator). Each column radiates outward — height = force. The <span style="color:#FF8800">polar cylinder</span> maps every body's name to its latitude. Coloured connector rods link each body's identity dot on the sphere surface to its position on the cylinder. The sphere has no edges and no preferred viewing angle — every relationship is accessible from every direction. In <span style="color:#FF4444">Real F</span> mode, the Sun's south pole cap bristles with spikes while the rest of the sphere goes bald. The galaxy of gravitational interactions reduces to one polar cluster — a visual that flat graphs cannot produce.</p>
+<p style="color:#b0b0c0;font-size:11px;line-height:1.8;margin:0">The <span style="color:#FFD700;font-weight:700">Radial Matrix Urchin</span> — a new type of graph, <span style="color:#FFD700;font-weight:700">never built before</span>. The same 156 force columns wrapped onto a sphere like spines on a sea urchin. Latitude = body A (<span style="color:#FFD700">Sun</span> at south pole, Haumea at north). Longitude = body B (spread around the equator). Each column radiates outward — height = force. The <span style="color:#FF8800">polar cylinder</span> maps every body's name to its latitude. Coloured connector rods link each body's identity dot on the sphere surface to its position on the cylinder. The urchin has no edges and no preferred viewing angle — every relationship is accessible from every direction. In <span style="color:#FF4444">Real F</span> mode, the Sun's south pole cap bristles with spikes while the rest goes bald — the gravitational universe reduces to one polar cluster.</p>
 </div></div>
 <div class="fm-header">
-<span class="fm-title">Force Sphere — 3D</span>
-<span class="fm-sub">The same 156 body-pair columns mapped onto a sphere. <span class="hl">Latitude = row body. Longitude = column body.</span> Columns extend radially outward — height = log₁₀(F). The diagonal spirals from south pole to north. Drag to orbit the sphere. Watch it breathe.</span>
+<span class="fm-title">Radial Matrix Urchin — 3D</span>
+<span class="fm-sub">The Radial Matrix Urchin — 156 body-pair spines mapped onto a sphere. <span class="hl">Latitude = row body. Longitude = column body.</span> Spines extend radially outward — height = force. The diagonal spirals from south pole to north. Drag to orbit the urchin. Watch it breathe.</span>
 <div class="fm-ctrls"><span class="lbl">HEIGHT</span>
 <label><input type="radio" name="fsMode" value="thin"> <span class="fm-mode-tag t-thin">Thin</span></label>
 <label><input type="radio" name="fsMode" value="log" checked> <span class="fm-mode-tag t-log">Log F</span></label>
@@ -244,10 +245,10 @@ function toV3(p){return new THREE.Vector3(p.x,p.z||0,-p.y)}
 function getR(rr,r){return realSizes?Math.max(.005,rr/KM_AU):r}
 
 // THREE.JS
-const vp=document.getElementById("viewport"),vpW=()=>vp.clientWidth,vpH=()=>vpW();
-vp.style.height=vpW()+"px";
+const vp=document.getElementById("viewport"),vpW=()=>vp.clientWidth,vpH=()=>Math.min(vp.clientWidth,window.innerHeight*.85);
+vp.style.height=vpH()+"px";
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x0a0a0f);
-const camera=new THREE.PerspectiveCamera(50,1,.0001,6000);
+const camera=new THREE.PerspectiveCamera(50,vpW()/vpH(),.0001,6000);
 const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(window.devicePixelRatio);renderer.setSize(vpW(),vpH());
 vp.insertBefore(renderer.domElement,vp.firstChild);
 scene.add(new THREE.AmbientLight(0x333340));
@@ -398,7 +399,7 @@ function posCyl(m,p1,p2,r){const d=new THREE.Vector3().subVectors(p2,p1),l=d.len
 function updGL(gl,v1,v2,t,isLog){if(!isLog){posCyl(gl.core,v1,v2,.003);gl.core.material.opacity=.4;gl.core.visible=true;gl.mid.visible=gl.outer.visible=false;return}const cR=.003+t*.05;gl.core.material.opacity=.4+t*.5;posCyl(gl.core,v1,v2,cR);gl.core.visible=true;gl.mid.material.opacity=.08+t*.12;posCyl(gl.mid,v1,v2,cR*2.5);gl.mid.visible=true;gl.outer.material.opacity=.025+t*.04;posCyl(gl.outer,v1,v2,cR*4.5);gl.outer.visible=true}
 function hideGL(gl){gl.core.visible=gl.mid.visible=gl.outer.visible=false}
 const gLines={};ALL_PAIRS.forEach(k=>{const[i,j]=k.split("-").map(Number);gLines[k]=mkGL(BODIES[i].color,BODIES[j].color)});
-const mGLines={};for(const pi in MOON_SYS)mGLines[pi]=MOON_SYS[pi].map(mn=>mkGL(BODIES[parseInt(pi)].color,mn.c));
+const mGLines={};
 
 // Labels
 const lO=document.getElementById("labelOverlay"),lE={},mLE={};
@@ -437,17 +438,14 @@ for(const pi in MOON_SYS){const pIdx=+pi,pPos=positions[pIdx];mPositions[pi]=MOO
 // gravity forces
 let logMin=Infinity,logMax=-Infinity;const cD={},mFD={};
 conns.forEach(k=>{const[i,j]=k.split("-").map(Number),pa=positions[i],pb=positions[j],d2=(pa.x-pb.x)**2+(pa.y-pb.y)**2+(pa.z-pb.z)**2,F=BODIES[i].mass*BODIES[j].mass/Math.max(d2,1e-20),lf=Math.log10(F);cD[k]={lf,i,j};if(lf<logMin)logMin=lf;if(lf>logMax)logMax=lf});
-for(const pi in MOON_SYS){const pIdx=+pi;MOON_SYS[pi].forEach((mn,mi)=>{if(!moonConns[pi+"-"+mi])return;const pp=positions[pIdx],mp=mPositions[pi][mi],d2=(pp.x-mp.x)**2+(pp.y-mp.y)**2+((pp.z||0)-(mp.z||0))**2,F=BODIES[pIdx].mass*mn.m/Math.max(d2,1e-20),lf=Math.log10(F);mFD[pi+"-"+mi]={lf};if(lf<logMin)logMin=lf;if(lf>logMax)logMax=lf})}
 const logRange=logMax-logMin;
 ALL_PAIRS.forEach(k=>{const gl=gLines[k];if(!conns.has(k)){hideGL(gl);return}const cd=cD[k],t=logRange>0?(cd.lf-logMin)/logRange:.5;updGL(gl,toV3(positions[cd.i]),toV3(positions[cd.j]),t,lineMode==="log")});
-for(const pi in MOON_SYS){const pIdx=+pi;MOON_SYS[pi].forEach((mn,mi)=>{const gl=mGLines[pi][mi],key=pi+"-"+mi;if(!moonConns[key]||!mFD[key]){hideGL(gl);return}const t=logRange>0?(mFD[key].lf-logMin)/logRange:.5;updGL(gl,toV3(positions[pIdx]),toV3(mPositions[pi][mi]),t,lineMode==="log")})}
 oTubes.forEach(l=>{if(l)l.visible=showOrbits});
 axisLines.forEach(l=>l.visible=showAxes);axisCones.forEach(c=>c.visible=showAxes);axisLabelEls.forEach(a=>{a.el.style.display=showAxes&&showLabels?"":"none";const v=a.pos.clone().project(camera);if(v.z<1){a.el.style.left=((v.x*.5+.5)*W+4)+"px";a.el.style.top=((-v.y*.5+.5)*H-4)+"px"}});
 planeObjs.forEach(p=>p.visible=showPlanes);galGridLines.forEach(l=>l.visible=showPlanes);galLine.visible=galLineGlow.visible=galLineGlow2.visible=galCone.visible=showGalactic;
 if(showGalactic&&showLabels){const gv=galDirN.clone().multiplyScalar(145).project(camera);if(gv.z<1){galLabel.style.display="";galLabel.style.left=((gv.x*.5+.5)*W+8)+"px";galLabel.style.top=((-gv.y*.5+.5)*H-5)+"px"}else galLabel.style.display="none"}else galLabel.style.display="none";
 updateCamera();renderer.render(scene,camera);
-let nMC=0;for(const k in moonConns)if(moonConns[k])nMC++;
-overlay.textContent=fmtDate(jdToDate(jd))+"  |  GALACTIC  |  "+(lineMode==="thin"?"THIN":"LOG F")+"  |  "+conns.size+"+"+nMC+" lines"+(realSizes?"  |  REAL":"");
+overlay.textContent=fmtDate(jdToDate(jd))+"  |  GALACTIC  |  "+(lineMode==="thin"?"THIN":"LOG F")+"  |  "+conns.size+" lines"+(realSizes?"  |  REAL":"");
 updateTidal(positions,mPositions);
 updateForceMatrix(positions);
 updateForceSphere(positions);
@@ -503,13 +501,12 @@ const gridEl=document.getElementById("grid"),checkboxes={},allCheckboxes={};
 function buildGrid(){gridEl.innerHTML="";for(let i=0;i<N;i++){const col=document.createElement("div");col.className="grid-col";const head=document.createElement("div");head.className="grid-col-head";head.style.borderBottom="2px solid "+BODIES[i].color+"55";head.innerHTML='<span class="dot" style="background:'+BODIES[i].color+'"></span><span class="name" style="color:'+BODIES[i].color+'">'+BODIES[i].name+'</span><span class="btns"><button onclick="selectBody('+i+')">+</button><button onclick="clearBody('+i+')">−</button></span>';col.appendChild(head);
 for(let j=0;j<N;j++){if(j===i)continue;const key=pk(i,j),row=document.createElement("label");row.className="grid-row off";const cb=document.createElement("input");cb.type="checkbox";cb.style.accentColor=BODIES[j].color;cb.addEventListener("change",()=>{if(conns.has(key))conns.delete(key);else conns.add(key);syncCB();render()});if(!checkboxes[key])checkboxes[key]=[];checkboxes[key].push(cb);row.appendChild(cb);const dot=document.createElement("span");dot.className="dot";dot.style.background=BODIES[j].color;row.appendChild(dot);const lbl=document.createElement("span");lbl.textContent=BODIES[j].name;row.appendChild(lbl);col.appendChild(row)}
 const allRow=document.createElement("label");allRow.className="grid-row-all";const allCb=document.createElement("input");allCb.type="checkbox";allCb.style.accentColor=BODIES[i].color;allCb.addEventListener("change",()=>{if(allCb.checked)selectBody(i);else clearBody(i)});allCheckboxes[i]=allCb;allRow.appendChild(allCb);const aL=document.createElement("span");aL.textContent="all";aL.style.color=BODIES[i].color+"99";allRow.appendChild(aL);col.appendChild(allRow);
-if(MOON_SYS[i]){const sep=document.createElement("div");sep.className="grid-moon-sep";col.appendChild(sep);MOON_SYS[i].forEach((mn,mi)=>{const mRow=document.createElement("label");mRow.className="grid-row off";mRow.dataset.mk=i+"-"+mi;const mcb=document.createElement("input");mcb.type="checkbox";mcb.style.accentColor=mn.c;mcb.addEventListener("change",()=>{moonConns[i+"-"+mi]=mcb.checked;mRow.className="grid-row"+(mcb.checked?"":" off");render()});mRow.appendChild(mcb);const md=document.createElement("span");md.className="dot";md.style.background=mn.c;mRow.appendChild(md);const ml=document.createElement("span");ml.textContent=mn.n;mRow.appendChild(ml);col.appendChild(mRow)})}
 gridEl.appendChild(col)}}
 function syncCB(){for(const key in checkboxes){const on=conns.has(key);checkboxes[key].forEach(cb=>{cb.checked=on;cb.parentElement.className="grid-row"+(on?"":" off")})}for(let i=0;i<N;i++){let a=true;for(let j=0;j<N;j++)if(j!==i&&!conns.has(pk(i,j))){a=false;break}allCheckboxes[i].checked=a}}
-function selectBody(i){for(let j=0;j<N;j++)if(j!==i)conns.add(pk(i,j));if(MOON_SYS[i])MOON_SYS[i].forEach((_,mi)=>{moonConns[i+"-"+mi]=true;const r=document.querySelector('[data-mk="'+i+"-"+mi+'"]');if(r){r.className="grid-row";r.querySelector("input").checked=true}});syncCB();render()}
-function clearBody(i){for(let j=0;j<N;j++)if(j!==i)conns.delete(pk(i,j));if(MOON_SYS[i])MOON_SYS[i].forEach((_,mi)=>{moonConns[i+"-"+mi]=false;const r=document.querySelector('[data-mk="'+i+"-"+mi+'"]');if(r){r.className="grid-row off";r.querySelector("input").checked=false}});syncCB();render()}
-function connectAll(){ALL_PAIRS.forEach(k=>conns.add(k));for(const k in moonConns){moonConns[k]=true;const r=document.querySelector('[data-mk="'+k+'"]');if(r){r.className="grid-row";r.querySelector("input").checked=true}}syncCB();render()}
-function clearAll(){conns.clear();for(const k in moonConns){moonConns[k]=false;const r=document.querySelector('[data-mk="'+k+'"]');if(r){r.className="grid-row off";r.querySelector("input").checked=false}}syncCB();render()}
+function selectBody(i){for(let j=0;j<N;j++)if(j!==i)conns.add(pk(i,j));syncCB();render()}
+function clearBody(i){for(let j=0;j<N;j++)if(j!==i)conns.delete(pk(i,j));syncCB();render()}
+function connectAll(){ALL_PAIRS.forEach(k=>conns.add(k));syncCB();render()}
+function clearAll(){conns.clear();syncCB();render()}
 
 // TIDAL / GRAVITY / DISTANCE PANEL
 const tidalTarget=document.getElementById("tidalTarget"),tidalBarsEl=document.getElementById("tidalBars"),tidalNoteEl=document.getElementById("tidalNote");
@@ -748,13 +745,13 @@ function updateForceMatrix(posArr){
     if(lf>topLF){topLF=lf;topKey=k}
   }
   const[ti,tj]=topKey.split(',').map(Number);
-  fmInfoEl.textContent=modeLabel+'  |  '+BODIES[ti].name+' ↔ '+BODIES[tj].name+' strongest  |  156 pairs';
+  fmInfoEl.textContent=modeLabel+'  |  '+BODIES[ti].name+' ↔ '+BODIES[tj].name+' strongest  |  Force City  |  156 buildings';
   renderFm();
 }
 
 // Resize handler
 function fmResize(){
-  const w=fmVPEl.clientWidth,h=Math.min(Math.max(w*.6,350),600);
+  const w=fmVPEl.clientWidth,h=Math.min(Math.max(w*.6,350),Math.max(600,window.innerHeight*.7));
   fmVPEl.style.height=h+'px';
   fmR.setSize(w,h);fmCam.aspect=w/h;fmCam.updateProjectionMatrix();renderFm();
 }
@@ -890,7 +887,7 @@ nPole.position.y=polarCylLen/2;fsScene.add(nPole);
 const sPole=new THREE.Mesh(poleGeo,new THREE.MeshBasicMaterial({color:0xFFD700,transparent:true,opacity:.5}));
 sPole.position.y=-polarCylLen/2;sPole.rotation.z=Math.PI;fsScene.add(sPole);
 // Pole labels
-const nPoleLabel=document.createElement('div');nPoleLabel.className='fm-lbl';nPoleLabel.style.color='#FF8800';nPoleLabel.textContent='N Pole';fsLOEl.appendChild(nPoleLabel);
+const nPoleLabel=document.createElement('div');nPoleLabel.className='fm-lbl';nPoleLabel.style.color='#FF8800';nPoleLabel.innerHTML='N Pole · <span style="color:#4488FF">Outer System →</span>';fsLOEl.appendChild(nPoleLabel);
 const sPoleLabel=document.createElement('div');sPoleLabel.className='fm-lbl';sPoleLabel.style.color='#FFD700';sPoleLabel.textContent='S Pole · Sun';fsLOEl.appendChild(sPoleLabel);
 
 // HTML labels — at latitude positions (left) and longitude positions (bottom)
@@ -986,18 +983,18 @@ function updateForceSphere(posArr){
     if(lf>topLF){topLF=lf;topKey=k}
   }
   const[ti,tj]=topKey.split(',').map(Number);
-  fsInfoEl.textContent=modeLabel+'  |  '+BODIES[ti].name+' ↔ '+BODIES[tj].name+' strongest  |  156 radial columns';
+  fsInfoEl.textContent=modeLabel+'  |  '+BODIES[ti].name+' ↔ '+BODIES[tj].name+' strongest  |  Radial Matrix Urchin  |  156 spines';
   renderFs();
 }
 
 // Resize
 function fsResize(){
-  const w=fsVPEl.clientWidth,h=Math.min(Math.max(w*.65,380),650);
+  const w=fsVPEl.clientWidth,h=Math.min(Math.max(w*.65,380),Math.max(650,window.innerHeight*.7));
   fsVPEl.style.height=h+'px';
   fsRend.setSize(w,h);fsCam.aspect=w/h;fsCam.updateProjectionMatrix();renderFs();
 }
 
-// Auto-rotation for force matrix city
+// Auto-rotation for Force City
 let fmRotating=false,fmRotSpeed=0.008,fmRotId=null;
 document.getElementById('fmRotBtn').addEventListener('click',function(){
   fmRotating=!fmRotating;this.textContent=fmRotating?'■':'▶';this.style.color=fmRotating?'#FF6600':'#88AAFF';
@@ -1006,7 +1003,7 @@ document.getElementById('fmRotUp').addEventListener('click',()=>{fmRotSpeed=Math
 document.getElementById('fmRotDown').addEventListener('click',()=>{fmRotSpeed=Math.max(.001,fmRotSpeed/1.5)});
 function fmRotate(){if(!fmRotating)return;fmTheta+=fmRotSpeed;renderFm();fmRotId=requestAnimationFrame(fmRotate)}
 
-// Auto-rotation for force sphere
+// Auto-rotation for radial matrix urchin
 let fsRotating=false,fsRotSpeed=0.006,fsRotId=null;
 document.getElementById('fsRotBtn').addEventListener('click',function(){
   fsRotating=!fsRotating;this.textContent=fsRotating?'■':'▶';this.style.color=fsRotating?'#FF6600':'#88AAFF';
@@ -1016,7 +1013,7 @@ document.getElementById('fsRotDown').addEventListener('click',()=>{fsRotSpeed=Ma
 function fsRotate(){if(!fsRotating)return;fsTheta+=fsRotSpeed;renderFs();fsRotId=requestAnimationFrame(fsRotate)}
 
 // RESIZE + INIT
-function resize(){const w=vp.clientWidth;vp.style.height=w+"px";renderer.setSize(w,w);camera.aspect=1;camera.updateProjectionMatrix();render();fmResize();fsResize()}
+function resize(){const w=vp.clientWidth,h=Math.min(w,window.innerHeight*.85);vp.style.height=h+"px";renderer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix();render();fmResize();fsResize()}
 window.addEventListener("resize",resize);
 buildGrid();buildTidalSelector();buildTidalBars();updateOrbits(baseJD);fmResize();fsResize();render();
 // AUTO-PLAY — the OMG moment
