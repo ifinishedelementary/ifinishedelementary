@@ -31,8 +31,15 @@ body{background:#0a0a0f;color:#c8c8d0;font-family:'JetBrains Mono','Fira Code','
 .controls label input{width:10px;height:10px}
 .btn{background:#1a1a2e;color:#aaa;border:1px solid #2a2a3e;border-radius:3px;padding:1px 5px;cursor:pointer;font-size:8px;font-family:inherit}
 .btn:hover{background:#22223a}
-.btn-play{background:#1a1a2e;color:#e0e0e8;border:1px solid #2a2a3e;border-radius:3px;padding:2px 7px;cursor:pointer;font-size:9px;font-family:inherit}
-.btn-play.active{background:#00FF00}
+.btn-play{background:#1a1a2e;color:#e0e0e8;border:1px solid #2a2a3e;border-radius:3px;padding:4px 14px;cursor:pointer;font-size:11px;font-family:inherit;font-weight:700;letter-spacing:1px}
+.btn-play.active{background:#FF6600;color:#000;border-color:#FF6600}
+.speed-box{display:flex;align-items:stretch;border:1px solid #3a3a5e;border-radius:3px;overflow:hidden;height:26px}
+.speed-box input{background:#14141f;color:#e0e0e8;border:none;border-left:1px solid #3a3a5e;border-right:1px solid #3a3a5e;padding:2px 4px;font-size:10px;font-family:inherit;width:52px;text-align:center;-moz-appearance:textfield}
+.speed-box input::-webkit-inner-spin-button,.speed-box input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.speed-btn{background:#1a1a2e;color:#88AAFF;border:none;cursor:pointer;font-size:11px;width:22px;display:flex;align-items:center;justify-content:center;font-family:inherit;font-weight:700;transition:background .1s}
+.speed-btn:hover{background:#2a2a4e;color:#AACCFF}
+.speed-btn:active{background:#FF6600;color:#000}
+.play-bar{display:flex;gap:8px;align-items:center;margin-bottom:5px;padding:3px 0}
 .controls2{display:flex;gap:6px;align-items:center;margin-bottom:4px;flex-wrap:nowrap;font-size:9px}
 .controls2 .sep{width:1px;height:14px;background:#2a2a3e;flex-shrink:0}
 .controls2 .lbl{font-size:8px;color:#666;white-space:nowrap}
@@ -63,47 +70,137 @@ body{background:#0a0a0f;color:#c8c8d0;font-family:'JetBrains Mono','Fira Code','
 .tidal-sub{font-size:9px;color:#666}
 .tidal-header select{background:#14141f;color:#e0e0e8;border:1px solid #2a2a3e;border-radius:3px;padding:1px 4px;font-size:9px;font-family:inherit}
 .tidal-note{font-size:8px;color:#555;margin-top:6px;line-height:1.4}
+.zone-sep{padding:3px 8px;margin:4px 0 2px;font-size:7px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;border-radius:2px;text-align:center}
+.zone-inner{background:#FFD70015;color:#FFD700;border:1px solid #FFD70033}
+.zone-gas{background:#FF660015;color:#FF8844;border:1px solid #FF660033}
+.zone-outer{background:#4488FF15;color:#4488FF;border:1px solid #4488FF33}
 .tidal-row{display:flex;align-items:center;gap:5px;margin-bottom:2px;height:14px}
 .tidal-row .dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
 .tidal-row .name{width:65px;font-size:7px;color:#aaa;flex-shrink:0}
 .tidal-row .bar-bg{flex:1;height:8px;background:#14141f;border-radius:2px;overflow:hidden}
 .tidal-row .bar-fill{display:block;height:100%;border-radius:2px;transition:width 0.15s ease-out;min-width:1px}
 .tidal-row .val{width:65px;font-size:7px;color:#777;text-align:right;flex-shrink:0;font-family:inherit}
+.fm-panel{background:#08080e;border-top:1px solid #1a1a2e;padding:12px 0 0}
+.fm-header{padding:0 14px 10px}
+.fm-title{font-size:11px;font-weight:700;color:#e0e0e8;letter-spacing:1.5px;text-transform:uppercase}
+.fm-sub{display:block;font-size:9px;color:#666;margin-top:5px;line-height:1.6}
+.fm-sub .hl{color:#aaa;font-weight:700}
+.fm-vp{position:relative;width:100%;height:550px;cursor:grab;overflow:hidden}
+.fm-vp:active{cursor:grabbing}
+.fm-vp canvas{display:block;width:100%!important;height:100%!important}
+.fm-lo{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:hidden}
+.fm-lbl{position:absolute;font-size:7px;font-weight:700;white-space:nowrap;pointer-events:none;text-shadow:0 0 5px #08080e,0 0 10px #08080e,0 0 15px #08080e}
+.fm-info{position:absolute;bottom:8px;left:12px;background:rgba(8,8,14,0.85);border:1px solid #1a1a2e;border-radius:4px;padding:5px 10px;font-size:9px;color:#666;pointer-events:none}
+.fm-ctrls{display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap}
+.fm-ctrls .lbl{font-size:8px;color:#555;text-transform:uppercase;letter-spacing:1px}
+.fm-ctrls label{display:flex;align-items:center;gap:3px;cursor:pointer;font-size:9px;color:#888}
+.fm-ctrls label input{width:10px;height:10px;margin:0}
+.fm-mode-tag{display:inline-block;font-size:7px;padding:1px 4px;border-radius:2px;border:1px solid;line-height:13px;font-family:inherit;letter-spacing:.5px}
+.fm-mode-tag.t-thin{border-color:#888;color:#888}
+.fm-mode-tag.t-log{border-color:#00FF00;color:#00FF00}
+.fm-mode-tag.t-real{border-color:#FF4444;color:#FF4444}
 </style>
 </head>
 <body>
 <div class="desc"><div class="desc-inner">
 <h1>Solar System Geometry — 3D</h1>
-<p>A <span class="hl-r">three-dimensional</span> model with 13 bodies, 19 spherical moons, asteroid belt, and Kuiper belt. JPL Keplerian elements. Drag to rotate, scroll to zoom, right-drag to pan. See Pluto's 17° tilt, Eris's 44°, Uranus's moons orbiting perpendicular to the ecliptic.</p>
-<p><span class="hl-g">Gravity lines</span> are 3D cylinders with rainbow halos — width encodes force on a log scale. <span class="hl-p">Tidal influence</span> chart shows M/r³ for all bodies including moons.</p>
-<p>Drag to orbit · Scroll to zoom · Right-drag to pan</p>
+<p>The solar system as it actually exists in galactic space — <span class="hl-r">tilted 60.2° to the galactic plane</span>, not the flat ecliptic-horizontal lie every other simulation shows. 13 bodies, 19 spherical moons, asteroid belt, Kuiper belt. JPL Keplerian orbital elements. The <span style="color:#FFD700">golden axes</span> mark the galactic reference frame: <span style="color:#FF4444">Center</span>, <span style="color:#FF4444">North</span>, and <span style="color:#4488FF;background:#0066FF;padding:0 3px;border-radius:2px;font-weight:700">Solar Motion</span> — the direction the Sun is actually travelling at 230 km/s (with a 1.7° upward tilt as it climbs above the galactic midplane).</p>
+<p><span class="hl-g">Gravity lines</span> connect body pairs as 3D cylinders — width encodes force on a log scale. <span class="hl-p">Spiral trails</span> show the helical paths each planet traces through galactic space as the Sun drags the system forward. The trails stream at 1.7° above horizontal — the Sun's true trajectory, not an idealized circular orbit.</p>
+<p><span style="color:#888">Planes</span> shows drop-lines from each body to the galactic plane. <span style="color:#888">Axes</span> shows the galactic coordinate frame. <span style="color:#888">Galactic</span> shows the Sun's orbital vector with its multi-coloured glow. <span style="color:#FFD700;font-weight:700">Drag</span> to orbit · <span style="color:#FFD700;font-weight:700">Scroll</span> to zoom · <span style="color:#FFD700;font-weight:700">Right-drag</span> to pan.</p>
 </div></div>
 <div class="viewport" id="viewport"><div class="label-overlay" id="labelOverlay"></div><div class="overlay-info" id="overlay"></div></div>
 <div class="panel">
+<div class="play-bar">
+<button class="btn-play" id="playBtn">▶ PLAY</button><button class="btn" id="btnResetTrails" style="color:#F88">Reset</button><div class="speed-box"><button class="speed-btn" id="speedDown">▼</button><input type="number" id="speedInput" value="1" min="0.001" max="365" step="0.01"><button class="speed-btn" id="speedUp">▲</button></div><span class="lbl">days/frame</span>
+</div>
 <div class="controls">
-<span class="lbl">DATE</span><input type="date" id="dateInput"><input type="range" id="slider" min="-73050" max="73050" value="0"><span class="lbl">±200yr</span><div class="sep"></div>
-<button class="btn-play" id="playBtn">▶ Play</button><input type="number" id="speedInput" value="1" min="0.001" max="365" step="0.01"><span class="lbl">d/f</span><div class="sep"></div>
-<label><input type="checkbox" id="cbOrbits" checked> Orbits</label><label><input type="checkbox" id="cbLabels" checked> Labels</label><div class="sep"></div>
+<span class="lbl">DATE</span><input type="date" id="dateInput"><input type="range" id="slider" min="-73050" max="73050" value="0"><span class="lbl">±200yr</span>
+</div>
+<div class="controls2">
+<span class="lbl">FORCE</span>
+<label><input type="radio" name="lineMode" value="log" checked> <span class="mode-tag log">Log F</span></label>
+<label><input type="radio" name="lineMode" value="thin"> <span class="mode-tag thin">Thin</span></label>
+<div class="sep"></div>
+<span class="lbl">BODIES</span>
+<label><input type="checkbox" id="cbLabels" checked> Labels</label>
+<label><input type="checkbox" id="cbOrbits" checked> Orbits</label>
+<label><input type="checkbox" id="cbRealSizes"> Real Sizes</label>
+<div class="sep"></div>
+<span class="lbl">FRAME</span>
+<label><input type="checkbox" id="cbAxes" checked> Axes</label>
+<label><input type="checkbox" id="cbGalactic" checked> Galactic</label>
+<label><input type="checkbox" id="cbPlanes" checked> Planes</label>
+<label><input type="checkbox" id="cbSpirals" checked> Spirals</label>
+<div class="sep"></div>
 <button class="btn" style="color:#8a8" onclick="connectAll()">All</button><button class="btn" style="color:#a88" onclick="clearAll()">Clear</button>
 </div>
-<div class="controls2"><span class="lbl">LINES</span>
-<label><input type="radio" name="lineMode" value="thin" checked> <span class="mode-tag thin">Thin</span></label>
-<label><input type="radio" name="lineMode" value="log"> <span class="mode-tag log">Log F</span></label>
-<div class="sep"></div><label><input type="checkbox" id="cbRealSizes"> Real Sizes</label>
-<div class="sep"></div><label><input type="checkbox" id="cbAxes" checked> Axes</label>
-<label><input type="checkbox" id="cbPlanes" checked> Planes</label>
-<label><input type="checkbox" id="cbGalactic" checked> Galactic</label>
-<label><input type="checkbox" id="cbSpirals"> Spirals</label>
-<button class="btn" id="btnResetTrails" style="color:#F88">Reset</button></div>
+<div class="desc" style="border:none;padding:8px 8px 4px"><div class="desc-inner" style="max-width:100%">
+<p style="color:#888;font-size:9px;line-height:1.6;margin:0">The grid below controls which <span style="color:#aaa;font-weight:700">gravity lines</span> appear in the 3D viewport above. Each column is a body. Check a row to connect that pair. The <span style="color:#8a8">+</span> button connects all lines from one body; <span style="color:#a88">−</span> clears them. <span style="color:#8a8">All</span> and <span style="color:#a88">Clear</span> toggle everything. Moons appear below their parent planet — check them to see gravity lines to individual moons. Every checked pair also feeds the force matrix city and sphere below.</p>
+</div></div>
 <div class="grid" id="grid"></div>
 </div>
-<div class="tidal-panel"><div class="tidal-header"><span class="tidal-title">Tidal Influence</span><span class="tidal-sub">on</span><select id="tidalTarget"></select><span class="tidal-sub">— M/r³</span></div><div id="tidalBars"></div>
-<div class="tidal-note">Tidal force ∝ M/r³. The Moon dominates because it's close, not massive. All 19 spherical moons included.</div></div>
+<div class="desc"><div class="desc-inner">
+<p style="color:#b0b0c0;font-size:11px;line-height:1.8">The bars below answer one question: <span style="color:#FFD700;font-weight:700">who influences whom, and by how much?</span> Select any body as the target. Then switch metrics and watch the entire ranking flip. In <span style="color:#00FF00">Distance</span> mode, three discrete groups emerge — inner system, gas giants, outer system — oscillating at different rates with structural voids between them. No physics in this metric, just geometry, and yet the architecture reveals itself. Switch to <span style="color:#FF4444">M/r² F=ma</span> and the Sun dominates everything — this is the real force law, per unit mass. Switch to <span style="color:#00FF00">M/r³ Gradient</span> and the Moon suddenly dominates Earth because r³ crushes distance. Same bodies, same moment, completely different hierarchies depending on what you measure. The <span style="color:#FFAA00">ABS</span> toggle freezes the scale so every bar shows only its own motion — Mercury's eccentricity becomes visible as a pulsing bar instead of being hidden as the permanent leader.</p>
+</div></div>
+<div class="tidal-panel"><div class="tidal-header"><span class="tidal-title">Influence Panel</span><span class="tidal-sub">on</span><select id="tidalTarget"></select>
+<div class="fm-ctrls" style="margin-top:4px;flex-wrap:wrap"><span class="lbl">METRIC</span>
+<label><input type="radio" name="tidalMetric" value="tidal"> <span class="fm-mode-tag t-log">M/r³ Gradient</span></label>
+<label><input type="radio" name="tidalMetric" value="grav"> <span class="fm-mode-tag t-real">M/r² F=ma</span></label>
+<label><input type="radio" name="tidalMetric" value="pot"> <span class="fm-mode-tag" style="border-color:#AA66FF;color:#AA66FF">M/r Potential</span></label>
+<label><input type="radio" name="tidalMetric" value="mass"> <span class="fm-mode-tag" style="border-color:#FF8844;color:#FF8844">Mass</span></label>
+<label><input type="radio" name="tidalMetric" value="dist" checked> <span class="fm-mode-tag t-thin">Distance</span></label>
+<div class="sep"></div><label><input type="checkbox" id="cbAbsScale"> <span class="fm-mode-tag" style="border-color:#FFAA00;color:#FFAA00">ABS</span></label>
+</div>
+</div><div id="tidalBars"></div>
+<div class="tidal-note" id="tidalNote">Tidal force ∝ M/r³. The Moon dominates Earth because it's close, not massive. Switch metrics and watch the entire ranking flip.</div>
+<div class="play-bar" style="margin-top:8px;border-top:1px solid #1a1a2e;padding-top:8px">
+<button class="btn-play" id="playBtn2">▶ PLAY</button><button class="btn" id="btnResetTrails2" style="color:#F88">Reset</button><div class="speed-box"><button class="speed-btn" id="speedDown2">▼</button><input type="number" id="speedInput2" value="1" min="0.001" max="365" step="0.01"><button class="speed-btn" id="speedUp2">▲</button></div><span class="lbl">days/frame</span>
+</div>
+</div>
+<div class="fm-panel">
+<div class="desc" style="border:none;padding:10px 14px 0"><div class="desc-inner" style="max-width:100%">
+<p style="color:#b0b0c0;font-size:11px;line-height:1.8;margin:0">A new type of graph — <span style="color:#FFD700;font-weight:700">never built before</span>. A 13×13 city where every building is the gravitational force between two bodies. Row axis (left) = body A. Column axis (front) = body B. The <span style="color:#fff">diagonal</span> — where a body meets itself — runs through the city as a translucent wall with glowing identity spheres. The city is symmetric across this diagonal because F(A,B) = F(B,A). Switch to <span style="color:#FF4444">Real F</span> and watch: one pair — Sun-Jupiter — towers over everything. The entire solar system's gravitational story is a binary relationship with 11 small things caught in the geometry. Every other column is invisible at linear scale. That truth is impossible to show in line widths. Only column heights can display a 10¹⁵ dynamic range.</p>
+</div></div>
+<div class="fm-header">
+<span class="fm-title">Gravitational Force Matrix — 3D</span>
+<span class="fm-sub">A 13×13 city of force. Every column = one body-pair. Row axis (left) = body A. Column axis (front) = body B. The diagonal shows each body's identity. Drag to orbit, scroll to zoom. Hit Play above — watch the columns breathe as the planets move.</span>
+<div class="fm-ctrls"><span class="lbl">HEIGHT</span>
+<label><input type="radio" name="fmMode" value="thin"> <span class="fm-mode-tag t-thin">Thin</span></label>
+<label><input type="radio" name="fmMode" value="log" checked> <span class="fm-mode-tag t-log">Log F</span></label>
+<label><input type="radio" name="fmMode" value="real"> <span class="fm-mode-tag t-real">Real F</span></label>
+<span style="font-size:7px;color:#444;margin-left:4px">Real = linear force. The mode that's impossible in line widths.</span>
+<div class="sep"></div><span class="lbl">ROTATE</span>
+<button class="btn" id="fmRotBtn" style="color:#88AAFF">▶</button>
+<button class="speed-btn" id="fmRotDown" style="width:18px;height:18px;font-size:9px">−</button>
+<button class="speed-btn" id="fmRotUp" style="width:18px;height:18px;font-size:9px">+</button>
+</div>
+</div>
+<div class="fm-vp" id="fmVP"><div class="fm-lo" id="fmLO"></div><div class="fm-info" id="fmInfo"></div></div>
+</div>
+<div class="fm-panel">
+<div class="desc" style="border:none;padding:10px 14px 0"><div class="desc-inner" style="max-width:100%">
+<p style="color:#b0b0c0;font-size:11px;line-height:1.8;margin:0">Also <span style="color:#FFD700;font-weight:700">never built before</span>. The same 156 force columns wrapped onto a sphere. Latitude = body A (Sun at south pole, Haumea at north). Longitude = body B (spread around the equator). Each column radiates outward — height = force. The <span style="color:#FF8800">polar cylinder</span> maps every body's name to its latitude. Coloured connector rods link each body's identity dot on the sphere surface to its position on the cylinder. The sphere has no edges and no preferred viewing angle — every relationship is accessible from every direction. In <span style="color:#FF4444">Real F</span> mode, the Sun's south pole cap bristles with spikes while the rest of the sphere goes bald. The galaxy of gravitational interactions reduces to one polar cluster — a visual that flat graphs cannot produce.</p>
+</div></div>
+<div class="fm-header">
+<span class="fm-title">Force Sphere — 3D</span>
+<span class="fm-sub">The same 156 body-pair columns mapped onto a sphere. <span class="hl">Latitude = row body. Longitude = column body.</span> Columns extend radially outward — height = log₁₀(F). The diagonal spirals from south pole to north. Drag to orbit the sphere. Watch it breathe.</span>
+<div class="fm-ctrls"><span class="lbl">HEIGHT</span>
+<label><input type="radio" name="fsMode" value="thin"> <span class="fm-mode-tag t-thin">Thin</span></label>
+<label><input type="radio" name="fsMode" value="log" checked> <span class="fm-mode-tag t-log">Log F</span></label>
+<label><input type="radio" name="fsMode" value="real"> <span class="fm-mode-tag t-real">Real F</span></label>
+<div class="sep"></div><span class="lbl">ROTATE</span>
+<button class="btn" id="fsRotBtn" style="color:#88AAFF">▶</button>
+<button class="btn" id="fsRotDown" style="color:#88AAFF">−</button>
+<button class="btn" id="fsRotUp" style="color:#88AAFF">+</button>
+</div>
+</div>
+<div class="fm-vp" id="fsVP"><div class="fm-lo" id="fsLO"></div><div class="fm-info" id="fsInfo"></div></div>
+</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 // DATA — 13 bodies
 const BODIES=[
-{name:"Sun",color:"#FF0000",r:.12,realR:696340,mass:1.0,orb:null},
+{name:"Sun",color:"#FFD700",r:.12,realR:696340,mass:1.0,orb:null},
 {name:"Mercury",color:"#00FFCC",r:.04,realR:2440,mass:1.66e-7,orb:{a:[.387,.0000004],e:[.2056,.0000191],I:[7.005,-.00595],L:[252.25,149472.67],w:[77.458,.1605],O:[48.331,-.1253]}},
 {name:"Venus",color:"#FFAA00",r:.05,realR:6052,mass:2.45e-6,orb:{a:[.723,.0000039],e:[.00678,-.0000411],I:[3.395,-.000789],L:[181.98,58517.82],w:[131.60,.00268],O:[76.68,-.2777]}},
 {name:"Earth",color:"#0088FF",r:.05,realR:6371,mass:3.00e-6,orb:{a:[1.0,.00000562],e:[.01671,-.0000439],I:[-.0000153,-.01295],L:[100.46,35999.37],w:[102.94,.3233],O:[0,0]}},
@@ -140,7 +237,7 @@ function fmtDate(d){return d.toISOString().split("T")[0]}
 
 // STATE
 const now=new Date(),baseJD=dateToJD(now);
-let dayOffset=0,showOrbits=true,showLabels=true,lineMode="thin",realSizes=false,animating=false,animSpeed=1,animId=null;
+let dayOffset=0,showOrbits=true,showLabels=true,lineMode="log",realSizes=false,animating=false,animSpeed=1,animId=null;
 const conns=new Set(),moonConns={};
 for(const pi in MOON_SYS)MOON_SYS[pi].forEach((_,mi)=>{moonConns[pi+"-"+mi]=false});
 function toV3(p){return new THREE.Vector3(p.x,p.z||0,-p.y)}
@@ -150,33 +247,43 @@ function getR(rr,r){return realSizes?Math.max(.005,rr/KM_AU):r}
 const vp=document.getElementById("viewport"),vpW=()=>vp.clientWidth,vpH=()=>vpW();
 vp.style.height=vpW()+"px";
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x0a0a0f);
-const camera=new THREE.PerspectiveCamera(50,1,.0001,3000);
+const camera=new THREE.PerspectiveCamera(50,1,.0001,6000);
 const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(window.devicePixelRatio);renderer.setSize(vpW(),vpH());
 vp.insertBefore(renderer.domElement,vp.firstChild);
 scene.add(new THREE.AmbientLight(0x333340));
 const sunLight=new THREE.PointLight(0xffeedd,1.5,300);scene.add(sunLight);
-let camTheta=.3,camPhi=1.1,camDist=55,camTarget=new THREE.Vector3();
-function updateCamera(){camera.position.set(camDist*Math.sin(camPhi)*Math.cos(camTheta)+camTarget.x,camDist*Math.cos(camPhi)+camTarget.y,camDist*Math.sin(camPhi)*Math.sin(camTheta)+camTarget.z);camera.lookAt(camTarget)}
-updateCamera();
-
-// Galactic-frame axes (computed from ecliptic→galactic transformation)
+// Galactic-frame vectors (must be before updateCamera which uses them)
 const gcDir=new THREE.Vector3(-0.0625,-0.0958,0.9934).normalize(); // toward Galactic Center
 const gnDir=new THREE.Vector3(-0.8677,0.4971,0.0003).normalize(); // Galactic North Pole
 const smDir=new THREE.Vector3(0.4939,0.8620,0.1142).normalize();  // Solar Motion (Sun's orbit direction)
+const galFrame=true; // permanent — solar system tilted 60.2° to galactic plane
+let camTheta=1.87,camPhi=1.15,camDist=220,camTarget=new THREE.Vector3();
+function updateCamera(){const sp=Math.sin(camPhi),cp=Math.cos(camPhi),ct=Math.cos(camTheta),st=Math.sin(camTheta),lx=camDist*sp*ct,ly=camDist*cp,lz=camDist*sp*st;camera.position.set(lx*gcDir.x+ly*gnDir.x+lz*smDir.x+camTarget.x,lx*gcDir.y+ly*gnDir.y+lz*smDir.y+camTarget.y,lx*gcDir.z+ly*gnDir.z+lz*smDir.z+camTarget.z);camera.up.copy(gnDir);camera.lookAt(camTarget)}
+updateCamera();
+
+// Galactic-frame axes
 const galAxes=[
-  {dir:gcDir,c:0xBB7744,label:"Galactic Center",lc:"#BB7744"},
-  {dir:gnDir,c:0x4488BB,label:"Galactic North",lc:"#4488BB"},
-  {dir:smDir,c:0x55AA55,label:"Solar Motion",lc:"#55AA55"}
+  {dir:gcDir,c:0xFFEE44,label:'Galactic <span style="color:#FF4444">Center</span>',lc:"#FFEE44"},
+  {dir:gnDir,c:0xFFEE44,label:'Galactic <span style="color:#FF4444">North</span>',lc:"#FFEE44"},
+  {dir:smDir,c:0x00DDFF,label:'<span style="background:#0066FF;color:#fff;padding:1px 5px;border:1px solid #44AAFF;border-radius:3px;font-weight:700">Solar Motion</span>',lc:"#00DDFF"}
 ];
 const axisLines=galAxes.map(a=>{
   const d=a.dir.clone().multiplyScalar(120);
   const g=new THREE.BufferGeometry().setFromPoints([d.clone().negate(),d]);
   const l=new THREE.Line(g,new THREE.LineBasicMaterial({color:a.c,transparent:true,opacity:.35,fog:false}));scene.add(l);return l;
 });
+const axisConeGeo=new THREE.ConeGeometry(.4,1.5,8);
+const axisCones=galAxes.flatMap(a=>{
+  const mat=new THREE.MeshBasicMaterial({color:a.c,transparent:true,opacity:.5,fog:false});
+  const tip=a.dir.clone().multiplyScalar(120);
+  const c1=new THREE.Mesh(axisConeGeo,mat);c1.position.copy(tip);c1.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),a.dir);scene.add(c1);
+  const c2=new THREE.Mesh(axisConeGeo,mat.clone());c2.position.copy(tip.negate());c2.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),a.dir.clone().negate());scene.add(c2);
+  return[c1,c2];
+});
 const axisLabelEls=galAxes.map(a=>{
-  const el=document.createElement("div");el.className="label-3d";el.style.color=a.lc;el.style.fontSize="8px";el.style.opacity="0.6";el.textContent=a.label;
+  const el=document.createElement("div");el.className="label-3d";el.style.color=a.lc;el.style.fontSize="10px";el.style.opacity="0.85";el.innerHTML=a.label;
   document.getElementById("labelOverlay").appendChild(el);
-  return{el,pos:a.dir.clone().multiplyScalar(125)};
+  return{el,pos:a.dir.clone().multiplyScalar(130)};
 });
 // Galactic-frame planes
 const plGeo=new THREE.PlaneGeometry(240,240);
@@ -212,17 +319,22 @@ const dropDots=BODIES.map((b,i)=>{
   scene.add(d);return d;
 });
 // Fog — depth fading
-scene.fog=new THREE.Fog(0x0a0a0f,40,300);
+scene.fog=new THREE.Fog(0x0a0a0f,150,2000);
 // Sun's galactic orbit line — bright yellow, uses smDir
-const galDirN=smDir.clone();
+// Sun's actual velocity: 230 km/s orbital + 7 km/s vertical (climbing above galactic midplane)
+const galDirN=smDir.clone().multiplyScalar(230).add(gnDir.clone().multiplyScalar(7)).normalize();
 const galDir=galDirN.clone().multiplyScalar(150);
-const galLine=new THREE.Line(new THREE.BufferGeometry().setFromPoints([galDir.clone().negate(),galDir]),new THREE.LineBasicMaterial({color:0xFFFF44,transparent:true,opacity:.4,fog:false}));
-scene.add(galLine);
-const galCone=new THREE.Mesh(new THREE.ConeGeometry(0.4,1.5,8),new THREE.MeshBasicMaterial({color:0xFFFF44,transparent:true,opacity:.5,fog:false}));
+const galLine=new THREE.Mesh(new THREE.CylinderGeometry(.06,.06,300,8),new THREE.MeshBasicMaterial({color:0xFFEE44,transparent:true,opacity:.8,fog:false}));
+galLine.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),galDirN);scene.add(galLine);
+const galLineGlow=new THREE.Mesh(new THREE.CylinderGeometry(.18,.18,300,8),new THREE.MeshBasicMaterial({color:0xFF8800,transparent:true,opacity:.1,blending:THREE.AdditiveBlending,depthWrite:false,fog:false}));
+galLineGlow.quaternion.copy(galLine.quaternion);scene.add(galLineGlow);
+const galLineGlow2=new THREE.Mesh(new THREE.CylinderGeometry(.4,.4,300,8),new THREE.MeshBasicMaterial({color:0xFF4488,transparent:true,opacity:.04,blending:THREE.AdditiveBlending,depthWrite:false,fog:false}));
+galLineGlow2.quaternion.copy(galLine.quaternion);scene.add(galLineGlow2);
+const galCone=new THREE.Mesh(new THREE.ConeGeometry(0.4,1.8,8),new THREE.MeshBasicMaterial({color:0xFFEE44,transparent:true,opacity:.7,fog:false}));
 galCone.position.copy(galDirN.clone().multiplyScalar(140));
 galCone.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),galDirN);
 scene.add(galCone);
-const galLabel=document.createElement("div");galLabel.className="label-3d";galLabel.style.color="#FFFF44";galLabel.style.fontSize="9px";galLabel.style.opacity="0.7";galLabel.textContent="Galactic Orbit →";document.getElementById("labelOverlay").appendChild(galLabel);
+const galLabel=document.createElement("div");galLabel.className="label-3d";galLabel.style.color="#FFFF44";galLabel.style.fontSize="9px";galLabel.style.opacity="0.7";galLabel.innerHTML='Galactic <span style="color:#FF4444">Orbit</span> →';document.getElementById("labelOverlay").appendChild(galLabel);
 // Trailing wisps — tapered cones in opposite direction of galactic motion
 const wispDir=galDirN.clone().negate();
 const wispGeo=new THREE.ConeGeometry(0.015,1,4);
@@ -230,13 +342,22 @@ const wisps=BODIES.map((b,i)=>{
   const mat=new THREE.MeshBasicMaterial({color:new THREE.Color(b.color),transparent:true,opacity:.25,blending:THREE.AdditiveBlending,depthWrite:false});
   const m=new THREE.Mesh(wispGeo,mat);m.visible=false;scene.add(m);return m;
 });
-let showAxes=true,showPlanes=true,showGalactic=true,showSpirals=false;
+let showAxes=true,showPlanes=true,showGalactic=true,showSpirals=true,fmMode='log',fsMode='log';
 // Spiral trails — perpetual helix paths in galactic rest frame
-const galSpeed=0.01328; // AU/day (~230 km/s)
+const galSpeed=0.01329; // AU/day (~230.1 km/s true velocity including vertical)
 const trails=BODIES.map(()=>[]);
 const maxTrail=30000;
+// Trail colors — outer planets get shifted hues distinct from their orbits
+const trailColors=["#FFD700","#00FFCC","#FFAA00","#0088FF","#FFFF00","#66FFBB","#FF88DD","#88DDFF","#FFAA66","#AAFFEE","#FF99CC","#CCFF88","#DD88FF"];
+const trailOp=[.3,.3,.3,.3,.3,.55,.55,.55,.55,.5,.5,.5,.5];
 const trailLines=BODIES.map((b,i)=>{
-  const l=new THREE.Line(new THREE.BufferGeometry(),new THREE.LineBasicMaterial({color:new THREE.Color(b.color),transparent:true,opacity:.35,blending:THREE.AdditiveBlending,fog:false}));
+  const l=new THREE.Line(new THREE.BufferGeometry(),new THREE.LineBasicMaterial({color:new THREE.Color(trailColors[i]),transparent:true,opacity:trailOp[i],blending:THREE.AdditiveBlending,fog:false}));
+  l.visible=false;l.frustumCulled=false;scene.add(l);return l;
+});
+// Glow doubles for outer planets — same geometry, different color, additive stack = thickness
+const trailGlow=BODIES.map((b,i)=>{
+  if(i<5)return null;
+  const l=new THREE.Line(new THREE.BufferGeometry(),new THREE.LineBasicMaterial({color:new THREE.Color(b.color),transparent:true,opacity:.18,blending:THREE.AdditiveBlending,depthWrite:false,fog:false}));
   l.visible=false;l.frustumCulled=false;scene.add(l);return l;
 });
 
@@ -261,11 +382,11 @@ const satRing=new THREE.Mesh(new THREE.RingGeometry(1.4,2.2,64),new THREE.MeshBa
 const uraRing=new THREE.Mesh(new THREE.RingGeometry(1.3,1.7,64),new THREE.MeshBasicMaterial({color:0x00FF88,transparent:true,opacity:.2,side:THREE.DoubleSide}));uraRing.rotation.z=98*Math.PI/180;scene.add(uraRing);
 
 // Moon meshes
-const mMeshes={};for(const pi in MOON_SYS)mMeshes[pi]=MOON_SYS[pi].map(mn=>{const m=new THREE.Mesh(sG,new THREE.MeshBasicMaterial({color:new THREE.Color(mn.c)}));scene.add(m);return m});
+const mMeshes={};
 
 // Orbits — tubes for perspective thickness (closer=thicker, farther=thinner)
-const oTubes=BODIES.map((b,i)=>{if(!b.orb)return null;const m=new THREE.Mesh(new THREE.BufferGeometry(),new THREE.MeshBasicMaterial({color:new THREE.Color(b.color),transparent:true,opacity:.22,blending:THREE.AdditiveBlending,fog:false}));scene.add(m);return m});
-function updateOrbits(jd){BODIES.forEach((b,i)=>{if(!b.orb||!oTubes[i])return;const pts=[],T=(jd-2451545)/36525,o=b.orb,a=o.a[0]+o.a[1]*T,e=o.e[0]+o.e[1]*T,Iv=(o.I[0]+o.I[1]*T)*Math.PI/180,wB=o.w[0]+o.w[1]*T,Om=(o.O[0]+o.O[1]*T)*Math.PI/180,w2=(wB-o.O[0]-o.O[1]*T)*Math.PI/180,cw=Math.cos(w2),sw=Math.sin(w2),co=Math.cos(Om),so=Math.sin(Om),ci=Math.cos(Iv),si=Math.sin(Iv);for(let s=0;s<=360;s+=3){const Mv=s/360*2*Math.PI,E=solveKepler(Mv,e),xp=a*(Math.cos(E)-e),yp=a*Math.sqrt(1-e*e)*Math.sin(E);pts.push(new THREE.Vector3((cw*co-sw*so*ci)*xp+(-sw*co-cw*so*ci)*yp,(sw*si)*xp+(cw*si)*yp,-((cw*so+sw*co*ci)*xp+(-sw*so+cw*co*ci)*yp)))}const curve=new THREE.CatmullRomCurve3(pts,true);oTubes[i].geometry.dispose();oTubes[i].geometry=new THREE.TubeGeometry(curve,120,0.02,4,true);oTubes[i].visible=showOrbits})}
+const oTubes=BODIES.map((b,i)=>{if(!b.orb)return null;const l=new THREE.Line(new THREE.BufferGeometry(),new THREE.LineBasicMaterial({color:new THREE.Color(b.color),transparent:true,opacity:.45,fog:false}));scene.add(l);return l});
+function updateOrbits(jd){BODIES.forEach((b,i)=>{if(!b.orb||!oTubes[i])return;const pts=[],T=(jd-2451545)/36525,o=b.orb,a=o.a[0]+o.a[1]*T,e=o.e[0]+o.e[1]*T,Iv=(o.I[0]+o.I[1]*T)*Math.PI/180,wB=o.w[0]+o.w[1]*T,Om=(o.O[0]+o.O[1]*T)*Math.PI/180,w2=(wB-o.O[0]-o.O[1]*T)*Math.PI/180,cw=Math.cos(w2),sw=Math.sin(w2),co=Math.cos(Om),so=Math.sin(Om),ci=Math.cos(Iv),si=Math.sin(Iv);for(let s=0;s<=360;s+=3){const Mv=s/360*2*Math.PI,E=solveKepler(Mv,e),xp=a*(Math.cos(E)-e),yp=a*Math.sqrt(1-e*e)*Math.sin(E);pts.push(new THREE.Vector3((cw*co-sw*so*ci)*xp+(-sw*co-cw*so*ci)*yp,(sw*si)*xp+(cw*si)*yp,-((cw*so+sw*co*ci)*xp+(-sw*so+cw*co*ci)*yp)))}pts.push(pts[0].clone());oTubes[i].geometry.dispose();oTubes[i].geometry=new THREE.BufferGeometry().setFromPoints(pts);oTubes[i].visible=showOrbits})}
 
 // Gravity lines — 3-layer halos
 const cG=new THREE.CylinderGeometry(1,1,1,8);
@@ -282,7 +403,6 @@ const mGLines={};for(const pi in MOON_SYS)mGLines[pi]=MOON_SYS[pi].map(mn=>mkGL(
 // Labels
 const lO=document.getElementById("labelOverlay"),lE={},mLE={};
 BODIES.forEach((b,i)=>{const d=document.createElement("div");d.className="label-3d";d.style.color=b.color;d.textContent=b.name;lO.appendChild(d);lE[i]=d});
-for(const pi in MOON_SYS)mLE[pi]=MOON_SYS[pi].map(mn=>{const d=document.createElement("div");d.className="label-3d moon-label";d.style.color=mn.c;d.textContent=mn.n;lO.appendChild(d);return d});
 function uL(el,v3,W,H){const v=v3.clone().project(camera);if(v.z>1){el.style.display="none";return}el.style.display=showLabels?"":"none";el.style.left=((v.x*.5+.5)*W+8)+"px";el.style.top=((-v.y*.5+.5)*H-5)+"px"}
 
 // RENDER
@@ -308,11 +428,12 @@ if(showSpirals){
     if(tr.length===0||v.distanceTo(tr[tr.length-1].p)>0.002){tr.push({p:v.clone(),d:dayOffset});if(tr.length>maxTrail)tr.shift()}
     if(tr.length>1){
       const pts=tr.map(t=>t.p.clone().add(galDirN.clone().multiplyScalar(galSpeed*(t.d-dayOffset))));
-      trailLines[i].geometry.dispose();trailLines[i].geometry=new THREE.BufferGeometry().setFromPoints(pts);trailLines[i].visible=true}
+      trailLines[i].geometry.dispose();trailLines[i].geometry=new THREE.BufferGeometry().setFromPoints(pts);trailLines[i].visible=true;
+      if(trailGlow[i]){trailGlow[i].geometry.dispose();trailGlow[i].geometry=new THREE.BufferGeometry().setFromPoints(pts);trailGlow[i].visible=true}}
   });
-} else { trailLines.forEach(l=>l.visible=false); }
+} else { trailLines.forEach(l=>l.visible=false);trailGlow.forEach(l=>{if(l)l.visible=false}); }
 // moons
-for(const pi in MOON_SYS){const pIdx=+pi,pPos=positions[pIdx];mPositions[pi]=MOON_SYS[pi].map((mn,mi)=>{const mp=moonOrbPos(pPos,mn,jd),v=toV3(mp),R=getR(mn.R,mn.R/30000);mMeshes[pi][mi].position.copy(v);mMeshes[pi][mi].scale.setScalar(Math.max(R,.008));mMeshes[pi][mi].visible=true;uL(mLE[pi][mi],v,W,H);return mp})}
+for(const pi in MOON_SYS){const pIdx=+pi,pPos=positions[pIdx];mPositions[pi]=MOON_SYS[pi].map((mn,mi)=>{return moonOrbPos(pPos,mn,jd)})}
 // gravity forces
 let logMin=Infinity,logMax=-Infinity;const cD={},mFD={};
 conns.forEach(k=>{const[i,j]=k.split("-").map(Number),pa=positions[i],pb=positions[j],d2=(pa.x-pb.x)**2+(pa.y-pb.y)**2+(pa.z-pb.z)**2,F=BODIES[i].mass*BODIES[j].mass/Math.max(d2,1e-20),lf=Math.log10(F);cD[k]={lf,i,j};if(lf<logMin)logMin=lf;if(lf>logMax)logMax=lf});
@@ -321,23 +442,25 @@ const logRange=logMax-logMin;
 ALL_PAIRS.forEach(k=>{const gl=gLines[k];if(!conns.has(k)){hideGL(gl);return}const cd=cD[k],t=logRange>0?(cd.lf-logMin)/logRange:.5;updGL(gl,toV3(positions[cd.i]),toV3(positions[cd.j]),t,lineMode==="log")});
 for(const pi in MOON_SYS){const pIdx=+pi;MOON_SYS[pi].forEach((mn,mi)=>{const gl=mGLines[pi][mi],key=pi+"-"+mi;if(!moonConns[key]||!mFD[key]){hideGL(gl);return}const t=logRange>0?(mFD[key].lf-logMin)/logRange:.5;updGL(gl,toV3(positions[pIdx]),toV3(mPositions[pi][mi]),t,lineMode==="log")})}
 oTubes.forEach(l=>{if(l)l.visible=showOrbits});
-axisLines.forEach(l=>l.visible=showAxes);axisLabelEls.forEach(a=>{a.el.style.display=showAxes&&showLabels?"":"none";const v=a.pos.clone().project(camera);if(v.z<1){a.el.style.left=((v.x*.5+.5)*W+4)+"px";a.el.style.top=((-v.y*.5+.5)*H-4)+"px"}});
-planeObjs.forEach(p=>p.visible=showPlanes);galGridLines.forEach(l=>l.visible=showPlanes);galLine.visible=galCone.visible=showGalactic;
+axisLines.forEach(l=>l.visible=showAxes);axisCones.forEach(c=>c.visible=showAxes);axisLabelEls.forEach(a=>{a.el.style.display=showAxes&&showLabels?"":"none";const v=a.pos.clone().project(camera);if(v.z<1){a.el.style.left=((v.x*.5+.5)*W+4)+"px";a.el.style.top=((-v.y*.5+.5)*H-4)+"px"}});
+planeObjs.forEach(p=>p.visible=showPlanes);galGridLines.forEach(l=>l.visible=showPlanes);galLine.visible=galLineGlow.visible=galLineGlow2.visible=galCone.visible=showGalactic;
 if(showGalactic&&showLabels){const gv=galDirN.clone().multiplyScalar(145).project(camera);if(gv.z<1){galLabel.style.display="";galLabel.style.left=((gv.x*.5+.5)*W+8)+"px";galLabel.style.top=((-gv.y*.5+.5)*H-5)+"px"}else galLabel.style.display="none"}else galLabel.style.display="none";
 updateCamera();renderer.render(scene,camera);
 let nMC=0;for(const k in moonConns)if(moonConns[k])nMC++;
-overlay.textContent=fmtDate(jdToDate(jd))+"  |  "+(lineMode==="thin"?"THIN":"LOG F")+"  |  "+conns.size+"+"+nMC+" lines"+(realSizes?"  |  REAL":"");
+overlay.textContent=fmtDate(jdToDate(jd))+"  |  GALACTIC  |  "+(lineMode==="thin"?"THIN":"LOG F")+"  |  "+conns.size+"+"+nMC+" lines"+(realSizes?"  |  REAL":"");
 updateTidal(positions,mPositions);
+updateForceMatrix(positions);
+updateForceSphere(positions);
 }
 
 // CAMERA
 let dragging=false,panning=false,lastX=0,lastY=0;const vpEl=renderer.domElement;
-vpEl.addEventListener("mousedown",e=>{if(e.button===2||e.shiftKey)panning=true;else dragging=true;lastX=e.clientX;lastY=e.clientY;e.preventDefault()});
-window.addEventListener("mousemove",e=>{const dx=e.clientX-lastX,dy=e.clientY-lastY;lastX=e.clientX;lastY=e.clientY;if(dragging){camTheta-=dx*.005;camPhi=Math.max(.05,Math.min(Math.PI-.05,camPhi-dy*.005));render()}else if(panning){const r=new THREE.Vector3(),u=new THREE.Vector3();r.crossVectors(camera.up,new THREE.Vector3().subVectors(camTarget,camera.position)).normalize();u.copy(camera.up);const s=camDist*.002;camTarget.add(r.multiplyScalar(-dx*s)).add(u.multiplyScalar(dy*s));render()}});
+vpEl.addEventListener("mousedown",e=>{if(e.button===2||e.button===1||e.shiftKey)panning=true;else dragging=true;lastX=e.clientX;lastY=e.clientY;e.preventDefault()});
+window.addEventListener("mousemove",e=>{const dx=e.clientX-lastX,dy=e.clientY-lastY;lastX=e.clientX;lastY=e.clientY;if(dragging){camTheta-=dx*.005;camPhi=Math.max(.05,Math.min(Math.PI-.05,camPhi-dy*.005));render()}else if(panning){const fwd=new THREE.Vector3().subVectors(camTarget,camera.position).normalize();const r=new THREE.Vector3().crossVectors(camera.up,fwd).normalize();const u=new THREE.Vector3().crossVectors(fwd,r).normalize();const s=camDist*.003;camTarget.add(r.multiplyScalar(-dx*s)).add(u.multiplyScalar(dy*s));render()}});
 window.addEventListener("mouseup",()=>{dragging=panning=false});vpEl.addEventListener("contextmenu",e=>e.preventDefault());
-vpEl.addEventListener("wheel",e=>{e.preventDefault();camDist*=e.deltaY>0?1.1:.91;camDist=Math.max(.01,Math.min(800,camDist));render()},{passive:false});
+vpEl.addEventListener("wheel",e=>{e.preventDefault();camDist*=e.deltaY>0?1.1:.91;camDist=Math.max(.01,Math.min(3000,camDist));render()},{passive:false});
 let touchDist=0;vpEl.addEventListener("touchstart",e=>{if(e.touches.length===1){dragging=true;lastX=e.touches[0].clientX;lastY=e.touches[0].clientY}else if(e.touches.length===2){const dx=e.touches[0].clientX-e.touches[1].clientX,dy=e.touches[0].clientY-e.touches[1].clientY;touchDist=Math.sqrt(dx*dx+dy*dy)}e.preventDefault()},{passive:false});
-vpEl.addEventListener("touchmove",e=>{if(e.touches.length===1&&dragging){const dx=e.touches[0].clientX-lastX,dy=e.touches[0].clientY-lastY;lastX=e.touches[0].clientX;lastY=e.touches[0].clientY;camTheta-=dx*.005;camPhi=Math.max(.05,Math.min(Math.PI-.05,camPhi-dy*.005));render()}else if(e.touches.length===2){const dx=e.touches[0].clientX-e.touches[1].clientX,dy=e.touches[0].clientY-e.touches[1].clientY,d=Math.sqrt(dx*dx+dy*dy);camDist*=touchDist/d;camDist=Math.max(.01,Math.min(800,camDist));touchDist=d;render()}e.preventDefault()},{passive:false});
+vpEl.addEventListener("touchmove",e=>{if(e.touches.length===1&&dragging){const dx=e.touches[0].clientX-lastX,dy=e.touches[0].clientY-lastY;lastX=e.touches[0].clientX;lastY=e.touches[0].clientY;camTheta-=dx*.005;camPhi=Math.max(.05,Math.min(Math.PI-.05,camPhi-dy*.005));render()}else if(e.touches.length===2){const dx=e.touches[0].clientX-e.touches[1].clientX,dy=e.touches[0].clientY-e.touches[1].clientY,d=Math.sqrt(dx*dx+dy*dy);camDist*=touchDist/d;camDist=Math.max(.01,Math.min(3000,camDist));touchDist=d;render()}e.preventDefault()},{passive:false});
 vpEl.addEventListener("touchend",()=>{dragging=false});
 
 // CONTROLS
@@ -345,9 +468,12 @@ const dateInput=document.getElementById("dateInput"),slider=document.getElementB
 function syncDate(){dateInput.value=fmtDate(jdToDate(baseJD+dayOffset));slider.value=dayOffset;render()}
 slider.addEventListener("input",()=>{dayOffset=Number(slider.value);syncDate()});
 dateInput.addEventListener("change",()=>{const d=new Date(dateInput.value+"T12:00:00Z");if(!isNaN(d.getTime())){dayOffset=dateToJD(d)-baseJD;slider.value=dayOffset;render()}});
-playBtn.addEventListener("click",()=>{animating=!animating;playBtn.textContent=animating?"■ Stop":"▶ Play";playBtn.classList.toggle("active",animating);if(animating)animate();else if(animId){cancelAnimationFrame(animId);animId=null}});
+function togglePlay(){animating=!animating;syncPlayBtns();if(animating)animate();else if(animId){cancelAnimationFrame(animId);animId=null}}
+playBtn.addEventListener("click",togglePlay);
 function animate(){if(!animating)return;dayOffset+=animSpeed;slider.value=dayOffset;syncDate();animId=requestAnimationFrame(animate)}
-speedInput.addEventListener("change",()=>{animSpeed=parseFloat(speedInput.value)||1});
+speedInput.addEventListener("change",()=>{animSpeed=parseFloat(speedInput.value)||1;if(speedInput2)speedInput2.value=animSpeed});
+document.getElementById("speedUp").addEventListener("click",()=>{let v=parseFloat(speedInput.value)||1;v=v<0.01?0.01:v<0.1?Math.round((v+0.01)*100)/100:v<1?Math.round((v+0.1)*10)/10:v<10?v+1:v<100?v+10:Math.min(365,v+50);speedInput.value=v;if(speedInput2)speedInput2.value=v;animSpeed=v});
+document.getElementById("speedDown").addEventListener("click",()=>{let v=parseFloat(speedInput.value)||1;v=v<=0.01?0.001:v<=0.1?Math.round((v-0.01)*100)/100:v<=1?Math.round((v-0.1)*10)/10:v<=10?v-1:v<=100?v-10:v-50;v=Math.max(0.001,v);speedInput.value=v;if(speedInput2)speedInput2.value=v;animSpeed=v});
 document.getElementById("cbOrbits").addEventListener("change",function(){showOrbits=this.checked;render()});
 document.getElementById("cbLabels").addEventListener("change",function(){showLabels=this.checked;render()});
 document.querySelectorAll('input[name="lineMode"]').forEach(r=>r.addEventListener("change",function(){lineMode=this.value;render()}));
@@ -355,8 +481,22 @@ document.getElementById("cbRealSizes").addEventListener("change",function(){real
 document.getElementById("cbAxes").addEventListener("change",function(){showAxes=this.checked;render()});
 document.getElementById("cbPlanes").addEventListener("change",function(){showPlanes=this.checked;render()});
 document.getElementById("cbGalactic").addEventListener("change",function(){showGalactic=this.checked;render()});
-document.getElementById("cbSpirals").addEventListener("change",function(){showSpirals=this.checked;if(!showSpirals){trails.forEach(t=>t.length=0);trailLines.forEach(l=>{l.geometry.dispose();l.geometry=new THREE.BufferGeometry();l.visible=false})}render()});
-document.getElementById("btnResetTrails").addEventListener("click",function(){trails.forEach(t=>t.length=0);trailLines.forEach(l=>{l.geometry.dispose();l.geometry=new THREE.BufferGeometry();l.visible=false});render()});
+document.getElementById("cbSpirals").addEventListener("change",function(){showSpirals=this.checked;if(!showSpirals){trails.forEach(t=>t.length=0);trailLines.forEach(l=>{l.geometry.dispose();l.geometry=new THREE.BufferGeometry();l.visible=false});trailGlow.forEach(l=>{if(l){l.geometry.dispose();l.geometry=new THREE.BufferGeometry();l.visible=false}})}render()});
+document.getElementById("btnResetTrails").addEventListener("click",function(){trails.forEach(t=>t.length=0);trailLines.forEach(l=>{l.geometry.dispose();l.geometry=new THREE.BufferGeometry();l.visible=false});trailGlow.forEach(l=>{if(l){l.geometry.dispose();l.geometry=new THREE.BufferGeometry();l.visible=false}});render()});
+
+// Second play bar (below influence panel) — syncs with main
+const playBtn2=document.getElementById("playBtn2"),speedInput2=document.getElementById("speedInput2");
+function syncPlayBtns(){const t=animating?"■ Stop":"▶ PLAY";playBtn.textContent=t;playBtn2.textContent=t;playBtn.classList.toggle("active",animating);playBtn2.classList.toggle("active",animating)}
+function syncSpeedInputs(){speedInput2.value=speedInput.value=animSpeed}
+playBtn2.addEventListener("click",togglePlay);
+speedInput2.addEventListener("change",()=>{animSpeed=parseFloat(speedInput2.value)||1;speedInput.value=animSpeed});
+document.getElementById("speedUp2").addEventListener("click",()=>{let v=parseFloat(speedInput2.value)||1;v=v<0.01?0.01:v<0.1?Math.round((v+0.01)*100)/100:v<1?Math.round((v+0.1)*10)/10:v<10?v+1:v<100?v+10:Math.min(365,v+50);speedInput2.value=v;speedInput.value=v;animSpeed=v});
+document.getElementById("speedDown2").addEventListener("click",()=>{let v=parseFloat(speedInput2.value)||1;v=v<=0.01?0.001:v<=0.1?Math.round((v-0.01)*100)/100:v<=1?Math.round((v-0.1)*10)/10:v<=10?v-1:v<=100?v-10:v-50;v=Math.max(0.001,v);speedInput2.value=v;speedInput.value=v;animSpeed=v});
+document.getElementById("btnResetTrails2").addEventListener("click",function(){trails.forEach(t=>t.length=0);trailLines.forEach(l=>{l.geometry.dispose();l.geometry=new THREE.BufferGeometry();l.visible=false});trailGlow.forEach(l=>{if(l){l.geometry.dispose();l.geometry=new THREE.BufferGeometry();l.visible=false}});render()});
+document.querySelectorAll('input[name="fmMode"]').forEach(r=>r.addEventListener("change",function(){fmMode=this.value;render()}));
+document.querySelectorAll('input[name="fsMode"]').forEach(r=>r.addEventListener("change",function(){fsMode=this.value;render()}));
+document.querySelectorAll('input[name="tidalMetric"]').forEach(r=>r.addEventListener("change",function(){tidalMetric=this.value;updateTidal._absMax=null;render()}));
+document.getElementById("cbAbsScale").addEventListener("change",function(){absScale=this.checked;updateTidal._absMax=null;render()});
 
 // GRID
 const gridEl=document.getElementById("grid"),checkboxes={},allCheckboxes={};
@@ -371,15 +511,514 @@ function clearBody(i){for(let j=0;j<N;j++)if(j!==i)conns.delete(pk(i,j));if(MOON
 function connectAll(){ALL_PAIRS.forEach(k=>conns.add(k));for(const k in moonConns){moonConns[k]=true;const r=document.querySelector('[data-mk="'+k+'"]');if(r){r.className="grid-row";r.querySelector("input").checked=true}}syncCB();render()}
 function clearAll(){conns.clear();for(const k in moonConns){moonConns[k]=false;const r=document.querySelector('[data-mk="'+k+'"]');if(r){r.className="grid-row off";r.querySelector("input").checked=false}}syncCB();render()}
 
-// TIDAL
-const tidalTarget=document.getElementById("tidalTarget"),tidalBarsEl=document.getElementById("tidalBars");let tidalTargetIdx=EARTH_IDX;const tidalRows={};
+// TIDAL / GRAVITY / DISTANCE PANEL
+const tidalTarget=document.getElementById("tidalTarget"),tidalBarsEl=document.getElementById("tidalBars"),tidalNoteEl=document.getElementById("tidalNote");
+let tidalTargetIdx=EARTH_IDX,tidalMetric='dist',absScale=false;const tidalRows={};
+const tidalNotes={
+  tidal:'M/r³ — Gravity gradient across the body. Derived: subtract two F=ma calculations at near/far sides. Moon dominates Earth. r³ crushes distance — proximity wins.',
+  grav:'M/r² — Gravitational acceleration. This IS F=ma per unit mass. Sun dominates everything. r² punishes distance less — mass wins.',
+  pot:'M/r — Gravitational potential. Energy per unit mass. Only linear distance falloff — Sun dominates even more extremely than M/r².',
+  mass:'Pure mass. No distance. Shows the raw hierarchy: Sun → Jupiter → Saturn. What the solar system looks like if distance didn\'t exist.',
+  dist:'Watch the bars oscillate. Three groups emerge — inner system, gas giants, outer system — moving in lockstep within each group but at completely different rates. No physics in this metric. Just geometry. And yet the architecture of the solar system reveals itself: three discrete manufacturing zones separated by structural gaps, not a smooth continuum. The pattern is in the spacing, not the forces.'};
 function buildTidalSelector(){BODIES.forEach((b,i)=>{const o=document.createElement("option");o.value=i;o.textContent=b.name;if(i===EARTH_IDX)o.selected=true;tidalTarget.appendChild(o)});tidalTarget.addEventListener("change",()=>{tidalTargetIdx=parseInt(tidalTarget.value);buildTidalBars();render()})}
-function buildTidalBars(){tidalBarsEl.innerHTML="";Object.keys(tidalRows).forEach(k=>delete tidalRows[k]);for(let i=0;i<N;i++){if(i===tidalTargetIdx)continue;addTR("b"+i,BODIES[i].name,BODIES[i].color,BODIES[i].mass,i,-1)}for(const pi in MOON_SYS)MOON_SYS[pi].forEach((mn,mi)=>addTR("m"+pi+"_"+mi,mn.n,mn.c,mn.m,+pi,mi))}
-function addTR(key,name,color,mass,pIdx,mIdx){const row=document.createElement("div");row.className="tidal-row";row.innerHTML='<span class="dot" style="background:'+color+'"></span><span class="name" style="color:'+color+'">'+name+'</span><span class="bar-bg"><span class="bar-fill" style="width:0%;background:'+color+'88"></span></span><span class="val"></span>';tidalBarsEl.appendChild(row);tidalRows[key]={el:row,fill:row.querySelector(".bar-fill"),val:row.querySelector(".val"),mass,pIdx,mIdx}}
-function updateTidal(positions,mPositions){const tgt=positions[tidalTargetIdx],entries=[];for(const key in tidalRows){const r=tidalRows[key];let sp;if(r.mIdx<0)sp=positions[r.pIdx];else sp=mPositions[r.pIdx]?mPositions[r.pIdx][r.mIdx]:positions[r.pIdx];const dx=sp.x-tgt.x,dy=sp.y-tgt.y,dz=(sp.z||0)-(tgt.z||0),d=Math.sqrt(dx*dx+dy*dy+dz*dz),tidal=r.mass/Math.max(d*d*d,1e-30);entries.push({key,tidal,row:r})}entries.sort((a,b)=>b.tidal-a.tidal);for(const e of entries)tidalBarsEl.appendChild(e.row.el);if(!entries.length)return;const lMax=Math.log10(entries[0].tidal),lMin=Math.log10(entries[entries.length-1].tidal),lSpan=lMax-lMin;for(const e of entries){const pct=lSpan>0?((Math.log10(e.tidal)-lMin)/lSpan)*100:50;e.row.fill.style.width=Math.max(pct,.5)+"%";const rel=e.tidal/entries[0].tidal;e.row.val.textContent=rel>.01?(rel*100).toFixed(1)+"%":rel>.0001?(rel*100).toFixed(3)+"%":rel.toExponential(1)}}
+function buildTidalBars(){tidalBarsEl.innerHTML="";Object.keys(tidalRows).forEach(k=>delete tidalRows[k]);for(let i=0;i<N;i++){if(i===tidalTargetIdx)continue;addTR("b"+i,BODIES[i].name,BODIES[i].color,BODIES[i].mass,i,-1)}
+  // Moons: use parent planet's color, dimmed by mass rank
+  for(const pi in MOON_SYS){const pColor=BODIES[+pi].color,moons=[...MOON_SYS[pi]].map((mn,mi)=>({mn,mi,m:mn.m}));
+    moons.sort((a,b)=>b.m-a.m);
+    const nM=moons.length;
+    moons.forEach((mo,rank)=>{
+      const bright=nM>1?0.8-rank*(0.5/(nM-1)):0.6;
+      const pc=new THREE.Color(pColor);pc.multiplyScalar(Math.max(bright,0.25));
+      const dimHex='#'+pc.getHexString();
+      addTR("m"+pi+"_"+mo.mi,mo.mn.n,dimHex,mo.mn.m,+pi,mo.mi);
+    });
+  }}
+function addTR(key,name,color,mass,pIdx,mIdx){const row=document.createElement("div");row.className="tidal-row";const isMoon=mIdx>=0;const prefix=isMoon?'<span style="color:#444;font-size:6px"> └ </span>':'';row.innerHTML='<span class="dot" style="background:'+color+'"></span><span class="name" style="color:'+color+';'+(isMoon?'font-size:6px;opacity:0.8':'')+'">'+prefix+name+'</span><span class="bar-bg"><span class="bar-fill" style="width:0%;background:'+color+'88"></span></span><span class="val"></span>';tidalBarsEl.appendChild(row);tidalRows[key]={el:row,fill:row.querySelector(".bar-fill"),val:row.querySelector(".val"),mass,pIdx,mIdx,isMoon}}
+// Zone separators for distance mode
+const zoneSeps=[
+  {el:(()=>{const d=document.createElement('div');d.className='zone-sep zone-inner';d.textContent='▼ INNER SYSTEM';return d})(),thresh:0},
+  {el:(()=>{const d=document.createElement('div');d.className='zone-sep zone-gas';d.textContent='▼ GAS GIANTS';return d})(),thresh:3},
+  {el:(()=>{const d=document.createElement('div');d.className='zone-sep zone-outer';d.textContent='▼ OUTER SYSTEM';return d})(),thresh:15}
+];
+function updateTidal(positions,mPositions){
+  const tgt=positions[tidalTargetIdx],entries=[];
+  for(const key in tidalRows){const r=tidalRows[key];let sp;
+    if(r.mIdx<0)sp=positions[r.pIdx];else sp=mPositions[r.pIdx]?mPositions[r.pIdx][r.mIdx]:positions[r.pIdx];
+    const dx=sp.x-tgt.x,dy=sp.y-tgt.y,dz=(sp.z||0)-(tgt.z||0),d=Math.sqrt(dx*dx+dy*dy+dz*dz);
+    let val;
+    if(tidalMetric==='grav')val=r.mass/Math.max(d*d,1e-30);
+    else if(tidalMetric==='pot')val=r.mass/Math.max(d,1e-15);
+    else if(tidalMetric==='mass')val=r.mass;
+    else if(tidalMetric==='dist')val=1/Math.max(d,1e-15);
+    else val=r.mass/Math.max(d*d*d,1e-30);
+    entries.push({key,val,dist:d,mass:r.mass,row:r,isMoon:r.isMoon,pIdx:r.pIdx})}
+  // Separate planets and moons, sort planets by value, attach moons under parent
+  const planets=entries.filter(e=>!e.isMoon).sort((a,b)=>b.val-a.val);
+  const moonsByParent={};entries.filter(e=>e.isMoon).forEach(e=>{if(!moonsByParent[e.pIdx])moonsByParent[e.pIdx]=[];moonsByParent[e.pIdx].push(e)});
+  for(const pi in moonsByParent)moonsByParent[pi].sort((a,b)=>b.val-a.val);
+  const sorted=[];planets.forEach(p=>{sorted.push(p);if(moonsByParent[p.pIdx])moonsByParent[p.pIdx].forEach(m=>sorted.push(m))});
+  // Remove old separators
+  zoneSeps.forEach(z=>{if(z.el.parentNode)z.el.parentNode.removeChild(z.el)});
+  // Append with zone separators in distance mode
+  if(tidalMetric==='dist'){
+    let curZone=-1;
+    for(const e of sorted){
+      if(!e.isMoon){let zone=e.dist<3?0:e.dist<15?1:2;if(zone!==curZone){tidalBarsEl.appendChild(zoneSeps[zone].el);curZone=zone}}
+      tidalBarsEl.appendChild(e.row.el)}
+  } else {for(const e of sorted)tidalBarsEl.appendChild(e.row.el)}
+  if(!sorted.length)return;
+  let lMax=Math.log10(sorted[0].val),lMin=Math.log10(sorted[sorted.length-1].val);
+  // ABS mode: ratchet bounds outward so scale freezes
+  if(absScale){
+    if(!updateTidal._absMax||tidalMetric!==updateTidal._lastMetric||tidalTargetIdx!==updateTidal._lastTarget){updateTidal._absMax=lMax;updateTidal._absMin=lMin;updateTidal._lastMetric=tidalMetric;updateTidal._lastTarget=tidalTargetIdx}
+    if(lMax>updateTidal._absMax)updateTidal._absMax=lMax;
+    if(lMin<updateTidal._absMin)updateTidal._absMin=lMin;
+    lMax=updateTidal._absMax;lMin=updateTidal._absMin;
+  }
+  const lSpan=lMax-lMin;
+  for(const e of sorted){
+    const pct=lSpan>0?((Math.log10(e.val)-lMin)/lSpan)*100:50;
+    e.row.fill.style.width=Math.max(pct,.5)+"%";
+    if(tidalMetric==='dist'){e.row.val.textContent=e.dist.toFixed(e.dist<1?4:2)+' AU'}
+    else if(tidalMetric==='mass'){e.row.val.textContent=e.mass>0.001?e.mass.toFixed(4):e.mass.toExponential(1)}
+    else{const rel=e.val/sorted[0].val;e.row.val.textContent=rel>.01?(rel*100).toFixed(1)+"%":rel>.0001?(rel*100).toFixed(3)+"%":rel.toExponential(1)}}
+  tidalNoteEl.textContent=tidalNotes[tidalMetric];
+}
+
+// ═══════════════════════════════════════════════════════════════
+// GRAVITATIONAL FORCE MATRIX — 3D
+// A new type of display: 13×13 grid of living columns.
+// Height = log₁₀(F), F = G·m₁·m₂/r². Every pair, every moment.
+// ═══════════════════════════════════════════════════════════════
+const fmVPEl=document.getElementById('fmVP'),fmLOEl=document.getElementById('fmLO'),fmInfoEl=document.getElementById('fmInfo');
+const fmScene=new THREE.Scene();fmScene.background=new THREE.Color(0x08080e);
+const fmCam=new THREE.PerspectiveCamera(38,1,.1,500);
+const fmR=new THREE.WebGLRenderer({antialias:true});
+fmR.setPixelRatio(Math.min(window.devicePixelRatio,2));
+fmVPEl.insertBefore(fmR.domElement,fmLOEl);
+
+const FM_SP=1.45,FM_HALF=(N-1)*FM_SP/2;
+
+// Ground plane
+const fmGround=new THREE.Mesh(new THREE.PlaneGeometry(N*FM_SP+4,N*FM_SP+4),new THREE.MeshBasicMaterial({color:0x0c0c16,transparent:true,opacity:.95}));
+fmGround.rotation.x=-Math.PI/2;fmGround.position.y=-.02;fmScene.add(fmGround);
+
+// Ground grid lines (subtle)
+const fmGridMat=new THREE.LineBasicMaterial({color:0x181830,transparent:true,opacity:.5});
+for(let i=0;i<N;i++){
+  const x=i*FM_SP-FM_HALF,z=i*FM_SP-FM_HALF;
+  fmScene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(x,0,-FM_HALF-1),new THREE.Vector3(x,0,FM_HALF+1)]),fmGridMat));
+  fmScene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-FM_HALF-1,0,z),new THREE.Vector3(FM_HALF+1,0,z)]),fmGridMat));
+}
+
+// Columns — 156 living pillars (13×12)
+const fmBoxGeo=new THREE.BoxGeometry(.55,1,.55);
+const fmCols={},fmTgt={},fmCur={};
+for(let i=0;i<N;i++){for(let j=0;j<N;j++){if(i===j)continue;const k=i+','+j;
+  const c1=new THREE.Color(BODIES[i].color),c2=new THREE.Color(BODIES[j].color);
+  const blend=c1.clone().lerp(c2,.5);
+  const mat=new THREE.MeshBasicMaterial({color:blend,transparent:true,opacity:.6});
+  const m=new THREE.Mesh(fmBoxGeo,mat);
+  m.position.x=j*FM_SP-FM_HALF;m.position.z=i*FM_SP-FM_HALF;
+  m.scale.y=.01;m.position.y=.005;
+  fmScene.add(m);fmCols[k]=m;fmTgt[k]=.01;fmCur[k]=.01;
+}}
+
+// Glowing caps — additive blending, sit on top of each column
+const fmCapGeo=new THREE.BoxGeometry(.6,.06,.6);
+const fmCaps={};
+for(let i=0;i<N;i++){for(let j=0;j<N;j++){if(i===j)continue;const k=i+','+j;
+  const c1=new THREE.Color(BODIES[i].color),c2=new THREE.Color(BODIES[j].color);
+  const blend=c1.clone().lerp(c2,.5);
+  const mat=new THREE.MeshBasicMaterial({color:blend,transparent:true,opacity:.5,blending:THREE.AdditiveBlending,depthWrite:false});
+  const m=new THREE.Mesh(fmCapGeo,mat);fmScene.add(m);fmCaps[k]=m;
+}}
+
+// Diagonal identity markers — glowing spheres where i===j
+const fmDotGeo=new THREE.SphereGeometry(.22,10,8);
+for(let i=0;i<N;i++){
+  const m=new THREE.Mesh(fmDotGeo,new THREE.MeshBasicMaterial({color:new THREE.Color(BODIES[i].color),transparent:true,opacity:.9}));
+  m.position.set(i*FM_SP-FM_HALF,.22,i*FM_SP-FM_HALF);fmScene.add(m);
+  // Glow ring on diagonal
+  const ring=new THREE.Mesh(new THREE.RingGeometry(.15,.35,16),new THREE.MeshBasicMaterial({color:new THREE.Color(BODIES[i].color),transparent:true,opacity:.15,blending:THREE.AdditiveBlending,side:THREE.DoubleSide,depthWrite:false}));
+  ring.rotation.x=-Math.PI/2;ring.position.set(i*FM_SP-FM_HALF,.01,i*FM_SP-FM_HALF);fmScene.add(ring);
+}
+
+// Diagonal axis plane — vertical wall along the identity diagonal, splitting the city
+const diagLen=(N-1)*FM_SP*Math.SQRT2+3;
+const diagPlane=new THREE.Mesh(new THREE.PlaneGeometry(diagLen,9),new THREE.MeshBasicMaterial({color:0xFFFFFF,transparent:true,opacity:.025,side:THREE.DoubleSide,depthWrite:false}));
+const diagNorm=new THREE.Vector3(1,0,-1).normalize();
+diagPlane.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),diagNorm);
+diagPlane.position.y=4.5;fmScene.add(diagPlane);
+// Diagonal edge line at ground level
+const diagP1=new THREE.Vector3(-FM_HALF-.8,0,-FM_HALF-.8),diagP2=new THREE.Vector3(FM_HALF+.8,0,FM_HALF+.8);
+const diagLine=new THREE.Line(new THREE.BufferGeometry().setFromPoints([diagP1,diagP2]),new THREE.LineBasicMaterial({color:0xFFFFFF,transparent:true,opacity:.2}));
+fmScene.add(diagLine);
+// Diagonal glow plane — additive accent
+const diagGlow=new THREE.Mesh(new THREE.PlaneGeometry(diagLen,9),new THREE.MeshBasicMaterial({color:0x4488FF,transparent:true,opacity:.012,side:THREE.DoubleSide,depthWrite:false,blending:THREE.AdditiveBlending}));
+diagGlow.quaternion.copy(diagPlane.quaternion);diagGlow.position.y=4.5;fmScene.add(diagGlow);
+
+// Axis marker dots — front edge and left edge
+for(let i=0;i<N;i++){
+  const c=new THREE.Color(BODIES[i].color);
+  const df=new THREE.Mesh(new THREE.SphereGeometry(.13,6,4),new THREE.MeshBasicMaterial({color:c}));
+  df.position.set(i*FM_SP-FM_HALF,0,FM_HALF+1.4);fmScene.add(df);
+  const dl=new THREE.Mesh(new THREE.SphereGeometry(.13,6,4),new THREE.MeshBasicMaterial({color:c}));
+  dl.position.set(-FM_HALF-1.4,0,i*FM_SP-FM_HALF);fmScene.add(dl);
+}
+
+// HTML labels — projected from 3D positions
+const fmLabels={};
+for(let i=0;i<N;i++){
+  const ef=document.createElement('div');ef.className='fm-lbl';ef.style.color=BODIES[i].color;ef.textContent=BODIES[i].name;fmLOEl.appendChild(ef);fmLabels['f'+i]=ef;
+  const el=document.createElement('div');el.className='fm-lbl';el.style.color=BODIES[i].color;el.textContent=BODIES[i].name;fmLOEl.appendChild(el);fmLabels['l'+i]=el;
+}
+
+// Camera state
+let fmTheta=-.65,fmPhi=.75,fmDist=35;
+const fmTgtPos=new THREE.Vector3(0,1.5,0);
+function updFmCam(){
+  const sp=Math.sin(fmPhi),cp=Math.cos(fmPhi),st=Math.sin(fmTheta),ct=Math.cos(fmTheta);
+  fmCam.position.set(fmDist*sp*st+fmTgtPos.x,fmDist*cp+fmTgtPos.y,fmDist*sp*ct+fmTgtPos.z);
+  fmCam.lookAt(fmTgtPos);
+}
+
+// Mouse controls
+let fmDrag=false,fmPan=false,fmLX=0,fmLY=0;
+fmR.domElement.addEventListener('mousedown',e=>{if(e.button===2||e.shiftKey)fmPan=true;else fmDrag=true;fmLX=e.clientX;fmLY=e.clientY;e.preventDefault()});
+fmR.domElement.addEventListener('contextmenu',e=>e.preventDefault());
+window.addEventListener('mousemove',e=>{
+  const dx=e.clientX-fmLX,dy=e.clientY-fmLY;
+  if(!fmDrag&&!fmPan)return;
+  fmLX=e.clientX;fmLY=e.clientY;
+  if(fmDrag){fmTheta-=dx*.005;fmPhi=Math.max(.15,Math.min(Math.PI/2-.05,fmPhi-dy*.005));renderFm()}
+  if(fmPan){const s=fmDist*.0025;fmTgtPos.x-=dx*s*.3;fmTgtPos.y+=dy*s*.3;renderFm()}
+});
+window.addEventListener('mouseup',()=>{fmDrag=fmPan=false});
+fmR.domElement.addEventListener('wheel',e=>{e.preventDefault();fmDist*=e.deltaY>0?1.08:.93;fmDist=Math.max(6,Math.min(120,fmDist));renderFm()},{passive:false});
+// Touch
+let fmTD=0;
+fmR.domElement.addEventListener('touchstart',e=>{if(e.touches.length===1){fmDrag=true;fmLX=e.touches[0].clientX;fmLY=e.touches[0].clientY}else if(e.touches.length===2){const dx=e.touches[0].clientX-e.touches[1].clientX,dy=e.touches[0].clientY-e.touches[1].clientY;fmTD=Math.sqrt(dx*dx+dy*dy)}e.preventDefault()},{passive:false});
+fmR.domElement.addEventListener('touchmove',e=>{if(e.touches.length===1&&fmDrag){const dx=e.touches[0].clientX-fmLX,dy=e.touches[0].clientY-fmLY;fmLX=e.touches[0].clientX;fmLY=e.touches[0].clientY;fmTheta-=dx*.005;fmPhi=Math.max(.15,Math.min(Math.PI/2-.05,fmPhi-dy*.005));renderFm()}else if(e.touches.length===2){const dx=e.touches[0].clientX-e.touches[1].clientX,dy=e.touches[0].clientY-e.touches[1].clientY,d=Math.sqrt(dx*dx+dy*dy);fmDist*=fmTD/d;fmDist=Math.max(6,Math.min(120,fmDist));fmTD=d;renderFm()}e.preventDefault()},{passive:false});
+fmR.domElement.addEventListener('touchend',()=>{fmDrag=false});
+
+// Label projection
+function fmProj(el,v3,w,h){const v=v3.clone().project(fmCam);if(v.z>1){el.style.display='none';return}el.style.display='';el.style.left=((v.x*.5+.5)*w)+'px';el.style.top=((-v.y*.5+.5)*h)+'px'}
+
+// Render the force matrix scene
+function renderFm(){
+  const w=fmVPEl.clientWidth,h=fmVPEl.clientHeight||550;
+  for(let i=0;i<N;i++){
+    fmProj(fmLabels['f'+i],new THREE.Vector3(i*FM_SP-FM_HALF,-.2,FM_HALF+1.8),w,h);
+    fmProj(fmLabels['l'+i],new THREE.Vector3(-FM_HALF-1.8,-.2,i*FM_SP-FM_HALF),w,h);
+  }
+  updFmCam();fmR.render(fmScene,fmCam);
+}
+
+// Core update — called from main render() with current positions
+function updateForceMatrix(posArr){
+  let logMin=Infinity,logMax=-Infinity,rawMax=0;
+  const frc={},rawF={};
+  for(let i=0;i<N;i++){for(let j=0;j<N;j++){if(i===j)continue;
+    const pa=posArr[i],pb=posArr[j];
+    const d2=(pa.x-pb.x)**2+(pa.y-pb.y)**2+((pa.z||0)-(pb.z||0))**2;
+    const F=BODIES[i].mass*BODIES[j].mass/Math.max(d2,1e-30);
+    const lf=Math.log10(F);const k=i+','+j;
+    frc[k]=lf;rawF[k]=F;
+    if(lf<logMin)logMin=lf;if(lf>logMax)logMax=lf;
+    if(F>rawMax)rawMax=F;
+  }}
+  const lr=logMax-logMin;
+  let topKey='',topLF=-Infinity;
+  const modeLabel=fmMode==='thin'?'THIN':fmMode==='log'?'LOG F':'REAL F';
+  for(const k in fmCols){
+    const lf=frc[k],t=lr>0?(lf-logMin)/lr:.5;
+    let h,op;
+    if(fmMode==='thin'){h=2.5;op=.5;fmCols[k].visible=true;fmCaps[k].visible=true}
+    else if(fmMode==='real'){const rt=rawMax>0?rawF[k]/rawMax:0;h=rt*8;op=rt*.9;fmCols[k].visible=rt>.001;fmCaps[k].visible=rt>.001}
+    else{h=.04+t*7.5;op=.2+t*.7;fmCols[k].visible=true;fmCaps[k].visible=true}
+    fmTgt[k]=h;
+    fmCur[k]+=(fmTgt[k]-fmCur[k])*.25;
+    const ch=fmCur[k];
+    fmCols[k].scale.y=ch;
+    fmCols[k].position.y=ch/2;
+    fmCols[k].material.opacity=fmMode==='thin'?.5:op;
+    fmCaps[k].position.set(fmCols[k].position.x,ch+.03,fmCols[k].position.z);
+    fmCaps[k].material.opacity=fmMode==='thin'?.3:(fmMode==='real'?(rawMax>0?rawF[k]/rawMax:0)*.8:(.15+t*.6));
+    if(lf>topLF){topLF=lf;topKey=k}
+  }
+  const[ti,tj]=topKey.split(',').map(Number);
+  fmInfoEl.textContent=modeLabel+'  |  '+BODIES[ti].name+' ↔ '+BODIES[tj].name+' strongest  |  156 pairs';
+  renderFm();
+}
+
+// Resize handler
+function fmResize(){
+  const w=fmVPEl.clientWidth,h=Math.min(Math.max(w*.6,350),600);
+  fmVPEl.style.height=h+'px';
+  fmR.setSize(w,h);fmCam.aspect=w/h;fmCam.updateProjectionMatrix();renderFm();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// FORCE SPHERE — 3D
+// The same 156 columns, mapped onto a sphere.
+// Latitude = body i (row), Longitude = body j (column).
+// Columns extend radially outward. Height = log₁₀(F).
+// ═══════════════════════════════════════════════════════════════
+const fsVPEl=document.getElementById('fsVP'),fsLOEl=document.getElementById('fsLO'),fsInfoEl=document.getElementById('fsInfo');
+const fsScene=new THREE.Scene();fsScene.background=new THREE.Color(0x06060c);
+const fsCam=new THREE.PerspectiveCamera(40,1,.1,500);
+const fsRend=new THREE.WebGLRenderer({antialias:true});
+fsRend.setPixelRatio(Math.min(window.devicePixelRatio,2));
+fsVPEl.insertBefore(fsRend.domElement,fsLOEl);
+
+const FS_R=5.5; // sphere radius
+
+// Precompute surface positions and normals for every grid cell
+const fsSurf={},fsNorm={};
+function fsLatLon(row,col){
+  const lat=(-65+(row/(N-1))*130)*Math.PI/180;
+  const lon=(col/N)*2*Math.PI;
+  const cl=Math.cos(lat),sl=Math.sin(lat),co=Math.cos(lon),so=Math.sin(lon);
+  return new THREE.Vector3(FS_R*cl*co,FS_R*sl,FS_R*cl*so);
+}
+for(let i=0;i<N;i++){for(let j=0;j<N;j++){if(i===j)continue;
+  const k=i+','+j,p=fsLatLon(i,j);
+  fsSurf[k]=p;fsNorm[k]=p.clone().normalize();
+}}
+
+// Sphere wireframe shell
+const fsShellGeo=new THREE.SphereGeometry(FS_R,36,24);
+fsScene.add(new THREE.Mesh(fsShellGeo,new THREE.MeshBasicMaterial({color:0x0e0e22,transparent:true,opacity:.5,depthWrite:false})));
+fsScene.add(new THREE.Mesh(fsShellGeo,new THREE.MeshBasicMaterial({color:0x1a1a3a,wireframe:true,transparent:true,opacity:.08})));
+
+// Latitude lines on sphere
+const fsGridMat=new THREE.LineBasicMaterial({color:0x222244,transparent:true,opacity:.2});
+for(let i=0;i<N;i++){
+  const lat=(-65+(i/(N-1))*130)*Math.PI/180,pts=[];
+  for(let s=0;s<=72;s++){const lon=s/72*Math.PI*2,cl=Math.cos(lat),sl=Math.sin(lat);pts.push(new THREE.Vector3(FS_R*cl*Math.cos(lon),FS_R*sl,FS_R*cl*Math.sin(lon)))}
+  fsScene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineBasicMaterial({color:new THREE.Color(BODIES[i].color),transparent:true,opacity:.25})));
+}
+// Longitude lines
+for(let j=0;j<N;j++){
+  const lon=(j/N)*Math.PI*2,pts=[];
+  for(let s=0;s<=48;s++){const lat=(s/48*130-65)*Math.PI/180;pts.push(new THREE.Vector3(FS_R*Math.cos(lat)*Math.cos(lon),FS_R*Math.sin(lat),FS_R*Math.cos(lat)*Math.sin(lon)))}
+  fsScene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineBasicMaterial({color:new THREE.Color(BODIES[j].color),transparent:true,opacity:.25})));
+}
+
+// Columns — 156 radial pillars
+const fsBoxGeo=new THREE.BoxGeometry(.35,1,.35);
+const fsCols={},fsTgt={},fsCurH={};
+for(let i=0;i<N;i++){for(let j=0;j<N;j++){if(i===j)continue;const k=i+','+j;
+  const c1=new THREE.Color(BODIES[i].color),c2=new THREE.Color(BODIES[j].color);
+  const blend=c1.clone().lerp(c2,.5);
+  const mat=new THREE.MeshBasicMaterial({color:blend,transparent:true,opacity:.6});
+  const m=new THREE.Mesh(fsBoxGeo,mat);
+  m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),fsNorm[k]);
+  m.scale.y=.01;m.position.copy(fsSurf[k]);
+  fsScene.add(m);fsCols[k]=m;fsTgt[k]=.01;fsCurH[k]=.01;
+}}
+
+// Glowing caps
+const fsCapGeo=new THREE.BoxGeometry(.4,.06,.4);
+const fsCaps={};
+for(let i=0;i<N;i++){for(let j=0;j<N;j++){if(i===j)continue;const k=i+','+j;
+  const c1=new THREE.Color(BODIES[i].color),c2=new THREE.Color(BODIES[j].color);
+  const mat=new THREE.MeshBasicMaterial({color:c1.clone().lerp(c2,.5),transparent:true,opacity:.5,blending:THREE.AdditiveBlending,depthWrite:false});
+  const m=new THREE.Mesh(fsCapGeo,mat);
+  m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),fsNorm[k]);
+  fsScene.add(m);fsCaps[k]=m;
+}}
+
+// Diagonal identity markers — on sphere surface
+const fsDotGeo=new THREE.SphereGeometry(.18,8,6);
+for(let i=0;i<N;i++){
+  const p=fsLatLon(i,i),n=p.clone().normalize();
+  const m=new THREE.Mesh(fsDotGeo,new THREE.MeshBasicMaterial({color:new THREE.Color(BODIES[i].color)}));
+  m.position.copy(p.clone().add(n.clone().multiplyScalar(.15)));fsScene.add(m);
+  // Glow halo
+  const glow=new THREE.Mesh(new THREE.SphereGeometry(.3,8,6),new THREE.MeshBasicMaterial({color:new THREE.Color(BODIES[i].color),transparent:true,opacity:.15,blending:THREE.AdditiveBlending,depthWrite:false}));
+  glow.position.copy(m.position);fsScene.add(glow);
+  // Connector cylinder from diagonal dot on sphere to cylinder axis
+  const lat=(-65+(i/(N-1))*130)*Math.PI/180;
+  const cylPt=new THREE.Vector3(0,FS_R*Math.sin(lat),0);
+  const surfPt=p.clone().add(n.clone().multiplyScalar(.15));
+  const connDir=new THREE.Vector3().subVectors(cylPt,surfPt);
+  const connLen=connDir.length();
+  const connMid=surfPt.clone().lerp(cylPt,.5);
+  const connCyl=new THREE.Mesh(new THREE.CylinderGeometry(.04,.04,connLen,6),new THREE.MeshBasicMaterial({color:new THREE.Color(BODIES[i].color),transparent:true,opacity:.35}));
+  connCyl.position.copy(connMid);
+  connCyl.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),connDir.normalize());
+  fsScene.add(connCyl);
+  // Glow tube
+  const connGlow=new THREE.Mesh(new THREE.CylinderGeometry(.1,.1,connLen,6),new THREE.MeshBasicMaterial({color:new THREE.Color(BODIES[i].color),transparent:true,opacity:.08,blending:THREE.AdditiveBlending,depthWrite:false}));
+  connGlow.position.copy(connMid);connGlow.quaternion.copy(connCyl.quaternion);
+  fsScene.add(connGlow);
+}
+
+// (Ecliptic rings removed for clarity)
+
+// Polar cylinder — labelled axis mapping all 13 bodies by latitude
+const polarCylLen=FS_R*3.6;
+const polarCyl=new THREE.Mesh(new THREE.CylinderGeometry(.2,.2,polarCylLen,16,1,true),new THREE.MeshBasicMaterial({color:0xFF8800,transparent:true,opacity:.06,side:THREE.DoubleSide,depthWrite:false}));
+fsScene.add(polarCyl);
+// Inner glow cylinder
+const polarCylGlow=new THREE.Mesh(new THREE.CylinderGeometry(.08,.08,polarCylLen,8),new THREE.MeshBasicMaterial({color:0xFFAA44,transparent:true,opacity:.15,fog:false}));
+fsScene.add(polarCylGlow);
+// Polar axis line (extends beyond cylinder)
+const polarLine=new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,-polarCylLen/2-.5,0),new THREE.Vector3(0,polarCylLen/2+.5,0)]),new THREE.LineBasicMaterial({color:0xFF8800,transparent:true,opacity:.4}));
+fsScene.add(polarLine);
+// Body markers along the cylinder at their latitude positions
+const fsCylLabels={};
+for(let i=0;i<N;i++){
+  const lat=(-65+(i/(N-1))*130)*Math.PI/180;
+  const yPos=FS_R*Math.sin(lat);
+  // Colored dot on cylinder surface
+  const dot=new THREE.Mesh(new THREE.SphereGeometry(.14,6,4),new THREE.MeshBasicMaterial({color:new THREE.Color(BODIES[i].color)}));
+  dot.position.set(0,yPos,.25);fsScene.add(dot);
+  // Tick ring at this latitude on cylinder
+  const tick=new THREE.Mesh(new THREE.TorusGeometry(.22,.03,4,16),new THREE.MeshBasicMaterial({color:new THREE.Color(BODIES[i].color),transparent:true,opacity:.4}));
+  tick.position.y=yPos;fsScene.add(tick);
+  // HTML label
+  const el=document.createElement('div');el.className='fm-lbl';el.style.color=BODIES[i].color;el.textContent=BODIES[i].name;
+  fsLOEl.appendChild(el);fsCylLabels[i]={el,y:yPos};
+}
+// North and South pole caps — extend past sphere
+const poleGeo=new THREE.ConeGeometry(.25,.6,8);
+const nPole=new THREE.Mesh(poleGeo,new THREE.MeshBasicMaterial({color:0xFF8800,transparent:true,opacity:.5}));
+nPole.position.y=polarCylLen/2;fsScene.add(nPole);
+const sPole=new THREE.Mesh(poleGeo,new THREE.MeshBasicMaterial({color:0xFFD700,transparent:true,opacity:.5}));
+sPole.position.y=-polarCylLen/2;sPole.rotation.z=Math.PI;fsScene.add(sPole);
+// Pole labels
+const nPoleLabel=document.createElement('div');nPoleLabel.className='fm-lbl';nPoleLabel.style.color='#FF8800';nPoleLabel.textContent='N Pole';fsLOEl.appendChild(nPoleLabel);
+const sPoleLabel=document.createElement('div');sPoleLabel.className='fm-lbl';sPoleLabel.style.color='#FFD700';sPoleLabel.textContent='S Pole · Sun';fsLOEl.appendChild(sPoleLabel);
+
+// HTML labels — at latitude positions (left) and longitude positions (bottom)
+const fsLabels={};
+for(let i=0;i<N;i++){
+  // Latitude label (row body) — placed at lon=-30° offset
+  const latP=fsLatLon(i,N-1);const latN=latP.clone().normalize();
+  const latLabel=document.createElement('div');latLabel.className='fm-lbl';latLabel.style.color=BODIES[i].color;latLabel.textContent=BODIES[i].name;
+  fsLOEl.appendChild(latLabel);fsLabels['r'+i]={el:latLabel,pos:latP.clone().add(latN.clone().multiplyScalar(1.5))};
+  // Longitude label (col body) — placed at lat=-75°
+  const lonLat=-75*Math.PI/180,lon=(i/N)*Math.PI*2;
+  const lonPos=new THREE.Vector3((FS_R+1.2)*Math.cos(lonLat)*Math.cos(lon),(FS_R+1.2)*Math.sin(lonLat),(FS_R+1.2)*Math.cos(lonLat)*Math.sin(lon));
+  const lonLabel=document.createElement('div');lonLabel.className='fm-lbl';lonLabel.style.color=BODIES[i].color;lonLabel.textContent=BODIES[i].name;
+  fsLOEl.appendChild(lonLabel);fsLabels['c'+i]={el:lonLabel,pos:lonPos};
+}
+
+// Camera
+let fsTheta=.4,fsPhi=.9,fsDist=18;
+const fsTgtPos=new THREE.Vector3(0,0,0);
+function updFsCam(){
+  const sp=Math.sin(fsPhi),cp=Math.cos(fsPhi),st=Math.sin(fsTheta),ct=Math.cos(fsTheta);
+  fsCam.position.set(fsDist*sp*st+fsTgtPos.x,fsDist*cp+fsTgtPos.y,fsDist*sp*ct+fsTgtPos.z);
+  fsCam.lookAt(fsTgtPos);
+}
+
+// Mouse controls
+let fsDrag=false,fsPan=false,fsLX=0,fsLY=0;
+fsRend.domElement.addEventListener('mousedown',e=>{if(e.button===2||e.shiftKey)fsPan=true;else fsDrag=true;fsLX=e.clientX;fsLY=e.clientY;e.preventDefault()});
+fsRend.domElement.addEventListener('contextmenu',e=>e.preventDefault());
+window.addEventListener('mousemove',e=>{
+  if(!fsDrag&&!fsPan)return;
+  const dx=e.clientX-fsLX,dy=e.clientY-fsLY;fsLX=e.clientX;fsLY=e.clientY;
+  if(fsDrag){fsTheta-=dx*.005;fsPhi=Math.max(.01,Math.min(Math.PI-.01,fsPhi-dy*.005));renderFs()}
+  if(fsPan){const s=fsDist*.002;fsTgtPos.x-=dx*s*.3;fsTgtPos.y+=dy*s*.3;renderFs()}
+});
+window.addEventListener('mouseup',()=>{fsDrag=fsPan=false});
+fsRend.domElement.addEventListener('wheel',e=>{e.preventDefault();fsDist*=e.deltaY>0?1.08:.93;fsDist=Math.max(8,Math.min(50,fsDist));renderFs()},{passive:false});
+// Touch
+let fsTchD=0;
+fsRend.domElement.addEventListener('touchstart',e=>{if(e.touches.length===1){fsDrag=true;fsLX=e.touches[0].clientX;fsLY=e.touches[0].clientY}else if(e.touches.length===2){const dx=e.touches[0].clientX-e.touches[1].clientX,dy=e.touches[0].clientY-e.touches[1].clientY;fsTchD=Math.sqrt(dx*dx+dy*dy)}e.preventDefault()},{passive:false});
+fsRend.domElement.addEventListener('touchmove',e=>{if(e.touches.length===1&&fsDrag){const dx=e.touches[0].clientX-fsLX,dy=e.touches[0].clientY-fsLY;fsLX=e.touches[0].clientX;fsLY=e.touches[0].clientY;fsTheta-=dx*.005;fsPhi=Math.max(.01,Math.min(Math.PI-.01,fsPhi-dy*.005));renderFs()}else if(e.touches.length===2){const dx=e.touches[0].clientX-e.touches[1].clientX,dy=e.touches[0].clientY-e.touches[1].clientY,d=Math.sqrt(dx*dx+dy*dy);fsDist*=fsTchD/d;fsDist=Math.max(8,Math.min(50,fsDist));fsTchD=d;renderFs()}e.preventDefault()},{passive:false});
+fsRend.domElement.addEventListener('touchend',()=>{fsDrag=false});
+
+// Render sphere scene
+function renderFs(){
+  const w=fsVPEl.clientWidth,h=fsVPEl.clientHeight||550;
+  for(const lk in fsLabels){const lb=fsLabels[lk],v=lb.pos.clone().project(fsCam);
+    if(v.z>1){lb.el.style.display='none';continue}
+    lb.el.style.display='';lb.el.style.left=((v.x*.5+.5)*w)+'px';lb.el.style.top=((-v.y*.5+.5)*h)+'px'}
+  // Pole labels
+  const nv=new THREE.Vector3(0,FS_R*1.9,0).project(fsCam);
+  if(nv.z<1){nPoleLabel.style.display='';nPoleLabel.style.left=((nv.x*.5+.5)*w)+'px';nPoleLabel.style.top=((-nv.y*.5+.5)*h)+'px'}else nPoleLabel.style.display='none';
+  const sv=new THREE.Vector3(0,-FS_R*1.9,0).project(fsCam);
+  if(sv.z<1){sPoleLabel.style.display='';sPoleLabel.style.left=((sv.x*.5+.5)*w)+'px';sPoleLabel.style.top=((-sv.y*.5+.5)*h)+'px'}else sPoleLabel.style.display='none';
+  // Cylinder body labels
+  for(let i=0;i<N;i++){const cl=fsCylLabels[i],cv=new THREE.Vector3(.5,cl.y,0).project(fsCam);
+    if(cv.z>1){cl.el.style.display='none';continue}
+    cl.el.style.display='';cl.el.style.left=((cv.x*.5+.5)*w)+'px';cl.el.style.top=((-cv.y*.5+.5)*h)+'px'}
+  updFsCam();fsRend.render(fsScene,fsCam);
+}
+
+// Core update — called from main render()
+function updateForceSphere(posArr){
+  let logMin=Infinity,logMax=-Infinity,rawMax=0;
+  const frc={},rawF={};
+  for(let i=0;i<N;i++){for(let j=0;j<N;j++){if(i===j)continue;
+    const pa=posArr[i],pb=posArr[j];
+    const d2=(pa.x-pb.x)**2+(pa.y-pb.y)**2+((pa.z||0)-(pb.z||0))**2;
+    const F=BODIES[i].mass*BODIES[j].mass/Math.max(d2,1e-30);
+    const lf=Math.log10(F);const k=i+','+j;
+    frc[k]=lf;rawF[k]=F;
+    if(lf<logMin)logMin=lf;if(lf>logMax)logMax=lf;
+    if(F>rawMax)rawMax=F;
+  }}
+  const lr=logMax-logMin;
+  let topKey='',topLF=-Infinity;
+  const modeLabel=fsMode==='thin'?'THIN':fsMode==='log'?'LOG F':'REAL F';
+  for(const k in fsCols){
+    const lf=frc[k],t=lr>0?(lf-logMin)/lr:.5;
+    let h,op;
+    if(fsMode==='thin'){h=1.5;op=.45;fsCols[k].visible=true;fsCaps[k].visible=true}
+    else if(fsMode==='real'){const rt=rawMax>0?rawF[k]/rawMax:0;h=rt*5;op=rt*.9;fsCols[k].visible=rt>.001;fsCaps[k].visible=rt>.001}
+    else{h=.03+t*4.5;op=.15+t*.75;fsCols[k].visible=true;fsCaps[k].visible=true}
+    fsTgt[k]=h;
+    fsCurH[k]+=(fsTgt[k]-fsCurH[k])*.25;
+    const ch=fsCurH[k];
+    const surf=fsSurf[k],norm=fsNorm[k];
+    fsCols[k].scale.y=ch;
+    fsCols[k].position.copy(surf.clone().add(norm.clone().multiplyScalar(ch/2)));
+    fsCols[k].material.opacity=fsMode==='thin'?.45:op;
+    fsCaps[k].position.copy(surf.clone().add(norm.clone().multiplyScalar(ch+.03)));
+    fsCaps[k].material.opacity=fsMode==='thin'?.3:(fsMode==='real'?(rawMax>0?rawF[k]/rawMax:0)*.7:(.1+t*.6));
+    if(lf>topLF){topLF=lf;topKey=k}
+  }
+  const[ti,tj]=topKey.split(',').map(Number);
+  fsInfoEl.textContent=modeLabel+'  |  '+BODIES[ti].name+' ↔ '+BODIES[tj].name+' strongest  |  156 radial columns';
+  renderFs();
+}
+
+// Resize
+function fsResize(){
+  const w=fsVPEl.clientWidth,h=Math.min(Math.max(w*.65,380),650);
+  fsVPEl.style.height=h+'px';
+  fsRend.setSize(w,h);fsCam.aspect=w/h;fsCam.updateProjectionMatrix();renderFs();
+}
+
+// Auto-rotation for force matrix city
+let fmRotating=false,fmRotSpeed=0.008,fmRotId=null;
+document.getElementById('fmRotBtn').addEventListener('click',function(){
+  fmRotating=!fmRotating;this.textContent=fmRotating?'■':'▶';this.style.color=fmRotating?'#FF6600':'#88AAFF';
+  if(fmRotating)fmRotate();else if(fmRotId){cancelAnimationFrame(fmRotId);fmRotId=null}});
+document.getElementById('fmRotUp').addEventListener('click',()=>{fmRotSpeed=Math.min(.05,fmRotSpeed*1.5)});
+document.getElementById('fmRotDown').addEventListener('click',()=>{fmRotSpeed=Math.max(.001,fmRotSpeed/1.5)});
+function fmRotate(){if(!fmRotating)return;fmTheta+=fmRotSpeed;renderFm();fmRotId=requestAnimationFrame(fmRotate)}
+
+// Auto-rotation for force sphere
+let fsRotating=false,fsRotSpeed=0.006,fsRotId=null;
+document.getElementById('fsRotBtn').addEventListener('click',function(){
+  fsRotating=!fsRotating;this.textContent=fsRotating?'■':'▶';this.style.color=fsRotating?'#FF6600':'#88AAFF';
+  if(fsRotating)fsRotate();else if(fsRotId){cancelAnimationFrame(fsRotId);fsRotId=null}});
+document.getElementById('fsRotUp').addEventListener('click',()=>{fsRotSpeed=Math.min(.04,fsRotSpeed*1.5)});
+document.getElementById('fsRotDown').addEventListener('click',()=>{fsRotSpeed=Math.max(.001,fsRotSpeed/1.5)});
+function fsRotate(){if(!fsRotating)return;fsTheta+=fsRotSpeed;renderFs();fsRotId=requestAnimationFrame(fsRotate)}
 
 // RESIZE + INIT
-function resize(){const w=vp.clientWidth;vp.style.height=w+"px";renderer.setSize(w,w);camera.aspect=1;camera.updateProjectionMatrix();render()}
+function resize(){const w=vp.clientWidth;vp.style.height=w+"px";renderer.setSize(w,w);camera.aspect=1;camera.updateProjectionMatrix();render();fmResize();fsResize()}
 window.addEventListener("resize",resize);
-buildGrid();buildTidalSelector();buildTidalBars();updateOrbits(baseJD);render();
+buildGrid();buildTidalSelector();buildTidalBars();updateOrbits(baseJD);fmResize();fsResize();render();
+// AUTO-PLAY — the OMG moment
+animating=true;syncPlayBtns();speedInput2.value=speedInput.value;animate();
 </script></body></html>
