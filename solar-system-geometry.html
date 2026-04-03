@@ -274,11 +274,12 @@ const axisLines=galAxes.map(a=>{
   const l=new THREE.Line(g,new THREE.LineBasicMaterial({color:a.c,transparent:true,opacity:.35,fog:false}));scene.add(l);return l;
 });
 const axisConeGeo=new THREE.ConeGeometry(.4,1.5,8);
-const axisCones=galAxes.flatMap(a=>{
+const axisCones=galAxes.flatMap((a,ai)=>{
   const mat=new THREE.MeshBasicMaterial({color:a.c,transparent:true,opacity:.5,fog:false});
   const tip=a.dir.clone().multiplyScalar(120);
   const c1=new THREE.Mesh(axisConeGeo,mat);c1.position.copy(tip);c1.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),a.dir);scene.add(c1);
-  const c2=new THREE.Mesh(axisConeGeo,mat.clone());c2.position.copy(tip.negate());c2.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),a.dir.clone().negate());scene.add(c2);
+  if(ai===2)return[c1]; // Solar Motion — one arrow only, direction of travel
+  const c2=new THREE.Mesh(axisConeGeo,mat.clone());c2.position.copy(tip.clone().negate());c2.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),a.dir.clone().negate());scene.add(c2);
   return[c1,c2];
 });
 const axisLabelEls=galAxes.map(a=>{
@@ -292,12 +293,6 @@ const planeObjs=[];
 // Galactic plane (normal = Galactic North)
 const plGal=new THREE.Mesh(plGeo,new THREE.MeshBasicMaterial({color:0x223355,transparent:true,opacity:.03,fog:false,side:THREE.DoubleSide,depthWrite:false}));
 plGal.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),gnDir);scene.add(plGal);planeObjs.push(plGal);
-// GC-normal plane
-const plGC=new THREE.Mesh(plGeo,new THREE.MeshBasicMaterial({color:0x442222,transparent:true,opacity:.025,fog:false,side:THREE.DoubleSide,depthWrite:false}));
-plGC.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),gcDir);scene.add(plGC);planeObjs.push(plGC);
-// Motion-normal plane
-const plSM=new THREE.Mesh(plGeo,new THREE.MeshBasicMaterial({color:0x224422,transparent:true,opacity:.025,fog:false,side:THREE.DoubleSide,depthWrite:false}));
-plSM.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),smDir);scene.add(plSM);planeObjs.push(plSM);
 // Grid lines ON the galactic plane (depth cue from perspective)
 const gridLinesMat=new THREE.LineBasicMaterial({color:0x334466,transparent:true,opacity:.1});
 const galGridLines=[];
@@ -332,7 +327,7 @@ galLineGlow.quaternion.copy(galLine.quaternion);scene.add(galLineGlow);
 const galLineGlow2=new THREE.Mesh(new THREE.CylinderGeometry(.4,.4,300,8),new THREE.MeshBasicMaterial({color:0xFF4488,transparent:true,opacity:.04,blending:THREE.AdditiveBlending,depthWrite:false,fog:false}));
 galLineGlow2.quaternion.copy(galLine.quaternion);scene.add(galLineGlow2);
 const galCone=new THREE.Mesh(new THREE.ConeGeometry(0.4,1.8,8),new THREE.MeshBasicMaterial({color:0xFFEE44,transparent:true,opacity:.7,fog:false}));
-galCone.position.copy(galDirN.clone().multiplyScalar(140));
+galCone.position.copy(galDirN.clone().multiplyScalar(150));
 galCone.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),galDirN);
 scene.add(galCone);
 const galLabel=document.createElement("div");galLabel.className="label-3d";galLabel.style.color="#FFFF44";galLabel.style.fontSize="9px";galLabel.style.opacity="0.7";galLabel.innerHTML='Galactic <span style="color:#FF4444">Orbit</span> →';document.getElementById("labelOverlay").appendChild(galLabel);
