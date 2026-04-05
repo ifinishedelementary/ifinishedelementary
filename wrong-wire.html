@@ -290,6 +290,22 @@ canvas {
   border-radius: 6px;
   font-family: 'Georgia', serif;
   letter-spacing: 1px;
+  line-height: 2.4;
+}
+.frac {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  vertical-align: middle;
+  margin: 0 3px;
+  line-height: 1.2;
+}
+.frac .num {
+  border-bottom: 1.5px solid #e0e0e8;
+  padding: 0 6px 3px;
+}
+.frac .den {
+  padding: 3px 6px 0;
 }
 
 .four-panel {
@@ -370,6 +386,92 @@ It seems that Coulomb arrived at his force law more by analogy with Newton's law
 <!-- SECTION 02 -->
 <!-- ============================================ -->
 <div class="section-number">Section 02</div>
+<h2>The Scalar That Ate the Force</h2>
+
+<p>Start with Coulomb's force law — the one with the assumed proportionality — and watch what happens in two algebraic moves.</p>
+
+<div class="formula">F = k <span class="frac"><span class="num">q₁q₂</span><span class="den">r²</span></span></div>
+
+<p>This is a force. It has magnitude. It has direction — along the line connecting the two charges. It depends on <em>two specific charges</em> at a <em>specific distance</em>. It is a complete physical statement: this much push or pull, in this direction, between these two bodies, at this separation.</p>
+
+<p>Now divide both sides by one of the charges.</p>
+
+<div class="formula">E = <span class="frac"><span class="num">F</span><span class="den">q</span></span> = k <span class="frac"><span class="num">Q</span><span class="den">r²</span></span></div>
+
+<p>One charge is gone. What remains is the "electric field" — the force per unit charge. It still has direction. It still depends on distance. But it no longer describes the force between <em>two</em> charges. It describes what <em>one</em> charge does to empty space — or more precisely, what it would do to a hypothetical test charge placed there. The second charge has been replaced by an abstraction.</p>
+
+<p>Now multiply both sides by distance.</p>
+
+<div class="formula">V = E · r = <span class="frac"><span class="num">kQ</span><span class="den">r</span></span></div>
+
+<p>The direction is gone. The distance r is no longer a separation between two charges — it has been folded into the expression and collapsed into a scalar. Voltage is energy per charge. It is a single number. It tells you nothing about the direction of the force, nothing about the mechanism that created it, nothing about which force law is operating underneath.</p>
+
+<canvas id="launderCanvas" width="780" height="380"></canvas>
+<div class="canvas-controls">
+<button id="btnStep0" class="active" onclick="setLaunderStep(0)">Force (F)</button>
+<button id="btnStep1" onclick="setLaunderStep(1)">Field (E)</button>
+<button id="btnStep2" onclick="setLaunderStep(2)">Voltage (V)</button>
+</div>
+
+<p>Two algebraic moves. Each one is individually valid. Neither one adds or invents anything. But each one <em>strips information</em>. The force had direction, two participants, and a distance. The voltage has none of these. The physical content has been laundered into a number — the same way that <em>½mv²</em> launders <em>F = ma</em> into a directionless scalar called kinetic energy.</p>
+
+<p>Once voltage gets its own name, its own symbol, its own unit, students learn <em>V = IR</em> and never trace it back to the force between charges at a distance. The derivation is two lines long. It is never shown.</p>
+
+<h3>Every Voltage Is a Push</h3>
+
+<p>Look at the mechanisms that create voltage. Every single one is a push.</p>
+
+<div class="four-panel">
+
+<div class="panel">
+<div class="panel-title" style="color:#50b870;">Generators</div>
+<p style="font-size:0.85em">A conductor moves through a magnetic field. The field deflects charges inside the conductor — pushes them sideways. The "voltage" is the accumulated displacement of charge. The mechanism is magnetic force acting on moving charges. A push.</p>
+</div>
+
+<div class="panel">
+<div class="panel-title" style="color:#50b870;">Batteries</div>
+<p style="font-size:0.85em">The anode: a chemical reaction breaks molecular bonds and releases electrons. The electrons are <em>pushed out</em> of the metal lattice by the reaction energy. The cathode is a landing pad — it offers lower resistance to incoming electrons. Remove the anode push and the cathode does nothing. The pull is bookkeeping. The physics is a push.</p>
+</div>
+
+<div class="panel">
+<div class="panel-title" style="color:#50b870;">Solar Cells</div>
+<p style="font-size:0.85em">A photon hits a semiconductor junction and separates an electron from a hole. The built-in electric field at the junction pushes them apart — electrons one way, holes the other. No mechanism reaches across the junction to pull. The separation is a push from the photon's energy acting through the junction field.</p>
+</div>
+
+<div class="panel">
+<div class="panel-title" style="color:#50b870;">Thermocouples / Piezoelectrics</div>
+<p style="font-size:0.85em">Thermocouples: thermal diffusion pushes charge carriers from hot to cold at different rates in different metals. Piezoelectrics: mechanical compression displaces charge centres within the crystal lattice — a push from physical deformation. In every case, energy in, charge displaced, voltage appears.</p>
+</div>
+
+</div>
+
+<p>If true pull does not exist — if every force is ultimately a push from or through a medium — then voltage is not measuring a "potential difference" between a push and a pull. It is measuring a <em>gradient in push intensity</em>. The entire positive/negative terminal framework is bookkeeping draped over a one-directional mechanism. The word "potential" hides the directionality. The word "difference" implies two distinct things being compared. The physics is one thing: a push, stronger at one point than another.</p>
+
+<h3>Where the Force Law Disappears</h3>
+
+<p>Here is the critical connection to the wrong wire.</p>
+
+<p>Ampère's force between current elements is central — it acts along the line connecting them. Grassmann's force is non-central — it has perpendicular components. The two forces produce different element-level behaviour. But when you integrate over a complete closed circuit and measure the voltage between two terminals, both force laws give the <em>same number</em>.</p>
+
+<div class="comparison-grid">
+<div class="col ampere">
+<h4>Ampère at the Terminals</h4>
+<p style="font-size:0.9em">Central forces between every pair of current elements. Newton's third law satisfied exactly. The voltage at the terminals: a specific number. Agrees with measurement.</p>
+</div>
+<div class="col grassmann">
+<h4>Grassmann at the Terminals</h4>
+<p style="font-size:0.9em">Non-central forces with perpendicular components. Newton's third law violated at element level. The voltage at the terminals: <em>the same specific number</em>. Also agrees with measurement.</p>
+</div>
+</div>
+
+<p>Voltage is the precise point in the dependency chain where the physics disappears from view. Two incompatible force laws — one that obeys Newton's third law and one that violates it — produce identical terminal readings. The voltmeter cannot distinguish between them. The abstraction is not merely convenient. It is the mechanism of concealment.</p>
+
+<p>This is why voltage belongs here in the chain, after Coulomb and before Ampère. It is not a new error. It is the <em>screen</em> that makes all subsequent errors invisible.</p>
+
+<!-- ============================================ -->
+<!-- SECTION 03 -->
+<!-- ============================================ -->
+<div class="section-number">Section 03</div>
 <h2>Ampère — The Newton of Electricity</h2>
 
 <p>In the summer of 1820, Hans Christian Ørsted discovered that an electric current flowing in a wire deflects a nearby compass needle. The news reached Paris in September. André-Marie Ampère heard it, believed it immediately, and within <em>weeks</em> had designed and performed a series of experiments that went further than anyone had gone before.</p>
@@ -382,7 +484,7 @@ It seems that Coulomb arrived at his force law more by analogy with Newton's law
 
 <p>By 1822, Ampère had derived his final mathematical force law between two infinitesimal current elements. In modern vector notation:</p>
 
-<div class="formula">d²F = −(μ₀/4π) · II′ · (r̂/r²) · [2(ds·ds′) − 3(r̂·ds)(r̂·ds′)]</div>
+<div class="formula">d²F = −<span class="frac"><span class="num">μ₀</span><span class="den">4π</span></span> · II′ · <span class="frac"><span class="num">r̂</span><span class="den">r²</span></span> · [2(ds·ds′) − 3(r̂·ds)(r̂·ds′)]</div>
 
 <p>He derived this not from theory but from four carefully designed <strong>cases of equilibrium</strong> — null experiments where he arranged conductors so that the net force vanished, then worked backwards to constrain the mathematical form. This is the method of Tycho Brahe, Kepler, and Newton applied to electrodynamics.</p>
 
@@ -405,14 +507,14 @@ The experimental investigation by which Ampère established the laws of the mech
 </div>
 
 <!-- ============================================ -->
-<!-- SECTION 03 -->
+<!-- SECTION 04 -->
 <!-- ============================================ -->
-<div class="section-number">Section 03</div>
+<div class="section-number">Section 04</div>
 <h2>The Replacement — Grassmann and the Broken Law</h2>
 
 <p>In 1845, Hermann Grassmann proposed an alternative force law between current elements. In modern notation:</p>
 
-<div class="formula">d²F<sub>G</sub> = −(μ₀/4π) · II′ · ds × (ds′ × r̂) / r²</div>
+<div class="formula">d²F<sub>G</sub> = −<span class="frac"><span class="num">μ₀</span><span class="den">4π</span></span> · <span class="frac"><span class="num">II′ · ds × (ds′ × r̂)</span><span class="den">r²</span></span></div>
 
 <p>This is the force law that modern physics uses. It is the basis of the Lorentz force. It is what Maxwell's equations encode. And it has a property that should disqualify it as a fundamental law of nature: <strong>it violates Newton's third law.</strong></p>
 
@@ -443,9 +545,9 @@ The experimental investigation by which Ampère established the laws of the mech
 <p>The two laws are experimentally indistinguishable for closed circuits. The preference for Grassmann was not driven by evidence. It was driven by the rise of field theory.</p>
 
 <!-- ============================================ -->
-<!-- SECTION 04 -->
+<!-- SECTION 05 -->
 <!-- ============================================ -->
-<div class="section-number">Section 04</div>
+<div class="section-number">Section 05</div>
 <h2>Biot-Savart's Three Errors</h2>
 
 <p>Before Grassmann, Biot and Savart attempted to derive the force that a current element exerts on a magnetic pole. Their "law" — the Biot-Savart law — is taught in every physics textbook as an experimentally established result. It is not. It rests on three errors identified by Assis and Chaib in their detailed historical analysis.</p>
@@ -468,9 +570,9 @@ The experimental investigation by which Ampère established the laws of the mech
 <p>The Biot-Savart law was not deduced from experiment. It was constructed by making three assumptions — decomposability, perpendicularity, and the reality of magnetic poles — and fitting them to a single whole-wire measurement that could not distinguish between competing element laws. Yet this is the law that became the basis for computing magnetic fields, which became the basis for Maxwell's equations, which became the basis for every electromagnetic simulation in engineering.</p>
 
 <!-- ============================================ -->
-<!-- SECTION 05 -->
+<!-- SECTION 06 -->
 <!-- ============================================ -->
-<div class="section-number">Section 05</div>
+<div class="section-number">Section 06</div>
 <h2>Maxwell Encodes the Choice</h2>
 
 <p>James Clerk Maxwell published his <em>Treatise on Electricity and Magnetism</em> in 1873. In it, he praised Ampère's work in the highest possible terms — "the Newton of electricity" — and then built his theory on a different foundation.</p>
@@ -489,9 +591,9 @@ The experimental investigation by which Ampère established the laws of the mech
 <p>Once Maxwell's equations became the foundation, every engineering tool built downstream inherited the Grassmann assumption invisibly. Not as a conscious choice, but as the water the fish swim in.</p>
 
 <!-- ============================================ -->
-<!-- SECTION 06 -->
+<!-- SECTION 07 -->
 <!-- ============================================ -->
-<div class="section-number">Section 06</div>
+<div class="section-number">Section 07</div>
 <h2>The Instantaneous Force Evidence</h2>
 
 <p>If force propagates at the speed of light, the Earth is not pulled toward the Sun. It is pulled toward <em>where the Sun was</em> 8 minutes and 20 seconds ago. In that time, the Sun — orbiting the galactic core at 220 km/s — has moved approximately 110,000 kilometres.</p>
@@ -573,9 +675,9 @@ Should the positive result be confirmed, then the special theory of relativity a
 </div>
 
 <!-- ============================================ -->
-<!-- SECTION 07 -->
+<!-- SECTION 08 -->
 <!-- ============================================ -->
-<div class="section-number">Section 07</div>
+<div class="section-number">Section 08</div>
 <h2>SPICE — Where the Wrong Theory Meets Silicon</h2>
 
 <p>In the 1970s, engineers at UC Berkeley built a software tool called SPICE — Simulation Program with Integrated Circuit Emphasis. The idea: describe a circuit mathematically and simulate its behaviour before fabrication. Every chip designed in the last fifty years has been simulated in some descendant of SPICE.</p>
@@ -620,9 +722,9 @@ Should the positive result be confirmed, then the special theory of relativity a
 <p>The old fudge factors don't work. So they build new ones. The BSIM-CMG model for GAA transistors has its own growing parameter set, tuned to match test silicon from each foundry. The cycle repeats.</p>
 
 <!-- ============================================ -->
-<!-- SECTION 08 -->
+<!-- SECTION 09 -->
 <!-- ============================================ -->
-<div class="section-number">Section 08</div>
+<div class="section-number">Section 09</div>
 <h2>The Grind at Every Scale</h2>
 
 <p>The SPICE pattern — theory fails, add corrections, corrections become knowledge, foundation never questioned — is not unique to transistor modelling. It appears everywhere the Grassmann/Maxwell framework meets precision engineering.</p>
@@ -667,12 +769,12 @@ Should the positive result be confirmed, then the special theory of relativity a
 
 </div>
 
-<p>Four domains. Four scales. The same structure. Every one traces back to Section 05: Maxwell encoding the Grassmann choice. The engineering works <em>despite</em> the wrong theory because the corrections are good enough — the same way Ptolemaic astronomy worked for navigation despite geocentrism being wrong. The epicycles were functional. They were not true.</p>
+<p>Four domains. Four scales. The same structure. Every one traces back to Section 06: Maxwell encoding the Grassmann choice. The engineering works <em>despite</em> the wrong theory because the corrections are good enough — the same way Ptolemaic astronomy worked for navigation despite geocentrism being wrong. The epicycles were functional. They were not true.</p>
 
 <!-- ============================================ -->
-<!-- SECTION 09 -->
+<!-- SECTION 10 -->
 <!-- ============================================ -->
-<div class="section-number">Section 09</div>
+<div class="section-number">Section 10</div>
 <h2>The Nvidia Ceiling</h2>
 
 <p>The engineers at Nvidia — the company building the chips that are supposed to produce artificial general intelligence — work seven days a week. Workdays end at 1:00 or 2:00 a.m. A poll of 3,000 employees found that 76% were millionaires. The turnover rate is 2.7%, compared to 17.7% industry-wide. They stay because walking away means forfeiting stock grants that vest over four years.</p>
@@ -710,9 +812,9 @@ Should the positive result be confirmed, then the special theory of relativity a
 <p>The grind continues until the patches start contradicting each other — when the correction for problem A makes problem B worse, and no amount of parameter tuning resolves both simultaneously. That is the signature of a foundational error, not a data insufficiency. Whether anything capable of recognising that signature exists at that point is the open question.</p>
 
 <!-- ============================================ -->
-<!-- SECTION 10 -->
+<!-- SECTION 11 -->
 <!-- ============================================ -->
-<div class="section-number">Section 10</div>
+<div class="section-number">Section 11</div>
 <h2>The Exit</h2>
 
 <p>There are two paths forward.</p>
@@ -731,6 +833,8 @@ Should the positive result be confirmed, then the special theory of relativity a
 
 <div class="flow-chain" style="flex-direction: column; align-items: flex-start; gap: 4px;">
 <div style="display:flex; align-items:center; gap:8px;"><div class="flow-node">Coulomb assumes qq′ proportionality (1785)</div></div>
+<div class="flow-arrow" style="padding-left:20px;">↓</div>
+<div style="display:flex; align-items:center; gap:8px;"><div class="flow-node">Voltage launders force into a scalar — hides which force law operates</div></div>
 <div class="flow-arrow" style="padding-left:20px;">↓</div>
 <div style="display:flex; align-items:center; gap:8px;"><div class="flow-node">Biot-Savart decompose with three errors (1820)</div></div>
 <div class="flow-arrow" style="padding-left:20px;">↓</div>
@@ -753,7 +857,7 @@ Should the positive result be confirmed, then the special theory of relativity a
 
 <hr>
 
-<p>This presentation exists so that when something — human or artificial — is capable of following the dependency chain from Coulomb's assumed proportionality through Biot-Savart's three errors through Grassmann's broken third law through Maxwell's encoding through SPICE's 300 parameters through the semiconductor grind — the chain is already mapped. The logical structure is laid out. The if-then relationships are explicit. The testable predictions are stated.</p>
+<p>This presentation exists so that when something — human or artificial — is capable of following the dependency chain from Coulomb's assumed proportionality through voltage's scalar laundering through Biot-Savart's three errors through Grassmann's broken third law through Maxwell's encoding through SPICE's 300 parameters through the semiconductor grind — the chain is already mapped. The logical structure is laid out. The if-then relationships are explicit. The testable predictions are stated.</p>
 
 <p>The wire was wrong from the beginning. Every correction since has been an attempt to make a wrong wire carry the right signal. The signal gets through — chips compute, phones ring, AI generates text — not because the theory is correct, but because the engineers are relentless and the corrections are good enough. For now.</p>
 
@@ -767,6 +871,292 @@ Should the positive result be confirmed, then the special theory of relativity a
 </div><!-- end container -->
 
 <script>
+// ==============================
+// HiDPI Canvas Setup
+// ==============================
+const DPR = window.devicePixelRatio || 1;
+function setupCanvas(id, w, h) {
+  const c = document.getElementById(id);
+  c.width = w * DPR;
+  c.height = h * DPR;
+  c.style.width = w + 'px';
+  c.style.height = h + 'px';
+}
+setupCanvas('launderCanvas', 780, 380);
+setupCanvas('forceCanvas', 780, 400);
+
+// ==============================
+// Information Laundering Canvas
+// ==============================
+let launderStep = 0;
+function setLaunderStep(s) {
+  launderStep = s;
+  document.getElementById('btnStep0').classList.toggle('active', s === 0);
+  document.getElementById('btnStep1').classList.toggle('active', s === 1);
+  document.getElementById('btnStep2').classList.toggle('active', s === 2);
+  drawLaunder();
+}
+
+function drawFormulaLine(ctx, cx, cy, segments) {
+  // Measure total width
+  let totalW = 0;
+  const measured = segments.map(seg => {
+    if (seg.text) {
+      ctx.font = seg.size + 'px Georgia';
+      const w = ctx.measureText(seg.text).width;
+      return {type: 'text', text: seg.text, w, size: seg.size};
+    } else {
+      ctx.font = seg.size + 'px Georgia';
+      const nw = ctx.measureText(seg.num).width;
+      const dw = ctx.measureText(seg.den).width;
+      const w = Math.max(nw, dw) + 12;
+      return {type: 'frac', num: seg.num, den: seg.den, w, size: seg.size};
+    }
+  });
+  measured.forEach(m => totalW += m.w);
+  let x = cx - totalW / 2;
+  measured.forEach(m => {
+    if (m.type === 'text') {
+      ctx.font = m.size + 'px Georgia';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(m.text, x, cy);
+      x += m.w;
+    } else {
+      const mid = x + m.w / 2;
+      ctx.font = m.size + 'px Georgia';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText(m.num, mid, cy - 3);
+      ctx.textBaseline = 'top';
+      ctx.fillText(m.den, mid, cy + 3);
+      // Fraction bar
+      ctx.strokeStyle = '#e0e0e8';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(x + 2, cy);
+      ctx.lineTo(x + m.w - 2, cy);
+      ctx.stroke();
+      x += m.w;
+    }
+  });
+  ctx.textBaseline = 'alphabetic';
+}
+
+function drawLaunder() {
+  const canvas = document.getElementById('launderCanvas');
+  const ctx = canvas.getContext('2d');
+  const W = 780, H = 380;
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = '#12121a';
+  ctx.fillRect(0, 0, W, H);
+
+  const cx = W / 2, cy = H / 2;
+  const step = launderStep;
+
+  // Charge positions
+  const q1x = cx - 140, q1y = cy;
+  const q2x = cx + 140, q2y = cy;
+
+  // Opacity levels for each element at each step
+  const q1Opacity = 1;
+  const q2Opacity = step >= 1 ? 0.15 : 1;
+  const distOpacity = step >= 2 ? 0.12 : 1;
+  const forceOpacity = step >= 2 ? 0.12 : 1;
+
+  // Draw distance line
+  ctx.save();
+  ctx.globalAlpha = distOpacity;
+  ctx.strokeStyle = '#2a2a3a';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([4, 4]);
+  ctx.beginPath();
+  ctx.moveTo(q1x, q1y);
+  ctx.lineTo(q2x, q2y);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  // Distance label
+  ctx.fillStyle = '#7a7a8e';
+  ctx.font = '14px Georgia';
+  ctx.textAlign = 'center';
+  ctx.fillText('r', cx, cy + 24);
+  ctx.restore();
+
+  // Draw charge 1 (source)
+  ctx.save();
+  ctx.globalAlpha = q1Opacity;
+  ctx.beginPath();
+  ctx.arc(q1x, q1y, 22, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(80, 128, 208, 0.2)';
+  ctx.fill();
+  ctx.strokeStyle = '#5080d0';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.fillStyle = '#5080d0';
+  ctx.font = 'bold 18px Georgia';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(step >= 1 ? 'Q' : 'q₁', q1x, q1y);
+  ctx.font = '12px Georgia';
+  ctx.fillText(step >= 1 ? 'source' : 'charge 1', q1x, q1y + 38);
+  ctx.restore();
+
+  // Draw charge 2 (test charge / erased)
+  ctx.save();
+  ctx.globalAlpha = q2Opacity;
+  ctx.beginPath();
+  ctx.arc(q2x, q2y, 22, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(144, 112, 192, 0.2)';
+  ctx.fill();
+  ctx.strokeStyle = '#9070c0';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.fillStyle = '#9070c0';
+  ctx.font = 'bold 18px Georgia';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  if (step === 0) {
+    ctx.fillText('q₂', q2x, q2y);
+    ctx.font = '12px Georgia';
+    ctx.fillText('charge 2', q2x, q2y + 38);
+  } else {
+    ctx.fillText('q', q2x, q2y);
+    ctx.font = '12px Georgia';
+    ctx.fillText(step === 1 ? 'test charge (÷)' : '', q2x, q2y + 38);
+  }
+  ctx.restore();
+
+  // Draw force/field arrow
+  if (step < 2) {
+    ctx.save();
+    ctx.globalAlpha = forceOpacity;
+    const arrowStart = q2x + 30;
+    const arrowEnd = arrowStart + 90;
+    const arrowY = q2y;
+    ctx.strokeStyle = step === 0 ? '#e8a040' : '#50b870';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(arrowStart, arrowY);
+    ctx.lineTo(arrowEnd, arrowY);
+    ctx.stroke();
+    // Arrowhead
+    ctx.fillStyle = step === 0 ? '#e8a040' : '#50b870';
+    ctx.beginPath();
+    ctx.moveTo(arrowEnd, arrowY);
+    ctx.lineTo(arrowEnd - 10, arrowY - 6);
+    ctx.lineTo(arrowEnd - 10, arrowY + 6);
+    ctx.fill();
+    // Label
+    ctx.font = '14px Georgia';
+    ctx.textAlign = 'center';
+    ctx.fillText(step === 0 ? 'F  (force vector)' : 'E  (field vector)', (arrowStart + arrowEnd) / 2, arrowY - 16);
+    ctx.restore();
+  }
+
+  // Title formula for current step — stacked fractions
+  ctx.fillStyle = '#e0e0e8';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  if (step === 0) {
+    drawFormulaLine(ctx, cx, 38, [
+      {text: 'F  =  k ', size: 20},
+      {num: 'q₁q₂', den: 'r²', size: 16}
+    ]);
+  } else if (step === 1) {
+    drawFormulaLine(ctx, cx, 38, [
+      {text: 'E  =  ', size: 20},
+      {num: 'F', den: 'q', size: 16},
+      {text: '  =  k ', size: 20},
+      {num: 'Q', den: 'r²', size: 16}
+    ]);
+  } else {
+    drawFormulaLine(ctx, cx, 38, [
+      {text: 'V  =  E · r  =  ', size: 20},
+      {num: 'kQ', den: 'r', size: 16}
+    ]);
+  }
+
+  // Info boxes at bottom showing what's preserved and what's lost
+  const boxY = H - 80;
+  const boxW = 200;
+
+  // Preserved box
+  ctx.fillStyle = 'rgba(80, 184, 112, 0.1)';
+  ctx.strokeStyle = 'rgba(80, 184, 112, 0.4)';
+  ctx.lineWidth = 1;
+  roundRect(ctx, cx - boxW - 30, boxY - 10, boxW, 60, 6);
+  ctx.fill();
+  ctx.stroke();
+  ctx.fillStyle = '#50b870';
+  ctx.font = 'bold 12px Georgia';
+  ctx.textAlign = 'center';
+  ctx.fillText('PRESERVED', cx - boxW - 30 + boxW/2, boxY + 8);
+  ctx.font = '12px Georgia';
+  ctx.fillStyle = '#88c8a0';
+  if (step === 0) {
+    ctx.fillText('direction, both charges, distance', cx - boxW - 30 + boxW/2, boxY + 28);
+  } else if (step === 1) {
+    ctx.fillText('direction, distance', cx - boxW - 30 + boxW/2, boxY + 28);
+  } else {
+    ctx.fillText('magnitude only', cx - boxW - 30 + boxW/2, boxY + 28);
+  }
+
+  // Lost box
+  ctx.fillStyle = 'rgba(212, 80, 80, 0.1)';
+  ctx.strokeStyle = 'rgba(212, 80, 80, 0.4)';
+  roundRect(ctx, cx + 30, boxY - 10, boxW, 60, 6);
+  ctx.fill();
+  ctx.stroke();
+  ctx.fillStyle = '#d45050';
+  ctx.font = 'bold 12px Georgia';
+  ctx.textAlign = 'center';
+  ctx.fillText('ERASED', cx + 30 + boxW/2, boxY + 8);
+  ctx.font = '12px Georgia';
+  ctx.fillStyle = '#d08080';
+  if (step === 0) {
+    ctx.fillText('nothing — complete description', cx + 30 + boxW/2, boxY + 28);
+  } else if (step === 1) {
+    ctx.fillText('second charge (÷ q)', cx + 30 + boxW/2, boxY + 28);
+  } else {
+    ctx.fillText('direction, distance, charge (all)', cx + 30 + boxW/2, boxY + 28);
+  }
+
+  // Voltage result display for step 2
+  if (step === 2) {
+    ctx.save();
+    // Big scalar number
+    ctx.fillStyle = '#e8a040';
+    ctx.font = 'bold 64px Georgia';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('V', cx, cy - 10);
+    ctx.font = '16px Georgia';
+    ctx.fillStyle = '#c07828';
+    ctx.fillText('a scalar — just a number', cx, cy + 30);
+    ctx.font = '13px Georgia';
+    ctx.fillStyle = '#7a7a8e';
+    ctx.fillText('no direction · no mechanism · no force law', cx, cy + 54);
+    ctx.restore();
+  }
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+drawLaunder();
+
 // Parameter counter animation
 let counted = false;
 function animateCounter() {
@@ -807,7 +1197,8 @@ function setForceMode(mode) {
 function drawForces() {
   const canvas = document.getElementById('forceCanvas');
   const ctx = canvas.getContext('2d');
-  const W = canvas.width, H = canvas.height;
+  const W = 780, H = 400;
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
   ctx.clearRect(0, 0, W, H);
   ctx.fillStyle = '#12121a';
   ctx.fillRect(0, 0, W, H);
