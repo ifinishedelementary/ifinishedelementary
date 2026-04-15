@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Depletion Playbook — Western Canada Resource Comparison</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,700;8..60,900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { font-size: 18px; }
+  
+  :root {
+    --s1: #e6a817;  /* gold — the shiny headline */
+    --s2: #00b4d8;  /* cyan — cold calculation */
+    --s3: #ef233c;  /* crimson — buried danger */
+    --s4: #d946ef;  /* magenta — alarm bells */
+    --s5: #fb923c;  /* amber — deflection */
+    --s6: #60a5fa;  /* steel blue — cold truth */
+    --s7: #f43f5e;  /* rose red — the devastating EROI */
+    --s8: #a3e635;  /* acid green — the biosphere, what's left of it */
+    --bg: #0a0a0a;
+    --surface: #111;
+    --border: #1a1a1a;
+    --text: #e8e4de;
+    --muted: #777;
+    --dim: #555;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Mono', monospace;
+    line-height: 1.6;
+    padding: 2rem;
+  }
+
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  h1 {
+    font-family: 'Source Serif 4', serif;
+    font-weight: 900;
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    color: #fff;
+    margin-bottom: 0.25rem;
+    letter-spacing: -1px;
+    line-height: 1.1;
+  }
+
+  h1 span { color: var(--s3); }
+
+  .subtitle {
+    font-size: 1rem;
+    color: #aaa;
+    margin-bottom: 2.5rem;
+    border-bottom: 1px solid #222;
+    padding-bottom: 1.5rem;
+  }
+
+  .section-title {
+    font-family: 'Source Serif 4', serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    margin: 2.5rem 0 1rem;
+    padding-left: 1rem;
+  }
+
+  /* Per-section colors */
+  .s1 .section-title { color: var(--s1); border-left: 4px solid var(--s1); }
+  .s1 thead th { color: var(--s1); border-bottom: 2px solid var(--s1); }
+
+  .s2 .section-title { color: var(--s2); border-left: 4px solid var(--s2); }
+  .s2 thead th { color: var(--s2); border-bottom: 2px solid var(--s2); }
+
+  .s3 .section-title { color: var(--s3); border-left: 4px solid var(--s3); }
+  .s3 thead th { color: var(--s3); border-bottom: 2px solid var(--s3); }
+
+  .s4 .section-title { color: var(--s4); border-left: 4px solid var(--s4); }
+  .s4 thead th { color: var(--s4); border-bottom: 2px solid var(--s4); }
+
+  .s5 .section-title { color: var(--s5); border-left: 4px solid var(--s5); }
+  .s5 thead th { color: var(--s5); border-bottom: 2px solid var(--s5); }
+
+  .s6 .section-title { color: var(--s6); border-left: 4px solid var(--s6); }
+  .s6 thead th { color: var(--s6); border-bottom: 2px solid var(--s6); }
+
+  .s7 .section-title { color: var(--s7); border-left: 4px solid var(--s7); }
+  .s7 thead th { color: var(--s7); border-bottom: 2px solid var(--s7); }
+  .s7 p { color: #c5c0b8; font-size: 0.85rem; margin-bottom: 1.5rem; line-height: 1.7; text-align: justify; hyphens: auto; }
+
+  .s8 .section-title { color: var(--s8); border-left: 4px solid var(--s8); }
+  .s8 thead th { color: var(--s8); border-bottom: 2px solid var(--s8); }
+  .s8 .highlight { color: var(--s8); font-weight: 600; }
+  .s8 .num { color: var(--s8); font-weight: 600; }
+  .s8 .verdict-row td { background: #0e1a08; border-top: 2px solid var(--s8); color: var(--s8); font-weight: 600; font-size: 0.9rem; padding: 1.1rem 1.1rem; }
+  .s8 p { color: #c5c0b8; font-size: 0.88rem; margin-bottom: 1.2rem; line-height: 1.8; text-align: justify; hyphens: auto; }
+  .s8 p strong { color: var(--s8); }
+  .s8 p em { color: #e8e4de; font-style: normal; }
+  .summary-box.final-box { border-left-color: var(--s8); }
+  .summary-box.final-box strong { color: var(--s8); }
+  .summary-box.final-coda { border-left-color: #555; }
+  .summary-box.final-coda strong { color: #999; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 2rem;
+    font-size: 0.85rem;
+  }
+
+  thead th {
+    background: var(--border);
+    text-align: left;
+    padding: 0.9rem 1.1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.88rem;
+    letter-spacing: 1px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  thead th:first-child {
+    color: var(--text) !important;
+  }
+
+  tbody td {
+    padding: 1rem 1.1rem;
+    border-bottom: 1px solid #333;
+    vertical-align: top;
+    text-align: justify;
+    hyphens: auto;
+  }
+
+  tbody tr:hover {
+    background: #161616;
+  }
+
+  tbody td:first-child {
+    font-weight: 600;
+    color: #ccc;
+    font-size: 0.8rem;
+    text-align: left;
+  }
+
+  /* Inline accents — these inherit section color via class */
+  .s1 .highlight { color: var(--s1); font-weight: 600; }
+  .s2 .highlight { color: var(--s2); font-weight: 600; }
+  .s3 .highlight { color: var(--s3); font-weight: 600; }
+  .s4 .highlight { color: var(--s4); font-weight: 600; }
+  .s5 .highlight { color: var(--s5); font-weight: 600; }
+  .s6 .highlight { color: var(--s6); font-weight: 600; }
+  .s7 .highlight { color: var(--s7); font-weight: 600; }
+
+  .s1 .num { color: var(--s1); font-weight: 600; }
+  .s2 .num { color: var(--s2); font-weight: 600; }
+  .s3 .num { color: var(--s3); font-weight: 600; }
+  .s4 .num { color: var(--s4); font-weight: 600; }
+  .s5 .num { color: var(--s5); font-weight: 600; }
+  .s6 .num { color: var(--s6); font-weight: 600; }
+  .s7 .num { color: var(--s7); font-weight: 600; }
+
+  .note {
+    font-size: 0.75rem;
+    color: var(--dim);
+    margin-top: 0.25rem;
+    font-style: italic;
+    text-align: left;
+  }
+
+  .s1 .verdict-row td { background: #1a1508; border-top: 2px solid var(--s1); color: var(--s1); font-weight: 600; font-size: 0.9rem; padding: 1.1rem 1.1rem; }
+  .s2 .verdict-row td { background: #081a1d; border-top: 2px solid var(--s2); color: var(--s2); font-weight: 600; font-size: 0.9rem; padding: 1.1rem 1.1rem; }
+  .s3 .verdict-row td { background: #1a0a0a; border-top: 2px solid var(--s3); color: var(--s3); font-weight: 600; font-size: 0.9rem; padding: 1.1rem 1.1rem; }
+  .s4 .verdict-row td { background: #1a0a1a; border-top: 2px solid var(--s4); color: var(--s4); font-weight: 600; font-size: 0.9rem; padding: 1.1rem 1.1rem; }
+  .s5 .verdict-row td { background: #1a1208; border-top: 2px solid var(--s5); color: var(--s5); font-weight: 600; font-size: 0.9rem; padding: 1.1rem 1.1rem; }
+  .s6 .verdict-row td { background: #0a0f1a; border-top: 2px solid var(--s6); color: var(--s6); font-weight: 600; font-size: 0.9rem; padding: 1.1rem 1.1rem; }
+  .s7 .verdict-row td { background: #1a0a0e; border-top: 2px solid var(--s7); color: var(--s7); font-weight: 600; font-size: 0.9rem; padding: 1.1rem 1.1rem; }
+
+  .summary-box {
+    background: var(--surface);
+    border: 1px solid #222;
+    border-left: 4px solid var(--s3);
+    padding: 1.5rem 2rem;
+    margin: 2rem 0;
+    font-size: 0.9rem;
+    line-height: 1.8;
+    text-align: justify;
+    hyphens: auto;
+  }
+
+  .summary-box strong {
+    color: #fff;
+  }
+
+  .summary-box.eroi-box {
+    border-left-color: var(--s7);
+  }
+
+  .summary-box.eroi-box strong {
+    color: var(--s7);
+  }
+
+  .footer-note {
+    font-size: 0.7rem;
+    color: #444;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    line-height: 1.8;
+  }
+
+  @media (max-width: 900px) {
+    body { padding: 1.1rem 1.1rem; }
+    table { font-size: 0.75rem; }
+    thead th, tbody td { padding: 0.5rem; }
+  }
+
+  @media print {
+    body { background: #fff; color: #111; }
+    thead th { background: #eee; color: #111 !important; border-bottom-color: #111 !important; }
+    tbody td { border-bottom-color: #ddd; }
+    h1, h1 span { color: #111; }
+    .section-title { color: #333 !important; border-left-color: #333 !important; }
+    .highlight, .num { color: #c00 !important; }
+    .verdict-row td { background: #fee !important; color: #c00 !important; }
+    .summary-box { background: #f5f5f5; border-color: #ddd; border-left-color: #c00 !important; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>The <span>Depletion</span> Playbook</h1>
+<div class="subtitle">How Western Canada's three resource industries use the same accounting tricks to hide collapse — and why there's nothing left to separate with</div>
+
+<div class="s1">
+<!-- TABLE 1: THE HEADLINE NUMBER -->
+<div class="section-title">1. The Flattering Headline Metric</div>
+<table>
+<thead>
+  <tr>
+    <th>Tactic</th>
+    <th>Oil Sands (Suncor / Cenovus)</th>
+    <th>BC Forestry</th>
+    <th>BC Fisheries (DFO)</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td>The number they lead with</td>
+    <td>Suncor: <span class="highlight">"Net debt $6.3B"</span><br>Cenovus: <span class="highlight">"Net debt $8.3B"</span></td>
+    <td><span class="highlight">"AAC 60M cubic metres"</span><br>(Annual Allowable Cut on paper)</td>
+    <td><span class="highlight">"23% of stocks healthy"</span><br>(Wild Salmon Policy status)</td>
+  </tr>
+  <tr>
+    <td>The real number</td>
+    <td>Suncor total commitments: <span class="num">$65.3B</span><br>Cenovus total commitments: <span class="num">$69.3B</span></td>
+    <td>Actual harvest: <span class="num">~32M m³</span><br>(47% below the AAC headline)</td>
+    <td>Catch at <span class="num">8%</span> of historical avg<br>Fraser sockeye down <span class="num">97%</span></td>
+  </tr>
+  <tr>
+    <td>The gap</td>
+    <td><span class="num">10x</span> between headline and reality</td>
+    <td><span class="num">~2x</span> between what's approved and what's actually there</td>
+    <td><span class="num">~12x</span> between historic catch and current reality</td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+<div class="s2">
+<!-- TABLE 2: DEFINITION GAMES -->
+<div class="section-title">2. Redefine to Flatter</div>
+<table>
+<thead>
+  <tr>
+    <th>Tactic</th>
+    <th>Oil Sands</th>
+    <th>BC Forestry</th>
+    <th>BC Fisheries</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td>Changed the definition</td>
+    <td>In 2024, Suncor <span class="highlight">redefined "total debt"</span> to exclude lease liabilities. Restated prior years to match.</td>
+    <td>BC government counts <span class="highlight">scrub bog and subalpine forest</span> as "old growth" to claim 23%. Productive old growth with large trees: <span class="num">&lt;1%</span></td>
+    <td>DFO mixes <span class="highlight">hatchery fish into wild counts</span>. On Central Coast, hatchery chum = 50%+ of "abundance."</td>
+  </tr>
+  <tr>
+    <td>The non-GAAP metric</td>
+    <td>"Adjusted Funds From Operations" strips out decommissioning spending and working capital changes</td>
+    <td>"Reforestation" counts monoculture conifer seedlings planted in clearcuts as forest restoration. Re-logged every 60 years.</td>
+    <td>"Conservation Units" assessed using a handful of indicator streams extrapolated to represent entire populations</td>
+  </tr>
+  <tr>
+    <td>What it hides</td>
+    <td>$280M/yr in decommissioning cash costs (Cenovus) that never appear in AFF</td>
+    <td>Plantations are not forests. No biodiversity, no fire resistance, no mycorrhizal networks. 60-year monocrops sprayed with glyphosate.</td>
+    <td>40%+ of Conservation Units have no annual abundance data at all. You can't report a collapse you don't measure.</td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+<div class="s3">
+<!-- TABLE 3: THE HIDDEN LIABILITY -->
+<div class="section-title">3. The Buried Liability</div>
+<table>
+<thead>
+  <tr>
+    <th>Tactic</th>
+    <th>Oil Sands</th>
+    <th>BC Forestry</th>
+    <th>BC Fisheries</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td>The deferred time bomb</td>
+    <td><span class="highlight">Decommissioning:</span> Suncor $22.2B undiscounted, Cenovus $8.7B. Pushed to "thereafter" in commitments table.</td>
+    <td><span class="highlight">"Falldown":</span> when decades of overcutting means future AAC must drop permanently. Embedded in timber supply models nobody reads.</td>
+    <td><span class="highlight">Ecosystem collapse:</span> 92% decline in catch since historical averages. Bycatch of 28,000+ salmon/yr unreported in population assessments.</td>
+  </tr>
+  <tr>
+    <td>How it's minimized</td>
+    <td>Credit-adjusted discount rates shrink $22B to ~$12.6B on balance sheet. IASB may mandate risk-free rates.</td>
+    <td>Timber supply models assume no drought, no plantation failure, and wildfire loss of 310 ha/yr. Actual: <span class="num">1,800 ha/yr</span> (leaked report).</td>
+    <td>DFO cut creek-walker monitoring contracts. Can't report decline if nobody's counting.</td>
+  </tr>
+  <tr>
+    <td>Who flagged it</td>
+    <td>Investors for Paris Compliance. IASB considering mandatory risk-free discount rates.</td>
+    <td>Leaked internal report (Nov 2025). UBC lecturer: <span class="highlight">"This is how ghost towns are made."</span></td>
+    <td>Auditor General (2023): DFO <span class="highlight">"unable to collect dependable catch data."</span> Information Commissioner ordered data release.</td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+<div class="s4">
+<!-- TABLE 4: THE MODEL IS WRONG -->
+<div class="section-title">4. The Model Doesn't Match Reality</div>
+<table>
+<thead>
+  <tr>
+    <th>Tactic</th>
+    <th>Oil Sands</th>
+    <th>BC Forestry</th>
+    <th>BC Fisheries</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td>The inflated assumption</td>
+    <td>50+ year asset lives for decommissioning. No energy-transition sensitivity analysis. Business-as-usual forever.</td>
+    <td>Growth models assume plantations regenerate on schedule. Zero drought. Minimal fire. No beetle comeback. <span class="num">37%</span> of forests already killed by beetles.</td>
+    <td>DFO's sea lice report found "no link" to wild salmon — contradicting independent peer-reviewed science. <span class="num">16 scientists</span> wrote an open letter.</td>
+  </tr>
+  <tr>
+    <td>The cumulative disaster</td>
+    <td>$130B+ combined obligations for just two companies. Take-or-pay pipeline contracts alone: $37B (Cenovus).</td>
+    <td><span class="num">7.2M hectares</span> burned in 2017-2024. Pine beetle killed <span class="num">726M m³</span> across 17.5M hectares. Projected GDP loss: <span class="num">$57B</span>.</td>
+    <td>Salmon down 92%. Chum down 90%. Fraser sockeye from 9.6M to 293,000. Multiple fisheries closed permanently.</td>
+  </tr>
+  <tr>
+    <td>The self-inflicted wound</td>
+    <td>Burns 34% of Alberta's gas to produce discount bitumen. EROI of 3-5:1 published, likely 1.5-2:1 real.</td>
+    <td>Glyphosate sprayed to kill fire-resistant deciduous trees. Conifer monocultures burn hotter, host more beetles. <span class="num">1M+ hectares</span> sprayed since 1970s.</td>
+    <td>Open-net salmon farms amplify sea lice and disease. DFO mandated to both protect fish AND promote the farms.</td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+<div class="s5">
+<!-- TABLE 5: THE BLAME GAME -->
+<div class="section-title">5. Blame Everything Except Depletion</div>
+<table>
+<thead>
+  <tr>
+    <th>Tactic</th>
+    <th>Oil Sands</th>
+    <th>BC Forestry</th>
+    <th>BC Fisheries</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td>What industry blames</td>
+    <td>Carbon tax. Regulatory burden. Pipeline politics. "Anti-Alberta" sentiment.</td>
+    <td>Old-growth moratorium. Permitting delays. "Regulatory complexity." NDP policy changes.</td>
+    <td>Climate change. Ocean conditions. Habitat loss. Everything except fishing pressure and farm lice.</td>
+  </tr>
+  <tr>
+    <td>What's actually happening</td>
+    <td>Extracting a resource with EROI below civilization-sustaining levels, with $130B+ in obligations, dependent on burning premium gas to produce discount crude.</td>
+    <td>97% of productive old growth already cut. Beetle + fire destroyed interior timber base. What remains is weak, small second-growth in monoculture plantations.</td>
+    <td>140 years of industrial harvest. 92% catch decline. DFO stopped monitoring. MSC pulled certification due to data gaps.</td>
+  </tr>
+  <tr>
+    <td>Capital flight confirms it</td>
+    <td>Oil sands companies investing in share buybacks ($11.5B at Suncor in 2 years) instead of new production — extracting value, not building.</td>
+    <td>Canfor and West Fraser now own as many mills in the <span class="highlight">US South</span> as in BC. Investment fleeing to jurisdictions with actual timber.</td>
+    <td>Commercial fishers forced to withdraw from MSC certification. Industry infrastructure collapsing — "lack of commercial infrastructure limited the harvest."</td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+<div class="s6">
+<!-- TABLE 6: THE MARKET VERDICT -->
+<div class="section-title">6. The Market's Verdict</div>
+<table>
+<thead>
+  <tr>
+    <th>Tactic</th>
+    <th>Oil Sands</th>
+    <th>BC Forestry</th>
+    <th>BC Fisheries</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td>Third-party assessment</td>
+    <td>Investors for Paris Compliance flagged Suncor &amp; Cenovus for decommissioning accounting. IASB reviewing standards.</td>
+    <td>Leaked government report shows AAC is <span class="num">~2x</span> sustainable harvest. UBC reviewer: "This is how ghost towns are made."</td>
+    <td>MSC withdrew eco-certification. Auditor General found data "undependable." Information Commissioner ordered suppressed data released.</td>
+  </tr>
+  <tr>
+    <td>Jobs lost</td>
+    <td>Oil sands employment declining as automation increases and investment shifts to buybacks.</td>
+    <td><span class="num">15,000</span> forest sector jobs lost since 2022. <span class="num">21</span> permanent or indefinite mill closures since 2023.</td>
+    <td>DFO closed <span class="num">57%</span> of Pacific salmon fisheries. Communities losing generational livelihoods.</td>
+  </tr>
+  <tr>
+    <td>Revenue collapse</td>
+    <td>Suncor's total debt-to-capital looks stable only because they changed the definition. At $50 WTI, the math breaks.</td>
+    <td>BC forest revenue: <span class="num">$1.885B</span> (2021/22) → <span class="num">$690M</span> (2022/23). A <span class="num">63% drop</span> in one year.</td>
+    <td>Wild salmon wholesale value down to $150-250M from historical peaks. No MSC certification = buyers won't pay premium.</td>
+  </tr>
+  <tr class="verdict-row">
+    <td>BOTTOM LINE</td>
+    <td>Inheriting the invoices for $130B+ in commitments on a depleted resource with sub-civilizational EROI.</td>
+    <td>Inheriting ghost-town mill communities, beetle-killed interior, and plantation forests that burn every summer.</td>
+    <td>Inheriting an empty ocean, a collapsed industry, and a regulator that stopped counting so nobody can prove how bad it is.</td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+<div class="s7">
+<!-- TABLE 7: THE REAL EROI -->
+<div class="section-title">7. The Real EROI — When Everything Is Counted</div>
+<p>
+  Published EROI studies count only the energy that flows through the <em>operator's own meters</em> — the gas piped into a SAGD facility, the diesel through the mine fleet fueling station. Everything consumed by contractors, subcontractors, camp operators, transportation companies, and support services falls <span class="highlight">outside the measurement boundary</span>. The table below reconstructs what a full-system EROI looks like when those invisible inputs are added back.
+</p>
+
+<!-- EROI WATERFALL TABLE -->
+<table>
+<thead>
+  <tr>
+    <th style="width:30%;">EROI Boundary Layer</th>
+    <th style="width:35%;">What's Counted / Not Counted</th>
+    <th style="width:15%;">Published EROI Impact</th>
+    <th style="width:20%;">Estimated Real EROI Impact</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td><span class="highlight">Published "Standard EROI"</span><br><span class="note">Academic studies (Poisson & Hall, Brandt, Guay-Boutet)</span></td>
+    <td>Operator-metered natural gas for SAGD steam, upgrader fuel, mine fleet diesel, cogen electricity, coke & still gas burned on-site.</td>
+    <td><span class="num">Mining: 3.9<span style="color:#999;">–</span>8:1</span><br><span class="num">In-situ: 3.2<span style="color:#999;">–</span>5.4:1</span></td>
+    <td>This is the starting point. Most studies average ~5:1 for mining, ~4:1 for SAGD.</td>
+  </tr>
+  <tr style="background:#1a080d;">
+    <td colspan="4" style="color:var(--s7); font-weight:600; padding:0.5rem 1rem; font-size:0.8rem; letter-spacing:1px;">▼ BELOW THIS LINE: INPUTS THAT FALL OUTSIDE THE PUBLISHED BOUNDARY ▼</td>
+  </tr>
+  <tr>
+    <td>Winter heating<br><span class="note">Herman Nelson heaters, glycol systems, heat trace, laydown yard heating</span></td>
+    <td>Propane and natural gas burned to keep equipment, pipe racks, and work areas functional at 0°C to -30°C for 5-6 months. Purchased by contractors, not the operator. <span class="highlight">Never metered by operator.</span></td>
+    <td>Not counted</td>
+    <td>Estimated <span class="num">3<span style="color:#999;">–</span>5%</span> additional energy input across the industry</td>
+  </tr>
+  <tr>
+    <td>Portable generation<br><span class="note">Diesel gensets at remote work fronts, welding shacks, temp facilities</span></td>
+    <td>Every work front not tied into permanent power runs on diesel generators. Fuel purchased by 3rd-party contractor, expensed as "construction services." <span class="highlight">Invisible in energy accounts.</span></td>
+    <td>Not counted</td>
+    <td>Estimated <span class="num">2<span style="color:#999;">–</span>4%</span> additional energy input</td>
+  </tr>
+  <tr>
+    <td>3rd-party heavy equipment<br><span class="note">Cranes, heavy haul, specialized equipment from Mammoet, Sarens, etc.</span></td>
+    <td>A single large crane burns 100-150 litres/hr of diesel under load. Dozens operate simultaneously at peak construction. Fuel purchased by crane company. <span class="highlight">Not in operator's data.</span></td>
+    <td>Not counted</td>
+    <td>Estimated <span class="num">2<span style="color:#999;">–</span>3%</span> additional during construction, <span class="num">1%</span> ongoing</td>
+  </tr>
+  <tr>
+    <td>Light vehicle fleet<br><span class="note">500-2,000 pickup trucks on site at any given time</span></td>
+    <td>Each truck burns 20-80 litres/day depending on site distance and season — remote sites like Fort Hills and Kearl at the high end, closer sites like Base Plant lower, summer use lower still. Across a major site with 500-2,000 trucks, the total is millions of litres per year. <span class="highlight">Owned by dozens of different contractors.</span></td>
+    <td>Not counted</td>
+    <td>Estimated <span class="num">2<span style="color:#999;">–</span>4%</span> additional energy input</td>
+  </tr>
+  <tr>
+    <td>Worker transportation<br><span class="note">Bus fleets, shuttles between camps and sites, inter-site transport</span></td>
+    <td>ATCO, Civeo and other operators run fleets making multiple daily round trips. Fort McMurray to site, camp to site. Diesel purchased by transport contractor. <span class="highlight">Counted nowhere.</span></td>
+    <td>Not counted</td>
+    <td>Estimated <span class="num">1<span style="color:#999;">–</span>2%</span> additional energy input</td>
+  </tr>
+  <tr>
+    <td>Work camps<br><span class="note">Housing 3,000-10,000 workers each in the boreal forest</span></td>
+    <td>Gas-fired boiler plants for heating, industrial kitchens 24/7, lighting, water treatment, sewage, laundry. Essentially a small town at 0°C to -30°C. Energy bill paid by ATCO/Civeo. <span class="highlight">Not the operator.</span></td>
+    <td>Not counted</td>
+    <td>Estimated <span class="num">2<span style="color:#999;">–</span>3%</span> additional energy input</td>
+  </tr>
+  <tr>
+    <td>Diluent loop<br><span class="note">Condensate transport, blending, pipeline return</span></td>
+    <td>~30% of dilbit volume is condensate, often imported from the US. Energy to produce, transport to AB, blend, pipeline to market, separate, and return-ship. <span class="highlight">Counted as a separate industry.</span></td>
+    <td>Not counted</td>
+    <td>Estimated <span class="num">5<span style="color:#999;">–</span>10%</span> additional energy input</td>
+  </tr>
+  <tr>
+    <td>Road construction & maintenance<br><span class="note">Haul roads, ice roads, highway upgrades</span></td>
+    <td>Massive diesel consumption for road building, grading, snow clearing, and the Highway 63 upgrades. Public infrastructure funded by province, not operator.</td>
+    <td>Not counted</td>
+    <td>Estimated <span class="num">1<span style="color:#999;">–</span>2%</span> additional energy input</td>
+  </tr>
+  <tr>
+    <td>Embodied energy in materials<br><span class="note">Steel casing, pipe, concrete, equipment manufacturing</span></td>
+    <td>Every SAGD well pair uses hundreds of tonnes of steel. Upgraders are among the world's largest industrial facilities. Energy consumed in steel mills, fab shops, and factories globally.</td>
+    <td>Partially counted in some studies<br><span class="note">(~6.8% per MDPI study)</span></td>
+    <td>Likely <span class="num">5<span style="color:#999;">–</span>8%</span> total, most studies undercount</td>
+  </tr>
+  <tr>
+    <td>Fly-in/fly-out aviation<br><span class="note">Specialized crews, shutdown teams, commissioning</span></td>
+    <td>Jet fuel for flights into Fort McMurray from across Canada for specialized workers, turnaround crews, and commissioning teams.</td>
+    <td>Not counted</td>
+    <td>Estimated <span class="num">0.5<span style="color:#999;">–</span>1%</span> additional energy input</td>
+  </tr>
+  <tr>
+    <td>Downstream refining energy<br><span class="note">Converting bitumen/dilbit into usable fuel</span></td>
+    <td>Bitumen requires significantly more refining energy than conventional crude — hydrocracking, coking, hydrotreating. This energy is consumed at US Gulf Coast and Midwest refineries. <span class="highlight">Always excluded from "wellhead" EROI.</span></td>
+    <td>Not counted in standard EROI</td>
+    <td>Estimated <span class="num">15<span style="color:#999;">–</span>25%</span> additional energy to reach usable fuel</td>
+  </tr>
+  <tr>
+    <td>Future decommissioning energy<br><span class="note">Remediation of tailings, mine sites, SAGD pads</span></td>
+    <td>Suncor: $22.2B undiscounted. Cenovus: $8.7B. The diesel, electricity, and industrial processes to remediate these sites over decades. <span class="highlight">Not in any EROI calculation ever published.</span></td>
+    <td>Not counted</td>
+    <td>Estimated <span class="num">3<span style="color:#999;">–</span>5%</span> additional lifecycle energy input</td>
+  </tr>
+</tbody>
+</table>
+
+<!-- EROI SUMMARY TABLE -->
+<div class="section-title">The EROI Waterfall: From Published to Real</div>
+<table>
+<thead>
+  <tr>
+    <th style="width:50%;">Boundary Definition</th>
+    <th style="width:25%;">Mining Oil Sands</th>
+    <th style="width:25%;">In-Situ (SAGD/CSS)</th>
+  </tr>
+</thead>
+<tbody>
+  <tr style="background:#0a1519;">
+    <td style="color:#00b4d8; font-weight:600;">Published "Standard EROI" — operator-metered direct + partial indirect energy</td>
+    <td><span style="color:#00b4d8; font-weight:600;">~5:1</span></td>
+    <td><span style="color:#00b4d8; font-weight:600;">~4:1</span></td>
+  </tr>
+  <tr style="background:#15100a;">
+    <td>+ Contractor/subcontractor energy (winter heating, gensets, cranes, trucks, buses, camps, aviation)</td>
+    <td><span style="color:#e8c840; font-weight:600;">~3.5<span style="color:#999;">–</span>4:1</span></td>
+    <td><span style="color:#e8c840; font-weight:600;">~2.8<span style="color:#999;">–</span>3.5:1</span></td>
+  </tr>
+  <tr style="background:#15100a;">
+    <td>+ Diluent loop energy (condensate import, blending, pipeline, separation, return)</td>
+    <td><span style="color:#e8c840; font-weight:600;">~3<span style="color:#999;">–</span>3.5:1</span></td>
+    <td><span style="color:#e8c840; font-weight:600;">~2.5<span style="color:#999;">–</span>3:1</span></td>
+  </tr>
+  <tr style="background:#15100a;">
+    <td>+ Full downstream refining to usable fuel (coking, hydrocracking, hydrotreating)</td>
+    <td><span style="color:#e8c840; font-weight:600;">~2.5<span style="color:#999;">–</span>3:1</span></td>
+    <td><span style="color:#e8c840; font-weight:600;">~1.8<span style="color:#999;">–</span>2.5:1</span></td>
+  </tr>
+  <tr style="background:#15100a;">
+    <td>+ Decommissioning lifecycle energy + full embodied materials energy</td>
+    <td><span style="color:#e8c840; font-weight:600;">~2<span style="color:#999;">–</span>2.5:1</span></td>
+    <td><span style="color:#e8c840; font-weight:600;">~1.5<span style="color:#999;">–</span>2:1</span></td>
+  </tr>
+  <tr class="verdict-row">
+    <td><strong>FULL-SYSTEM EROI (best estimate)</strong><br><span style="font-size:0.75rem; color:var(--s7); font-weight:400; opacity:0.7;">Including all contractor energy, diluent, refining, decommissioning</span></td>
+    <td><span style="font-size:1.3rem; color:var(--s7);">~2<span style="color:#999;">–</span>2.5:1</span></td>
+    <td><span style="font-size:1.3rem; color:var(--s7);">~1.5<span style="color:#999;">–</span>2:1</span></td>
+  </tr>
+</tbody>
+</table>
+
+<!-- CONTEXT TABLE -->
+<div class="section-title">For Context: EROI of Other Energy Sources</div>
+<table>
+<thead>
+  <tr>
+    <th style="width:50%;">Energy Source</th>
+    <th style="width:25%;">EROI Range</th>
+    <th style="width:25%;">Status</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td>Conventional oil (1930s–1970s global peak)</td>
+    <td><span class="num">50<span style="color:#999;">–</span>100:1</span></td>
+    <td>The era that built industrial civilization</td>
+  </tr>
+  <tr>
+    <td>Conventional oil (current global average)</td>
+    <td><span class="num">15<span style="color:#999;">–</span>25:1</span></td>
+    <td>Declining but still powers the world economy</td>
+  </tr>
+  <tr>
+    <td>All Canadian oil &amp; gas combined (2008)</td>
+    <td><span class="num">~11:1</span></td>
+    <td>Dragged down by growing oil sands share</td>
+  </tr>
+  <tr>
+    <td><span class="highlight">Minimum EROI to sustain complex civilization</span><br><span class="note">Hall et al. threshold for maintaining transport, healthcare, education</span></td>
+    <td><span class="num">~10<span style="color:#999;">–</span>12:1</span></td>
+    <td><span class="highlight">THE LINE — below this, society cannot maintain itself on that energy source alone</span></td>
+  </tr>
+  <tr>
+    <td>US shale gas</td>
+    <td><span class="num">6.5<span style="color:#999;">–</span>7.6:1</span></td>
+    <td>Below civilization threshold but subsidized by other sources</td>
+  </tr>
+  <tr>
+    <td>Oil sands — published EROI (operator boundary only)</td>
+    <td><span class="num">3<span style="color:#999;">–</span>5:1</span></td>
+    <td>Already below threshold at the flattering number</td>
+  </tr>
+  <tr>
+    <td><span class="highlight">Oil sands — full-system EROI (all inputs, refining, decommissioning)</span></td>
+    <td><span class="num" style="font-size:1.1rem;">1.5<span style="color:#999;">–</span>2.5:1</span></td>
+    <td><span class="highlight">Approaching energy break-even. For every 2 barrels of energy produced, ~1 barrel is consumed in the process of production.</span></td>
+  </tr>
+  <tr>
+    <td>Corn ethanol</td>
+    <td><span class="num">~1.3:1</span></td>
+    <td>Widely considered an energy sink dressed up as a fuel</td>
+  </tr>
+  <tr>
+    <td>Break-even (energy in = energy out)</td>
+    <td><span class="num">1:1</span></td>
+    <td>Pointless — you get nothing net</td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+<div class="summary-box eroi-box">
+  <strong>What the EROI numbers mean in plain language:</strong><br><br>
+  At <strong>5:1</strong> (published), for every barrel of energy-equivalent you invest, you get 5 back — 4 net barrels for society to use. That's already marginal.<br><br>
+  At <strong>2:1</strong> (full-system estimate), for every barrel you invest, you get 2 back — only <strong>1 net barrel</strong> for society. Half the energy produced is consumed by the production process itself.<br><br>
+  At <strong>1.5:1</strong> (worst-case SAGD full-system), you're investing 1 barrel to get 1.5 back — only <strong>0.5 net barrels</strong>. You're running the world's most expensive and environmentally destructive operation to produce the energy equivalent of <strong>a rounding error</strong>.<br><br>
+  <strong>The oil sands don't produce energy for civilization. They convert natural gas into a lower-grade fuel at enormous financial and environmental cost, producing just enough net energy to justify the accounting fiction that keeps the enterprise running.</strong>
+</div>
+
+<div class="summary-box">
+  <strong>The Separatist Pitch:</strong> "Alberta and BC are resource powerhouses being held back by Ottawa."<br><br>
+  <strong>The Reality:</strong> Conventional oil is 90%+ depleted. The oil sands have a full-system EROI of ~1.5<span style="color:#999;">–</span>2.5:1 — below corn ethanol territory when all inputs are honestly counted. 97% of productive old growth is gone. The forests that replaced them are monoculture plantations burning every summer. The salmon fishery has collapsed 92%. The ocean is at roughly 10% of historical biomass. The LNG play is entering a glutted market with $54B in sunk costs. The Montney wells decline 60-70% in year one. Every industry is using the same playbook: lead with the flattering metric, defer the real liability, blame regulation, and let the next generation discover the cupboard is bare.<br><br>
+  <strong>The separatists aren't proposing independence. They're proposing to inherit the invoices.</strong>
+</div>
+
+<!-- SECTION 8: THE GLOBAL PICTURE -->
+<div class="s8">
+<div class="section-title">8. This Is Not a Regional Problem — The Global Convergence</div>
+
+<p>
+Everything documented above — the oil sands debt obfuscation, the forestry falldown, the fisheries data suppression — is a local expression of a <strong>global pattern</strong>. The same playbook of flattering metrics, deferred liabilities, and institutional denial is running simultaneously across every major resource system on Earth. Western Canada is not an outlier. It is a preview.
+</p>
+
+<p>
+<strong>How the oceans reached 10%.</strong> The decline didn't begin with industrial fishing. Roman <em>garum</em> factories processed fish at industrial scale across the Mediterranean two thousand years ago. Medieval European fleets depleted the North Sea and Baltic centuries before anyone counted a stock. Caribbean sea turtles, once so abundant Columbus described the ocean as "thick with them," were hunted to functional extinction before Darwin was born. Chesapeake Bay oysters, which once filtered the entire bay every three days, were dredged to less than 1% of historical biomass by the early 1900s. Great whale populations were reduced by 70-95% by industrial whaling before the moratorium. Each generation inherited a diminished ocean and called it normal — the phenomenon Daniel Pauly named <strong>"shifting baseline syndrome"</strong> in 1995. By the time modern fisheries science began systematically counting in the mid-20th century, the ocean was already a shadow of what it had been. The published finding that large predatory fish are at roughly 10% of pre-industrial levels (Myers & Worm, <em>Nature</em> 2003) uses "pre-industrial" as the baseline — not pre-exploitation. The true pre-human-impact ocean is unrecoverable from the data because we destroyed it before we thought to measure it.
+</p>
+
+<p>
+<strong>The mineral wall.</strong> The pattern extends beyond biology. Global average copper ore grades have fallen from roughly 2.5% in the early 1900s to approximately 0.5% today — meaning five times more rock must be mined, crushed, and processed to yield the same tonne of copper. Each halving of ore grade roughly doubles the energy required for extraction. Chromite, essential for stainless steel and superalloys, faces tightening supply with the highest-grade deposits concentrated in politically unstable jurisdictions. Metallurgical coking coal — irreplaceable in blast-furnace steelmaking — faces quality decline and rising extraction costs globally. Phosphate rock, the basis of agricultural fertilizer, has no substitute and is being depleted on a multi-decade trajectory that threatens global food production. In each case, the same dynamic applies: the high-grade, easy-to-access resource was extracted first, and what remains requires exponentially more energy, capital, and environmental destruction to recover — the identical EROI collapse we documented for the oil sands, playing out across the periodic table.
+</p>
+
+<p>
+<strong>Converging thresholds.</strong> These are not independent problems with independent timelines. They are coupled systems approaching critical thresholds simultaneously. The energy required to extract degrading mineral ores rises just as the EROI of the energy supply itself is falling. The forests that stabilize the water cycle and sequester carbon are being converted to flammable monocultures and burning at unprecedented rates. The oceans that regulate climate and provide protein are being emptied from the top of the food chain downward. The soils that grow food are losing organic matter and depend on fertilizers derived from depleting phosphate and natural gas. Each system's failure accelerates the others. A fishery collapse increases pressure on agricultural protein, which increases fertilizer demand, which accelerates phosphate depletion and natural gas consumption, which degrades the energy return that supports the whole edifice.
+</p>
+
+<p>
+The question is not whether these thresholds exist — the scientific evidence is unambiguous that they do. The question is whether they are crossed gradually, giving societies time to adapt, or whether the nonlinear dynamics of coupled systems produce cascading failures that arrive faster than institutions can respond. The ecological literature strongly suggests the latter. Systems under stress appear stable until they don't.
+</p>
+
+<!-- WHAT WOULD BE REQUIRED TABLE -->
+<div class="section-title">What Would Be Required</div>
+<table>
+<thead>
+  <tr>
+    <th style="width:30%;">System</th>
+    <th style="width:35%;">Current Trajectory</th>
+    <th style="width:35%;">What Reversal Requires</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td>Ocean biomass</td>
+    <td>Large predatory fish at <span class="num">~10%</span> of pre-industrial. Total fish biomass down <span class="num">80%</span> in a century. Continued industrial harvest, bycatch, and habitat destruction.</td>
+    <td>Near-total moratorium on industrial fishing for decades. Elimination of open-net aquaculture. Massive expansion of marine protected areas to <span class="num">30-50%</span> of ocean surface. Enforced, not aspirational.</td>
+  </tr>
+  <tr>
+    <td>Forests</td>
+    <td><span class="num">97%</span> of BC productive old growth gone. Global primary forest loss accelerating. Monoculture plantations replacing biodiverse ecosystems. Annual mega-fires now structural.</td>
+    <td>Immediate halt to virtually all primary forest logging globally. End of monoculture plantation forestry. Transition to selective harvest of second-growth only. Complete ban on herbicide use in forestry. Restoration at landscape scale — a multi-century project.</td>
+  </tr>
+  <tr>
+    <td>Energy &amp; minerals</td>
+    <td>EROI of marginal energy sources falling below civilization-sustaining thresholds. Ore grades declining exponentially. Each tonne of copper, lithium, or phosphate requires more energy to produce from lower-grade deposits.</td>
+    <td>Radical reduction in per-capita material consumption in wealthy nations — not efficiency gains, but actual contraction. A complete rethinking of what industrial civilization requires versus what it currently consumes. Elimination of virtually all single-use plastics and disposable material culture.</td>
+  </tr>
+  <tr>
+    <td>Climate &amp; biosphere</td>
+    <td>Coupled feedback loops: forest loss → wildfire → carbon release → warming → drought → more forest loss. Ocean warming → fishery collapse → food pressure → agricultural intensification → soil depletion.</td>
+    <td>All of the above, simultaneously, across every nation, within a single generation. Not incremental improvement — a fundamental restructuring of the relationship between human economic activity and the biological systems that sustain it.</td>
+  </tr>
+  <tr>
+    <td>Consumption</td>
+    <td>Per-capita resource consumption in wealthy nations drives the majority of ecological destruction. An Albertan consumes <span class="num">~60 barrels</span> of oil-equivalent per year. The global average is ~13. The biosphere cannot sustain either number at current population.</td>
+    <td>Wealthy nations must reduce material throughput by <span class="num">60-80%</span> — not through technology alone, but through fundamentally different expectations about what a life requires. This is not a policy adjustment. It is a civilizational transformation in the relationship between humans and the natural systems that keep them alive.</td>
+  </tr>
+  <tr>
+    <td>Population &amp; carrying capacity</td>
+    <td>Humanity currently consumes Earth's renewable resources at <span class="num">1.7x</span> the rate they regenerate (Global Footprint Network, 2025). Earth Overshoot Day — the date we exhaust a year's biocapacity — now falls in late July. The average ecological footprint is <span class="num">2.8 ha</span> per person; the available biocapacity is <span class="num">1.6 ha</span>. At current consumption patterns, peer-reviewed estimates place sustainable carrying capacity between <span class="num">3 and 5 billion</span> people. However, William Rees — co-originator of ecological footprint analysis — puts the post-overshoot long-term carrying capacity far lower: <span class="highlight">as few as 100 million to 3 billion</span>, depending on material standard of living. At current first-world upper-middle-class levels — where everyone has a home, a vehicle, a refrigerator, and air travel — <span style="color:#fff; font-weight:700; font-size:1.02rem;">the number is at the extreme low end of that range:</span> <span style="color:#facc15; font-weight:700; font-size:1.08rem; letter-spacing:0.5px;">100 to 200 million people — roughly 2% of today's population.</span> A 2025 Flinders University study concluded that <span class="num">population size explains variations in ecological footprint and emissions better than per-capita consumption alone</span>. Rees's own analysis found that population growth accounted for <span class="num">80%</span> of the increase in humanity's total ecological footprint since 1960.</td>
+    <td>Voluntary, rights-based population stabilization through universal access to family planning, contraception, and girls' education — the measures that have proven most effective at reducing birth rates without coercion. Simultaneously, a managed demographic transition that aligns human numbers with biocapacity rather than economic growth targets. No single intervention — neither consumption reduction nor population stabilization alone — is sufficient. Both must occur together, and neither is optional. As ecologist William Rees concluded: <span class="highlight">"Smaller populations with lower consumption create better outcomes for both people and the planet."</span></td>
+  </tr>
+  <tr class="verdict-row">
+    <td>REQUIRED SPEED</td>
+    <td colspan="2">Multiple systems are simultaneously approaching thresholds from which recovery becomes physically impossible — and several have already crossed them. The fisheries have already collapsed. The old growth is already gone. The EROI is already sub-civilizational. These are not predictions. They are observations. The window for intervention is not measured in decades. It is measured in years. And it is closing.</td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+
+<div class="summary-box final-box">
+  <strong>The honest assessment:</strong><br><br>
+  The changes required to reverse these trajectories are so vast in scale, so rapid in required implementation, and so contrary to every incentive structure in the global economy that no serious observer expects them to occur voluntarily. Every resource sector examined in this document — oil, gas, timber, fisheries, minerals — is governed by institutions whose mandates include both protecting the resource and promoting its exploitation. Every one of them has chosen exploitation. Every one of them has hidden the decline behind flattering metrics. Every one of them will continue to do so until the physical reality makes the accounting fiction untenable.<br><br>
+  The question is not whether the biosphere can sustain current human activity. The science is settled: it cannot, and the evidence is visible in every dataset examined here. The question is whether the correction will be managed or unmanaged — whether humanity chooses to restructure its relationship with the natural world, or whether the natural world restructures that relationship for us.<br><br>
+  <strong>The trajectory suggests the latter.</strong>
+</div>
+
+<div class="summary-box final-coda">
+  <strong>A note on what this means for separatism:</strong><br><br>
+  The Alberta and BC separatist movement is, at its core, a bet that the resource wealth of Western Canada is being unfairly redistributed to the rest of the country. This document has shown that the "resource wealth" in question consists largely of depleted conventional reserves, sub-civilizational EROI unconventional extraction, devastated forests, collapsed fisheries, and LNG infrastructure entering a glutted market — all wrapped in accounting frameworks designed to obscure the decline. The separatists are not arguing over how to divide a growing pie. They are arguing over who gets to hold the bill when the cheque arrives for a century of ecological drawdown. The answer to Western Canadian separatism is not political — it is thermodynamic. There is nothing left to separate with.
+</div>
+
+<div class="footer-note">
+  Sources: Suncor FY2025 40-F (SEC), Cenovus FY2025 40-F (SEC), BC Chief Forester Timber Supply Reviews, Leaked Mackenzie TSA Report (BIV Nov 2025), 
+  Auditor General of Canada Report 9 (2023), Information Commissioner of Canada (2025), Myers &amp; Worm "Rapid worldwide depletion of predatory fish communities" (Nature 2003), 
+  Christensen et al. "A century of fish biomass decline in the ocean" (MEPS 2014), Poisson &amp; Hall "Time Series EROI for Canadian Oil and Gas" (Energies 2013), 
+  Kong et al. "EROI of Canadian Oil Sands Extraction 2009-2015" (Energies/MDPI 2017), Guay-Boutet "Disaggregated Standard EROI of Canadian Oil Sands" (Biophysical Economics 2023),
+  Brandt et al. "Energy return on investment from oil sands" (The Oil Drum / peer-reviewed 2013),
+  Hall, Lambert &amp; Balogh "EROI of different fuels and the implications for society" (Energy Policy 2014) — civilization threshold of ~10-12:1,
+  Hughes "Drilling into the Montney" (David Suzuki Foundation 2024), AER Alberta Energy Outlook ST98 (2025), 
+  Mongabay BC old-growth investigations (2020-2024), The Narwhal glyphosate investigation (2024), Watershed Watch Salmon Society, 
+  IEEFA LNG Canada analysis (2021-2025), COFI mill closure statements (2024-2025), Hakai Magazine fisheries reporting,
+  BC Gov't "Impacts of 2017-2024 Fires on Forests and Timber Supply" (Chief Forester special reviews),
+  Science Advances "Estimating global biomass and biogeochemical cycling of marine fish" (2021),
+  Jennings &amp; Blanchard "North Sea large fish biomass 97% below unfished levels" (macroecological modelling),
+  Pauly "Anecdotes and the shifting baseline syndrome of fisheries" (Trends in Ecology &amp; Evolution 1995),
+  Mudd "The Sustainability of Mining in Australia" (Monash University 2007) — copper ore grade decline data,
+  Cordell &amp; White "Peak Phosphorus" (The Sustainability Review 2011),
+  Worm et al. "Impacts of biodiversity loss on ocean ecosystem services" (Science 2006),
+  Bradshaw et al. "Earth's population has surpassed the planet's capacity" (Flinders University 2025),
+  Global Footprint Network — ecological footprint &amp; Earth Overshoot Day data (2025),
+  Wackernagel &amp; Rees "Our Ecological Footprint" (1996) — carrying capacity of 3-5 billion,
+  Rees "The Human Ecology of Overshoot: Why a Major Population Correction Is Inevitable" (World/MDPI 2023) — 100M to 3B carrying capacity estimate,
+  Rees "The human eco-predicament: Overshoot and the population conundrum" (Vienna Yearbook of Population Research 2023) — 80% of footprint growth from population,
+  Rees "Is the human enterprise sustainable?" — demographic degrowth framework.<br><br>
+  EROI estimates for uncounted contractor/subcontractor inputs are the author's estimates based on 20 years of oil sands field experience, 
+  cross-referenced with academic boundary analysis literature. Published EROI figures from peer-reviewed sources as cited. 
+  Full-system EROI estimates should be considered indicative ranges, not precise measurements — the point is that the published numbers 
+  systematically exclude 40-60% of real energy inputs.<br><br>
+  All dollar figures in Canadian dollars unless otherwise noted. Data current to early 2026.
+</div>
+
+</div>
+</body>
+</html>
