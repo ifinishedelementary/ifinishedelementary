@@ -27,19 +27,32 @@
   html, body { height: 100%; }
 
   body {
-    background: var(--bg);
+    background: #000;
     color: var(--text);
     font-family: 'Source Sans 3', sans-serif;
     overflow: hidden;
     width: 100%;
     cursor: pointer;
     user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .deck {
-    width: 100%;
-    height: 100%;
+    background: var(--bg);
     position: relative;
+    aspect-ratio: 16 / 9;
+    width: 100%;
+    max-width: calc(100vh * 16 / 9);
+    max-height: 100vh;
+    /* When fullscreen, fill the screen entirely */
+  }
+  .deck:fullscreen {
+    width: 100vw;
+    height: 100vh;
+    max-width: none;
+    max-height: none;
   }
 
   .slide {
@@ -401,7 +414,7 @@
 
   /* Progress bar */
   .progress {
-    position: fixed;
+    position: absolute;
     bottom: 0;
     left: 0;
     height: 3px;
@@ -412,7 +425,7 @@
 
   /* Slide counter */
   .counter {
-    position: fixed;
+    position: absolute;
     bottom: 1rem;
     right: 1.5rem;
     font-family: 'JetBrains Mono', monospace;
@@ -423,7 +436,7 @@
 
   /* Nav hint */
   .nav-hint {
-    position: fixed;
+    position: absolute;
     bottom: 1rem;
     left: 1.5rem;
     font-size: 0.7rem;
@@ -431,6 +444,31 @@
     z-index: 100;
     opacity: 0.6;
   }
+
+  /* Fullscreen button */
+  .fs-btn {
+    position: absolute;
+    top: 0.9rem;
+    right: 1rem;
+    z-index: 100;
+    background: rgba(20, 28, 40, 0.7);
+    border: 1px solid rgba(255, 215, 0, 0.4);
+    color: var(--amber);
+    width: 34px;
+    height: 34px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+    padding: 0;
+  }
+  .fs-btn:hover {
+    background: rgba(231, 76, 60, 0.25);
+    transform: scale(1.08);
+  }
+  .fs-btn svg { width: 16px; height: 16px; }
 
   /* Animations for elements appearing within active slide */
   .slide.active .fade-up {
@@ -1002,11 +1040,16 @@
     </div>
   </div>
 
-</div>
+  <div class="progress" id="progress"></div>
+  <div class="counter" id="counter"></div>
+  <div class="nav-hint">Click or press → to advance &nbsp;|&nbsp; ← to go back</div>
+  <button class="fs-btn" id="fsBtn" title="Fullscreen" aria-label="Toggle fullscreen">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>
+    </svg>
+  </button>
 
-<div class="progress" id="progress"></div>
-<div class="counter" id="counter"></div>
-<div class="nav-hint">Click or press → to advance &nbsp;|&nbsp; ← to go back</div>
+</div>
 
 <script>
   const slides = document.querySelectorAll('.slide');
@@ -1090,8 +1133,22 @@
   });
 
   document.addEventListener('click', (e) => {
+    // Don't advance the slide when interacting with chrome (e.g. fullscreen button)
+    if (e.target.closest('.fs-btn')) return;
     const x = e.clientX / window.innerWidth;
     if (x > 0.3) next(); else prev();
+  });
+
+  // Fullscreen toggle
+  const fsBtn = document.getElementById('fsBtn');
+  const deckEl = document.querySelector('.deck');
+  fsBtn.addEventListener('click', () => {
+    const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+    if (fsEl) {
+      (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+    } else {
+      (deckEl.requestFullscreen || deckEl.webkitRequestFullscreen).call(deckEl);
+    }
   });
 
   // Init
