@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Anomaly — 3,000 Years of Bodies</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800&family=Spectral:ital,wght@0,300;0,400;1,300&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Excavation palette: trench shadow, bone, hematite, section-drawing annotation */
+  --trench:   #141A1F;
+  --trench-2: #1B2329;
+  --sediment: #2A343B;
+  --bone:     #E8E3D9;
+  --bone-dim: #A8A49C;
+  --oxide:    #B0472F;
+  --oxide-lo: #6E2E20;
+  --annot:    #7E96A3;
+
+  --sans: 'Archivo', system-ui, sans-serif;
+  --serif:'Spectral', Georgia, serif;
+  --mono: 'IBM Plex Mono', ui-monospace, monospace;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#000;overflow:hidden}
+body{font-family:var(--sans);color:var(--bone);-webkit-font-smoothing:antialiased}
+
+/* ---------- Fixed 1920x1080 stage, scaled to viewport ---------- */
+#viewport{position:fixed;inset:0;display:grid;place-items:center}
+#stage{
+  width:1920px;height:1080px;position:relative;
+  background:var(--trench);
+  transform-origin:center center;
+  overflow:hidden;
+}
+#stage::after{ /* subtle vignette, keeps video compression from banding flat fills */
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(120% 90% at 50% 40%, rgba(255,255,255,.035), transparent 70%);
+  z-index:7;
+}
+body[data-rec="1"]{cursor:none}
+
+/* ---------- Stratigraphic rail (signature element) ---------- */
+#rail{
+  position:absolute;left:0;top:0;bottom:0;width:78px;
+  background:var(--trench-2);
+  border-right:1px solid var(--sediment);
+  display:flex;flex-direction:column-reverse; /* deep time at the bottom */
+  z-index:5;
+}
+.layer{
+  flex:1 1 0;position:relative;
+  border-top:1px solid rgba(232,227,217,.06);
+  transition:background .45s ease;
+}
+.layer[data-active="1"]{background:var(--oxide)}
+.layer[data-seen="1"]:not([data-active="1"]){background:var(--oxide-lo)}
+#rail .sect-tag{
+  position:absolute;left:50%;top:50%;
+  transform:translate(-50%,-50%) rotate(180deg);
+  writing-mode:vertical-rl;
+  font-family:var(--mono);font-size:11px;font-weight:500;
+  letter-spacing:.24em;text-transform:uppercase;
+  color:var(--bone-dim);white-space:nowrap;
+}
+#rail .rail-cap{
+  position:absolute;left:0;right:0;
+  font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+  color:rgba(232,227,217,.5);text-align:center;
+}
+#rail .rail-cap.top{top:12px}
+#rail .rail-cap.bot{bottom:12px}
+
+/* ---------- Slides ---------- */
+.slide{
+  position:absolute;inset:0;padding:96px 132px 92px 210px;
+  display:flex;flex-direction:column;justify-content:center;
+  opacity:0;visibility:hidden;transition:opacity .4s ease;
+}
+.slide[data-on="1"]{opacity:1;visibility:visible}
+
+.eyebrow{
+  font-family:var(--mono);font-size:15px;font-weight:500;
+  letter-spacing:.3em;text-transform:uppercase;color:var(--oxide);
+  margin-bottom:36px;display:flex;gap:22px;align-items:baseline;
+}
+.eyebrow span{color:var(--annot);letter-spacing:.22em}
+.eyebrow i{
+  font-style:normal;color:#4A555E;margin-left:auto;letter-spacing:.2em;
+}
+
+h1{
+  font-size:118px;font-weight:800;line-height:.93;letter-spacing:-.035em;
+  max-width:22ch;
+}
+h2{
+  font-size:66px;font-weight:800;line-height:1.02;letter-spacing:-.028em;
+  max-width:26ch;margin-bottom:38px;
+}
+h2 em{font-style:normal;color:var(--oxide)}
+
+.lede{
+  font-family:var(--serif);font-size:34px;font-weight:300;line-height:1.42;
+  max-width:36ch;color:var(--bone);
+}
+.body{
+  font-family:var(--serif);font-size:27px;font-weight:300;line-height:1.52;
+  max-width:52ch;color:#CFCAC1;
+}
+.body + .body{margin-top:22px}
+.body b{font-weight:400;color:var(--bone)}
+.kicker{
+  font-family:var(--mono);font-size:19px;letter-spacing:.04em;
+  color:var(--annot);margin-top:44px;max-width:60ch;line-height:1.6;
+}
+.kicker em{font-style:normal;color:var(--oxide)}
+
+/* ---------- Big statistic ---------- */
+.stat{display:flex;align-items:flex-end;gap:34px;margin:12px 0 30px}
+.stat .num{
+  font-family:var(--mono);font-weight:600;font-size:196px;line-height:.82;
+  letter-spacing:-.045em;color:var(--bone);font-variant-numeric:tabular-nums;
+}
+.stat .num.sm{font-size:150px}
+.stat .num u{text-decoration:none;color:var(--oxide)}
+.stat .unit{
+  font-family:var(--mono);font-size:22px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--annot);padding-bottom:22px;max-width:15ch;line-height:1.5;
+}
+
+/* ---------- Ledger (catalogue rows) ---------- */
+.ledger{width:100%;max-width:1420px;border-top:1px solid var(--sediment)}
+.row{
+  display:grid;grid-template-columns:1fr auto;gap:40px;align-items:baseline;
+  padding:19px 4px;border-bottom:1px solid var(--sediment);
+  opacity:0;transform:translateY(6px);
+}
+.slide[data-on="1"] .row{animation:rowIn .5s ease forwards}
+@keyframes rowIn{to{opacity:1;transform:none}}
+.row .lbl{font-family:var(--sans);font-size:29px;font-weight:400}
+.row .lbl small{
+  display:block;font-family:var(--mono);font-size:15px;font-weight:400;
+  letter-spacing:.06em;color:var(--annot);margin-top:6px;
+}
+.row .val{
+  font-family:var(--mono);font-size:34px;font-weight:600;
+  color:var(--bone);font-variant-numeric:tabular-nums;white-space:nowrap;
+}
+.row[data-flag="1"] .val{color:var(--oxide)}
+.row[data-flag="1"] .lbl{font-weight:600}
+.ledger.tight .row{padding:14px 4px}
+.ledger.tight .row .lbl{font-size:26px}
+.ledger.tight .row .val{font-size:31px}
+
+/* ---------- Scale bar (log) ---------- */
+.scalebar{margin:52px 0 0;width:100%;max-width:1500px;position:relative}
+.sb-track{
+  position:relative;height:26px;
+  background:linear-gradient(90deg,var(--sediment),var(--oxide-lo) 70%,var(--oxide));
+  border:1px solid rgba(232,227,217,.14);
+}
+.sb-track i{ /* survey ticks, like a photo scale rod */
+  position:absolute;top:0;bottom:0;width:1px;background:rgba(20,26,31,.55);
+}
+.sb-band{
+  position:absolute;top:-9px;bottom:-9px;
+  border-left:1px dashed rgba(232,227,217,.45);
+  border-right:1px dashed rgba(232,227,217,.45);
+  background:rgba(232,227,217,.10);
+}
+.sb-band b{
+  position:absolute;left:50%;top:-30px;transform:translateX(-50%);
+  font-family:var(--mono);font-size:13px;font-weight:400;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--bone-dim);white-space:nowrap;
+}
+.sb-axis{
+  position:relative;height:64px;margin-top:2px;
+  font-family:var(--mono);font-size:14px;letter-spacing:.1em;color:var(--annot);
+}
+.sb-axis b{position:absolute;transform:translateX(-50%);font-weight:400;padding-top:10px;white-space:nowrap}
+.sb-marks{position:relative;height:300px;margin-top:14px}
+.mk{position:absolute;transform:translateX(-50%);text-align:center;width:200px}
+.mk .stem{width:1px;background:var(--bone-dim);margin:0 auto 12px}
+.mk .mv{
+  font-family:var(--mono);font-size:30px;font-weight:600;color:var(--bone);
+  font-variant-numeric:tabular-nums;line-height:1.1;
+}
+.mk .ml{
+  font-family:var(--mono);font-size:13px;letter-spacing:.09em;
+  color:var(--annot);line-height:1.5;margin-top:9px;text-transform:uppercase;
+}
+.mk[data-hot="1"] .mv{color:var(--oxide);font-size:35px}
+.mk[data-hot="1"] .stem{background:var(--oxide);width:2px}
+.mk[data-hot="1"] .ml{color:var(--bone-dim)}
+
+/* ---------- Two-column split ---------- */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:88px;align-items:start}
+.split h3{
+  font-family:var(--mono);font-size:17px;font-weight:600;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--oxide);margin-bottom:24px;
+  padding-bottom:14px;border-bottom:1px solid var(--sediment);
+}
+.split .body{font-size:25px;max-width:none}
+
+/* ---------- Title slide ---------- */
+.title-wrap{display:flex;flex-direction:column;gap:0}
+.title-wrap .over{
+  font-family:var(--mono);font-size:17px;letter-spacing:.34em;text-transform:uppercase;
+  color:var(--annot);margin-bottom:52px;
+}
+.title-wrap .under{
+  font-family:var(--serif);font-style:italic;font-weight:300;font-size:38px;
+  color:var(--bone-dim);margin-top:46px;max-width:34ch;line-height:1.4;
+}
+.rule{height:1px;background:var(--sediment);margin:56px 0 0;width:640px}
+
+/* ---------- Source line ---------- */
+.src{
+  position:absolute;left:210px;right:132px;bottom:44px;
+  font-family:var(--mono);font-size:14px;line-height:1.6;
+  letter-spacing:.03em;color:#5F6D76;
+  border-top:1px solid var(--sediment);padding-top:14px;max-width:1180px;
+}
+
+/* ---------- Chrome (hidden in record mode) ---------- */
+#hud{
+  position:absolute;right:34px;top:30px;z-index:6;
+  font-family:var(--mono);font-size:14px;letter-spacing:.14em;color:#5F6D76;
+  display:flex;gap:20px;align-items:center;
+}
+#hud b{color:var(--bone-dim);font-weight:500}
+body[data-rec="1"] #hud,
+body[data-rec="1"] #help{display:none}
+
+#notes{
+  position:fixed;left:0;right:0;bottom:0;max-height:44vh;overflow:auto;z-index:20;
+  background:#080A0C;border-top:2px solid var(--oxide);
+  padding:22px 40px 26px;display:none;
+}
+#notes[data-on="1"]{display:block}
+#notes h4{
+  font-family:var(--mono);font-size:12px;letter-spacing:.26em;text-transform:uppercase;
+  color:var(--oxide);margin-bottom:12px;
+}
+#notes .script{
+  font-family:var(--serif);font-size:20px;font-weight:300;line-height:1.6;
+  color:#E4DFD6;max-width:106ch;
+}
+#notes .dir{
+  font-family:var(--mono);font-size:14px;line-height:1.65;color:#8A949B;
+  max-width:106ch;margin-top:14px;padding-top:12px;border-top:1px solid #1C2429;
+}
+#notes .beat{color:var(--oxide);font-style:normal;font-family:var(--mono);font-size:15px}
+
+#help{
+  position:absolute;left:210px;bottom:14px;z-index:8;
+  font-family:var(--mono);font-size:13px;letter-spacing:.1em;color:#39434B;
+  transition:opacity .5s ease;
+}
+#help[data-idle="1"]{opacity:0}
+#nav{position:absolute;inset:0;z-index:4;display:flex}
+#nav div{flex:1;cursor:pointer}
+body[data-rec="1"] #nav div{cursor:none}
+:focus-visible{outline:2px solid var(--oxide);outline-offset:3px}
+@media (prefers-reduced-motion: reduce){
+  .slide,.layer{transition:none}
+  .slide[data-on="1"] .row{animation:none;opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+<div id="viewport">
+  <div id="stage">
+    <div id="rail" aria-hidden="true"></div>
+    <div id="hud"><span><b id="cur">1</b> / <span id="tot">29</span></span></div>
+    <div id="deck"></div>
+    <div id="nav"><div id="back" title="Previous"></div><div id="fwd" title="Next"></div></div>
+    <div id="help">← → navigate · N notes · P presenter · R record mode · T reset timer · F fullscreen</div>
+  </div>
+</div>
+
+<div id="notes" aria-live="polite"><h4>Narration</h4><div id="notesBody"></div></div>
+
+
+<script>
+/* ============================================================
+   THE ANOMALY — v2, fact-checked build
+   Sections form the stratigraphic rail, deep time at the base.
+   `script` = spoken narration.  `dir` = delivery direction.
+   `secs`   = target duration, used by the presenter window.
+   ============================================================ */
+
+const SECTIONS = ["THE MEASURE","THE RECORD","THE BASELINE","THE ANIMAL","THE MACHINE","THE LEDGER"];
+
+const SLIDES = [
+
+/* ---------- I. THE MEASURE ---------- */
+{
+  sect:0, cat:"000", secs:22,
+  html:`<div class="title-wrap">
+    <div class="over">A presentation on the archaeology and demography of human violence</div>
+    <h1>The Anomaly</h1>
+    <div class="under">Three thousand years of bodies, counted honestly — and what they say about the fifteen generations we happen to be living in.</div>
+    <div class="rule"></div>
+  </div>`,
+  script:`The peace you are currently living inside is a statistical freak. It is about fifteen generations old. It was built by machinery rather than by moral progress. And machinery can be switched off.
+[beat]
+Everything after this is evidence for those four sentences.`,
+  dir:`Open cold. No music, no throat-clearing. Do not smile. This is the whole thesis and you will never state it this plainly again, so let the last line sit before you cut.`
+},
+{
+  sect:0, cat:"001", secs:30,
+  html:`<div class="eyebrow">Framing <span>the wrong number</span></div>
+    <h2>Almost every safety statistic you've heard is <em>useless</em></h2>
+    <p class="body">Road deaths get reported as a rate: about <b>13 per 100,000 Americans per year</b>. That number is technically correct and psychologically inert. Nobody can feel it. Nobody can act on it.</p>
+    <p class="body">Multiply it across a life and it becomes something you can actually understand.</p>`,
+  script:`Road deaths get reported as a rate. About thirteen per hundred thousand Americans per year.
+That number is technically correct and completely inert. You cannot feel it. You have already forgotten it.
+Annual rates are how institutions talk to each other. Lifetime risk is how a person experiences their own life. They are the same data, and they feel like different universes.
+Everything after this uses lifetime risk.`,
+  dir:`This sets the method for the entire video, so don't rush it. Slight emphasis on "already forgotten" — you are describing the audience to itself.`
+},
+{
+  sect:0, cat:"002", secs:18,
+  html:`<div class="eyebrow">Framing <span>the real number</span></div>
+    <div class="stat"><div class="num">1 in <u>100</u></div>
+      <div class="unit">Americans will die in a motor vehicle crash</div></div>
+    <p class="body">Same data. Same country. Same year. The rate says <b>0.013%</b>. The lifetime figure says roughly <b>one person in every school assembly.</b></p>
+    <p class="kicker">Hold onto this number. It is the yardstick for the rest of the presentation.</p>`,
+  script:`Same data. Same country. Same year.
+As a rate it's noise. Across a life it's about one in a hundred. One person in every school assembly.
+[beat]
+Hold onto that. It's the yardstick for everything else.`,
+  dir:`Say "about one in a hundred" — the screen carries the exact figure. Keep it on screen an extra beat; you will be comparing everything to it.`,
+  src:`National Safety Council, Injury Facts — "Odds of Dying," 2024 data year: 42,789 motor-vehicle deaths, lifetime odds 1 in 101. All road users, not occupants only. Range across 2016–2024: 1 in 93 to 1 in 107.`
+},
+
+/* ---------- II. THE RECORD ---------- */
+{
+  sect:1, cat:"010", secs:48,
+  html:`<div class="eyebrow">The record <span>Europe · 1000 BCE – present</span></div>
+    <h2>So let's do it for war</h2>
+    <div class="ledger">
+      <div class="row"><div class="lbl">People ever born in Europe<small>Person-years under the population curve × historical birth rates</small></div><div class="val">≈ 8,000,000,000</div></div>
+      <div class="row"><div class="lbl">Deaths from conflict<small>Combat, plus the famine, disease and massacre that war caused</small></div><div class="val">≈ 120,000,000</div></div>
+      <div class="row" data-flag="1"><div class="lbl">Lifetime risk of dying by organised violence<small>Averaged across three millennia</small></div><div class="val">1 in 67</div></div>
+    </div>`,
+  script:`Europe, including European Russia, goes from maybe ten to fifteen million people in 1000 BCE to about seven hundred and forty-five million today. Integrate that curve, multiply by pre-modern birth rates, and somewhere between seven and nine billion people have been born there.
+Conflict killed roughly a hundred and twenty million of them. Combat, plus the famine and disease and massacre that war produced.
+That's about one in sixty-seven.
+And I'll show you my work, because you should not take that on faith. The honest range is one in fifty to one in ninety, depending on how you count famine.
+[beat]
+I'm using sixty-seven. Hold it loosely.`,
+  dir:`This is the number people will challenge, so the "show you my work" line is not modesty — it is the thing that buys credibility for the next twenty minutes. Say it flat, like a footnote you happen to be proud of.`,
+  src:`Population: McEvedy & Jones, Atlas of World Population History; Maddison Project. Conflict tolls: aggregated era estimates — antiquity 5–15M, medieval 10–15M, early modern 20–25M, 19th C 7–10M, 20th C 65–75M. Honest range on the ratio: 1 in 50 – 1 in 90.`
+},
+{
+  sect:1, cat:"011", secs:36,
+  html:`<div class="eyebrow">The record <span>concentration</span></div>
+    <h2>More than half of it happened in <em>thirty-one years</em></h2>
+    <div class="ledger">
+      <div class="row"><div class="lbl">1914 – 1945<small>Two world wars, the Russian Civil War, the Holocaust, the terror famines</small></div><div class="val">≈ 65,000,000</div></div>
+      <div class="row"><div class="lbl">Risk for a European alive in that window<small>All ages, both sexes · ≈700M exposed</small></div><div class="val">≈ 1 in 11</div></div>
+      <div class="row" data-flag="1"><div class="lbl">Risk in the Soviet Union<small>The worst place and time in European history</small></div><div class="val">≈ 1 in 7</div></div>
+    </div>`,
+  script:`Three thousand years of European history, and more than half the bodies come from a single human lifetime. Your grandparents' lifetime.
+Sixty-five million dead in thirty-one years. For a European alive in that window, about one in eleven.
+In the Soviet Union — the worst place and time in the recorded history of Europe — about one in seven.
+[beat]
+Remember both of those. They come back in two slides in a way you will not expect.`,
+  dir:`This kills the idea that history is a slow gradient. It isn't. It's long flat stretches punctuated by catastrophes that arrive fast. The "you will not expect" line is a promise — pay it off properly on the bar chart.`
+},
+{
+  sect:1, cat:"012", secs:62,
+  html:`<div class="eyebrow">The record <span>the part you weren't taught</span></div>
+    <h2>China ran the same experiment and got <em>worse</em> results</h2>
+    <div class="ledger tight">
+      <div class="row"><div class="lbl">An Lushan Rebellion, 755–763<small>Census-derived tolls run to 36M and are almost certainly registration collapse, not mortality</small></div><div class="val">10M+</div></div>
+      <div class="row"><div class="lbl">Mongol conquest<small>Population cut by a third to a half</small></div><div class="val">≈ 30M</div></div>
+      <div class="row"><div class="lbl">Ming–Qing transition, 1618–1683</div><div class="val">≈ 25M</div></div>
+      <div class="row"><div class="lbl">Taiping Rebellion, 1850–1864<small>Still the deadliest civil war ever fought anywhere</small></div><div class="val">20–30M</div></div>
+      <div class="row" data-flag="1"><div class="lbl">Three-thousand-year lifetime risk<small>≈150–250M deaths against ≈10–12 billion ever born</small></div><div class="val">1 in 40–80</div></div>
+    </div>`,
+  script:`You were taught the Thirty Years' War and not the An Lushan Rebellion, and that isn't entirely a conspiracy. Chinese dynastic historians recorded these collapses as census figures rather than as atrocity narratives, so they never entered Western memory as stories.
+One honest caveat, and it matters. Some of these numbers reflect the collapse of tax registration rather than mortality. When a state stops counting, the population falls off a cliff on paper regardless of who is actually alive.
+But read conservatively, China's per-capita record is as bad as Europe's or worse. Somewhere between a hundred and fifty and two hundred and fifty million dead, against maybe ten to twelve billion ever born.
+[beat]
+The Taiping Rebellion killed more people than the American Civil War by a factor of about thirty. Most of you have never heard its name.`,
+  dir:`The registration caveat is doing real work — do not skip it to save eight seconds. Land the Taiping line as a plain fact, not an accusation.`,
+  src:`Census-derived figures overstate mortality where tax registration collapsed; ranges reflect that dispute.`
+},
+
+/* ---------- III. THE BASELINE ---------- */
+{
+  sect:2, cat:"020", secs:28,
+  html:`<div class="eyebrow">The baseline <span>the comparison</span></div>
+    <h2>Now here is the number that breaks the frame</h2>
+    <div class="stat"><div class="num"><u>14%</u></div>
+      <div class="unit">of adult deaths in non-state societies were caused by warfare</div></div>
+    <p class="body">Not 14% of men. Not 14% in wartime. <b>Fourteen percent of adults, both sexes, as the ordinary background condition of human life.</b></p>`,
+  script:`In societies without states — without police, courts, prisons — roughly fourteen percent of adult deaths were caused by warfare.
+[beat]
+Fourteen percent. Both sexes. Not during wars — all the time.
+That is about ten times worse than three thousand years of European warfare. And it does not describe a catastrophe. It describes a normal decade.`,
+  dir:`This is the hinge of the whole video. Let it sit in silence before you move. The audience has just been handed a number ten times worse than the world wars, and it describes ordinary life.`,
+  src:`Bowles, S. (2009), Science 324:1293–98 — 15 archaeological + 8 ethnographic samples; fraction of adult mortality due to warfare, mean ≈14%, wide spread. Bowles positions this below Keeley (1996). See the objection slide.`
+},
+{
+  sect:2, cat:"021", secs:52,
+  html:`<div class="eyebrow">The baseline <span>specimens</span></div>
+    <h2>The individual cases are worse than the average</h2>
+    <div class="ledger tight">
+      <div class="row"><div class="lbl">Waorani, Ecuador<small>Proportion of all deaths that were homicides</small></div><div class="val">&gt; 50%</div></div>
+      <div class="row"><div class="lbl">Yanomami, Amazonia<small>Adult male deaths attributable to raiding</small></div><div class="val">25–30%</div></div>
+      <div class="row"><div class="lbl">Prehistoric cemetery populations<small>Skeletons bearing weapon trauma, multiple continents</small></div><div class="val">10–20%</div></div>
+      <div class="row" data-flag="1"><div class="lbl">Crow Creek, South Dakota, c. 1325<small>486 individuals in the fortification ditch · ~90% of recovered skulls scalped</small></div><div class="val">≈ 60% of village</div></div>
+      <div class="row"><div class="lbl">Nataruk, Kenya, c. 10,000 BP<small>27 recovered; 10–12 with lethal trauma. Massacre reading contested — see sources</small></div><div class="val">Pre-agricultural</div></div>
+    </div>`,
+  script:`Crow Creek, South Dakota, around 1325. At least four hundred and eighty-six people killed in a single event — roughly sixty percent of the village. Nearly ninety percent of the recovered skulls carry cut marks from scalping.
+They were buried in the fortification ditch. The ditch was unfinished.
+[beat]
+They were still building the wall when it happened.
+Nataruk matters for a different reason: it predates agriculture, which undercuts the idea that organised killing arrived with farming and property. Though I'll say plainly that the massacre interpretation there is disputed — some of the cranial damage may be soil compression.
+These are not outliers cherry-picked for shock. This is what the record looks like when you dig.`,
+  dir:`Crow Creek is the one that stops people. The unfinished ditch is the detail — say it slower than the number. Concede the Nataruk dispute without hedging the broader point.`,
+  src:`Waorani: Beckerman et al. (2009) PNAS 106:8134–39. Yanomami: Early & Peters (2000). Crow Creek: Willey (1982), Osteology of the Crow Creek Massacre — 486 individuals ≈60% of an estimated 744–831 population. Nataruk: Mirazón Lahr et al. (2016) Nature 529:394–98; contested by Stojanowski et al. (2016) Nature 539:E8–E10, reply E10–E11.`
+},
+{
+  sect:2, cat:"022", scale:true, secs:58,
+  html:`<div class="eyebrow">The baseline <span>to scale · logarithmic</span></div>
+    <h2>Lifetime risk of violent death</h2>`,
+  script:`Read this left to right, and then stop at the right-hand cluster.
+All of Europe, through both world wars, the Holocaust, the terror famines — thirty-one years that produced more than half of three thousand years of corpses — lands at about one in eleven.
+Which is the ordinary non-state baseline.
+[beat]
+And the Soviet Union is worse than the baseline. The single worst place and time in the recorded history of Europe did not match ordinary human life. It exceeded it.
+That is the whole video in one image. What we call the greatest catastrophe in European history is roughly what most humans who ever lived would have called the weather.
+Note the axis is logarithmic. Each division is a tenfold change, because a linear scale cannot hold a range this wide.`,
+  dir:`Your visual peak. Take the beat. Do not rush the log-axis note — some of the audience needs it and the rest will forgive you. This is the end of Act One's climb; the next two slides bring it down and slide 028 closes the act.`,
+  src:`Log axis. Non-state band spans the published dispute: 5% (sceptics' floor) to 14% (Bowles 2009), centre ≈9% after the Aché/Hiwi correction. European figures derived as on slides 010–011. Canada per Statistics Canada 2025. US homicide approximate.`
+},
+{
+  sect:2, cat:"023", secs:72,
+  html:`<div class="eyebrow">The baseline <span>the objection, stated fairly</span></div>
+    <h2>The strongest case <em>against</em> everything I've just said</h2>
+    <div class="split">
+      <div>
+        <h3>The critique</h3>
+        <p class="body">Ferguson and Fry argue the sample is rigged. In Bowles's dataset the Aché contribute <b>46 war deaths</b> — and the original ethnography records every one of them as <b>"shot by Paraguayan."</b> Frontier violence, not tribal warfare. Remove the Aché and the Hiwi and 14% becomes <b>9%</b>.</p>
+      </div>
+      <div>
+        <h3>Why it doesn't rescue the myth</h3>
+        <p class="body">Because 9% is still <b>roughly seventy times</b> a modern Canadian's exposure. Even the sceptics' floor of 5% is thirty-eight times. The variance across societies is real and enormous. The claim that pre-state life was <b>peaceful</b> survives none of it.</p>
+      </div>
+    </div>
+    <p class="kicker">Hedge the magnitude. <em>Never</em> hedge the direction.</p>`,
+  script:`Here is the best argument against everything I have just told you.
+Ferguson and Fry argue the sample is rigged — that anthropologists studied and wrote about the most warlike societies, many of them already destabilised by colonial contact and the gun trade before anyone counted.
+And here is the sharpest version, the one I would use if I were arguing against me. In Bowles's dataset the Aché of Paraguay contribute forty-six war deaths. Go to the original ethnography — Hill and Hurtado, nineteen ninety-six — and every single one of those forty-six is recorded as "shot by a Paraguayan." That is not tribal warfare. That is frontier violence.
+Remove the Aché and the Hiwi for the same reason, and fourteen percent becomes nine.
+[beat]
+Nine percent. Which is still about seventy times a modern Canadian's chance of being murdered.
+So the fight is about magnitude. Nobody is fighting about direction.
+I don't know whether it was fourteen percent or nine. I know it wasn't one.`,
+  dir:`Put this early and deliver it with obvious relish. Every hostile comment you were going to get is now pre-empted, and you've shown you read the other side. The last two lines are the most important construction in the video — separate sentences, and the second one lands flat and absolute.`,
+  src:`Ferguson, R.B. (2013) in War, Peace and Human Nature. Fry, D. (2007), Beyond War. Fry & Söderberg (2013). Aché deaths: Hill & Hurtado (1996), Table 5.1, pp. 171–173.`
+},
+{
+  sect:2, cat:"024", secs:26,
+  html:`<div class="eyebrow">The baseline <span>evidence quality</span></div>
+    <h2>On cannibalism: throw out the colonists</h2>
+    <p class="body">Early colonial accounts of cannibalism are close to worthless as evidence. The Spanish Crown made it lawful to enslave populations designated as cannibals — which handed every conquistador a direct financial motive to report it. Many of those accounts are demonstrably fabricated.</p>
+    <p class="body"><b>You don't need them.</b> The bones are better.</p>`,
+  script:`Early colonial accounts of cannibalism are close to worthless as evidence.
+The Spanish Crown made it lawful to enslave any population designated as cannibals. That handed every conquistador a direct financial motive to report it. A lot of those accounts are demonstrably invented.
+[beat]
+You don't need them. The bones are better.`,
+  dir:`A discipline slide, and it costs you nothing. Concede the weak evidence loudly, then produce the strong evidence — you end up more convincing than if you'd never raised it.`,
+  src:`On the encomienda incentive and the invention of cannibal ethnography: Whitehead, N. (1984); Hulme, P. (1986), Colonial Encounters.`
+},
+{
+  sect:2, cat:"025", secs:24,
+  html:`<div class="eyebrow">The baseline <span>the bones</span></div>
+    <h2>Cannibalism is documented from <em>butchery marks</em>, not testimony</h2>
+    <div class="ledger tight">
+      <div class="row"><div class="lbl">Gough's Cave, England · c. 14,700 BP<small>Skull cups, deliberate cranial shaping, human tooth marks on human bone</small></div><div class="val">Magdalenian</div></div>
+      <div class="row"><div class="lbl">Herxheim, Germany · c. 5,000 BCE<small>Hundreds of individuals, systematically processed</small></div><div class="val">Neolithic</div></div>
+      <div class="row"><div class="lbl">Fontbrégoua Cave, France<small>Human remains butchered identically to the animal remains beside them</small></div><div class="val">Neolithic</div></div>
+      <div class="row"><div class="lbl">Cowboy Wash, Colorado · c. 1150 CE<small>Human myoglobin recovered from a coprolite on a hearth</small></div><div class="val">Ancestral Puebloan</div></div>
+      <div class="row" data-flag="1"><div class="lbl">Gran Dolina, Spain<small>Homo antecessor. The practice is older than our species.</small></div><div class="val">≈ 800,000 BP</div></div>
+    </div>`,
+  script:`Cowboy Wash is the unanswerable one. Digested human protein, recovered from a coprolite on a hearth.
+There is no alternative reading of that. No ritual-defleshing interpretation, no colonial propagandist to blame.
+And Gran Dolina pushes the practice back eight hundred thousand years — which means it predates Homo sapiens entirely.`,
+  dir:`Keep the register clinical here. The evidence is doing the work and a joke would undercut the discipline you just spent a whole slide establishing. Cowboy Wash also has living descendant communities; treat it as a finding, not a punchline.`,
+  src:`Bello et al. (2011) PLoS ONE; Bello et al. (2015) J. Hum. Evol. 82:170–189 — Gough's Cave. Boulestin et al. (2009) Antiquity — Herxheim. Villa et al. (1986) Science 233:431–37 — Fontbrégoua. Marlar et al. (2000) Nature 407:74–78 — Cowboy Wash. Fernández-Jalvo et al. (1999) — Gran Dolina.`
+},
+{
+  sect:2, cat:"026", secs:28,
+  html:`<div class="eyebrow">The baseline <span>the inversion</span></div>
+    <h2>Read that list again. <em>Four of the five sites are in Europe.</em></h2>
+    <p class="body">The best-documented cannibals in the archaeological record are European. The best evidence for endemic prehistoric violence in Europe is European skeletons. This was never a story about distant savages and civilised observers.</p>
+    <p class="body"><b>It was everyone. Including the direct ancestors of everyone watching this.</b></p>`,
+  script:`Read that list again. Four of the five sites are in Europe.
+The best-documented cannibals in the archaeological record are European. The best evidence for endemic prehistoric violence in Europe is European skeletons.
+[beat]
+This was never a story about distant savages and civilised observers. It was everyone. Including the direct ancestors of everyone watching this.`,
+  dir:`Deliver flatly. No triumph, no apology — it is just what the ground contains. There is no lineage on earth with clean hands, because the practice is older than the species.`
+},
+{
+  sect:2, cat:"027", secs:64,
+  html:`<div class="eyebrow">The baseline <span>written in a genome</span></div>
+    <h2>And we have watched it <em>change a population</em></h2>
+    <div class="stat"><div class="num sm">PRNP<u>129</u></div>
+      <div class="unit">prion protein gene · the Fore of Papua New Guinea</div></div>
+    <p class="body">Eating human nervous tissue transmits prion disease. The Fore practised mortuary cannibalism; it produced <b>kuru</b>, a fatal prion epidemic. Among the exposed survivors, heterozygotes at this site are dramatically over-represented — homozygotes were essentially eliminated.</p>
+    <p class="kicker">A claim that the same signature appears <em>worldwide</em> was tested and failed — a sampling artefact. So this slide doesn't make it.</p>`,
+  script:`Eating human nervous tissue transmits prion disease. And we know precisely what that does to a population, because it happened in the twentieth century and we were there to watch.
+The Fore of Papua New Guinea practised mortuary cannibalism. It produced kuru — a fatal prion epidemic. Among the survivors who were exposed, one version of the prion protein gene is dramatically over-represented. The heterozygotes lived.
+[beat]
+Cannibalism reshaped the genetics of a human population inside a single generation. Not across evolutionary time. Within living memory, documented as it happened.
+Now, I want to be careful, because there was a bigger claim — that the same signature shows up worldwide, implying prehistoric cannibalism everywhere. That claim was tested and it failed. Sampling artefact.
+So I'm not making it. The Fore are enough. They tell you what this practice does to a genome when it's common.`,
+  dir:`This slide used to overclaim and the correction makes it stronger, not weaker — you are now the person who knows the rebuttal. Deliver the retraction at the same volume as the finding.`,
+  src:`Mead, S. et al. (2003) Science 300:640–43 — Fore heterozygote excess. Worldwide balancing-selection claim contested: Kreitman & Di Rienzo (2004) Trends Genet. 20:300–304; Soldevila et al. (2006) Genome Research 16:231. Mead et al. (2009) NEJM — Fore-specific G127V variant. Kuru: Gajdusek, Nobel lecture 1976.`
+},
+{
+  sect:2, cat:"028", secs:38,
+  html:`<div class="eyebrow">The baseline <span>why this is news to you</span><i>END OF ACT ONE</i></div>
+    <h2>States kill in <em>events</em>. Everyone else killed in <em>weather</em>.</h2>
+    <div class="split">
+      <div>
+        <h3>Visible</h3>
+        <p class="body">The Somme. Stalingrad. Verdun. Enormous, dated, named, photographed, filmed, taught. A state mobilises, keeps records, builds monuments, and hands historians a narrative with a beginning and an end.</p>
+      </div>
+      <div>
+        <h3>Invisible</h3>
+        <p class="body">A raid before dawn on a village of forty people. Nine dead. No chronicler, no monument, no date. Repeat every few years for ten thousand years and you bury vastly more people than Verdun — <b>and leave no story at all.</b></p>
+      </div>
+    </div>
+    <p class="kicker">Not a lie about the evidence. An artefact of who kept records.</p>`,
+  script:`This resolves the paradox at the centre of the last twenty minutes.
+Civilisation did not make humans more violent. It made violence legible.
+Bureaucracy, monuments, photography — those are the technologies that let us see it. And because we can see the industrial-scale killing and cannot see ten thousand years of continuous raiding, we get the causation exactly backwards.
+Concentrated, recorded and spectacular is not the same thing as frequent.
+[beat]
+So that's the record.
+[beat]
+Now the harder question.`,
+  dir:`ACT BREAK. This is the most important delivery moment in the video. After "that's the record," take a full two seconds of silence, drop your pitch, and slow down. Without an audible break the next twenty slides read as appendices to the bar chart.`
+},
+
+/* ---------- IV. THE ANIMAL ---------- */
+{
+  sect:3, cat:"030", secs:26,
+  html:`<div class="eyebrow">The animal <span>the obvious hypothesis</span></div>
+    <h2>Did all that killing breed the violent men <em>out</em>?</h2>
+    <p class="lede">It is the natural guess. Ten thousand years of warfare culling the most aggressive males, generation after generation, leaving a tamer descendant population.</p>
+    <p class="kicker">The genetic evidence says the opposite happened.</p>`,
+  script:`Here is the natural guess. Ten thousand years of warfare culling the most aggressive men, generation after generation, leaving a tamer descendant population. History as a filter that removed the dangerous.
+It's a comforting idea, because it makes our current peace an achievement written into us.
+[beat]
+The genetic evidence says the opposite happened.`,
+  dir:`Pose it and hold it. Almost everyone in the audience believes some version of this. You are about to break it, so let them own it first.`
+},
+{
+  sect:3, cat:"031", secs:58,
+  html:`<div class="eyebrow">The animal <span>who actually reproduced</span></div>
+    <h2>Violence <em>won.</em> Repeatedly.</h2>
+    <div class="ledger">
+      <div class="row"><div class="lbl">Y-chromosome bottleneck, c. 7,000–5,000 BP<small>Male genetic diversity collapses while female diversity holds. Leading hypothesis: patrilineal clans destroying one another</small></div><div class="val">Y-diversity crashes</div></div>
+      <div class="row"><div class="lbl">Iberia, c. 2,500 BCE<small>Steppe expansion: ~40% genome turnover, near-total male-lineage replacement. Mechanism unresolved — the authors caution against reading it as conquest</small></div><div class="val">Y-lines erased</div></div>
+      <div class="row" data-flag="1"><div class="lbl">One Y-lineage, 16 populations of Eurasia<small>Spread along the geography of the Mongol conquests. The Genghis attribution itself is disputed</small></div><div class="val">≈ 16,000,000 men</div></div>
+    </div>
+    <p class="kicker">Warfare between groups did not remove aggression from the gene pool. It selected for the men who were good at it.</p>`,
+  script:`This is one of the loudest signals in human population genetics. Around seven thousand years ago, male genetic diversity collapses while female diversity stays broadly flat. The leading explanation is patrilineal kin groups annihilating each other — winners' male lines propagating, losers' vanishing entirely.
+One precision point, because people get this wrong constantly and you should not be one of them. This is a measure of genetic diversity. It is not a headcount of who was having sex. You will see it quoted as "seventeen women for every man." Do not use that framing. It's a modelling artefact.
+The Eurasian lineage is the cleanest illustration: a single Y-chromosome traced to roughly sixteen million living men, spreading along the exact geography of the Mongol conquests.
+[beat]
+Conquest paid. Reproductively. At continental scale.`,
+  dir:`The "seventeen women per man" correction is the kind of thing that gets a video torn apart if you get it wrong, and buys enormous credit if you get it right. Keep the Iberia claim careful — the authors themselves decline to call it conquest.`,
+  src:`Karmin et al. (2015) Genome Research 25:459–66 — a diversity measure, not a census. Zeng, Aw & Feldman (2018) Nature Communications — patrilineal warfare hypothesis. Olalde et al. (2019) Science 363:1230–34. Zerjal et al. (2003) AJHG 72:717–21.`
+},
+{
+  sect:3, cat:"032", secs:58,
+  html:`<div class="eyebrow">The animal <span>and yet</span></div>
+    <h2>But we <em>are</em> a domesticated animal</h2>
+    <div class="ledger tight">
+      <div class="row"><div class="lbl">Brow ridges, facial projection, bone thickness<small>Progressive reduction across the last ~100,000 years</small></div><div class="val">Gracilised</div></div>
+      <div class="row"><div class="lbl">Sexual dimorphism<small>Male–female size difference narrowing</small></div><div class="val">Reduced</div></div>
+      <div class="row"><div class="lbl">Cranial feminisation<small>Cieri et al.: shift clusters with behavioural modernity. Lower testosterone inferred from bone shape, not measured</small></div><div class="val">80–30 kya</div></div>
+      <div class="row" data-flag="1"><div class="lbl">Belyaev's silver foxes<small>Contested: Lord et al. 2020 show most syndrome traits predate the tameness selection</small></div><div class="val">≈ 50 generations</div></div>
+    </div>`,
+  script:`The human fossil record shows a syndrome: brow ridges reducing, faces flattening, bone thinning, the size difference between men and women narrowing. That same cluster of changes shows up across domesticated species.
+The famous evidence is Belyaev's fox experiment — select for tameness alone, get floppy ears and piebald coats and juvenile skulls you never selected for.
+I should tell you that experiment is now disputed. The foxes came from Prince Edward Island fur farms that had been captive-bred since the eighteen-hundreds, and most of the syndrome traits appear to predate the tameness selection entirely.
+[beat]
+Which is fine, because the argument doesn't need the foxes. It needs bonobos — an independent case of a great ape that got tamer.
+So something was selecting our ancestors for tameness. The question is what.`,
+  dir:`You lose a beloved example here and gain a reputation. Say "now disputed" without drama; the pivot to bonobos should sound like you always had a backup, because you did.`,
+  src:`Cieri et al. (2014) Current Anthropology 55:419–43. Trut, Oskina & Kharlamova (2009) BioEssays 31:349–60. Farm-fox critique: Lord et al. (2020) Trends Ecol. Evol. 35:125–36, with replies from Trut et al., Zeder, and Wright et al. in the same issue.`
+},
+{
+  sect:3, cat:"033", secs:64,
+  html:`<div class="eyebrow">The animal <span>the mechanism</span></div>
+    <h2>We were tamed from the <em>inside</em></h2>
+    <p class="body">Not by losing wars. By execution. Egalitarian foragers routinely kill their own bullies — and language is what made it possible, because language lets subordinates <b>conspire in advance.</b></p>
+    <p class="body">Once three ordinary men can agree in secret to kill the strongest man in camp while he sleeps, being the strongest hot-tempered man in camp stops being a winning strategy and becomes a death sentence.</p>
+    <p class="kicker">Collective coercive force against violent men is not a product of civilisation. It is plausibly the institution that <em>made</em> us civilisable.</p>`,
+  script:`Not by losing wars. By execution.
+Egalitarian foragers routinely kill their own bullies. And language is what made that possible, because language lets subordinates conspire in advance.
+Once three ordinary men can agree in secret to kill the strongest man in camp while he sleeps, being the strongest hot-tempered man in camp stops being a winning strategy and becomes a death sentence.
+The quantitative estimates here are soft — order-of-magnitude guesses from small ethnographic samples, something like a tenth of adult male deaths. Treat the number as an illustration, not a measurement.
+[beat]
+But the idea reframes everything. Policing is not something states invented to manage a violent ape. Policing — the group deciding to eliminate a dangerous member — is arguably what produced an ape docile enough to build states.
+It's older than agriculture. Older than property. Possibly as old as language.`,
+  dir:`Wrangham's central argument, and the most important idea in the video. Flag the softness of the execution rate honestly, then deliver the reframe with full weight — the concession does not damage the idea.`,
+  src:`Wrangham, R. (2019), The Goodness Paradox. Boehm, C. (1999), Hierarchy in the Forest; (2012) Moral Origins. Capital-punishment rate estimates rest on small samples.`
+},
+{
+  sect:3, cat:"034", secs:58,
+  html:`<div class="eyebrow">The animal <span>the resolution</span></div>
+    <h2>Two systems. Only one of them was tamed.</h2>
+    <div class="split">
+      <div>
+        <h3>Reactive aggression — collapsed</h3>
+        <p class="body">Hot, impulsive, immediate. Human rates run <b>orders of magnitude below</b> chimpanzee and bonobo rates. Two hundred humans sit shoulder to shoulder in a metal tube for ten hours and complain about the armrest. Two hundred chimpanzees would be unloaded as casualties.</p>
+      </div>
+      <div>
+        <h3>Proactive aggression — intact</h3>
+        <p class="body">Cold, planned, coordinated, patient. Untouched by self-domestication, and actively sharpened by ten thousand years of intergroup competition. This is the system that fills mass graves.</p>
+      </div>
+    </div>
+    <p class="kicker">Docile and dangerous at once. That combination is rare in nature — and it is roughly the job description of a soldier.</p>`,
+  script:`Here's the answer to the question I posed five slides ago. Did warfare breed out violent men?
+Wrong question — because there are two different systems.
+Reactive aggression is hot, impulsive, immediate. Internal policing crushed it. Two hundred humans will sit shoulder to shoulder in a metal tube for ten hours and complain about the armrest. Two hundred chimpanzees would be unloaded as casualties.
+Proactive aggression is cold, planned, coordinated, patient. Untouched by self-domestication — and actively rewarded by ten thousand years of intergroup competition.
+[beat]
+We did not become gentler. We became an animal that almost never lashes out and remains entirely capable of organising the destruction of a city.
+Docile and dangerous at the same time. That combination is rare in nature. It's also roughly the job description of a soldier.`,
+  dir:`Note in passing that chimpanzees are not the peaceful contrast case people assume — border patrols, lethal raids, attacking only at overwhelming odds. That pattern is the signature of human raiding warfare too.`,
+  src:`Wrangham (2019); Wrangham & Glowacki (2012) Human Nature 23:5–29. Chimpanzee coalitionary killing: Wilson et al. (2014) Nature 513:414–17.`
+},
+
+/* ---------- V. THE MACHINE ---------- */
+{
+  sect:4, cat:"040", secs:64,
+  html:`<div class="eyebrow">The machine <span>the last 700 years</span></div>
+    <h2>Everything that happened <em>recently</em> was institutional</h2>
+    <div class="ledger">
+      <div class="row"><div class="lbl">Medieval European homicide rate<small>13th–15th century, per 100,000 per year. High end from small city samples; typical values 20–40</small></div><div class="val">20 – 100</div></div>
+      <div class="row"><div class="lbl">Western Europe today</div><div class="val">≈ 1</div></div>
+      <div class="row" data-flag="1"><div class="lbl">Change<small>Across ~25 generations of decline. The machinery that produced it is younger — roughly 15</small></div><div class="val">30–50× decline</div></div>
+    </div>
+    <p class="kicker">No plausible genetic story moves a highly polygenic trait fiftyfold in twenty-five generations. Eisner's data show the decline concentrated in male honour killing — exactly the category a functioning court absorbs.</p>`,
+  script:`Manuel Eisner's long-run European homicide series is the best dataset in historical criminology — assembled from coroners' rolls and court records.
+Medieval Europe runs somewhere between twenty and a hundred homicides per hundred thousand per year. Western Europe today is about one. A thirty to fiftyfold fall.
+No plausible genetic story moves a highly polygenic trait fiftyfold in twenty-five generations. And the fall isn't evenly distributed across kinds of killing — it's overwhelmingly the disappearance of young men killing each other over insults. Which is precisely what happens when the state takes over the settling of scores.
+There is a genetic pacification hypothesis — Frost and Harpending argue English executions removed one to two percent of each male generation. Three problems. Executions fell mostly on property crime. The homicide decline continued for two centuries after the gallows went quiet. And Japan reached the same endpoint through completely different institutions.`,
+  dir:`Three independent objections, delivered as a list, is the right way to dispose of a hypothesis you don't accept. Don't sneer — just count them off.`,
+  src:`Eisner, M. (2003) Crime and Justice 30:83–142; Historical Violence Database. Cf. Frost & Harpending (2015) — contested.`
+},
+{
+  sect:4, cat:"041", secs:82,
+  html:`<div class="eyebrow">The machine <span>and it reverses</span></div>
+    <h2>Which means it can be <em>undone in a decade</em></h2>
+    <div class="ledger tight">
+      <div class="row"><div class="lbl">Ecuador, 2022 → 2025<small>Los Choneros fractures. One of South America's safer countries becomes its most violent</small></div><div class="val">→ 51 / 100k</div></div>
+      <div class="row"><div class="lbl">Jamaica, 2024 → 2025<small>40.1 → 23.7. Fewer than 700 victims for the first time in 31 years</small></div><div class="val">Nearly halved</div></div>
+      <div class="row"><div class="lbl">Russia, post-Soviet collapse · US 1960→1980 · US 1993→2014</div><div class="val">×3 · ×2 · ÷2</div></div>
+      <div class="row" data-flag="1"><div class="lbl">Range across countries today<small>Japan and Singapore ≈0.2 · Haiti ≈68 · same species, same genome</small></div><div class="val">250–340×</div></div>
+    </div>
+    <p class="kicker">Nothing heritable moves like this. Human nature sets a range. Institutions decide where inside it you live.</p>`,
+  script:`Ecuador was one of the safer countries in South America. Then its dominant gang fractured, and in under three years it became the most violent country on the continent — up thirty-one percent in 2025 alone, to a record high.
+Jamaica went the other way in a single year. Forty per hundred thousand down to twenty-four. Fewer than seven hundred victims for the first time in thirty-one years.
+Same decade. Opposite directions. And across the world right now the spread runs from about zero point two in Japan and Singapore to around sixty-eight in Haiti. That's a factor of two hundred and fifty to three hundred.
+Same species. Same genome.
+[beat]
+One caveat that cuts in my favour. El Salvador reports one point three, and that figure excludes some categories — suspected gang members killed by security forces, deaths in custody. Homicide data is shaped by what a government chooses to count. Which is an argument for holding the monopoly on violence on a short leash, not against it.
+Whatever produces modern peace is not inside us. It's scaffolding around us. And scaffolding is maintained. Scaffolding is also removable.`,
+  dir:`Load-bearing slide for the conclusion. The Ecuador/Jamaica pair is better than the old Russia example because it's recent, well-documented, and cuts both ways in the same decade.`,
+  src:`InSight Crime 2025 Homicide Round-Up; UNODC Global Study on Homicide; national statistical agencies. Honduras now ≈21/100k, down from its 2010s peak.`
+},
+{
+  sect:4, cat:"042", secs:52,
+  html:`<div class="eyebrow">The machine <span>the asterisk</span></div>
+    <h2>Part of the improvement is just <em>surgery</em></h2>
+    <div class="stat"><div class="num"><u>3×</u></div>
+      <div class="unit">the US homicide rate without post-1960 medical advances</div></div>
+    <p class="body">Assaults that killed you in 1950 now end in an intensive care unit instead of a morgue. Trauma surgery, helicopter evacuation, blood banking.</p>
+    <p class="kicker">We did not stop stabbing each other nearly as much as the numbers suggest. We got much better at saving the stabbed.</p>`,
+  script:`Harris and colleagues estimate the American homicide rate would be about three times higher without medical advances since 1960. Assaults that killed you in 1950 now end in an intensive care unit instead of a morgue. Trauma surgery, helicopter evacuation, blood banking.
+The figure is contested, and over the study window the aggravated assault rate did not fall the way the homicide rate did. What changed was the lethality of a given attack.
+[beat]
+So one of the pillars of modern peace is not restraint at all. It's a hospital.
+Which means the underlying rate of humans attempting to kill each other sits far closer to the historical baseline than the death statistics imply.`,
+  dir:`Your best single line is "it's a hospital." Set it up with the beat and don't step on it. Flag the contest, and keep the assault claim in the past tense — both rates fell after 1993.`,
+  src:`Harris, A. et al. (2002) Homicide Studies 6:128–66. Contested in subsequent literature.`
+},
+{
+  sect:4, cat:"043", secs:52,
+  html:`<div class="eyebrow">The machine <span>the tell</span><i>ACT TWO PEAK</i></div>
+    <h2>The disposition never changed. Here's the proof.</h2>
+    <div class="stat"><div class="num">16–<u>24</u></div>
+      <div class="unit">age of peak male violence · every society anyone has measured</div></div>
+    <p class="body">The age–crime curve keeps its shape across medieval England, imperial Japan, and modern Canada: the same sharp adolescent rise, the same peak, the same decline through the twenties. Peak age and skew do vary — but the shape holds.</p>
+    <p class="kicker">Same distribution of propensity. Wildly different conversion rate into corpses. That gap is the machine.</p>`,
+  script:`If human beings had genuinely been pacified in their nature over the last five hundred years, you'd expect the shape of the propensity curve to change — not just its height.
+It doesn't change. Across every society anyone has measured, violence concentrates in young men in the same narrow age band, with the same rise and the same fall. Peak age and skew do vary somewhat — that's a real finding and I'm not going to overstate the invariance.
+But the shape holds.
+[beat]
+The raw material is identical. What differs by a factor of two hundred is how much of it ends in a funeral.
+That difference is not us. It's the machine we built around us.`,
+  dir:`This is Act Two's peak — the payoff for the act break. Slower than the bar chart, not louder. The argument closes here; slides 053 and 054 are the coda.`,
+  src:`Hirschi & Gottfredson (1983) AJS 89:552–84. Variation in peak age and skew: Steffensmeier et al. (1989) AJS 94:803–31.`
+},
+
+/* ---------- VI. THE LEDGER ---------- */
+{
+  sect:5, cat:"050", secs:52,
+  html:`<div class="eyebrow">The ledger <span>who kills the most</span></div>
+    <h2>And the machine's operator is the <em>largest killer of all</em></h2>
+    <div class="ledger">
+      <div class="row"><div class="lbl">Killed by their own governments, 20th century<small>Rummel's "democide" — excludes battlefield deaths entirely</small></div><div class="val">&asymp; 262,000,000</div></div>
+      <div class="row"><div class="lbl">Killed in combat, same century</div><div class="val">&asymp; 40,000,000</div></div>
+      <div class="row" data-flag="1"><div class="lbl">Ratio<small>The state kills its own people far faster than it kills its enemies</small></div><div class="val">&asymp; 6 : 1</div></div>
+    </div>
+    <p class="kicker">Rummel analysed over eight thousand published estimates. These are the <em>highest</em> credible figures — not the consensus. Next slide: why that matters.</p>`,
+  script:`Two hundred and sixty-two million people killed by their own governments in the twentieth century. Not one battlefield death in that figure.
+Combat over the same hundred years killed about forty million.
+[beat]
+Roughly six to one. The state kills its own people considerably faster than it kills its enemies.
+Rummel spent decades analysing more than eight thousand published estimates to get there. And I have to tell you that his totals are the ceiling of the literature rather than its centre.
+So let me show you exactly where that number comes from — because if I present it as settled fact, the first informed viewer takes the rest of this video down with it.`,
+  dir:`State the claim cleanly here and audit it on the next slide. Splitting these was deliberate: the audit deserves its own frame rather than arriving as small print under the number it undermines.`,
+  src:`Rummel, R.J. (1994) Death by Government, and later revisions (2005). Upper-bound estimates.`
+},
+{
+  sect:5, cat:"051", secs:74,
+  html:`<div class="eyebrow">The ledger <span>auditing the number</span></div>
+    <h2>Where 262 million <em>actually comes from</em></h2>
+    <div class="ledger tight">
+      <div class="row"><div class="lbl">Death by Government, 1994<small>The book almost everyone cites for 262M. Its first chapter is titled "169,198,000 Murdered"</small></div><div class="val">169M</div></div>
+      <div class="row"><div class="lbl">+ colonial democide<small>Added later, after Rummel's study of Leopold's Congo Free State</small></div><div class="val">+ 50M</div></div>
+      <div class="row"><div class="lbl">+ Great Leap Forward, reclassified<small>Famine deaths recategorised as intentional government policy</small></div><div class="val">+ 38M</div></div>
+      <div class="row" data-flag="1"><div class="lbl">The Soviet dispute<small>Rummel: 62M for the Soviet state 1917–1987 — not Stalin alone. Snyder, from the opened archives: ~6M deliberate killing</small></div><div class="val">&asymp; 10&times; apart</div></div>
+    </div>
+    <p class="kicker">The totals are contested. The <em>ranking</em> survives every revision.</p>`,
+  script:`The two-sixty-two isn't from the book everyone cites. Death by Government, 1994, says a hundred and sixty-nine million — the title of its first chapter. The larger figure came later, when Rummel added fifty million for colonial democide and reclassified thirty-eight million Great Leap Forward famine deaths as intentional.
+And the Soviet figure has not survived the archives. Rummel has sixty-two million for the Soviet state across seventy years — the entire Soviet period, not Stalin alone. Snyder, working from what opened after 1991, puts deliberate killing closer to six million.
+[beat]
+A tenfold dispute, at the centre of the biggest number in this video.
+Here is what survives it. The ranking does not move. However far down you revise, the same regimes stay at the top, and the pattern holds: the more concentrated and unaccountable the power, the higher the count.
+So the conclusion isn't that we need more force. It's that a monopoly on violence is necessary, and has to be held on a very short leash. Both halves.`,
+  dir:`This slide is why the video survives contact with an expert. Deliver the audit at the same volume as the claim — it is not a caveat, it is the reason to trust everything else you have said. If you have room, add one line: the claim that democracies never do this depends partly on definitions, and colonial famines under parliamentary governments are where that argument does its most contested work.`,
+  src:`Rummel, R.J. (1994) Death by Government — 169,198,000 for 1900–1987; 262M from later revisions (2005). Cf. Snyder, T. (2010), Bloodlands; Ellman, M. (2002) Europe-Asia Studies — archival revisions substantially lower for the USSR.`
+},
+{
+  sect:5, cat:"052", secs:42,
+  html:`<div class="eyebrow">The ledger <span>the war happening now</span></div>
+    <h2>And read the current one <em>carefully</em></h2>
+    <div class="ledger tight">
+      <div class="row"><div class="lbl">Widely reported figure, Russia–Ukraine<small>What most coverage actually means: killed, wounded and missing</small></div><div class="val">≈ 2,000,000 casualties</div></div>
+      <div class="row"><div class="lbl">Actual estimated deaths<small>≈550–700k on the highest credible estimates; ≈400–450k on more conservative ones</small></div><div class="val">≈ 400k – 700k</div></div>
+      <div class="row"><div class="lbl">Spread across Europe as a whole</div><div class="val">≈ 1 in 1,200</div></div>
+      <div class="row"><div class="lbl">Russia and Ukraine only</div><div class="val">≈ 1 in 310</div></div>
+      <div class="row" data-flag="1"><div class="lbl">Ukrainian men of prime military age<small>1 in 40 on the high estimate; 1 in 55–100 on lower ones. Russian losses concentrate in its poorest ethnic republics</small></div><div class="val">≈ 1 in 40</div></div>
+    </div>`,
+  script:`Two lessons here, and both are methodological.
+First: casualties are not deaths. Almost every headline conflates them, and the gap is a factor of three or four. Two million casualties is roughly six hundred thousand deaths.
+Second, and more important: averaging destroys the information. One in twelve hundred across Europe. One in three hundred and ten for Russians and Ukrainians. And roughly one in forty for the Ukrainian men actually being fed into it.
+[beat]
+The same arithmetic applies to every national statistic in this video.
+An average is a description of nobody.`,
+  dir:`"An average is a description of nobody" is the line that sets up the Canada slide. Land it and cut.`,
+  src:`CSIS, July 2026: up to 450,000 Russian battlefield deaths and 1.4M Russian casualties, Feb 2022–June 2026; Ukraine ≈500–600k casualties incl. ≈140k military deaths. UN OHCHR: 16,431 verified civilian deaths through June 2026 (acknowledged undercount). More conservative estimates put Russian deaths at 275–385k.`
+},
+{
+  sect:5, cat:"053", secs:48,
+  html:`<div class="eyebrow">The ledger <span>where you are standing</span></div>
+    <h2>Canada, last year</h2>
+    <div class="ledger">
+      <div class="row"><div class="lbl">Homicide rate, 2025<small>672 homicides · down 16%, the largest fall since 1986, lowest rate since 2014</small></div><div class="val">1.61 / 100k</div></div>
+      <div class="row"><div class="lbl">Lifetime risk of being murdered<small>Across a full life expectancy</small></div><div class="val">&asymp; 1 in 760</div></div>
+      <div class="row"><div class="lbl">Non-state human baseline<small>The ordinary condition for most humans who ever lived</small></div><div class="val">&asymp; 1 in 11</div></div>
+      <div class="row" data-flag="1"><div class="lbl">You are safer than the human baseline by a factor of<small>And roughly three times more likely to die in a car than to be murdered</small></div><div class="val">&asymp; 70&times;</div></div>
+    </div>`,
+  script:`Canada, last year. One point six one homicides per hundred thousand — six hundred and seventy-two people. Down sixteen percent: the largest single-year fall since 1986, and the lowest rate since 2014.
+Across a full life, that's about a one in seven hundred and sixty chance of being murdered. The non-state baseline was somewhere around one in eleven.
+[beat]
+You are roughly seventy times safer than the average human who ever lived. You are also about three times more likely to die driving to work than to be killed by another person.
+That is an astonishing fact about this specific moment, in this specific place.`,
+  dir:`Land the personal scale first, and let it be genuinely good news — the audience has earned twenty minutes of relief. The correction comes on the next slide, which is where the video actually ends its argument.`,
+  src:`Statistics Canada, Police-reported crime statistics in Canada, 2025 (released 22 July 2026): 672 homicides, 1.61/100k, −16%. Road deaths: Transport Canada, 4.9/100k (1,964 deaths, 2023) → lifetime ≈1 in 250.`
+},
+{
+  sect:5, cat:"054", secs:58,
+  html:`<div class="eyebrow">The ledger <span>and then averages hide people</span></div>
+    <h2>The same release, <em>two pages later</em></h2>
+    <div class="ledger">
+      <div class="row"><div class="lbl">Homicide victimisation, non-Indigenous Canadians<small>2025</small></div><div class="val">1.13 / 100k</div></div>
+      <div class="row"><div class="lbl">Homicide victimisation, Indigenous Canadians<small>Roughly eight times higher</small></div><div class="val">9.59 / 100k</div></div>
+      <div class="row" data-flag="1"><div class="lbl">This is the thesis restated, not an exception to it<small>Residential schools · jurisdictional gaps in policing · concentrated poverty</small></div><div class="val">&asymp; 8&times;</div></div>
+    </div>
+    <p class="kicker">Where the machinery was torn out, the baseline came back. That is exactly what this presentation <em>predicted</em>.</p>`,
+  script:`Averages hide people.
+Indigenous Canadians are killed at nine point five nine per hundred thousand, against one point one three for non-Indigenous Canadians. Roughly eight times.
+That is not a fact about people. It is a fact about scaffolding — residential schools, jurisdictional gaps where nobody is clearly responsible for policing, concentrated poverty. Precisely the institutional destruction that this section said produces elevated violence.
+The prediction of this video was that where you tear the machinery out, the numbers climb back toward the baseline.
+[beat]
+They did.
+So this is my strongest single piece of evidence, not my most awkward one. And if I had left it out, you would be entitled to notice that I cited this exact Statistics Canada release for my headline number, and skipped the table two pages later.`,
+  dir:`Get the framing exactly right — this is a claim about institutions, never about people. "They did" is a two-word sentence; give it its own silence. Then move straight to the conclusion without resetting your tone.`,
+  src:`Statistics Canada, Police-reported crime statistics in Canada, 2025. StatCan attributes the disparity to the historical and present-day effects of colonisation, including systemic discrimination, poverty and intergenerational trauma.`
+},
+{
+  sect:5, cat:"055", secs:46,
+  html:`<div class="eyebrow">The ledger <span>conclusion</span></div>
+    <h2>The point is not that we got <em>better.</em></h2>
+    <p class="body">Nothing inside us changed. The age–crime curve is the same shape it was in medieval Kent. The propensity is intact; the capacity for cold coordinated killing was never selected out, because it kept winning.</p>
+    <p class="body">What changed is scaffolding, and it is recent — <b>fifteen generations, not fifteen thousand.</b> Courts that absorbed the feud. Police that made retaliation unnecessary. Surgeons who turn corpses into patients. Legitimacy that makes obedience cheaper than defection.</p>
+    <p class="lede" style="margin-top:40px">Every one of those is maintained by people. Every one of them has failed somewhere, inside a decade, in living memory.</p>`,
+  script:`The point is not that we got better.
+Nothing inside us changed. The age–crime curve is the same shape it was in medieval Kent. The propensity is intact. The capacity for cold, coordinated killing was never selected out, because it kept winning.
+What changed is scaffolding, and it is recent. Fifteen generations, not fifteen thousand. Courts that absorbed the feud. Police that made retaliation unnecessary. Surgeons who turn corpses into patients. Legitimacy that makes obedience cheaper than defection.
+[beat]
+Every one of those is maintained by people.
+And every one of them has failed somewhere, inside a decade, in living memory.`,
+  dir:`Slowly, and do not soften it. The reassuring version of history says we grew out of violence. The evidence says we built a cage around it, recently, and the animal in the cage is unchanged. That's not a cynical conclusion — it's a demanding one.`
+},
+{
+  sect:5, cat:"056", secs:20,
+  html:`<div class="title-wrap">
+    <div class="over">Closing</div>
+    <h1>1 in 11<br>→ 1 in 760</h1>
+    <div class="under">A hundred thousand years of ordinary human horror, and then fifteen generations of ours. You are living inside a rounding error. Act like it is worth defending.</div>
+    <div class="rule"></div>
+  </div>`,
+  script:`One in eleven.
+[beat]
+To one in seven hundred and sixty.
+A hundred thousand years of ordinary human horror, and then fifteen generations of ours.
+You are living inside a rounding error.
+[beat]
+Act like it's worth defending.`,
+  dir:`End on the two numbers and nothing else. No call to action, no subscribe pitch over the top of it — let the ratio do the work and cut to black. If you want an outro, put it after a hard cut so this frame stands alone.`
+}
+
+];
+
+/* ---------- Log scale bar data ---------- */
+/* Baseline band spans the published dispute: 5% (1 in 20) to 14% (1 in 7). */
+const BAR_LO = 1500, BAR_HI = 2;
+const BAND = {from:20, to:7, label:"Non-state baseline · published range"};
+const BAR = [
+  {n:760, label:"Canada<br>2025",            val:"1 in 760", h:30},
+  {n:233, label:"United States<br>homicide", val:"1 in 233", h:120},
+  {n:67,  label:"Europe<br>3,000-year mean", val:"1 in 67",  h:30},
+  {n:11,  label:"Europe 1914–45 <span style='color:#B0472F'>=</span> baseline centre", val:"1 in 11", h:196, hot:1},
+  {n:7,   label:"USSR<br>1914–45",           val:"1 in 7",   h:64},
+  {n:2,   label:"Waorani<br>Ecuador",        val:"1 in 2",   h:130}
+];
+
+function buildBar(){
+  const span = Math.log10(BAR_LO) - Math.log10(BAR_HI);
+  const pos = n => ((Math.log10(BAR_LO)-Math.log10(n))/span)*100;
+
+  let ticks='';
+  for(let i=1;i<=9;i++) ticks+=`<i style="left:${(i/10)*100}%"></i>`;
+
+  const bandL = pos(BAND.from), bandR = pos(BAND.to);
+  const band = `<div class="sb-band" style="left:${bandL}%;width:${bandR-bandL}%">
+      <b>${BAND.label}</b></div>`;
+
+  let axis='';
+  [1000,100,10,2].forEach(v=>{
+    axis+=`<b style="left:${pos(v)}%">1 in ${v}</b>`;
+  });
+
+  let marks='';
+  BAR.forEach(m=>{
+    marks+=`<div class="mk" data-hot="${m.hot?1:0}" style="left:${pos(m.n)}%">
+      <div class="stem" style="height:${m.h}px"></div>
+      <div class="mv">${m.val}</div>
+      <div class="ml">${m.label}</div>
+    </div>`;
+  });
+
+  return `<div class="scalebar">
+    <div class="sb-track">${ticks}${band}</div>
+    <div class="sb-axis">${axis}</div>
+    <div class="sb-marks">${marks}</div>
+  </div>`;
+}
+
+/* ---------- Render ---------- */
+const deck  = document.getElementById('deck');
+const rail  = document.getElementById('rail');
+const total = SLIDES.length;
+
+SLIDES.forEach((s,i)=>{
+  const el = document.createElement('section');
+  el.className='slide';
+  el.setAttribute('data-i',i);
+  el.innerHTML = s.html + (s.scale ? buildBar() : '') +
+    (s.src ? `<div class="src">${s.src}</div>` : '');
+  // stagger ledger rows so long slides have visual movement while narrated
+  el.querySelectorAll('.row').forEach((r,j)=>{
+    r.style.animationDelay = (0.18 + j*0.16) + 's';
+  });
+  deck.appendChild(el);
+});
+
+/* stratigraphic rail: one band per section, deep time at the base */
+SECTIONS.forEach((name,i)=>{
+  const l=document.createElement('div');
+  l.className='layer';
+  l.setAttribute('data-s',i);
+  l.innerHTML=`<div class="sect-tag">${name}</div>`;
+  rail.appendChild(l);
+});
+rail.insertAdjacentHTML('afterbegin','<div class="rail-cap top">VI</div>');
+rail.insertAdjacentHTML('beforeend','<div class="rail-cap bot">I</div>');
+
+document.getElementById('tot').textContent = total;
+
+let idx = 0;
+const slides = [...document.querySelectorAll('.slide')];
+const layers = [...document.querySelectorAll('.layer')];
+const notesBox  = document.getElementById('notes');
+const notesBody = document.getElementById('notesBody');
+
+function fmtScript(t){
+  return (t||'—')
+    .replace(/\[beat\]/g,'<span class="beat">— beat —</span>')
+    .split('\n').filter(Boolean).map(p=>`<p>${p}</p>`).join('');
+}
+/* slide headings: h1/h2 if present, else the stat caption, else the eyebrow */
+function headingOf(s){
+  if(!s) return '';
+  const grab = re => {
+    const m = s.html.match(re);
+    return m ? m[1].replace(/<br\s*\/?>/gi,' ').replace(/<[^>]+>/g,'')
+                   .replace(/\s+/g,' ').trim() : '';
+  };
+  return grab(/<h[12][^>]*>([\s\S]*?)<\/h[12]>/)
+      || grab(/<div class="unit">([\s\S]*?)<\/div>/)
+      || grab(/<div class="over">([\s\S]*?)<\/div>/)
+      || grab(/<div class="eyebrow">([\s\S]*?)<\/div>/)
+      || 'Slide ' + (SLIDES.indexOf(s)+1);
+}
+
+function notesHTML(i){
+  const s = SLIDES[i];
+  return `<div class="script">${fmtScript(s.script)}</div>` +
+         (s.dir ? `<div class="dir"><b>Direction.</b> ${s.dir}</div>` : '');
+}
+
+/* ---------- Presenter window ---------- */
+let pres = null;
+function openPresenter(){
+  pres = window.open('', 'anomaly_presenter', 'width=760,height=900');
+  if(!pres){ notesBox.setAttribute('data-on','1'); fit(); return; }
+  pres.document.write(`<!DOCTYPE html><meta charset="utf-8"><title>Presenter — The Anomaly</title>
+  <style>
+    :root{--oxide:#B0472F;--annot:#7E96A3}
+    *{box-sizing:border-box;margin:0}
+    body{background:#080A0C;color:#E4DFD6;font-family:'IBM Plex Mono',ui-monospace,monospace;padding:22px 26px 40px}
+    .top{display:flex;justify-content:space-between;align-items:baseline;
+         border-bottom:1px solid #1C2429;padding-bottom:12px;margin-bottom:18px}
+    .cnt{font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--oxide)}
+    .clock{font-size:34px;font-variant-numeric:tabular-nums;font-weight:600}
+    .clock.over{color:var(--oxide)}
+    .tgt{font-size:12px;letter-spacing:.14em;color:#5F6D76;text-transform:uppercase}
+    h2{font-family:Archivo,system-ui,sans-serif;font-size:24px;font-weight:800;
+       letter-spacing:-.02em;margin-bottom:16px;line-height:1.2}
+    .script{font-family:Spectral,Georgia,serif;font-size:21px;font-weight:300;line-height:1.62}
+    .script p{margin-bottom:12px}
+    .beat{color:var(--oxide);font-family:'IBM Plex Mono',monospace;font-size:14px}
+    .dir{font-size:14px;line-height:1.7;color:#8A949B;margin-top:20px;
+         padding-top:14px;border-top:1px solid #1C2429}
+    .nxt{margin-top:26px;padding-top:14px;border-top:1px solid #1C2429;
+         font-size:13px;color:#5F6D76;letter-spacing:.06em}
+    .nxt b{color:var(--annot);font-weight:500}
+    .hint{position:fixed;left:0;right:0;bottom:0;background:#05070A;padding:8px 26px;
+          font-size:11px;letter-spacing:.1em;color:#39434B;border-top:1px solid #1C2429}
+  </style>
+  <div class="top">
+    <div><div class="cnt" id="pc"></div><div class="tgt" id="pt"></div></div>
+    <div class="clock" id="pk">0:00</div>
+  </div>
+  <h2 id="ph"></h2>
+  <div class="script" id="ps"></div>
+  <div class="dir" id="pd"></div>
+  <div class="nxt" id="pn"></div>
+  <div class="hint">Arrow keys work here too · click the deck window to record</div>`);
+  pres.document.close();
+  pres.addEventListener('keydown', onKey);
+  syncPresenter();
+}
+
+let t0 = Date.now();
+function syncPresenter(){
+  if(!pres || pres.closed) return;
+  const d = pres.document, s = SLIDES[idx];
+  const heading = headingOf(s);
+  d.getElementById('pc').textContent = `${idx+1} / ${total} · ${SECTIONS[s.sect]}`;
+  d.getElementById('pt').textContent = `target ${s.secs||30}s`;
+  d.getElementById('ph').textContent = heading;
+  d.getElementById('ps').innerHTML   = fmtScript(s.script);
+  d.getElementById('pd').innerHTML   = s.dir ? `<b>Direction.</b> ${s.dir}` : '';
+  const nx = SLIDES[idx+1];
+  d.getElementById('pn').innerHTML = nx
+    ? `<b>Next —</b> ${headingOf(nx)}`
+    : `<b>End of deck.</b> Cut to black.`;
+}
+setInterval(()=>{
+  if(!pres || pres.closed) return;
+  const el = pres.document.getElementById('pk'); if(!el) return;
+  const s = Math.floor((Date.now()-t0)/1000);
+  el.textContent = `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+  el.className = 'clock' + (s > (SLIDES[idx].secs||30) ? ' over' : '');
+},250);
+
+/* ---------- Navigation ---------- */
+function show(n){
+  const prev = idx;
+  idx = Math.max(0, Math.min(total-1, n));
+  if(idx !== prev) t0 = Date.now();
+  slides.forEach((el,i)=>el.setAttribute('data-on', i===idx?1:0));
+  // restart row stagger on re-entry
+  const cur = slides[idx];
+  cur.querySelectorAll('.row').forEach(r=>{
+    r.style.animation='none'; void r.offsetWidth; r.style.animation='';
+  });
+  const cs = SLIDES[idx].sect;
+  layers.forEach((l,i)=>{
+    l.setAttribute('data-active', i===cs?1:0);
+    l.setAttribute('data-seen',  i< cs?1:0);
+  });
+  document.getElementById('cur').textContent = idx+1;
+  notesBody.innerHTML = notesHTML(idx);
+  syncPresenter();
+}
+
+/* ---------- Scale stage to viewport ---------- */
+function fit(){
+  const pad = notesBox.getAttribute('data-on')==='1' ? window.innerHeight*0.44 : 0;
+  const w = window.innerWidth, h = window.innerHeight - pad;
+  const k = Math.min(w/1920, h/1080);
+  document.getElementById('stage').style.transform = `scale(${k})`;
+  document.getElementById('viewport').style.paddingBottom = pad+'px';
+}
+
+/* ---------- Controls ---------- */
+function onKey(e){
+  const k = e.key;
+  if(k==='ArrowRight'||k==='ArrowDown'||k===' '||k==='PageDown'){ e.preventDefault(); show(idx+1); }
+  else if(k==='ArrowLeft'||k==='ArrowUp'||k==='PageUp'){ e.preventDefault(); show(idx-1); }
+  else if(k==='Home'){ show(0); }
+  else if(k==='End'){ show(total-1); }
+  else if(k==='t'||k==='T'){ t0 = Date.now(); }
+  else if(k==='n'||k==='N'){
+    notesBox.setAttribute('data-on', notesBox.getAttribute('data-on')==='1'?0:1); fit();
+  }
+  else if(k==='p'||k==='P'){
+    if(pres && !pres.closed){ pres.close(); pres=null; }
+    else { notesBox.setAttribute('data-on','0'); fit(); openPresenter(); }
+  }
+  else if(k==='r'||k==='R'){
+    const on = document.body.getAttribute('data-rec')==='1';
+    document.body.setAttribute('data-rec', on?'0':'1');
+    if(!on){ notesBox.setAttribute('data-on','0'); }
+    fit();
+  }
+  else if(k==='f'||k==='F'){
+    if(!document.fullscreenElement) document.documentElement.requestFullscreen?.();
+    else document.exitFullscreen?.();
+  }
+}
+window.addEventListener('keydown', onKey);
+document.getElementById('fwd').addEventListener('click', ()=>show(idx+1));
+document.getElementById('back').addEventListener('click', ()=>show(idx-1));
+window.addEventListener('resize', fit);
+window.addEventListener('beforeunload', ()=>{ if(pres && !pres.closed) pres.close(); });
+
+/* fade the control hint out when idle so it never lands in a take */
+let idleT;
+function bumpIdle(){
+  const el=document.getElementById('help');
+  el.setAttribute('data-idle','0');
+  clearTimeout(idleT);
+  idleT=setTimeout(()=>el.setAttribute('data-idle','1'),4000);
+}
+['mousemove','keydown','click'].forEach(e=>window.addEventListener(e,bumpIdle));
+
+show(0);
+fit();
+bumpIdle();
+</script>
+</body>
+</html>
