@@ -24,6 +24,17 @@
   --mono: 'IBM Plex Mono', ui-monospace, monospace;
 }
 
+
+/* Per-section accent: one OKLCH hue sweep at constant lightness.
+   Malachite to amethyst — the minerals you pull out of a trench.
+   Every value clears 4.5:1 on --trench for the 15px eyebrow. */
+body[data-sect="0"]{--oxide:#43977E;--oxide-lo:#00503E}   /* malachite */
+body[data-sect="1"]{--oxide:#319697;--oxide-lo:#004F51}   /* verdigris */
+body[data-sect="2"]{--oxide:#3B92AC;--oxide-lo:#004C60}   /* turquoise */
+body[data-sect="3"]{--oxide:#568AB9;--oxide-lo:#1B466A}   /* azurite */
+body[data-sect="4"]{--oxide:#7282BC;--oxide-lo:#35406C}   /* lapis */
+body[data-sect="5"]{--oxide:#8B7AB5;--oxide-lo:#483967}   /* amethyst */
+
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;background:#000;overflow:hidden}
 body{font-family:var(--sans);color:var(--bone);-webkit-font-smoothing:antialiased}
@@ -57,8 +68,8 @@ body[data-rec="1"]{cursor:none}
   border-top:1px solid rgba(232,227,217,.06);
   transition:background .45s ease;
 }
-.layer[data-active="1"]{background:var(--oxide)}
-.layer[data-seen="1"]:not([data-active="1"]){background:var(--oxide-lo)}
+.layer[data-active="1"]{background:var(--lc)}
+.layer[data-seen="1"]:not([data-active="1"]){background:var(--lc-lo)}
 #rail .sect-tag{
   position:absolute;left:50%;top:50%;
   transform:translate(-50%,-50%) rotate(180deg);
@@ -208,6 +219,11 @@ h2 em{font-style:normal;color:var(--oxide)}
 
 /* ---------- Two-column split ---------- */
 .split{display:grid;grid-template-columns:1fr 1fr;gap:88px;align-items:start}
+.split > div{opacity:0}
+.slide[data-on="1"] .split > div{animation:colIn .5s ease forwards}
+.slide[data-on="1"] .split > div:nth-child(1){animation-delay:.22s}
+.slide[data-on="1"] .split > div:nth-child(2){animation-delay:.78s}
+@keyframes colIn{from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none}}
 .split h3{
   font-family:var(--mono);font-size:17px;font-weight:600;letter-spacing:.2em;
   text-transform:uppercase;color:var(--oxide);margin-bottom:24px;
@@ -295,6 +311,7 @@ body[data-rec="1"] #nav div{cursor:none}
   .slide,.layer{transition:none}
   .slide[data-on="1"] .row{animation:none;opacity:1;transform:none}
   .slide[data-on="1"] .mk{animation:none;opacity:1}
+  .slide[data-on="1"] .split > div{animation:none;opacity:1}
 }
 </style>
 </head>
@@ -586,26 +603,55 @@ Conquest paid. Reproductively. At continental scale.`,
   src:`Karmin et al. (2015) Genome Research 25:459–66 — a diversity measure, not a census. Zeng, Aw & Feldman (2018) Nature Communications — patrilineal warfare hypothesis. Olalde et al. (2019) Science 363:1230–34. Zerjal et al. (2003) AJHG 72:717–21.`
 },
 {
-  sect:3, cat:"032", secs:58,
+  sect:3, cat:"032", secs:52,
   html:`<div class="eyebrow">The animal <span>and yet</span></div>
     <h2>But we <em>are</em> a domesticated animal</h2>
     <div class="ledger tight">
       <div class="row"><div class="lbl">Brow ridges, facial projection, bone thickness<small>Progressive reduction across the last ~100,000 years</small></div><div class="val">Gracilised</div></div>
       <div class="row"><div class="lbl">Sexual dimorphism<small>Male–female size difference narrowing</small></div><div class="val">Reduced</div></div>
-      <div class="row"><div class="lbl">Cranial feminisation<small>Cieri et al.: shift clusters with behavioural modernity. Lower testosterone inferred from bone shape, not measured</small></div><div class="val">80–30 kya</div></div>
-      <div class="row" data-flag="1"><div class="lbl">Belyaev's silver foxes<small>Contested: Lord et al. 2020 show most syndrome traits predate the tameness selection</small></div><div class="val">≈ 50 generations</div></div>
+      <div class="row" data-flag="1"><div class="lbl">Cranial feminisation<small>Cieri et al.: the shift clusters with behavioural modernity. Lower testosterone inferred from bone shape, not measured</small></div><div class="val">80–30 kya</div></div>
+
     </div>`,
-  script:`The human fossil record shows a syndrome: brow ridges reducing, faces flattening, bone thinning, the size difference between men and women narrowing. That same cluster of changes shows up across domesticated species.
-The famous evidence is Belyaev's fox experiment — select for tameness alone, get floppy ears and piebald coats and juvenile skulls you never selected for.
-I should tell you that experiment is now disputed. The foxes came from Prince Edward Island fur farms that had been captive-bred since the eighteen-hundreds, and most of the syndrome traits appear to predate the tameness selection entirely.
+  script:`The human fossil record shows a syndrome. Brow ridges reducing. Faces flattening. Bone thinning. The size difference between men and women narrowing. Skulls becoming, in the literature's word, feminised — and that shift clusters in time with the arrival of behavioural modernity.
+One honest note on that last row: lower testosterone is inferred from the shape of the bone. Nobody measured a hormone in a forty-thousand-year-old man.
 [beat]
-Which is fine, because the argument doesn't need the foxes. It needs bonobos — an independent case of a great ape that got tamer.
-So something was selecting our ancestors for tameness. The question is what.`,
-  dir:`You lose a beloved example here and gain a reputation. Say "now disputed" without drama; the pivot to bonobos should sound like you always had a backup, because you did.`,
-  src:`Cieri et al. (2014) Current Anthropology 55:419–43. Trut, Oskina & Kharlamova (2009) BioEssays 31:349–60. Farm-fox critique: Lord et al. (2020) Trends Ecol. Evol. 35:125–36, with replies from Trut et al., Zeder, and Wright et al. in the same issue.`
+Here is why that cluster is interesting rather than just a list. It is the same cluster you find across domesticated animals. Dogs, pigs, cattle, horses, rabbits — all of them show overlapping pieces of it.
+And we know what produces it, because somebody ran the experiment.`,
+  dir:`This is now purely the human evidence — the foxes get their own slide next, so do not spend them here. End on "somebody ran the experiment" and cut; that line is the handoff.`,
+  src:`Cieri et al. (2014) Current Anthropology 55:419–43.`
 },
 {
-  sect:3, cat:"033", secs:64,
+  sect:3, cat:"033", secs:110,
+  html:`<div class="eyebrow">The animal <span>the experiment</span></div>
+    <h2>Select for <em>calm.</em> Get a dog nobody asked for.</h2>
+    <div class="split">
+      <div>
+        <h3>What was selected</h3>
+        <p class="body">Novosibirsk, from <b>1959</b>. Dmitri Belyaev's team scored hundreds of silver foxes every generation on one question — will it tolerate a human hand — and bred the <b>tamest 10%</b>. Nothing else counted.</p>
+        <p class="body">The foxes were never trained. Contact was rationed to brief scored encounters, so whatever changed had to be <b>inherited, not learned</b>. From 1970 a second line was bred for aggression, to have something to compare against.</p>
+      </div>
+      <div>
+        <h3>What arrived uninvited</h3>
+        <p class="body">Floppy ears. Curled tails. Piebald coats and white face patches. Shorter, rounder snouts. Juvenilised skulls. Barking, which wild foxes don't do. Breeding out of season. A blunted stress response.</p>
+        <p class="body">Not one of those was selected for. All of them are standard <b>domestication syndrome</b> — the same cluster carried by dogs, pigs, cattle, horses and rabbits.</p>
+      </div>
+    </div>
+    <p class="kicker">Proposed mechanism: mild changes in <em>neural crest</em> development — the embryonic cells that build pigment, adrenal glands, jaws, teeth and ears. Turn fear down and you perturb all of it at once.</p>`,
+  script:`Novosibirsk, 1959. Dmitri Belyaev took silver foxes off fur farms and bred them on exactly one criterion: would the animal tolerate a human hand. Hundreds scored every generation, the tamest ten percent become the parents, everything else ignored.
+They were never trained. Contact was rationed to brief scored encounters, so that whatever changed had to be inherited rather than taught.
+Within a few generations they were wagging their tails. Unremarkable — that is what he selected for.
+[beat]
+This is the part that matters. Floppy ears. Curled tails. White patches on the face. Shorter, rounder snouts. Juvenile skull shape. Barking, which wild foxes do not do. Breeding out of season. A blunted stress response.
+He selected for none of it. It arrived as a package — the same package carried by dogs, pigs, cattle, horses and rabbits.
+The leading explanation is that fear and all of those structures are built by the same embryonic cells: the neural crest. Turn fear down slightly and you perturb pigment, adrenal glands, jaws, teeth and ears at once. That is Wilkins, Wrangham and Fitch — the same Wrangham as the next slide.
+[beat]
+And the dispute is live, so I will flag it. Lord and colleagues argue the founding animals came from fur farms captive-bred since the eighteen-hundreds, with floppy ears documented there before any selection for tameness began. Trut, Zeder and Wright replied in the same issue.
+Contested, not demolished. The human argument does not depend on it — bonobos are an independent case.`,
+  dir:`This is the slide that makes self-domestication legible instead of hand-wavy, so give it room. Land the trait list slowly — it is a list of things nobody chose. If you want one more beat, the context is worth it: Belyaev lost his Moscow post in 1948 for refusing to drop Mendelian genetics under Lysenko, and fur breeding was economically valuable and politically safe. He ran a genetics experiment inside a fur programme. The foxes were cover.`,
+  src:`Belyaev, D.K. (1979) J. Heredity 70:301–08. Trut, L., Oskina, I. & Kharlamova, A. (2009) BioEssays 31:349–60 — 50+ years of the farm-fox programme, still running at the Institute of Cytology and Genetics, Novosibirsk. Neural-crest hypothesis: Wilkins, Wrangham & Fitch (2014) Genetics 197:795–808. Critique: Lord, K. et al. (2020) Trends Ecol. Evol. 35:125–36, with replies from Trut et al., Zeder, and Wright et al. in the same issue.`
+},
+{
+  sect:3, cat:"034", secs:64,
   html:`<div class="eyebrow">The animal <span>the mechanism</span></div>
     <h2>We were tamed from the <em>inside</em></h2>
     <p class="body">Not by losing wars. By execution. Egalitarian foragers routinely kill their own bullies — and language is what made it possible, because language lets subordinates <b>conspire in advance.</b></p>
@@ -622,7 +668,7 @@ It's older than agriculture. Older than property. Possibly as old as language.`,
   src:`Wrangham, R. (2019), The Goodness Paradox. Boehm, C. (1999), Hierarchy in the Forest; (2012) Moral Origins. Capital-punishment rate estimates rest on small samples.`
 },
 {
-  sect:3, cat:"034", secs:60,
+  sect:3, cat:"035", secs:60,
   html:`<div class="eyebrow">The animal <span>the resolution</span></div>
     <h2>Two systems. Only one of them was tamed.</h2>
     <div class="split">
@@ -922,10 +968,15 @@ SLIDES.forEach((s,i)=>{
 });
 
 /* stratigraphic rail: one band per section, deep time at the base */
+/* accent per section, mirrored into the rail so it reads as stratigraphy */
+const PALETTE=[['#43977E','#00503E'],['#319697','#004F51'],['#3B92AC','#004C60'],
+               ['#568AB9','#1B466A'],['#7282BC','#35406C'],['#8B7AB5','#483967']];
 SECTIONS.forEach((name,i)=>{
   const l=document.createElement('div');
   l.className='layer';
   l.setAttribute('data-s',i);
+  l.style.setProperty('--lc',    PALETTE[i][0]);
+  l.style.setProperty('--lc-lo', PALETTE[i][1]);
   l.innerHTML=`<div class="sect-tag">${name}</div>`;
   rail.appendChild(l);
 });
@@ -1018,6 +1069,7 @@ function syncPresenter(){
   if(!pres || pres.closed) return;
   const d = pres.document, s = SLIDES[idx];
   const heading = headingOf(s);
+  d.documentElement.style.setProperty('--oxide', PALETTE[s.sect][0]);
   d.getElementById('pc').textContent = `${idx+1} / ${total} · ${SECTIONS[s.sect]}`;
   d.getElementById('pt').textContent = `target ${s.secs||30}s`;
   d.getElementById('ph').textContent = heading;
@@ -1044,10 +1096,13 @@ function show(n){
   slides.forEach((el,i)=>el.setAttribute('data-on', i===idx?1:0));
   // restart row stagger on re-entry
   const cur = slides[idx];
-  cur.querySelectorAll('.row, .mk').forEach(r=>{
+  cur.querySelectorAll('.row, .mk, .split > div').forEach(r=>{
     r.style.animation='none'; void r.offsetWidth; r.style.animation='';
   });
   const cs = SLIDES[idx].sect;
+  if(document.body.getAttribute('data-sect') !== String(cs)){
+    document.body.setAttribute('data-sect', cs);
+  }
   layers.forEach((l,i)=>{
     l.setAttribute('data-active', i===cs?1:0);
     l.setAttribute('data-seen',  i< cs?1:0);
