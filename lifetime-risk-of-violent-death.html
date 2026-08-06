@@ -15,8 +15,8 @@
   --sediment: #2A343B;
   --bone:     #E8E3D9;
   --bone-dim: #A8A49C;
-  --oxide:    #B0472F;
-  --oxide-lo: #6E2E20;
+  --oxide:    #43977E;   /* verdigris — patinated bronze */
+  --oxide-lo: #22574A;
   --annot:    #7E96A3;
 
   --sans: 'Archivo', system-ui, sans-serif;
@@ -29,11 +29,12 @@ html,body{height:100%;background:#000;overflow:hidden}
 body{font-family:var(--sans);color:var(--bone);-webkit-font-smoothing:antialiased}
 
 /* ---------- Fixed 1920x1080 stage, scaled to viewport ---------- */
-#viewport{position:fixed;inset:0;display:grid;place-items:center}
+#viewport{position:absolute;inset:0;overflow:hidden}
 #stage{
-  width:1920px;height:1080px;position:relative;
+  width:1920px;height:1080px;
+  position:absolute;left:0;top:0;
   background:var(--trench);
-  transform-origin:center center;
+  transform-origin:0 0;      /* translate+scale from the corner, never 'center' */
   overflow:hidden;
 }
 #stage::after{ /* subtle vignette, keeps video compression from banding flat fills */
@@ -66,10 +67,13 @@ body[data-rec="1"]{cursor:none}
   letter-spacing:.24em;text-transform:uppercase;
   color:var(--bone-dim);white-space:nowrap;
 }
+/* verdigris is lighter than the old rust, so invert the label on the live band */
+.layer[data-active="1"] .sect-tag{color:var(--trench)}
 #rail .rail-cap{
   position:absolute;left:0;right:0;
   font-family:var(--mono);font-size:11px;letter-spacing:.18em;
-  color:rgba(232,227,217,.5);text-align:center;
+  color:rgba(232,227,217,.62);text-align:center;
+  background:rgba(20,26,31,.78);padding:4px 0;  /* legible over any band colour */
 }
 #rail .rail-cap.top{top:12px}
 #rail .rail-cap.bot{bottom:12px}
@@ -261,6 +265,22 @@ body[data-rec="1"] #help{display:none}
   transition:opacity .5s ease;
 }
 #help[data-idle="1"]{opacity:0}
+/* Embedded on a page: no speaker notes, no keyboard hint, tap arrows instead */
+body[data-embed="1"] #help{display:none}
+.arrow{
+  position:absolute;top:50%;transform:translateY(-50%);z-index:9;
+  width:56px;height:56px;display:none;place-items:center;
+  font-family:var(--mono);font-size:26px;line-height:1;
+  color:var(--bone-dim);background:rgba(20,26,31,.55);
+  border:1px solid var(--sediment);border-radius:2px;
+  cursor:pointer;user-select:none;transition:opacity .4s ease,color .2s ease;
+}
+.arrow:hover{color:var(--bone)}
+.arrow.l{left:22px}
+.arrow.r{right:22px}
+body[data-embed="1"] .arrow{display:grid}
+.arrow[data-idle="1"]{opacity:0}
+.arrow[data-off="1"]{opacity:.18;pointer-events:none}
 #nav{position:absolute;inset:0;z-index:4;display:flex}
 #nav div{flex:1;cursor:pointer}
 body[data-rec="1"] #nav div{cursor:none}
@@ -278,6 +298,8 @@ body[data-rec="1"] #nav div{cursor:none}
     <div id="hud"><span><b id="cur">1</b> / <span id="tot">29</span></span></div>
     <div id="deck"></div>
     <div id="nav"><div id="back" title="Previous"></div><div id="fwd" title="Next"></div></div>
+    <div class="arrow l" id="arrowL" role="button" aria-label="Previous slide">&#8249;</div>
+    <div class="arrow r" id="arrowR" role="button" aria-label="Next slide">&#8250;</div>
     <div id="help">← → navigate · N notes · P presenter · R record mode · T reset timer · F fullscreen</div>
   </div>
 </div>
@@ -312,19 +334,45 @@ Everything after this is evidence for those four sentences.`,
   dir:`Open cold. No music, no throat-clearing. Do not smile. This is the whole thesis and you will never state it this plainly again, so let the last line sit before you cut.`
 },
 {
-  sect:0, cat:"001", secs:30,
-  html:`<div class="eyebrow">Framing <span>the wrong number</span></div>
-    <h2>Almost every safety statistic you've heard is <em>useless</em></h2>
-    <p class="body">Road deaths get reported as a rate: about <b>13 per 100,000 Americans per year</b>. That number is technically correct and psychologically inert. Nobody can feel it. Nobody can act on it.</p>
-    <p class="body">Multiply it across a life and it becomes something you can actually understand.</p>`,
-  script:`Road deaths get reported as a rate. About thirteen per hundred thousand Americans per year.
-That number is technically correct and completely inert. You cannot feel it. You have already forgotten it.
-Annual rates are how institutions talk to each other. Lifetime risk is how a person experiences their own life. They are the same data, and they feel like different universes.
-Everything after this uses lifetime risk.`,
-  dir:`This sets the method for the entire video, so don't rush it. Slight emphasis on "already forgotten" — you are describing the audience to itself.`
+  sect:0, cat:"001", secs:76,
+  html:`<div class="eyebrow">Credit <span>where this starts</span></div>
+    <h2>This begins with <em>R. J. Rummel</em></h2>
+    <p class="body">Rudolph Joseph Rummel, <b>1932–2014</b>. Political scientist at the University of Hawai&#699;i. He coined the word <b>democide</b> — murder by government — and spent a career counting the dead, regime by regime, across the twentieth century.</p>
+    <p class="body">Two dozen books. More than a hundred papers. Repeatedly nominated for the Nobel Peace Prize.</p>
+    <p class="kicker">And the part that matters most: <em>he published the workings.</em> Statistics of Democide lists the individual estimates, source by source, so that anyone could check him — or correct him.</p>`,
+  script:`This begins with a debt.
+Rudolph Rummel, 1932 to 2014, political scientist at the University of Hawai&#699;i. He coined the word democide — murder by government — and then spent a career doing the unglamorous part: counting the dead, regime by regime, across the twentieth century. Two dozen books. Over a hundred papers. Nominated for the Nobel Peace Prize more than once.
+[beat]
+And here is the part that matters most, the reason his name goes at the front of this rather than in a footnote. He published the workings. Statistics of Democide lists the individual estimates, one source at a time, so that anybody could check him.
+Later in this presentation I am going to revise several of his numbers downward — some of them by a factor of ten.
+[beat]
+I can only do that because he showed his arithmetic. That is what it looks like to do this honestly, and it is the standard I am going to try to hold for the next twenty minutes.`,
+  dir:`Credit him properly and without hedging — then use the credit to pre-frame the downward revisions on slides 25 and 26, so they land as continuation of his method rather than an ambush. The last line is a promise you have to keep; every subsequent slide either shows its range or names its critic.`,
+  src:`Rummel, R.J. — Death by Government (1994); Statistics of Democide (1998); Power Kills (1997). Professor of political science, Indiana 1963–64, Yale 1964–66, University of Hawai&#699;i 1966–95.`
 },
 {
-  sect:0, cat:"002", secs:18,
+  sect:0, cat:"002", secs:68,
+  html:`<div class="eyebrow">Method <span>the number that hides</span></div>
+    <h2>Annual rates <em>conceal.</em> Lifetime risk <em>reveals.</em></h2>
+    <div class="ledger">
+      <div class="row"><div class="lbl">How it gets reported<small>US motor-vehicle deaths, annual rate per 100,000</small></div><div class="val">≈ 13</div></div>
+      <div class="row"><div class="lbl">The same figure as a probability<small>Your chance of dying that way <em>this year</em></small></div><div class="val">0.013%</div></div>
+      <div class="row" data-flag="1"><div class="lbl">The same figure across a life<small>One-year odds of 1 in 7,949 ÷ 79 years of exposure</small></div><div class="val">1 in 101</div></div>
+    </div>
+    <p class="kicker">Nothing was added. Nothing was assumed. Only the <em>denominator</em> changed.</p>`,
+  script:`One methodological point, and everything after it depends on this.
+Risk gets reported as an annual rate. Road deaths in the United States: about thirteen per hundred thousand people per year. As a probability that is nought point nought one three percent — a number you cannot feel, cannot act on, and have already forgotten.
+That is not an accident of presentation. Annual rates are how institutions talk to each other. They are the correct unit for allocating a budget and the wrong unit for understanding a life.
+Convert it. The National Safety Council puts the one-year odds at one in seven thousand nine hundred and forty-nine. Divide by a life expectancy of seventy-nine years.
+[beat]
+One in a hundred and one.
+Nothing was added. Nothing was assumed. The only thing that changed was the denominator — and the number went from invisible to frightening.
+Every figure in this presentation is expressed that way. Across a life.`,
+  dir:`This is the method slide for the whole video, so do not rush it and do not apologise for it being technical. The three ledger rows are the same fact three ways — let each land before the next appears. If someone only watches ninety seconds, this is the slide you want them to have seen.`,
+  src:`National Safety Council, Injury Facts — "Odds of Dying," 2024 data year: 42,789 motor-vehicle deaths; one-year odds 1 in 7,949; life expectancy at birth 79.0 years; lifetime odds 1 in 101. All road users.`
+},
+{
+  sect:0, cat:"003", secs:18,
   html:`<div class="eyebrow">Framing <span>the real number</span></div>
     <div class="stat"><div class="num">1 in <u>100</u></div>
       <div class="unit">Americans will die in a motor vehicle crash</div></div>
@@ -511,24 +559,7 @@ This was never a story about distant savages and civilised observers. It was eve
   dir:`Deliver flatly. No triumph, no apology — it is just what the ground contains. There is no lineage on earth with clean hands, because the practice is older than the species.`
 },
 {
-  sect:2, cat:"027", secs:64,
-  html:`<div class="eyebrow">The baseline <span>written in a genome</span></div>
-    <h2>And we have watched it <em>change a population</em></h2>
-    <div class="stat"><div class="num sm">PRNP<u>129</u></div>
-      <div class="unit">prion protein gene · the Fore of Papua New Guinea</div></div>
-    <p class="body">Eating human nervous tissue transmits prion disease. The Fore practised mortuary cannibalism; it produced <b>kuru</b>, a fatal prion epidemic. Among the exposed survivors, heterozygotes at this site are dramatically over-represented — homozygotes were essentially eliminated.</p>
-    <p class="kicker">A claim that the same signature appears <em>worldwide</em> was tested and failed — a sampling artefact. So this slide doesn't make it.</p>`,
-  script:`Eating human nervous tissue transmits prion disease. And we know precisely what that does to a population, because it happened in the twentieth century and we were there to watch.
-The Fore of Papua New Guinea practised mortuary cannibalism. It produced kuru — a fatal prion epidemic. Among the survivors who were exposed, one version of the prion protein gene is dramatically over-represented. The heterozygotes lived.
-[beat]
-Cannibalism reshaped the genetics of a human population inside a single generation. Not across evolutionary time. Within living memory, documented as it happened.
-Now, I want to be careful, because there was a bigger claim — that the same signature shows up worldwide, implying prehistoric cannibalism everywhere. That claim was tested and it failed. Sampling artefact.
-So I'm not making it. The Fore are enough. They tell you what this practice does to a genome when it's common.`,
-  dir:`This slide used to overclaim and the correction makes it stronger, not weaker — you are now the person who knows the rebuttal. Deliver the retraction at the same volume as the finding.`,
-  src:`Mead, S. et al. (2003) Science 300:640–43 — Fore heterozygote excess. Worldwide balancing-selection claim contested: Kreitman & Di Rienzo (2004) Trends Genet. 20:300–304; Soldevila et al. (2006) Genome Research 16:231. Mead et al. (2009) NEJM — Fore-specific G127V variant. Kuru: Gajdusek, Nobel lecture 1976.`
-},
-{
-  sect:2, cat:"028", secs:38,
+  sect:2, cat:"027", secs:38,
   html:`<div class="eyebrow">The baseline <span>why this is news to you</span><i>END OF ACT ONE</i></div>
     <h2>States kill in <em>events</em>. Everyone else killed in <em>weather</em>.</h2>
     <div class="split">
@@ -860,7 +891,7 @@ const BAR = [
   {n:760, label:"Canada<br>2025",            val:"1 in 760", h:30},
   {n:233, label:"United States<br>homicide", val:"1 in 233", h:120},
   {n:67,  label:"Europe<br>3,000-year mean", val:"1 in 67",  h:30},
-  {n:11,  label:"Europe 1914–45 <span style='color:#B0472F'>=</span> baseline centre", val:"1 in 11", h:196, hot:1},
+  {n:11,  label:"Europe 1914–45 <span style='color:#43977E'>=</span> baseline centre", val:"1 in 11", h:196, hot:1},
   {n:7,   label:"USSR<br>1914–45",           val:"1 in 7",   h:64},
   {n:2,   label:"Waorani<br>Ecuador",        val:"1 in 2",   h:130}
 ];
@@ -928,6 +959,10 @@ rail.insertAdjacentHTML('beforeend','<div class="rail-cap bot">I</div>');
 
 document.getElementById('tot').textContent = total;
 
+/* Are we inside someone's page? Cross-origin access throws, which also means yes. */
+const EMBED = (()=>{ try { return window.self !== window.top; } catch(e){ return true; } })();
+if(EMBED) document.body.setAttribute('data-embed','1');
+
 let idx = 0;
 const slides = [...document.querySelectorAll('.slide')];
 const layers = [...document.querySelectorAll('.layer')];
@@ -967,7 +1002,7 @@ function openPresenter(){
   if(!pres){ notesBox.setAttribute('data-on','1'); fit(); return; }
   pres.document.write(`<!DOCTYPE html><meta charset="utf-8"><title>Presenter — Lifetime Risk of Violent Death</title>
   <style>
-    :root{--oxide:#B0472F;--annot:#7E96A3}
+    :root{--oxide:#43977E;--annot:#7E96A3}
     *{box-sizing:border-box;margin:0}
     body{background:#080A0C;color:#E4DFD6;font-family:'IBM Plex Mono',ui-monospace,monospace;padding:22px 26px 40px}
     .top{display:flex;justify-content:space-between;align-items:baseline;
@@ -1043,17 +1078,37 @@ function show(n){
     l.setAttribute('data-seen',  i< cs?1:0);
   });
   document.getElementById('cur').textContent = idx+1;
+  document.getElementById('arrowL').setAttribute('data-off', idx===0?'1':'0');
+  document.getElementById('arrowR').setAttribute('data-off', idx===total-1?'1':'0');
   notesBody.innerHTML = notesHTML(idx);
   syncPresenter();
 }
 
-/* ---------- Scale stage to viewport ---------- */
+/* ---------- Scale stage to its container ----------
+   Measured from the element, not from window.*, and using the SMALLEST
+   height any source reports — embeds (Wix, Squarespace, Notion) routinely
+   over-report viewport height, and over-reporting is what clips content. */
+function boxOf(){
+  const de = document.documentElement;
+  const cands = [
+    document.getElementById('viewport').clientWidth,
+    de.clientWidth,
+    window.innerWidth
+  ].filter(v => v > 0);
+  const hs = [de.clientHeight, window.innerHeight].filter(v => v > 0);
+  return { w: Math.min(...cands), h: Math.min(...hs) };
+}
 function fit(){
-  const pad = notesBox.getAttribute('data-on')==='1' ? window.innerHeight*0.44 : 0;
-  const w = window.innerWidth, h = window.innerHeight - pad;
+  const notesOpen = notesBox.getAttribute('data-on')==='1';
+  const box = boxOf();
+  const pad = notesOpen ? Math.round(box.h*0.44) : 0;
+  const w = box.w, h = box.h - pad;
+  if(w <= 0 || h <= 0) return;
   const k = Math.min(w/1920, h/1080);
-  document.getElementById('stage').style.transform = `scale(${k})`;
-  document.getElementById('viewport').style.paddingBottom = pad+'px';
+  const x = (w - 1920*k)/2, y = (h - 1080*k)/2;
+  document.getElementById('stage').style.transform =
+    `translate(${x.toFixed(2)}px, ${y.toFixed(2)}px) scale(${k})`;
+  document.getElementById('viewport').style.bottom = pad+'px';
 }
 
 /* ---------- Controls ---------- */
@@ -1064,10 +1119,10 @@ function onKey(e){
   else if(k==='Home'){ show(0); }
   else if(k==='End'){ show(total-1); }
   else if(k==='t'||k==='T'){ t0 = Date.now(); }
-  else if(k==='n'||k==='N'){
+  else if((k==='n'||k==='N') && !EMBED){
     notesBox.setAttribute('data-on', notesBox.getAttribute('data-on')==='1'?0:1); fit();
   }
-  else if(k==='p'||k==='P'){
+  else if((k==='p'||k==='P') && !EMBED){
     if(pres && !pres.closed){ pres.close(); pres=null; }
     else { notesBox.setAttribute('data-on','0'); fit(); openPresenter(); }
   }
@@ -1085,18 +1140,40 @@ function onKey(e){
 window.addEventListener('keydown', onKey);
 document.getElementById('fwd').addEventListener('click', ()=>show(idx+1));
 document.getElementById('back').addEventListener('click', ()=>show(idx-1));
+document.getElementById('arrowL').addEventListener('click', e=>{ e.stopPropagation(); show(idx-1); });
+document.getElementById('arrowR').addEventListener('click', e=>{ e.stopPropagation(); show(idx+1); });
+
+/* Touch: horizontal swipe advances, vertical scroll is left alone */
+let tx=0, ty=0, tracking=false;
+const stageEl = document.getElementById('stage');
+stageEl.addEventListener('touchstart', e=>{
+  if(e.touches.length!==1) return;
+  tx=e.touches[0].clientX; ty=e.touches[0].clientY; tracking=true;
+}, {passive:true});
+stageEl.addEventListener('touchend', e=>{
+  if(!tracking) return; tracking=false;
+  const t=e.changedTouches[0], dx=t.clientX-tx, dy=t.clientY-ty;
+  if(Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)*1.5) show(idx + (dx<0?1:-1));
+}, {passive:true});
 window.addEventListener('resize', fit);
+window.addEventListener('orientationchange', ()=>setTimeout(fit,120));
+if(window.ResizeObserver){
+  new ResizeObserver(fit).observe(document.documentElement);
+}
+document.fonts && document.fonts.ready.then(fit);   /* webfonts can shift metrics */
 window.addEventListener('beforeunload', ()=>{ if(pres && !pres.closed) pres.close(); });
 
 /* fade the control hint out when idle so it never lands in a take */
 let idleT;
 function bumpIdle(){
-  const el=document.getElementById('help');
-  el.setAttribute('data-idle','0');
+  const els=[document.getElementById('help'),
+             document.getElementById('arrowL'),
+             document.getElementById('arrowR')];
+  els.forEach(el=>el.setAttribute('data-idle','0'));
   clearTimeout(idleT);
-  idleT=setTimeout(()=>el.setAttribute('data-idle','1'),4000);
+  idleT=setTimeout(()=>els.forEach(el=>el.setAttribute('data-idle','1')), EMBED?2600:4000);
 }
-['mousemove','keydown','click'].forEach(e=>window.addEventListener(e,bumpIdle));
+['mousemove','keydown','click','touchstart'].forEach(e=>window.addEventListener(e,bumpIdle));
 
 show(0);
 fit();
