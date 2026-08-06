@@ -186,7 +186,13 @@ h2 em{font-style:normal;color:var(--oxide)}
 }
 .sb-axis b{position:absolute;transform:translateX(-50%);font-weight:400;padding-top:10px;white-space:nowrap}
 .sb-marks{position:relative;height:300px;margin-top:14px}
-.mk{position:absolute;transform:translateX(-50%);text-align:center;width:200px}
+.mk{
+  position:absolute;transform:translateX(-50%);text-align:center;width:200px;
+  opacity:0;
+}
+.slide[data-on="1"] .mk{animation:mkIn .55s ease forwards}
+@keyframes mkIn{from{opacity:0;transform:translateX(-50%) translateY(8px)}
+                  to{opacity:1;transform:translateX(-50%)}}
 .mk .stem{width:1px;background:var(--bone-dim);margin:0 auto 12px}
 .mk .mv{
   font-family:var(--mono);font-size:30px;font-weight:600;color:var(--bone);
@@ -288,6 +294,7 @@ body[data-rec="1"] #nav div{cursor:none}
 @media (prefers-reduced-motion: reduce){
   .slide,.layer{transition:none}
   .slide[data-on="1"] .row{animation:none;opacity:1;transform:none}
+  .slide[data-on="1"] .mk{animation:none;opacity:1}
 }
 </style>
 </head>
@@ -347,7 +354,7 @@ And here is the part that matters most, the reason his name goes at the front of
 Later in this presentation I am going to revise several of his numbers downward — some of them by a factor of ten.
 [beat]
 I can only do that because he showed his arithmetic. That is what it looks like to do this honestly, and it is the standard I am going to try to hold for the next twenty minutes.`,
-  dir:`Credit him properly and without hedging — then use the credit to pre-frame the downward revisions on slides 25 and 26, so they land as continuation of his method rather than an ambush. The last line is a promise you have to keep; every subsequent slide either shows its range or names its critic.`,
+  dir:`Credit him properly and without hedging — then use the credit to pre-frame the downward revisions on slides 22 and 23, so they land as continuation of his method rather than an ambush. The last line is a promise you have to keep; every subsequent slide either shows its range or names its critic.`,
   src:`Rummel, R.J. — Death by Government (1994); Statistics of Democide (1998); Power Kills (1997). Professor of political science, Indiana 1963–64, Yale 1964–66, University of Hawai&#699;i 1966–95.`
 },
 {
@@ -406,7 +413,7 @@ I'm using sixty-seven. Hold it loosely.`,
   src:`Population: McEvedy & Jones, Atlas of World Population History; Maddison Project. Conflict tolls: aggregated era estimates — antiquity 5–15M, medieval 10–15M, early modern 20–25M, 19th C 7–10M, 20th C 65–75M. Honest range on the ratio: 1 in 50 – 1 in 90.`
 },
 {
-  sect:1, cat:"011", secs:36,
+  sect:1, cat:"011", secs:34,
   html:`<div class="eyebrow">The record <span>concentration</span></div>
     <h2>More than half of it happened in <em>thirty-one years</em></h2>
     <div class="ledger">
@@ -418,7 +425,7 @@ I'm using sixty-seven. Hold it loosely.`,
 Sixty-five million dead in thirty-one years. For a European alive in that window, about one in eleven.
 In the Soviet Union — the worst place and time in the recorded history of Europe — about one in seven.
 [beat]
-Remember both of those. They come back in two slides in a way you will not expect.`,
+Remember both of those. They come back shortly, in a way you will not expect.`,
   dir:`This kills the idea that history is a slow gradient. It isn't. It's long flat stretches punctuated by catastrophes that arrive fast. The "you will not expect" line is a promise — pay it off properly on the bar chart.`
 },
 {
@@ -477,18 +484,23 @@ These are not outliers cherry-picked for shock. This is what the record looks li
   src:`Waorani: Beckerman et al. (2009) PNAS 106:8134–39. Yanomami: Early & Peters (2000). Crow Creek: Willey (1982), Osteology of the Crow Creek Massacre — 486 individuals ≈60% of an estimated 744–831 population. Nataruk: Mirazón Lahr et al. (2016) Nature 529:394–98; contested by Stojanowski et al. (2016) Nature 539:E8–E10, reply E10–E11.`
 },
 {
-  sect:2, cat:"022", scale:true, secs:58,
+  sect:2, cat:"022", scale:true, secs:106,
   html:`<div class="eyebrow">The baseline <span>to scale · logarithmic</span></div>
     <h2>Lifetime risk of violent death</h2>`,
   script:`Read this left to right, and then stop at the right-hand cluster.
+There are two Newfoundland marks, and the gap between them is this whole presentation in miniature.
+The island: eighty homicides in twenty years, about one in sixteen hundred across a lifetime. Prince Edward Island is statistically indistinguishable from it. Among the safest places ever measured.
+Labrador is the same province — same laws, same courts, same police force. One in four hundred and thirty-six. Three and a half times the island, and above the national average.
+[beat]
+Nothing genetic separates those two numbers. Fly-in communities, a detachment hours away by air, and the colonial history this presentation returns to at the end. The institutions thin out, and the number climbs.
 All of Europe, through both world wars, the Holocaust, the terror famines — thirty-one years that produced more than half of three thousand years of corpses — lands at about one in eleven.
 Which is the ordinary non-state baseline.
 [beat]
 And the Soviet Union is worse than the baseline. The single worst place and time in the recorded history of Europe did not match ordinary human life. It exceeded it.
 That is the whole video in one image. What we call the greatest catastrophe in European history is roughly what most humans who ever lived would have called the weather.
 Note the axis is logarithmic. Each division is a tenfold change, because a linear scale cannot hold a range this wide.`,
-  dir:`Your visual peak. Take the beat. Do not rush the log-axis note — some of the audience needs it and the rest will forgive you. This is the end of Act One's climb; the next two slides bring it down and slide 028 closes the act.`,
-  src:`Log axis. Non-state band spans the published dispute: 5% (sceptics' floor) to 14% (Bowles 2009), centre ≈9% after the Aché/Hiwi correction. European figures derived as on slides 010–011. Canada per Statistics Canada 2025. US homicide approximate.`
+  dir:`Your visual peak. Take the beat. Do not rush the log-axis note — some of the audience needs it and the rest will forgive you. This is the end of Act One's climb; the objection slide brings it down and slide 024 closes the act.`,
+  src:`Log axis. Non-state band spans the published dispute: 5% (sceptics' floor) to 14% (Bowles 2009), centre ≈9% after the Aché/Hiwi correction. European figures derived as on slides 010–011. Canada per Statistics Canada 2025 (single year); on a 20-year pooled basis Canada is 1 in 676. <b>Island / Labrador split</b> built from StatCan table 35-10-0178, homicide incidents by police detachment, 2006–2025: 80 on the island, 16 in Labrador (detachment totals reconcile exactly to the 96 province-wide victims in every year). Population from census divisions 1–9 vs 10–11 (table 17-10-0152). Island 0.80/100k × LE 79.2 → 1 in 1,576 (95% CI 1,295–2,021); Labrador 2.90/100k → 1 in 436 (95% CI 292–854). PEI is 0.69/100k → 1 in 1,776, but on 21 victims its CI (1,244–3,103) overlaps the island's, so it is not plotted separately. US homicide approximate.`
 },
 {
   sect:2, cat:"023", secs:72,
@@ -517,49 +529,7 @@ I don't know whether it was fourteen percent or nine. I know it wasn't one.`,
   src:`Ferguson, R.B. (2013) in War, Peace and Human Nature. Fry, D. (2007), Beyond War. Fry & Söderberg (2013). Aché deaths: Hill & Hurtado (1996), Table 5.1, pp. 171–173.`
 },
 {
-  sect:2, cat:"024", secs:26,
-  html:`<div class="eyebrow">The baseline <span>evidence quality</span></div>
-    <h2>On cannibalism: throw out the colonists</h2>
-    <p class="body">Early colonial accounts of cannibalism are close to worthless as evidence. The Spanish Crown made it lawful to enslave populations designated as cannibals — which handed every conquistador a direct financial motive to report it. Many of those accounts are demonstrably fabricated.</p>
-    <p class="body"><b>You don't need them.</b> The bones are better.</p>`,
-  script:`Early colonial accounts of cannibalism are close to worthless as evidence.
-The Spanish Crown made it lawful to enslave any population designated as cannibals. That handed every conquistador a direct financial motive to report it. A lot of those accounts are demonstrably invented.
-[beat]
-You don't need them. The bones are better.`,
-  dir:`A discipline slide, and it costs you nothing. Concede the weak evidence loudly, then produce the strong evidence — you end up more convincing than if you'd never raised it.`,
-  src:`On the encomienda incentive and the invention of cannibal ethnography: Whitehead, N. (1984); Hulme, P. (1986), Colonial Encounters.`
-},
-{
-  sect:2, cat:"025", secs:24,
-  html:`<div class="eyebrow">The baseline <span>the bones</span></div>
-    <h2>Cannibalism is documented from <em>butchery marks</em>, not testimony</h2>
-    <div class="ledger tight">
-      <div class="row"><div class="lbl">Gough's Cave, England · c. 14,700 BP<small>Skull cups, deliberate cranial shaping, human tooth marks on human bone</small></div><div class="val">Magdalenian</div></div>
-      <div class="row"><div class="lbl">Herxheim, Germany · c. 5,000 BCE<small>Hundreds of individuals, systematically processed</small></div><div class="val">Neolithic</div></div>
-      <div class="row"><div class="lbl">Fontbrégoua Cave, France<small>Human remains butchered identically to the animal remains beside them</small></div><div class="val">Neolithic</div></div>
-      <div class="row"><div class="lbl">Cowboy Wash, Colorado · c. 1150 CE<small>Human myoglobin recovered from a coprolite on a hearth</small></div><div class="val">Ancestral Puebloan</div></div>
-      <div class="row" data-flag="1"><div class="lbl">Gran Dolina, Spain<small>Homo antecessor. The practice is older than our species.</small></div><div class="val">≈ 800,000 BP</div></div>
-    </div>`,
-  script:`Cowboy Wash is the unanswerable one. Digested human protein, recovered from a coprolite on a hearth.
-There is no alternative reading of that. No ritual-defleshing interpretation, no colonial propagandist to blame.
-And Gran Dolina pushes the practice back eight hundred thousand years — which means it predates Homo sapiens entirely.`,
-  dir:`Keep the register clinical here. The evidence is doing the work and a joke would undercut the discipline you just spent a whole slide establishing. Cowboy Wash also has living descendant communities; treat it as a finding, not a punchline.`,
-  src:`Bello et al. (2011) PLoS ONE; Bello et al. (2015) J. Hum. Evol. 82:170–189 — Gough's Cave. Boulestin et al. (2009) Antiquity — Herxheim. Villa et al. (1986) Science 233:431–37 — Fontbrégoua. Marlar et al. (2000) Nature 407:74–78 — Cowboy Wash. Fernández-Jalvo et al. (1999) — Gran Dolina.`
-},
-{
-  sect:2, cat:"026", secs:28,
-  html:`<div class="eyebrow">The baseline <span>the inversion</span></div>
-    <h2>Read that list again. <em>Four of the five sites are in Europe.</em></h2>
-    <p class="body">The best-documented cannibals in the archaeological record are European. The best evidence for endemic prehistoric violence in Europe is European skeletons. This was never a story about distant savages and civilised observers.</p>
-    <p class="body"><b>It was everyone. Including the direct ancestors of everyone watching this.</b></p>`,
-  script:`Read that list again. Four of the five sites are in Europe.
-The best-documented cannibals in the archaeological record are European. The best evidence for endemic prehistoric violence in Europe is European skeletons.
-[beat]
-This was never a story about distant savages and civilised observers. It was everyone. Including the direct ancestors of everyone watching this.`,
-  dir:`Deliver flatly. No triumph, no apology — it is just what the ground contains. There is no lineage on earth with clean hands, because the practice is older than the species.`
-},
-{
-  sect:2, cat:"027", secs:38,
+  sect:2, cat:"024", secs:38,
   html:`<div class="eyebrow">The baseline <span>why this is news to you</span><i>END OF ACT ONE</i></div>
     <h2>States kill in <em>events</em>. Everyone else killed in <em>weather</em>.</h2>
     <div class="split">
@@ -573,7 +543,7 @@ This was never a story about distant savages and civilised observers. It was eve
       </div>
     </div>
     <p class="kicker">Not a lie about the evidence. An artefact of who kept records.</p>`,
-  script:`This resolves the paradox at the centre of the last twenty minutes.
+  script:`This resolves the paradox at the centre of everything so far.
 Civilisation did not make humans more violent. It made violence legible.
 Bureaucracy, monuments, photography — those are the technologies that let us see it. And because we can see the industrial-scale killing and cannot see ten thousand years of continuous raiding, we get the causation exactly backwards.
 Concentrated, recorded and spectacular is not the same thing as frequent.
@@ -652,7 +622,7 @@ It's older than agriculture. Older than property. Possibly as old as language.`,
   src:`Wrangham, R. (2019), The Goodness Paradox. Boehm, C. (1999), Hierarchy in the Forest; (2012) Moral Origins. Capital-punishment rate estimates rest on small samples.`
 },
 {
-  sect:3, cat:"034", secs:58,
+  sect:3, cat:"034", secs:60,
   html:`<div class="eyebrow">The animal <span>the resolution</span></div>
     <h2>Two systems. Only one of them was tamed.</h2>
     <div class="split">
@@ -666,7 +636,7 @@ It's older than agriculture. Older than property. Possibly as old as language.`,
       </div>
     </div>
     <p class="kicker">Docile and dangerous at once. That combination is rare in nature — and it is roughly the job description of a soldier.</p>`,
-  script:`Here's the answer to the question I posed five slides ago. Did warfare breed out violent men?
+  script:`Here's the answer to the question I posed at the start of this section. Did warfare breed out violent men?
 Wrong question — because there are two different systems.
 Reactive aggression is hot, impulsive, immediate. Internal policing crushed it. Two hundred humans will sit shoulder to shoulder in a metal tube for ten hours and complain about the armrest. Two hundred chimpanzees would be unloaded as casualties.
 Proactive aggression is cold, planned, coordinated, patient. Untouched by self-domestication — and actively rewarded by ten thousand years of intergroup competition.
@@ -746,7 +716,7 @@ But the shape holds.
 [beat]
 The raw material is identical. What differs by a factor of two hundred is how much of it ends in a funeral.
 That difference is not us. It's the machine we built around us.`,
-  dir:`This is Act Two's peak — the payoff for the act break. Slower than the bar chart, not louder. The argument closes here; slides 053 and 054 are the coda.`,
+  dir:`This is Act Two's peak — the payoff for the act break. Slower than the bar chart, not louder. The argument closes here; the last two slides are the coda.`,
   src:`Hirschi & Gottfredson (1983) AJS 89:552–84. Variation in peak age and skew: Steffensmeier et al. (1989) AJS 94:803–31.`
 },
 
@@ -885,10 +855,12 @@ Act like it's worth defending.`,
 
 /* ---------- Log scale bar data ---------- */
 /* Baseline band spans the published dispute: 5% (1 in 20) to 14% (1 in 7). */
-const BAR_LO = 1500, BAR_HI = 2;
+const BAR_LO = 3000, BAR_HI = 2;
 const BAND = {from:20, to:7, label:"Non-state baseline · published range"};
 const BAR = [
-  {n:760, label:"Canada<br>2025",            val:"1 in 760", h:30},
+  {n:1576,label:"Newfoundland<br>island only",  val:"1 in 1,576", h:30},
+  {n:760, label:"Canada<br>2025",              val:"1 in 760",   h:126},
+  {n:436, label:"Labrador<br>same province",   val:"1 in 436",   h:30},
   {n:233, label:"United States<br>homicide", val:"1 in 233", h:120},
   {n:67,  label:"Europe<br>3,000-year mean", val:"1 in 67",  h:30},
   {n:11,  label:"Europe 1914–45 <span style='color:#43977E'>=</span> baseline centre", val:"1 in 11", h:196, hot:1},
@@ -942,6 +914,9 @@ SLIDES.forEach((s,i)=>{
   // stagger ledger rows so long slides have visual movement while narrated
   el.querySelectorAll('.row').forEach((r,j)=>{
     r.style.animationDelay = (0.18 + j*0.16) + 's';
+  });
+  el.querySelectorAll('.mk').forEach((m,j)=>{
+    m.style.animationDelay = (0.3 + j*0.55) + 's';   // left to right, in narration order
   });
   deck.appendChild(el);
 });
@@ -1069,7 +1044,7 @@ function show(n){
   slides.forEach((el,i)=>el.setAttribute('data-on', i===idx?1:0));
   // restart row stagger on re-entry
   const cur = slides[idx];
-  cur.querySelectorAll('.row').forEach(r=>{
+  cur.querySelectorAll('.row, .mk').forEach(r=>{
     r.style.animation='none'; void r.offsetWidth; r.style.animation='';
   });
   const cs = SLIDES[idx].sect;
